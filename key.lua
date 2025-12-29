@@ -34,32 +34,16 @@ local KeyActive = false
 local LastNotifTime = 0
 local CachedData = nil -- Global cache for instant local validation
 local GamesList = {} -- Store games data
-local CurrentGameData = nil -- Store current game's data from database
 
 -- Start downloading the database immediately on execution
 task.spawn(function()
     local ok, res = pcall(function()
-        local jsonData = game:HttpGet(JSONBIN_URL)
-        return HttpService:JSONDecode(jsonData)
+        return HttpService:JSONDecode(game:HttpGet(JSONBIN_URL))
     end)
-    if ok and res and res.record then
+    if ok and res.record then
         CachedData = res.record
-        
         if CachedData.games and type(CachedData.games) == "table" then
             GamesList = CachedData.games
-            
-            -- Find current game data
-            local currentPlaceId = tostring(PLACE_ID)
-            
-            for _, gameData in ipairs(GamesList) do
-                if gameData and gameData.id then
-                    local gameIdStr = tostring(gameData.id)
-                    if gameIdStr == currentPlaceId then
-                        CurrentGameData = gameData
-                        break
-                    end
-                end
-            end
         end
     end
 end)
@@ -111,25 +95,12 @@ end
 
 local function fetchData()
     local ok, res = pcall(function()
-        local jsonData = game:HttpGet(JSONBIN_URL)
-        return HttpService:JSONDecode(jsonData)
+        return HttpService:JSONDecode(game:HttpGet(JSONBIN_URL))
     end)
-    if ok and res and res.record then
+    if ok and res.record then
         CachedData = res.record
         if CachedData.games and type(CachedData.games) == "table" then
             GamesList = CachedData.games
-            -- Update current game data
-            CurrentGameData = nil
-            local currentPlaceId = tostring(PLACE_ID)
-            for _, gameData in ipairs(GamesList) do
-                if gameData and gameData.id then
-                    local gameIdStr = tostring(gameData.id)
-                    if gameIdStr == currentPlaceId then
-                        CurrentGameData = gameData
-                        break
-                    end
-                end
-            end
         end
         return CachedData
     end
@@ -178,86 +149,6 @@ local function createNotify(msg, color)
 end
 
 --==================================================--
--- TELEPORT CONFIRMATION GUI
---==================================================--
-local function showTeleportConfirmation(targetPlaceId)
-    local gui = Instance.new("ScreenGui", player.PlayerGui)
-    gui.Name = "RSQ_TeleportConfirm"
-    gui.IgnoreGuiInset = true
-    gui.ResetOnSpawn = false
-    
-    local overlay = Instance.new("Frame", gui)
-    overlay.Size = UDim2.new(1, 0, 1, 0)
-    overlay.BackgroundColor3 = Color3.new(0, 0, 0)
-    overlay.BackgroundTransparency = 0.5
-    
-    local dialog = Instance.new("Frame", gui)
-    dialog.Size = UDim2.new(0, 400, 0, 200)
-    dialog.Position = UDim2.new(0.5, -200, 0.5, -100)
-    dialog.BackgroundColor3 = Color3.fromRGB(20, 24, 36)
-    Instance.new("UICorner", dialog).CornerRadius = UDim.new(0, 12)
-    
-    local title = Instance.new("TextLabel", dialog)
-    title.Size = UDim2.new(1, -40, 0, 40)
-    title.Position = UDim2.new(0, 20, 0, 20)
-    title.Text = "🚀 Teleport to Correct Game"
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 16
-    title.TextColor3 = Color3.new(1, 1, 1)
-    title.BackgroundTransparency = 1
-    
-    local message = Instance.new("TextLabel", dialog)
-    message.Size = UDim2.new(1, -40, 0, 60)
-    message.Position = UDim2.new(0, 20, 0, 60)
-    message.Text = "Do you want to teleport to the correct game ID to run scripts?"
-    message.Font = Enum.Font.Gotham
-    message.TextSize = 14
-    message.TextColor3 = Color3.fromRGB(200, 200, 200)
-    message.BackgroundTransparency = 1
-    message.TextWrapped = true
-    
-    local buttonFrame = Instance.new("Frame", dialog)
-    buttonFrame.Size = UDim2.new(1, -40, 0, 40)
-    buttonFrame.Position = UDim2.new(0, 20, 1, -60)
-    buttonFrame.BackgroundTransparency = 1
-    
-    local yesButton = Instance.new("TextButton", buttonFrame)
-    yesButton.Size = UDim2.new(0.5, -5, 1, 0)
-    yesButton.Position = UDim2.new(0, 0, 0, 0)
-    yesButton.Text = "✅ Yes"
-    yesButton.Font = Enum.Font.GothamBold
-    yesButton.TextSize = 14
-    yesButton.TextColor3 = Color3.new(1, 1, 1)
-    yesButton.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
-    Instance.new("UICorner", yesButton).CornerRadius = UDim.new(0, 8)
-    
-    local noButton = Instance.new("TextButton", buttonFrame)
-    noButton.Size = UDim2.new(0.5, -5, 1, 0)
-    noButton.Position = UDim2.new(0.5, 5, 0, 0)
-    noButton.Text = "❌ No"
-    noButton.Font = Enum.Font.GothamBold
-    noButton.TextSize = 14
-    noButton.TextColor3 = Color3.new(1, 1, 1)
-    noButton.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
-    Instance.new("UICorner", noButton).CornerRadius = UDim.new(0, 8)
-    
-    -- Button actions
-    yesButton.MouseButton1Click:Connect(function()
-        createNotify("Teleporting to correct game...", Color3.fromRGB(40, 200, 80))
-        TeleportService:Teleport(targetPlaceId, player)
-    end)
-    
-    noButton.MouseButton1Click:Connect(function()
-        gui:Destroy()
-        createNotify("Staying in current game", Color3.fromRGB(255, 140, 0))
-    end)
-    
-    -- Animation
-    dialog.BackgroundTransparency = 1
-    TweenService:Create(dialog, TweenInfo.new(0.3), {BackgroundTransparency = 0}):Play()
-end
-
---==================================================--
 -- VALIDATION LOGIC
 --==================================================--
 local function validate(keyToVerify, skipFetch)
@@ -296,61 +187,7 @@ end
 -- ADVANCED GAMES GUI
 --==================================================--
 local function showAdvancedGamesGUI()
-    -- First, always execute the main scripts if key is valid
-    for _, url in ipairs(SCRIPT_URLS) do
-        task.spawn(function()
-            pcall(function() 
-                local scriptContent = game:HttpGet(url)
-                loadstring(scriptContent)() 
-            end)
-        end)
-    end
-    
-    -- Check if current game has scripts
-    if not CurrentGameData then
-        createNotify("❌ Can't run script cause not in the right game id", Color3.fromRGB(255, 50, 50))
-        
-        -- Find first game with scripts
-        local targetGame = nil
-        for _, gameData in ipairs(GamesList) do
-            if gameData.scripts and #gameData.scripts > 0 then
-                targetGame = gameData
-                break
-            end
-        end
-        
-        if targetGame then
-            task.wait(1) -- Wait 1 second as requested
-            showTeleportConfirmation(targetGame.id)
-        else
-            createNotify("❌ No games with scripts found", Color3.fromRGB(255, 50, 50))
-        end
-        return
-    end
-    
-    -- Check if current game has scripts
-    if not CurrentGameData.scripts or #CurrentGameData.scripts == 0 then
-        createNotify("❌ Can't run script cause not in the right game id", Color3.fromRGB(255, 50, 50))
-        
-        -- Find first game with scripts
-        local targetGame = nil
-        for _, gameData in ipairs(GamesList) do
-            if tostring(gameData.id) ~= tostring(PLACE_ID) and gameData.scripts and #gameData.scripts > 0 then
-                targetGame = gameData
-                break
-            end
-        end
-        
-        if targetGame then
-            task.wait(1) -- Wait 1 second as requested
-            showTeleportConfirmation(targetGame.id)
-        else
-            createNotify("❌ No other games with scripts found", Color3.fromRGB(255, 50, 50))
-        end
-        return
-    end
-
-    -- Create main GUI (only show if current game has scripts)
+    -- Create main GUI
     local gui = Instance.new("ScreenGui")
     gui.Name = "RSQ_AdvancedGamesGUI"
     gui.IgnoreGuiInset = true
@@ -388,7 +225,7 @@ local function showAdvancedGamesGUI()
     local title = Instance.new("TextLabel", titleBar)
     title.Size = UDim2.new(1, -20, 1, 0)
     title.Position = UDim2.new(0, 20, 0, 0)
-    title.Text = "🎮 RSQ GAMES LIBRARY - " .. (CurrentGameData.name or "Current Game")
+    title.Text = "🎮 RSQ GAMES LIBRARY"
     title.Font = Enum.Font.GothamBold
     title.TextSize = 16
     title.TextColor3 = Color3.fromRGB(79, 124, 255)
@@ -418,7 +255,7 @@ local function showAdvancedGamesGUI()
     contentFrame.BackgroundTransparency = 1
     contentFrame.ClipsDescendants = true
 
-    -- Scrolling frame for scripts (only show current game's scripts)
+    -- Scrolling frame for games
     local scrollFrame = Instance.new("ScrollingFrame", contentFrame)
     scrollFrame.Size = UDim2.new(1, 0, 1, 0)
     scrollFrame.BackgroundTransparency = 1
@@ -426,25 +263,25 @@ local function showAdvancedGamesGUI()
     scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(79, 124, 255)
     scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 
-    -- Scripts list container
-    local scriptsListLayout = Instance.new("UIListLayout", scrollFrame)
-    scriptsListLayout.Padding = UDim.new(0, 10)
-    scriptsListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    -- Games list container
+    local gamesListLayout = Instance.new("UIListLayout", scrollFrame)
+    gamesListLayout.Padding = UDim.new(0, 10)
+    gamesListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-    -- Function to load and display scripts for current game
-    local function loadScripts()
-        -- Clear existing scripts
+    -- Function to load and display games
+    local function loadGames()
+        -- Clear existing games
         for _, child in ipairs(scrollFrame:GetChildren()) do
             if child:IsA("Frame") then
                 child:Destroy()
             end
         end
         
-        -- Check if scripts exist for current game
-        if not CurrentGameData.scripts or #CurrentGameData.scripts == 0 then
+        -- Check if games exist
+        if not GamesList or #GamesList == 0 then
             local emptyLabel = Instance.new("TextLabel", scrollFrame)
             emptyLabel.Size = UDim2.new(1, 0, 0, 100)
-            emptyLabel.Text = "📭 No scripts available for this game"
+            emptyLabel.Text = "📭 No games available\nCheck back later!"
             emptyLabel.Font = Enum.Font.Gotham
             emptyLabel.TextSize = 14
             emptyLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
@@ -454,62 +291,83 @@ local function showAdvancedGamesGUI()
             return
         end
         
-        -- Add scripts
-        for _, scriptData in ipairs(CurrentGameData.scripts) do
-            if scriptData and scriptData.name and scriptData.url then
-                local scriptItem = Instance.new("Frame", scrollFrame)
-                scriptItem.Size = UDim2.new(1, 0, 0, 80)
-                scriptItem.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
-                scriptItem.BackgroundTransparency = 0.2
-                Instance.new("UICorner", scriptItem).CornerRadius = UDim.new(0, 8)
+        -- Add games
+        for _, gameData in ipairs(GamesList) do
+            if gameData and gameData.id and gameData.name then
+                -- Game card
+                local gameCard = Instance.new("Frame", scrollFrame)
+                gameCard.Size = UDim2.new(1, 0, 0, 100)
+                gameCard.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+                gameCard.BackgroundTransparency = 0.3
+                Instance.new("UICorner", gameCard).CornerRadius = UDim.new(0, 8)
                 
-                local scriptName = Instance.new("TextLabel", scriptItem)
-                scriptName.Size = UDim2.new(0.7, -10, 0, 30)
-                scriptName.Position = UDim2.new(0, 10, 0, 10)
-                scriptName.Text = scriptData.name
-                scriptName.Font = Enum.Font.GothamBold
-                scriptName.TextSize = 14
-                scriptName.TextColor3 = Color3.new(1, 1, 1)
-                scriptName.TextXAlignment = Enum.TextXAlignment.Left
-                scriptName.BackgroundTransparency = 1
+                -- Game image/icon
+                local gameIcon = Instance.new("Frame", gameCard)
+                gameIcon.Size = UDim2.new(0, 80, 0, 80)
+                gameIcon.Position = UDim2.new(0, 10, 0.5, -40)
+                gameIcon.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+                Instance.new("UICorner", gameIcon).CornerRadius = UDim.new(0, 6)
                 
-                local urlPreview = Instance.new("TextLabel", scriptItem)
-                urlPreview.Size = UDim2.new(0.7, -10, 0, 20)
-                urlPreview.Position = UDim2.new(0, 10, 0, 40)
-                urlPreview.Text = string.sub(scriptData.url, 1, 40) .. "..."
-                urlPreview.Font = Enum.Font.Gotham
-                urlPreview.TextSize = 11
-                urlPreview.TextColor3 = Color3.fromRGB(150, 150, 150)
-                urlPreview.TextXAlignment = Enum.TextXAlignment.Left
-                urlPreview.BackgroundTransparency = 1
+                local iconLabel = Instance.new("TextLabel", gameIcon)
+                iconLabel.Size = UDim2.new(1, 0, 1, 0)
+                iconLabel.Text = "🎮"
+                iconLabel.Font = Enum.Font.GothamBold
+                iconLabel.TextSize = 24
+                iconLabel.TextColor3 = Color3.new(1, 1, 1)
+                iconLabel.BackgroundTransparency = 1
                 
-                local executeBtn = Instance.new("TextButton", scriptItem)
-                executeBtn.Size = UDim2.new(0, 100, 0, 30)
-                executeBtn.Position = UDim2.new(1, -110, 0.5, -15)
-                executeBtn.Text = "⚡ Execute"
-                executeBtn.Font = Enum.Font.GothamBold
-                executeBtn.TextSize = 12
-                executeBtn.TextColor3 = Color3.new(1, 1, 1)
-                executeBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
-                Instance.new("UICorner", executeBtn).CornerRadius = UDim.new(0, 6)
+                -- Game info
+                local gameInfo = Instance.new("Frame", gameCard)
+                gameInfo.Size = UDim2.new(0.6, 0, 1, 0)
+                gameInfo.Position = UDim2.new(0, 100, 0, 0)
+                gameInfo.BackgroundTransparency = 1
                 
-                executeBtn.MouseButton1Click:Connect(function()
-                    createNotify("Executing script: " .. scriptData.name, Color3.fromRGB(40, 200, 80))
-                    
-                    -- Execute the script
-                    task.spawn(function()
-                        local success, errorMsg = pcall(function()
-                            local scriptContent = game:HttpGet(scriptData.url)
-                            loadstring(scriptContent)()
-                        end)
-                        
-                        if not success then
-                            createNotify("❌ Script failed: " .. errorMsg, Color3.fromRGB(255, 50, 50))
-                        end
-                    end)
+                local gameName = Instance.new("TextLabel", gameInfo)
+                gameName.Size = UDim2.new(1, -10, 0, 30)
+                gameName.Position = UDim2.new(0, 10, 0, 10)
+                gameName.Text = gameData.name
+                gameName.Font = Enum.Font.GothamBold
+                gameName.TextSize = 16
+                gameName.TextColor3 = Color3.new(1, 1, 1)
+                gameName.TextXAlignment = Enum.TextXAlignment.Left
+                gameName.BackgroundTransparency = 1
+                
+                local gameId = Instance.new("TextLabel", gameInfo)
+                gameId.Size = UDim2.new(1, -10, 0, 20)
+                gameId.Position = UDim2.new(0, 10, 0, 40)
+                gameId.Text = "ID: " .. gameData.id
+                gameId.Font = Enum.Font.Gotham
+                gameId.TextSize = 12
+                gameId.TextColor3 = Color3.fromRGB(150, 150, 150)
+                gameId.TextXAlignment = Enum.TextXAlignment.Left
+                gameId.BackgroundTransparency = 1
+                
+                local scriptCount = Instance.new("TextLabel", gameInfo)
+                scriptCount.Size = UDim2.new(1, -10, 0, 20)
+                scriptCount.Position = UDim2.new(0, 10, 0, 60)
+                scriptCount.Text = "Scripts: " .. (#(gameData.scripts or {}))
+                scriptCount.Font = Enum.Font.Gotham
+                scriptCount.TextSize = 12
+                scriptCount.TextColor3 = Color3.fromRGB(0, 200, 255)
+                scriptCount.TextXAlignment = Enum.TextXAlignment.Left
+                scriptCount.BackgroundTransparency = 1
+                
+                -- Scripts list button
+                local scriptsBtn = Instance.new("TextButton", gameCard)
+                scriptsBtn.Size = UDim2.new(0, 120, 0, 30)
+                scriptsBtn.Position = UDim2.new(1, -140, 0.5, -15)
+                scriptsBtn.Text = "📜 View Scripts"
+                scriptsBtn.Font = Enum.Font.GothamBold
+                scriptsBtn.TextSize = 12
+                scriptsBtn.TextColor3 = Color3.new(1, 1, 1)
+                scriptsBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+                scriptsBtn.BackgroundTransparency = 0.2
+                Instance.new("UICorner", scriptsBtn).CornerRadius = UDim.new(0, 6)
+                
+                scriptsBtn.MouseButton1Click:Connect(function()
+                    -- Show scripts for this game
+                    showGameScripts(gameData, gui)
                 end)
-                
-                scriptItem.LayoutOrder = _
             end
         end
         
@@ -518,172 +376,166 @@ local function showAdvancedGamesGUI()
         local totalHeight = 0
         for _, child in ipairs(scrollFrame:GetChildren()) do
             if child:IsA("Frame") then
-                totalHeight = totalHeight + child.Size.Y.Offset + scriptsListLayout.Padding.Offset
+                totalHeight = totalHeight + child.Size.Y.Offset + gamesListLayout.Padding.Offset
             end
         end
-        scrollFrame.CanvasSize = UDim2.new(0, 0, 0, totalHeight + 20)
+        scrollFrame.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
     end
     
-    -- View other games button
-    local otherGamesBtn = Instance.new("TextButton", mainFrame)
-    otherGamesBtn.Size = UDim2.new(0, 140, 0, 30)
-    otherGamesBtn.Position = UDim2.new(0.5, -70, 1, -40)
-    otherGamesBtn.Text = "🎮 View Other Games"
-    otherGamesBtn.Font = Enum.Font.GothamBold
-    otherGamesBtn.TextSize = 12
-    otherGamesBtn.TextColor3 = Color3.new(1, 1, 1)
-    otherGamesBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-    otherGamesBtn.BackgroundTransparency = 0.2
-    Instance.new("UICorner", otherGamesBtn).CornerRadius = UDim.new(0, 6)
+    -- Function to show scripts for a specific game
+    local function showGameScripts(gameData, parentGui)
+        -- Create scripts overlay
+        local scriptsGui = Instance.new("ScreenGui", player.PlayerGui)
+        scriptsGui.Name = "RSQ_ScriptsGUI"
+        
+        local overlay = Instance.new("Frame", scriptsGui)
+        overlay.Size = UDim2.new(1, 0, 1, 0)
+        overlay.BackgroundColor3 = Color3.new(0, 0, 0)
+        overlay.BackgroundTransparency = 0.5
+        
+        local scriptsFrame = Instance.new("Frame", scriptsGui)
+        scriptsFrame.Size = UDim2.new(0, 500, 0, 400)
+        scriptsFrame.Position = UDim2.new(0.5, -250, 0.5, -200)
+        scriptsFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
+        Instance.new("UICorner", scriptsFrame).CornerRadius = UDim.new(0, 12)
+        
+        local scriptsTitle = Instance.new("TextLabel", scriptsFrame)
+        scriptsTitle.Size = UDim2.new(1, -20, 0, 40)
+        scriptsTitle.Position = UDim2.new(0, 10, 0, 10)
+        scriptsTitle.Text = "📜 Scripts - " .. gameData.name
+        scriptsTitle.Font = Enum.Font.GothamBold
+        scriptsTitle.TextSize = 16
+        scriptsTitle.TextColor3 = Color3.fromRGB(79, 124, 255)
+        scriptsTitle.BackgroundTransparency = 1
+        scriptsTitle.TextXAlignment = Enum.TextXAlignment.Left
+        
+        local closeScriptsBtn = Instance.new("TextButton", scriptsFrame)
+        closeScriptsBtn.Size = UDim2.new(0, 30, 0, 30)
+        closeScriptsBtn.Position = UDim2.new(1, -40, 0, 10)
+        closeScriptsBtn.Text = "✕"
+        closeScriptsBtn.Font = Enum.Font.GothamBold
+        closeScriptsBtn.TextSize = 14
+        closeScriptsBtn.TextColor3 = Color3.new(1, 1, 1)
+        closeScriptsBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+        Instance.new("UICorner", closeScriptsBtn).CornerRadius = UDim.new(0, 6)
+        
+        closeScriptsBtn.MouseButton1Click:Connect(function()
+            scriptsGui:Destroy()
+        end)
+        
+        local scriptsScroll = Instance.new("ScrollingFrame", scriptsFrame)
+        scriptsScroll.Size = UDim2.new(1, -20, 1, -70)
+        scriptsScroll.Position = UDim2.new(0, 10, 0, 50)
+        scriptsScroll.BackgroundTransparency = 1
+        scriptsScroll.ScrollBarThickness = 4
+        scriptsScroll.ScrollBarImageColor3 = Color3.fromRGB(79, 124, 255)
+        
+        local scriptsLayout = Instance.new("UIListLayout", scriptsScroll)
+        scriptsLayout.Padding = UDim.new(0, 8)
+        scriptsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        
+        -- Add scripts
+        local scripts = gameData.scripts or {}
+        if #scripts == 0 then
+            local emptyLabel = Instance.new("TextLabel", scriptsScroll)
+            emptyLabel.Size = UDim2.new(1, 0, 0, 60)
+            emptyLabel.Text = "No scripts available for this game."
+            emptyLabel.Font = Enum.Font.Gotham
+            emptyLabel.TextSize = 14
+            emptyLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+            emptyLabel.BackgroundTransparency = 1
+            emptyLabel.TextWrapped = true
+        else
+            for _, scriptData in ipairs(scripts) do
+                if scriptData and scriptData.name and scriptData.url then
+                    local scriptItem = Instance.new("Frame", scriptsScroll)
+                    scriptItem.Size = UDim2.new(1, 0, 0, 70)
+                    scriptItem.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+                    scriptItem.BackgroundTransparency = 0.2
+                    Instance.new("UICorner", scriptItem).CornerRadius = UDim.new(0, 8)
+                    
+                    local scriptName = Instance.new("TextLabel", scriptItem)
+                    scriptName.Size = UDim2.new(0.7, -10, 0, 30)
+                    scriptName.Position = UDim2.new(0, 10, 0, 10)
+                    scriptName.Text = scriptData.name
+                    scriptName.Font = Enum.Font.GothamBold
+                    scriptName.TextSize = 14
+                    scriptName.TextColor3 = Color3.new(1, 1, 1)
+                    scriptName.TextXAlignment = Enum.TextXAlignment.Left
+                    scriptName.BackgroundTransparency = 1
+                    
+                    local urlPreview = Instance.new("TextLabel", scriptItem)
+                    urlPreview.Size = UDim2.new(0.7, -10, 0, 20)
+                    urlPreview.Position = UDim2.new(0, 10, 0, 40)
+                    urlPreview.Text = string.sub(scriptData.url, 1, 40) .. "..."
+                    urlPreview.Font = Enum.Font.Gotham
+                    urlPreview.TextSize = 11
+                    urlPreview.TextColor3 = Color3.fromRGB(150, 150, 150)
+                    urlPreview.TextXAlignment = Enum.TextXAlignment.Left
+                    urlPreview.BackgroundTransparency = 1
+                    
+                    local executeBtn = Instance.new("TextButton", scriptItem)
+                    executeBtn.Size = UDim2.new(0, 100, 0, 30)
+                    executeBtn.Position = UDim2.new(1, -110, 0.5, -15)
+                    executeBtn.Text = "⚡ Execute"
+                    executeBtn.Font = Enum.Font.GothamBold
+                    executeBtn.TextSize = 12
+                    executeBtn.TextColor3 = Color3.new(1, 1, 1)
+                    executeBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+                    Instance.new("UICorner", executeBtn).CornerRadius = UDim.new(0, 6)
+                    
+                    executeBtn.MouseButton1Click:Connect(function()
+                        createNotify("Executing script: " .. scriptData.name, Color3.fromRGB(40, 200, 80))
+                        
+                        -- Execute the script
+                        task.spawn(function()
+                            local success, errorMsg = pcall(function()
+                                local scriptContent = game:HttpGet(scriptData.url)
+                                loadstring(scriptContent)()
+                            end)
+                            
+                            if not success then
+                                createNotify("❌ Script failed: " .. errorMsg, Color3.fromRGB(255, 50, 50))
+                            end
+                        end)
+                    end)
+                end
+            end
+        end
+        
+        -- Update canvas size
+        task.wait(0.1)
+        local totalHeight = 0
+        for _, child in ipairs(scriptsScroll:GetChildren()) do
+            if child:IsA("Frame") then
+                totalHeight = totalHeight + child.Size.Y.Offset + scriptsLayout.Padding.Offset
+            end
+        end
+        scriptsScroll.CanvasSize = UDim2.new(0, 0, 0, totalHeight + 20)
+    end
     
-    otherGamesBtn.MouseButton1Click:Connect(function()
-        gui:Destroy()
-        showAllGamesGUI()
+    -- Refresh button
+    local refreshBtn = Instance.new("TextButton", mainFrame)
+    refreshBtn.Size = UDim2.new(0, 120, 0, 30)
+    refreshBtn.Position = UDim2.new(0.5, -60, 1, -40)
+    refreshBtn.Text = "🔄 Refresh Games"
+    refreshBtn.Font = Enum.Font.GothamBold
+    refreshBtn.TextSize = 12
+    refreshBtn.TextColor3 = Color3.new(1, 1, 1)
+    refreshBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+    refreshBtn.BackgroundTransparency = 0.2
+    Instance.new("UICorner", refreshBtn).CornerRadius = UDim.new(0, 6)
+    
+    refreshBtn.MouseButton1Click:Connect(function()
+        createNotify("Refreshing games list...", Color3.fromRGB(79, 124, 255))
+        fetchData() -- Refresh data
+        loadGames() -- Reload games
     end)
     
-    -- Load scripts initially
-    loadScripts()
+    -- Load games initially
+    loadGames()
     
     -- Animation
-    mainFrame.BackgroundTransparency = 1
-    TweenService:Create(mainFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
-end
-
---==================================================--
--- ALL GAMES GUI (FOR VIEWING OTHER GAMES)
---==================================================--
-local function showAllGamesGUI()
-    local gui = Instance.new("ScreenGui")
-    gui.Name = "RSQ_AllGamesGUI"
-    gui.IgnoreGuiInset = true
-    gui.ResetOnSpawn = false
-    gui.Parent = player:WaitForChild("PlayerGui")
-
-    local mainFrame = Instance.new("Frame", gui)
-    mainFrame.Size = UDim2.new(0, 600, 0, 500)
-    mainFrame.Position = UDim2.new(0.5, -300, 0.5, -250)
-    mainFrame.BackgroundColor3 = Color3.fromRGB(15, 20, 30)
-    mainFrame.BackgroundTransparency = 0.1
-    mainFrame.BorderSizePixel = 0
-    
-    local mainCorner = Instance.new("UICorner", mainFrame)
-    mainCorner.CornerRadius = UDim.new(0, 12)
-    
-    local titleBar = Instance.new("Frame", mainFrame)
-    titleBar.Size = UDim2.new(1, 0, 0, 50)
-    titleBar.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
-    titleBar.BorderSizePixel = 0
-    
-    local title = Instance.new("TextLabel", titleBar)
-    title.Size = UDim2.new(1, -20, 1, 0)
-    title.Position = UDim2.new(0, 20, 0, 0)
-    title.Text = "🌐 All Available Games"
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 16
-    title.TextColor3 = Color3.fromRGB(79, 124, 255)
-    title.BackgroundTransparency = 1
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    
-    local closeBtn = Instance.new("TextButton", titleBar)
-    closeBtn.Size = UDim2.new(0, 30, 0, 30)
-    closeBtn.Position = UDim2.new(1, -35, 0.5, -15)
-    closeBtn.Text = "✕"
-    closeBtn.Font = Enum.Font.GothamBold
-    closeBtn.TextSize = 14
-    closeBtn.TextColor3 = Color3.new(1, 1, 1)
-    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
-    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
-    
-    closeBtn.MouseButton1Click:Connect(function()
-        gui:Destroy()
-        showAdvancedGamesGUI()
-    end)
-
-    local contentFrame = Instance.new("Frame", mainFrame)
-    contentFrame.Size = UDim2.new(1, -20, 1, -70)
-    contentFrame.Position = UDim2.new(0, 10, 0, 60)
-    contentFrame.BackgroundTransparency = 1
-
-    local scrollFrame = Instance.new("ScrollingFrame", contentFrame)
-    scrollFrame.Size = UDim2.new(1, 0, 1, 0)
-    scrollFrame.BackgroundTransparency = 1
-    scrollFrame.ScrollBarThickness = 4
-    scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(79, 124, 255)
-    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-
-    local gamesListLayout = Instance.new("UIListLayout", scrollFrame)
-    gamesListLayout.Padding = UDim.new(0, 10)
-    gamesListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
-    -- Load all games
-    for _, gameData in ipairs(GamesList) do
-        if gameData and gameData.id and gameData.name then
-            local gameCard = Instance.new("Frame", scrollFrame)
-            gameCard.Size = UDim2.new(1, 0, 0, 100)
-            gameCard.BackgroundColor3 = tostring(gameData.id) == tostring(PLACE_ID) and Color3.fromRGB(40, 45, 60) or Color3.fromRGB(30, 35, 50)
-            gameCard.BackgroundTransparency = 0.3
-            Instance.new("UICorner", gameCard).CornerRadius = UDim.new(0, 8)
-            
-            local gameName = Instance.new("TextLabel", gameCard)
-            gameName.Size = UDim2.new(0.6, -10, 0, 30)
-            gameName.Position = UDim2.new(0, 10, 0, 10)
-            gameName.Text = gameData.name .. (tostring(gameData.id) == tostring(PLACE_ID) and " (Current)" or "")
-            gameName.Font = Enum.Font.GothamBold
-            gameName.TextSize = 14
-            gameName.TextColor3 = tostring(gameData.id) == tostring(PLACE_ID) and Color3.fromRGB(79, 124, 255) or Color3.new(1, 1, 1)
-            gameName.TextXAlignment = Enum.TextXAlignment.Left
-            gameName.BackgroundTransparency = 1
-            
-            local gameId = Instance.new("TextLabel", gameCard)
-            gameId.Size = UDim2.new(0.6, -10, 0, 20)
-            gameId.Position = UDim2.new(0, 10, 0, 40)
-            gameId.Text = "ID: " .. gameData.id
-            gameId.Font = Enum.Font.Gotham
-            gameId.TextSize = 12
-            gameId.TextColor3 = Color3.fromRGB(150, 150, 150)
-            gameId.TextXAlignment = Enum.TextXAlignment.Left
-            gameId.BackgroundTransparency = 1
-            
-            local scriptCount = Instance.new("TextLabel", gameCard)
-            scriptCount.Size = UDim2.new(0.6, -10, 0, 20)
-            scriptCount.Position = UDim2.new(0, 10, 0, 60)
-            scriptCount.Text = "Scripts: " .. (#(gameData.scripts or {}))
-            scriptCount.Font = Enum.Font.Gotham
-            scriptCount.TextSize = 12
-            scriptCount.TextColor3 = Color3.fromRGB(0, 200, 255)
-            scriptCount.TextXAlignment = Enum.TextXAlignment.Left
-            scriptCount.BackgroundTransparency = 1
-            
-            if tostring(gameData.id) ~= tostring(PLACE_ID) then
-                local teleportBtn = Instance.new("TextButton", gameCard)
-                teleportBtn.Size = UDim2.new(0, 120, 0, 30)
-                teleportBtn.Position = UDim2.new(1, -130, 0.5, -15)
-                teleportBtn.Text = "🚀 Teleport"
-                teleportBtn.Font = Enum.Font.GothamBold
-                teleportBtn.TextSize = 12
-                teleportBtn.TextColor3 = Color3.new(1, 1, 1)
-                teleportBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-                Instance.new("UICorner", teleportBtn).CornerRadius = UDim.new(0, 6)
-                
-                teleportBtn.MouseButton1Click:Connect(function()
-                    showTeleportConfirmation(gameData.id)
-                end)
-            end
-            
-            gameCard.LayoutOrder = _
-        end
-    end
-    
-    -- Update canvas size
-    task.wait(0.1)
-    local totalHeight = 0
-    for _, child in ipairs(scrollFrame:GetChildren()) do
-        if child:IsA("Frame") then
-            totalHeight = totalHeight + child.Size.Y.Offset + gamesListLayout.Padding.Offset
-        end
-    end
-    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, totalHeight + 20)
-    
     mainFrame.BackgroundTransparency = 1
     TweenService:Create(mainFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
 end
@@ -744,6 +596,7 @@ local function showKeyGUI()
     getKey.BackgroundColor3 = Color3.fromRGB(255,140,0)
     Instance.new("UICorner", getKey).CornerRadius = UDim.new(0,10)
 
+    -- NEW: View Games Library button
     local viewGames = Instance.new("TextButton", card)
     viewGames.Text = "🎮 View Games Library"
     viewGames.Size = UDim2.new(1, -40, 0, 36)
@@ -793,6 +646,16 @@ local function showKeyGUI()
                 gui:Destroy() 
                 showAdvancedGamesGUI()
             end)
+
+            -- Execute main scripts
+            for _, url in ipairs(SCRIPT_URLS) do
+                task.spawn(function()
+                    pcall(function() 
+                        local scriptContent = game:HttpGet(url)
+                        loadstring(scriptContent)() 
+                    end)
+                end)
+            end
         else
             status.Text = res
         end
@@ -812,9 +675,7 @@ end
 --==================================================--
 -- INITIALIZE
 --==================================================--
-task.delay(0.5, function()
-    showKeyGUI()
-end)
+showKeyGUI()
 
 --==================================================--
 -- SECURITY LOOPS (HIGH FREQUENCY)
