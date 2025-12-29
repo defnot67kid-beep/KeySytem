@@ -559,33 +559,33 @@ local function showAdvancedGamesGUI()
     end
     
     -- Function to show scripts for a specific game
+    -- Function to show scripts for a specific game
     local function showGameScripts(gameData)
         print("[RSQ] Showing scripts for game:", gameData.name)
         
-        -- Hide games list and show scripts list
+        -- Hide games list
         scrollFrame.Visible = false
         
-        -- Create scripts scrolling frame if it doesn't exist
-        local scriptsScroll = contentFrame:FindFirstChild("RSQ_ScriptsScroll")
-        if not scriptsScroll then
-            scriptsScroll = Instance.new("ScrollingFrame", contentFrame)
-            scriptsScroll.Name = "RSQ_ScriptsScroll"
-            scriptsScroll.Size = UDim2.new(1, 0, 1, 0)
-            scriptsScroll.BackgroundTransparency = 1
-            scriptsScroll.ScrollBarThickness = 4
-            scriptsScroll.ScrollBarImageColor3 = Color3.fromRGB(79, 124, 255)
-            scriptsScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-            scriptsScroll.Visible = false
+        -- Remove existing scripts scroll if it exists
+        local oldScripts = contentFrame:FindFirstChild("RSQ_ScriptsScroll")
+        if oldScripts then
+            oldScripts:Destroy()
         end
         
-        -- Clear existing scripts
-        for _, child in ipairs(scriptsScroll:GetChildren()) do
-            child:Destroy()
-        end
+        -- Create NEW scripts scrolling frame (ALWAYS CREATE NEW)
+        local scriptsScroll = Instance.new("ScrollingFrame", contentFrame)
+        scriptsScroll.Name = "RSQ_ScriptsScroll"
+        scriptsScroll.Size = UDim2.new(1, 0, 1, 0)
+        scriptsScroll.Position = UDim2.new(0, 0, 0, 0)
+        scriptsScroll.BackgroundTransparency = 1
+        scriptsScroll.ScrollBarThickness = 4
+        scriptsScroll.ScrollBarImageColor3 = Color3.fromRGB(79, 124, 255)
+        scriptsScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+        scriptsScroll.Visible = true
         
         -- Create scripts list layout
         local scriptsLayout = Instance.new("UIListLayout", scriptsScroll)
-        scriptsLayout.Padding = UDim.new(0, 8)
+        scriptsLayout.Padding = UDim.new(0, 10)
         scriptsLayout.SortOrder = Enum.SortOrder.LayoutOrder
         
         -- Update title bar
@@ -593,26 +593,27 @@ local function showAdvancedGamesGUI()
         
         -- Add back button
         local backBtn = titleBar:FindFirstChild("RSQ_BackBtn")
-        if not backBtn then
-            backBtn = Instance.new("TextButton", titleBar)
-            backBtn.Name = "RSQ_BackBtn"
-            backBtn.Size = UDim2.new(0, 100, 0, 30)
-            backBtn.Position = UDim2.new(0, 10, 0.5, -15)
-            backBtn.Text = "← Back to Games"
-            backBtn.Font = Enum.Font.GothamBold
-            backBtn.TextSize = 12
-            backBtn.TextColor3 = Color3.new(1, 1, 1)
-            backBtn.BackgroundColor3 = Color3.fromRGB(60, 65, 80)
-            Instance.new("UICorner", backBtn).CornerRadius = UDim.new(0, 6)
-            
-            backBtn.MouseButton1Click:Connect(function()
-                -- Return to games list
-                scriptsScroll.Visible = false
-                scrollFrame.Visible = true
-                title.Text = "🎮 RSQ GAMES LIBRARY"
-                backBtn:Destroy()
-            end)
+        if backBtn then
+            backBtn:Destroy()
         end
+        
+        backBtn = Instance.new("TextButton", titleBar)
+        backBtn.Name = "RSQ_BackBtn"
+        backBtn.Size = UDim2.new(0, 100, 0, 30)
+        backBtn.Position = UDim2.new(0, 10, 0.5, -15)
+        backBtn.Text = "← Back to Games"
+        backBtn.Font = Enum.Font.GothamBold
+        backBtn.TextSize = 12
+        backBtn.TextColor3 = Color3.new(1, 1, 1)
+        backBtn.BackgroundColor3 = Color3.fromRGB(60, 65, 80)
+        Instance.new("UICorner", backBtn).CornerRadius = UDim.new(0, 6)
+        
+        backBtn.MouseButton1Click:Connect(function()
+            -- Return to games list
+            scriptsScroll:Destroy()
+            scrollFrame.Visible = true
+            title.Text = "🎮 RSQ GAMES LIBRARY"
+        end)
         
         -- Add scripts
         local scripts = gameData.scripts or {}
@@ -620,7 +621,7 @@ local function showAdvancedGamesGUI()
         
         if #scripts == 0 then
             local emptyLabel = Instance.new("TextLabel", scriptsScroll)
-            emptyLabel.Size = UDim2.new(1, 0, 0, 60)
+            emptyLabel.Size = UDim2.new(1, 0, 0, 100)
             emptyLabel.Text = "No scripts available for this game."
             emptyLabel.Font = Enum.Font.Gotham
             emptyLabel.TextSize = 14
@@ -634,7 +635,7 @@ local function showAdvancedGamesGUI()
                     print("[RSQ] Adding script:", scriptData.name)
                     
                     local scriptItem = Instance.new("Frame", scriptsScroll)
-                    scriptItem.Size = UDim2.new(1, 0, 0, 70)
+                    scriptItem.Size = UDim2.new(1, 0, 0, 80)
                     scriptItem.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
                     scriptItem.BackgroundTransparency = 0.2
                     Instance.new("UICorner", scriptItem).CornerRadius = UDim.new(0, 8)
@@ -710,10 +711,6 @@ local function showAdvancedGamesGUI()
             end
         end
         scriptsScroll.CanvasSize = UDim2.new(0, 0, 0, totalHeight + 20)
-        
-        -- Show scripts scroll and hide games scroll
-        scriptsScroll.Visible = true
-        scrollFrame.Visible = false
     end
     
     -- Refresh button
