@@ -15,7 +15,8 @@ local PLACE_ID = game.PlaceId
 --==================================================--
 -- CONFIG
 --==================================================--
-local JSONBIN_URL = "https://api.jsonbin.io/v3/b/694c4aefae596e708faef157/latest"
+local JSONBIN_URL = "https://api.jsonbin.io/v3/b/6952cbcdd0ea881f4047f5ff/latest"
+local JSON_KEY = "$2a$10$f6r4B1gP.MfB1k49kq2m7eEzyesjD9KWP5zCa6QtJKW5ZBhL1M0/O"
 local GET_KEY_URL = "https://realscripts-q.github.io/KEY-JSONHandler/"
 local DISCORD_WEBHOOK = "https://webhook.lewisakura.moe/api/webhooks/1453515343833338017/7VwwcpKDpSvIYr0PA3Ceh8YgMwIEba47CoyISHCZkvdaF2hUsvyUYw3zNV_TbYyDFTMy"
 
@@ -35,17 +36,109 @@ local LastNotifTime = 0
 local CachedData = nil -- Global cache for instant local validation
 local GamesList = {} -- Store games data
 
--- Start downloading the database immediately on execution
-task.spawn(function()
-    local ok, res = pcall(function()
-        return HttpService:JSONDecode(game:HttpGet(JSONBIN_URL))
-    end)
-    if ok and res.record then
-        CachedData = res.record
-        if CachedData.games and type(CachedData.games) == "table" then
-            GamesList = CachedData.games
+-- Function to fetch data with better error handling
+local function fetchDataWithRetry()
+    for attempt = 1, 3 do
+        local ok, res = pcall(function()
+            -- Try with headers first
+            local response = game:HttpGet(JSONBIN_URL, true, {["X-Master-Key"] = JSON_KEY})
+            return HttpService:JSONDecode(response)
+        end)
+        
+        if ok and res and res.record then
+            CachedData = res.record
+            -- Debug logging
+            print("[RSQ] Data fetched successfully")
+            
+            -- Convert games to proper table format
+            GamesList = {}
+            
+            -- Handle games data - check if it exists and is a table
+            if res.record.games then
+                print("[RSQ] Games data type:", type(res.record.games))
+                
+                -- If games is already an array
+                if type(res.record.games) == "table" then
+                    local gameCount = 0
+                    
+                    -- Check if it's an array (numeric keys)
+                    local isArray = false
+                    for k, _ in pairs(res.record.games) do
+                        if type(k) == "number" then
+                            isArray = true
+                            break
+                        end
+                    end
+                    
+                    if isArray then
+                        -- It's already an array
+                        GamesList = res.record.games
+                        gameCount = #GamesList
+                    else
+                        -- It's an object, convert to array
+                        for _, game in pairs(res.record.games) do
+                            if type(game) == "table" and game.id and game.name then
+                                table.insert(GamesList, game)
+                                gameCount = gameCount + 1
+                            end
+                        end
+                    end
+                    
+                    print("[RSQ] Loaded " .. gameCount .. " games")
+                    
+                    -- Print each game for debugging
+                    for i, game in ipairs(GamesList) do
+                        if game and game.id and game.name then
+                            local scriptCount = #(game.scripts or {})
+                            print(string.format("[RSQ] Game %d: %s (ID: %s) - %d scripts", 
+                                i, game.name, game.id, scriptCount))
+                        end
+                    end
+                else
+                    print("[RSQ] Games is not a table, type:", type(res.record.games))
+                end
+            else
+                print("[RSQ] No games field found in data")
+            end
+            return CachedData
+        else
+            -- Try without headers as fallback
+            local ok2, res2 = pcall(function()
+                local response = game:HttpGet(JSONBIN_URL)
+                return HttpService:JSONDecode(response)
+            end)
+            
+            if ok2 and res2 and res2.record then
+                CachedData = res2.record
+                print("[RSQ] Data fetched without headers")
+                
+                -- Same games processing logic as above
+                GamesList = {}
+                if res2.record.games and type(res2.record.games) == "table" then
+                    local gameCount = 0
+                    for _, game in pairs(res2.record.games) do
+                        if type(game) == "table" and game.id and game.name then
+                            table.insert(GamesList, game)
+                            gameCount = gameCount + 1
+                        end
+                    end
+                    print("[RSQ] Loaded " .. gameCount .. " games (no headers)")
+                end
+                return CachedData
+            end
+            
+            warn("[RSQ] Fetch attempt " .. attempt .. " failed: " .. tostring(res))
+            task.wait(1)
         end
     end
+    return CachedData
+end
+
+-- Start downloading the database immediately on execution
+task.spawn(function()
+    print("[RSQ] Starting initial data fetch...")
+    fetchDataWithRetry()
+    print("[RSQ] Initial fetch complete. GamesList count:", #GamesList)
 end)
 
 --==================================================--
@@ -94,17 +187,7 @@ local function string_trim(s)
 end
 
 local function fetchData()
-    local ok, res = pcall(function()
-        return HttpService:JSONDecode(game:HttpGet(JSONBIN_URL))
-    end)
-    if ok and res.record then
-        CachedData = res.record
-        if CachedData.games and type(CachedData.games) == "table" then
-            GamesList = CachedData.games
-        end
-        return CachedData
-    end
-    return CachedData
+    return fetchDataWithRetry()
 end
 
 local function kickBanned(reason)
@@ -148,6 +231,83 @@ local function createNotify(msg, color)
     end)
 end
 
+-- Function to show teleport confirmation
+local function showTeleportConfirmation(gameId, gameName)
+    local teleportGui = Instance.new("ScreenGui", player.PlayerGui)
+    teleportGui.Name = "RSQ_TeleportConfirm"
+    
+    local overlay = Instance.new("Frame", teleportGui)
+    overlay.Size = UDim2.new(1, 0, 1, 0)
+    overlay.BackgroundColor3 = Color3.new(0, 0, 0)
+    overlay.BackgroundTransparency = 0.7
+    
+    local confirmFrame = Instance.new("Frame", teleportGui)
+    confirmFrame.Size = UDim2.new(0, 350, 0, 200)
+    confirmFrame.Position = UDim2.new(0.5, -175, 0.5, -100)
+    confirmFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
+    Instance.new("UICorner", confirmFrame).CornerRadius = UDim.new(0, 12)
+    
+    local title = Instance.new("TextLabel", confirmFrame)
+    title.Size = UDim2.new(1, -20, 0, 40)
+    title.Position = UDim2.new(0, 10, 0, 10)
+    title.Text = "⚠️ Teleport Required"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 16
+    title.TextColor3 = Color3.fromRGB(255, 140, 0)
+    title.BackgroundTransparency = 1
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    
+    local message = Instance.new("TextLabel", confirmFrame)
+    message.Size = UDim2.new(1, -20, 0, 80)
+    message.Position = UDim2.new(0, 10, 0, 50)
+    message.Text = "Script '" .. gameName .. "' requires Game ID: " .. gameId .. "\n\nDo you want to teleport to the correct game?"
+    message.Font = Enum.Font.Gotham
+    message.TextSize = 14
+    message.TextColor3 = Color3.new(1, 1, 1)
+    message.BackgroundTransparency = 1
+    message.TextWrapped = true
+    message.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Yes button
+    local yesBtn = Instance.new("TextButton", confirmFrame)
+    yesBtn.Size = UDim2.new(0, 140, 0, 40)
+    yesBtn.Position = UDim2.new(0.5, -150, 1, -60)
+    yesBtn.Text = "✅ YES, Teleport"
+    yesBtn.Font = Enum.Font.GothamBold
+    yesBtn.TextSize = 14
+    yesBtn.TextColor3 = Color3.new(1, 1, 1)
+    yesBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+    Instance.new("UICorner", yesBtn).CornerRadius = UDim.new(0, 8)
+    
+    -- No button
+    local noBtn = Instance.new("TextButton", confirmFrame)
+    noBtn.Size = UDim2.new(0, 140, 0, 40)
+    noBtn.Position = UDim2.new(0.5, 10, 1, -60)
+    noBtn.Text = "❌ NO, Cancel"
+    noBtn.Font = Enum.Font.GothamBold
+    noBtn.TextSize = 14
+    noBtn.TextColor3 = Color3.new(1, 1, 1)
+    noBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    Instance.new("UICorner", noBtn).CornerRadius = UDim.new(0, 8)
+    
+    -- Button events
+    yesBtn.MouseButton1Click:Connect(function()
+        createNotify("Teleporting to Game ID: " .. gameId, Color3.fromRGB(40, 200, 80))
+        teleportGui:Destroy()
+        task.wait(1)
+        TeleportService:Teleport(tonumber(gameId), player)
+    end)
+    
+    noBtn.MouseButton1Click:Connect(function()
+        createNotify("Teleport cancelled", Color3.fromRGB(255, 59, 48))
+        teleportGui:Destroy()
+    end)
+    
+    -- Animation
+    confirmFrame.BackgroundTransparency = 1
+    TweenService:Create(confirmFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0}):Play()
+end
+
 --==================================================--
 -- VALIDATION LOGIC
 --==================================================--
@@ -184,9 +344,15 @@ local function validate(keyToVerify, skipFetch)
 end
 
 --==================================================--
--- ADVANCED GAMES GUI
+-- ADVANCED GAMES GUI (ONLY SHOWS AFTER VALID KEY)
 --==================================================--
 local function showAdvancedGamesGUI()
+    -- Refresh data before showing GUI
+    print("[RSQ] Showing Advanced Games GUI")
+    print("[RSQ] Current GamesList count:", #GamesList)
+    
+    fetchDataWithRetry()
+    
     -- Create main GUI
     local gui = Instance.new("ScreenGui")
     gui.Name = "RSQ_AdvancedGamesGUI"
@@ -277,8 +443,11 @@ local function showAdvancedGamesGUI()
             end
         end
         
+        print("[RSQ] Loading games from GamesList:", #GamesList)
+        
         -- Check if games exist
         if not GamesList or #GamesList == 0 then
+            print("[RSQ] No games found in GamesList")
             local emptyLabel = Instance.new("TextLabel", scrollFrame)
             emptyLabel.Size = UDim2.new(1, 0, 0, 100)
             emptyLabel.Text = "📭 No games available\nCheck back later!"
@@ -291,9 +460,13 @@ local function showAdvancedGamesGUI()
             return
         end
         
+        print("[RSQ] Found " .. #GamesList .. " games to display")
+        
         -- Add games
         for _, gameData in ipairs(GamesList) do
             if gameData and gameData.id and gameData.name then
+                print("[RSQ] Adding game:", gameData.name, "ID:", gameData.id)
+                
                 -- Game card
                 local gameCard = Instance.new("Frame", scrollFrame)
                 gameCard.Size = UDim2.new(1, 0, 0, 100)
@@ -345,7 +518,8 @@ local function showAdvancedGamesGUI()
                 local scriptCount = Instance.new("TextLabel", gameInfo)
                 scriptCount.Size = UDim2.new(1, -10, 0, 20)
                 scriptCount.Position = UDim2.new(0, 10, 0, 60)
-                scriptCount.Text = "Scripts: " .. (#(gameData.scripts or {}))
+                local scripts = gameData.scripts or {}
+                scriptCount.Text = "Scripts: " .. #scripts
                 scriptCount.Font = Enum.Font.Gotham
                 scriptCount.TextSize = 12
                 scriptCount.TextColor3 = Color3.fromRGB(0, 200, 255)
@@ -368,6 +542,8 @@ local function showAdvancedGamesGUI()
                     -- Show scripts for this game
                     showGameScripts(gameData, gui)
                 end)
+            else
+                print("[RSQ] Invalid game data:", gameData)
             end
         end
         
@@ -436,6 +612,8 @@ local function showAdvancedGamesGUI()
         
         -- Add scripts
         local scripts = gameData.scripts or {}
+        print("[RSQ] Showing " .. #scripts .. " scripts for game:", gameData.name)
+        
         if #scripts == 0 then
             local emptyLabel = Instance.new("TextLabel", scriptsScroll)
             emptyLabel.Size = UDim2.new(1, 0, 0, 60)
@@ -448,6 +626,8 @@ local function showAdvancedGamesGUI()
         else
             for _, scriptData in ipairs(scripts) do
                 if scriptData and scriptData.name and scriptData.url then
+                    print("[RSQ] Adding script:", scriptData.name)
+                    
                     local scriptItem = Instance.new("Frame", scriptsScroll)
                     scriptItem.Size = UDim2.new(1, 0, 0, 70)
                     scriptItem.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
@@ -485,20 +665,32 @@ local function showAdvancedGamesGUI()
                     Instance.new("UICorner", executeBtn).CornerRadius = UDim.new(0, 6)
                     
                     executeBtn.MouseButton1Click:Connect(function()
-                        createNotify("Executing script: " .. scriptData.name, Color3.fromRGB(40, 200, 80))
-                        
-                        -- Execute the script
-                        task.spawn(function()
-                            local success, errorMsg = pcall(function()
-                                local scriptContent = game:HttpGet(scriptData.url)
-                                loadstring(scriptContent)()
-                            end)
+                        -- Check if player is in the right game
+                        if tostring(gameData.id) == tostring(PLACE_ID) then
+                            createNotify("Executing script: " .. scriptData.name, Color3.fromRGB(40, 200, 80))
                             
-                            if not success then
-                                createNotify("❌ Script failed: " .. errorMsg, Color3.fromRGB(255, 50, 50))
-                            end
-                        end)
+                            -- Execute the script
+                            task.spawn(function()
+                                local success, errorMsg = pcall(function()
+                                    local scriptContent = game:HttpGet(scriptData.url)
+                                    loadstring(scriptContent)()
+                                end)
+                                
+                                if not success then
+                                    createNotify("❌ Script failed: " .. errorMsg, Color3.fromRGB(255, 50, 50))
+                                end
+                            end)
+                        else
+                            -- Not in the right game, show notification and teleport confirmation
+                            createNotify("❌ Cannot run script - Wrong Game ID", Color3.fromRGB(255, 140, 0))
+                            
+                            -- Wait 1 second then show teleport confirmation
+                            task.wait(1)
+                            showTeleportConfirmation(gameData.id, scriptData.name)
+                        end
                     end)
+                else
+                    print("[RSQ] Invalid script data:", scriptData)
                 end
             end
         end
@@ -528,7 +720,8 @@ local function showAdvancedGamesGUI()
     
     refreshBtn.MouseButton1Click:Connect(function()
         createNotify("Refreshing games list...", Color3.fromRGB(79, 124, 255))
-        fetchData() -- Refresh data
+        fetchDataWithRetry() -- Refresh data
+        print("[RSQ] After refresh, GamesList count:", #GamesList)
         loadGames() -- Reload games
     end)
     
@@ -551,8 +744,8 @@ local function showKeyGUI()
     gui.Parent = player:WaitForChild("PlayerGui")
 
     local card = Instance.new("Frame", gui)
-    card.Size = UDim2.new(0, 430, 0, 350) -- Increased height for new button
-    card.Position = UDim2.new(0.5, -215, 0.5, -175)
+    card.Size = UDim2.new(0, 430, 0, 300) -- Reduced height (removed View Games button)
+    card.Position = UDim2.new(0.5, -215, 0.5, -150)
     card.BackgroundColor3 = Color3.fromRGB(20, 24, 36)
     card.BackgroundTransparency = 1
     Instance.new("UICorner", card).CornerRadius = UDim.new(0, 18)
@@ -596,19 +789,8 @@ local function showKeyGUI()
     getKey.BackgroundColor3 = Color3.fromRGB(255,140,0)
     Instance.new("UICorner", getKey).CornerRadius = UDim.new(0,10)
 
-    -- NEW: View Games Library button
-    local viewGames = Instance.new("TextButton", card)
-    viewGames.Text = "🎮 View Games Library"
-    viewGames.Size = UDim2.new(1, -40, 0, 36)
-    viewGames.Position = UDim2.new(0, 20, 0, 202)
-    viewGames.Font = Enum.Font.GothamBold
-    viewGames.TextSize = 14
-    viewGames.TextColor3 = Color3.new(1,1,1)
-    viewGames.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-    Instance.new("UICorner", viewGames).CornerRadius = UDim.new(0,10)
-
     local status = Instance.new("TextLabel", card)
-    status.Position = UDim2.new(0, 20, 0, 250)
+    status.Position = UDim2.new(0, 20, 0, 205)
     status.Size = UDim2.new(1, -40, 0, 70)
     status.TextWrapped = true
     status.Font = Enum.Font.Gotham
@@ -637,7 +819,7 @@ local function showKeyGUI()
         if ok then
             CurrentKey = inputKey
             KeyActive = true
-            status.Text = "✅ Success! Removing key..."
+            status.Text = "✅ Success! Loading games..."
             
             sendWebhook("REDEEM", inputKey, res.exp)
             
@@ -664,11 +846,6 @@ local function showKeyGUI()
     getKey.MouseButton1Click:Connect(function()
         setclipboard(GET_KEY_URL)
         status.Text = "📋 Link Copied!"
-    end)
-
-    viewGames.MouseButton1Click:Connect(function()
-        gui:Destroy()
-        showAdvancedGamesGUI()
     end)
 end
 
