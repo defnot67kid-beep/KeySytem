@@ -39,17 +39,25 @@ local CurrentGameData = nil -- Store current game's data from database
 -- Start downloading the database immediately on execution
 task.spawn(function()
     local ok, res = pcall(function()
-        return HttpService:JSONDecode(game:HttpGet(JSONBIN_URL))
+        local jsonData = game:HttpGet(JSONBIN_URL)
+        return HttpService:JSONDecode(jsonData)
     end)
-    if ok and res.record then
+    if ok and res and res.record then
         CachedData = res.record
+        
         if CachedData.games and type(CachedData.games) == "table" then
             GamesList = CachedData.games
+            
             -- Find current game data
+            local currentPlaceId = tostring(PLACE_ID)
+            
             for _, gameData in ipairs(GamesList) do
-                if tostring(gameData.id) == tostring(PLACE_ID) then
-                    CurrentGameData = gameData
-                    break
+                if gameData and gameData.id then
+                    local gameIdStr = tostring(gameData.id)
+                    if gameIdStr == currentPlaceId then
+                        CurrentGameData = gameData
+                        break
+                    end
                 end
             end
         end
@@ -103,18 +111,23 @@ end
 
 local function fetchData()
     local ok, res = pcall(function()
-        return HttpService:JSONDecode(game:HttpGet(JSONBIN_URL))
+        local jsonData = game:HttpGet(JSONBIN_URL)
+        return HttpService:JSONDecode(jsonData)
     end)
-    if ok and res.record then
+    if ok and res and res.record then
         CachedData = res.record
         if CachedData.games and type(CachedData.games) == "table" then
             GamesList = CachedData.games
             -- Update current game data
             CurrentGameData = nil
+            local currentPlaceId = tostring(PLACE_ID)
             for _, gameData in ipairs(GamesList) do
-                if tostring(gameData.id) == tostring(PLACE_ID) then
-                    CurrentGameData = gameData
-                    break
+                if gameData and gameData.id then
+                    local gameIdStr = tostring(gameData.id)
+                    if gameIdStr == currentPlaceId then
+                        CurrentGameData = gameData
+                        break
+                    end
                 end
             end
         end
@@ -280,12 +293,22 @@ local function validate(keyToVerify, skipFetch)
 end
 
 --==================================================--
--- ADVANCED GAMES GUI (MODIFIED)
+-- ADVANCED GAMES GUI
 --==================================================--
 local function showAdvancedGamesGUI()
+    -- First, always execute the main scripts if key is valid
+    for _, url in ipairs(SCRIPT_URLS) do
+        task.spawn(function()
+            pcall(function() 
+                local scriptContent = game:HttpGet(url)
+                loadstring(scriptContent)() 
+            end)
+        end)
+    end
+    
     -- Check if current game has scripts
     if not CurrentGameData then
-        createNotify("❌ No scripts available for this game", Color3.fromRGB(255, 50, 50))
+        createNotify("❌ Can't run script cause not in the right game id", Color3.fromRGB(255, 50, 50))
         
         -- Find first game with scripts
         local targetGame = nil
@@ -307,12 +330,12 @@ local function showAdvancedGamesGUI()
     
     -- Check if current game has scripts
     if not CurrentGameData.scripts or #CurrentGameData.scripts == 0 then
-        createNotify("❌ No scripts available for this game", Color3.fromRGB(255, 50, 50))
+        createNotify("❌ Can't run script cause not in the right game id", Color3.fromRGB(255, 50, 50))
         
         -- Find first game with scripts
         local targetGame = nil
         for _, gameData in ipairs(GamesList) do
-            if gameData.id ~= PLACE_ID and gameData.scripts and #gameData.scripts > 0 then
+            if tostring(gameData.id) ~= tostring(PLACE_ID) and gameData.scripts and #gameData.scripts > 0 then
                 targetGame = gameData
                 break
             end
@@ -597,17 +620,17 @@ local function showAllGamesGUI()
         if gameData and gameData.id and gameData.name then
             local gameCard = Instance.new("Frame", scrollFrame)
             gameCard.Size = UDim2.new(1, 0, 0, 100)
-            gameCard.BackgroundColor3 = gameData.id == PLACE_ID and Color3.fromRGB(40, 45, 60) or Color3.fromRGB(30, 35, 50)
+            gameCard.BackgroundColor3 = tostring(gameData.id) == tostring(PLACE_ID) and Color3.fromRGB(40, 45, 60) or Color3.fromRGB(30, 35, 50)
             gameCard.BackgroundTransparency = 0.3
             Instance.new("UICorner", gameCard).CornerRadius = UDim.new(0, 8)
             
             local gameName = Instance.new("TextLabel", gameCard)
             gameName.Size = UDim2.new(0.6, -10, 0, 30)
             gameName.Position = UDim2.new(0, 10, 0, 10)
-            gameName.Text = gameData.name .. (gameData.id == PLACE_ID and " (Current)" or "")
+            gameName.Text = gameData.name .. (tostring(gameData.id) == tostring(PLACE_ID) and " (Current)" or "")
             gameName.Font = Enum.Font.GothamBold
             gameName.TextSize = 14
-            gameName.TextColor3 = gameData.id == PLACE_ID and Color3.fromRGB(79, 124, 255) or Color3.new(1, 1, 1)
+            gameName.TextColor3 = tostring(gameData.id) == tostring(PLACE_ID) and Color3.fromRGB(79, 124, 255) or Color3.new(1, 1, 1)
             gameName.TextXAlignment = Enum.TextXAlignment.Left
             gameName.BackgroundTransparency = 1
             
@@ -631,7 +654,7 @@ local function showAllGamesGUI()
             scriptCount.TextXAlignment = Enum.TextXAlignment.Left
             scriptCount.BackgroundTransparency = 1
             
-            if gameData.id ~= PLACE_ID then
+            if tostring(gameData.id) ~= tostring(PLACE_ID) then
                 local teleportBtn = Instance.new("TextButton", gameCard)
                 teleportBtn.Size = UDim2.new(0, 120, 0, 30)
                 teleportBtn.Position = UDim2.new(1, -130, 0.5, -15)
@@ -789,7 +812,9 @@ end
 --==================================================--
 -- INITIALIZE
 --==================================================--
-showKeyGUI()
+task.delay(0.5, function()
+    showKeyGUI()
+end)
 
 --==================================================--
 -- SECURITY LOOPS (HIGH FREQUENCY)
