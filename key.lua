@@ -526,7 +526,7 @@ local function showAdvancedGamesGUI()
                 scriptCount.TextXAlignment = Enum.TextXAlignment.Left
                 scriptCount.BackgroundTransparency = 1
                 
-                -- Scripts list button
+                               -- Scripts list button
                 local scriptsBtn = Instance.new("TextButton", gameCard)
                 scriptsBtn.Size = UDim2.new(0, 120, 0, 30)
                 scriptsBtn.Position = UDim2.new(1, -140, 0.5, -15)
@@ -538,14 +538,22 @@ local function showAdvancedGamesGUI()
                 scriptsBtn.BackgroundTransparency = 0.2
                 Instance.new("UICorner", scriptsBtn).CornerRadius = UDim.new(0, 6)
                 
-                scriptsBtn.MouseButton1Click:Connect(function()
-                    -- Show scripts for this game
-                    showGameScripts(gameData)
-                end)
-            else
-                print("[RSQ] Invalid game data:", gameData)
-            end
-        end
+                -- FIX: Capture the gameData in the closure
+                do
+                    local capturedGameData = {
+                        id = gameData.id,
+                        name = gameData.name,
+                        scripts = gameData.scripts or {}
+                    }
+                    
+                    scriptsBtn.MouseButton1Click:Connect(function()
+                        print("[DEBUG] Button clicked for game:", capturedGameData.name)
+                        print("[DEBUG] Has scripts:", #capturedGameData.scripts)
+                        
+                        -- Show scripts for this game
+                        showGameScripts(capturedGameData)
+                    end)
+                end
         
         -- Update canvas size
         task.wait(0.1)
