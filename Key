@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/defnot67kid-beep/KeySytem/refs/heads/main/key.lua"))()
