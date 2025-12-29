@@ -40,30 +40,55 @@ local GamesList = {} -- Store games data
 local function fetchDataWithRetry()
     for attempt = 1, 3 do
         local ok, res = pcall(function()
-            local response = game:HttpGet(JSONBIN_URL, true, {["X-Master-Key"] = JSON_KEY})
-            return HttpService:JSONDecode(response)
+            -- Use HttpService:GetAsync with headers
+            local response = HttpService:GetAsync(JSONBIN_URL, true, {
+                ["X-Master-Key"] = JSON_KEY
+            })
+            local decoded = HttpService:JSONDecode(response)
+            return decoded
         end)
         
         if ok and res and res.record then
             CachedData = res.record
             -- Debug logging
             print("[RSQ] Data fetched successfully")
-            print("[RSQ] Games data:", res.record.games)
+            print("[RSQ] Full record type:", type(res.record))
+            print("[RSQ] Games field type:", type(res.record.games))
             
             -- Convert games to proper table format
-            if res.record.games then
-                GamesList = {}
-                -- Check if games is an array or object
-                if type(res.record.games) == "table" then
-                    local count = 0
+            GamesList = {}
+            if res.record.games and type(res.record.games) == "table" then
+                print("[RSQ] Raw games data:")
+                print(res.record.games)
+                
+                -- Check if it's an array or object
+                local isArray = false
+                for k, v in pairs(res.record.games) do
+                    if type(k) == "number" then
+                        isArray = true
+                        break
+                    end
+                end
+                
+                if isArray then
+                    -- It's already an array
+                    GamesList = res.record.games
+                else
+                    -- Convert object to array
                     for _, game in pairs(res.record.games) do
                         if type(game) == "table" and game.id and game.name then
                             table.insert(GamesList, game)
-                            count = count + 1
                         end
                     end
-                    print("[RSQ] Loaded " .. count .. " games")
                 end
+                
+                print("[RSQ] Loaded " .. #GamesList .. " games")
+                for i, game in ipairs(GamesList) do
+                    print("[RSQ] Game " .. i .. ": " .. game.name .. " (ID: " .. game.id .. ")")
+                    print("[RSQ] Scripts count: " .. #(game.scripts or {}))
+                end
+            else
+                print("[RSQ] No games found or games is not a table")
             end
             return CachedData
         else
@@ -76,7 +101,9 @@ end
 
 -- Start downloading the database immediately on execution
 task.spawn(function()
+    print("[RSQ] Starting initial data fetch...")
     fetchDataWithRetry()
+    print("[RSQ] Initial fetch complete")
 end)
 
 --==================================================--
@@ -286,6 +313,9 @@ end
 --==================================================--
 local function showAdvancedGamesGUI()
     -- Refresh data before showing GUI
+    print("[RSQ] Showing Advanced Games GUI")
+    print("[RSQ] Current GamesList count:", #GamesList)
+    
     fetchDataWithRetry()
     
     -- Create main GUI
@@ -453,7 +483,8 @@ local function showAdvancedGamesGUI()
                 local scriptCount = Instance.new("TextLabel", gameInfo)
                 scriptCount.Size = UDim2.new(1, -10, 0, 20)
                 scriptCount.Position = UDim2.new(0, 10, 0, 60)
-                scriptCount.Text = "Scripts: " .. (#(gameData.scripts or {}))
+                local scripts = gameData.scripts or {}
+                scriptCount.Text = "Scripts: " .. #scripts
                 scriptCount.Font = Enum.Font.Gotham
                 scriptCount.TextSize = 12
                 scriptCount.TextColor3 = Color3.fromRGB(0, 200, 255)
@@ -546,6 +577,8 @@ local function showAdvancedGamesGUI()
         
         -- Add scripts
         local scripts = gameData.scripts or {}
+        print("[RSQ] Showing " .. #scripts .. " scripts for game:", gameData.name)
+        
         if #scripts == 0 then
             local emptyLabel = Instance.new("TextLabel", scriptsScroll)
             emptyLabel.Size = UDim2.new(1, 0, 0, 60)
@@ -558,6 +591,8 @@ local function showAdvancedGamesGUI()
         else
             for _, scriptData in ipairs(scripts) do
                 if scriptData and scriptData.name and scriptData.url then
+                    print("[RSQ] Adding script:", scriptData.name)
+                    
                     local scriptItem = Instance.new("Frame", scriptsScroll)
                     scriptItem.Size = UDim2.new(1, 0, 0, 70)
                     scriptItem.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
@@ -619,6 +654,8 @@ local function showAdvancedGamesGUI()
                             showTeleportConfirmation(gameData.id, scriptData.name)
                         end
                     end)
+                else
+                    print("[RSQ] Invalid script data:", scriptData)
                 end
             end
         end
