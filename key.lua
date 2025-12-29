@@ -40,58 +40,93 @@ local GamesList = {} -- Store games data
 local function fetchDataWithRetry()
     for attempt = 1, 3 do
         local ok, res = pcall(function()
-            -- Use HttpService:GetAsync with headers
-            local response = HttpService:GetAsync(JSONBIN_URL, true, {
-                ["X-Master-Key"] = JSON_KEY
-            })
-            local decoded = HttpService:JSONDecode(response)
-            return decoded
+            -- Try with headers first
+            local response = game:HttpGet(JSONBIN_URL, true, {["X-Master-Key"] = JSON_KEY})
+            return HttpService:JSONDecode(response)
         end)
         
         if ok and res and res.record then
             CachedData = res.record
             -- Debug logging
             print("[RSQ] Data fetched successfully")
-            print("[RSQ] Full record type:", type(res.record))
-            print("[RSQ] Games field type:", type(res.record.games))
             
             -- Convert games to proper table format
             GamesList = {}
-            if res.record.games and type(res.record.games) == "table" then
-                print("[RSQ] Raw games data:")
-                print(res.record.games)
+            
+            -- Handle games data - check if it exists and is a table
+            if res.record.games then
+                print("[RSQ] Games data type:", type(res.record.games))
                 
-                -- Check if it's an array or object
-                local isArray = false
-                for k, v in pairs(res.record.games) do
-                    if type(k) == "number" then
-                        isArray = true
-                        break
-                    end
-                end
-                
-                if isArray then
-                    -- It's already an array
-                    GamesList = res.record.games
-                else
-                    -- Convert object to array
-                    for _, game in pairs(res.record.games) do
-                        if type(game) == "table" and game.id and game.name then
-                            table.insert(GamesList, game)
+                -- If games is already an array
+                if type(res.record.games) == "table" then
+                    local gameCount = 0
+                    
+                    -- Check if it's an array (numeric keys)
+                    local isArray = false
+                    for k, _ in pairs(res.record.games) do
+                        if type(k) == "number" then
+                            isArray = true
+                            break
                         end
                     end
-                end
-                
-                print("[RSQ] Loaded " .. #GamesList .. " games")
-                for i, game in ipairs(GamesList) do
-                    print("[RSQ] Game " .. i .. ": " .. game.name .. " (ID: " .. game.id .. ")")
-                    print("[RSQ] Scripts count: " .. #(game.scripts or {}))
+                    
+                    if isArray then
+                        -- It's already an array
+                        GamesList = res.record.games
+                        gameCount = #GamesList
+                    else
+                        -- It's an object, convert to array
+                        for _, game in pairs(res.record.games) do
+                            if type(game) == "table" and game.id and game.name then
+                                table.insert(GamesList, game)
+                                gameCount = gameCount + 1
+                            end
+                        end
+                    end
+                    
+                    print("[RSQ] Loaded " .. gameCount .. " games")
+                    
+                    -- Print each game for debugging
+                    for i, game in ipairs(GamesList) do
+                        if game and game.id and game.name then
+                            local scriptCount = #(game.scripts or {})
+                            print(string.format("[RSQ] Game %d: %s (ID: %s) - %d scripts", 
+                                i, game.name, game.id, scriptCount))
+                        end
+                    end
+                else
+                    print("[RSQ] Games is not a table, type:", type(res.record.games))
                 end
             else
-                print("[RSQ] No games found or games is not a table")
+                print("[RSQ] No games field found in data")
             end
             return CachedData
         else
+            -- Try without headers as fallback
+            local ok2, res2 = pcall(function()
+                local response = game:HttpGet(JSONBIN_URL)
+                return HttpService:JSONDecode(response)
+            end)
+            
+            if ok2 and res2 and res2.record then
+                CachedData = res2.record
+                print("[RSQ] Data fetched without headers")
+                
+                -- Same games processing logic as above
+                GamesList = {}
+                if res2.record.games and type(res2.record.games) == "table" then
+                    local gameCount = 0
+                    for _, game in pairs(res2.record.games) do
+                        if type(game) == "table" and game.id and game.name then
+                            table.insert(GamesList, game)
+                            gameCount = gameCount + 1
+                        end
+                    end
+                    print("[RSQ] Loaded " .. gameCount .. " games (no headers)")
+                end
+                return CachedData
+            end
+            
             warn("[RSQ] Fetch attempt " .. attempt .. " failed: " .. tostring(res))
             task.wait(1)
         end
@@ -103,7 +138,7 @@ end
 task.spawn(function()
     print("[RSQ] Starting initial data fetch...")
     fetchDataWithRetry()
-    print("[RSQ] Initial fetch complete")
+    print("[RSQ] Initial fetch complete. GamesList count:", #GamesList)
 end)
 
 --==================================================--
@@ -686,6 +721,7 @@ local function showAdvancedGamesGUI()
     refreshBtn.MouseButton1Click:Connect(function()
         createNotify("Refreshing games list...", Color3.fromRGB(79, 124, 255))
         fetchDataWithRetry() -- Refresh data
+        print("[RSQ] After refresh, GamesList count:", #GamesList)
         loadGames() -- Reload games
     end)
     
