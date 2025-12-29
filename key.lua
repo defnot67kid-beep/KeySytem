@@ -539,9 +539,9 @@ local function showAdvancedGamesGUI()
                 Instance.new("UICorner", scriptsBtn).CornerRadius = UDim.new(0, 6)
                 
                 scriptsBtn.MouseButton1Click:Connect(function()
-                    -- Show scripts for this game
-                    showGameScripts(gameData, gui)
-                end)
+    -- Show scripts for this game
+    showGameScripts(gameData)
+end)
             else
                 print("[RSQ] Invalid game data:", gameData)
             end
