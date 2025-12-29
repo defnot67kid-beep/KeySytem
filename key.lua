@@ -560,6 +560,7 @@ local function showAdvancedGamesGUI()
     
     -- Function to show scripts for a specific game
     -- Function to show scripts for a specific game
+    -- Function to show scripts for a specific game
     local function showGameScripts(gameData)
         print("[RSQ] Showing scripts for game:", gameData.name)
         
@@ -572,7 +573,7 @@ local function showAdvancedGamesGUI()
             oldScripts:Destroy()
         end
         
-        -- Create NEW scripts scrolling frame (ALWAYS CREATE NEW)
+        -- Create NEW scripts scrolling frame (EXACT SAME AS GAMES LAYOUT)
         local scriptsScroll = Instance.new("ScrollingFrame", contentFrame)
         scriptsScroll.Name = "RSQ_ScriptsScroll"
         scriptsScroll.Size = UDim2.new(1, 0, 1, 0)
@@ -583,7 +584,7 @@ local function showAdvancedGamesGUI()
         scriptsScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
         scriptsScroll.Visible = true
         
-        -- Create scripts list layout
+        -- Create scripts list layout (SAME AS GAMES)
         local scriptsLayout = Instance.new("UIListLayout", scriptsScroll)
         scriptsLayout.Padding = UDim.new(0, 10)
         scriptsLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -615,7 +616,7 @@ local function showAdvancedGamesGUI()
             title.Text = "🎮 RSQ GAMES LIBRARY"
         end)
         
-        -- Add scripts
+        -- Add scripts (SAME CARD LAYOUT AS GAMES)
         local scripts = gameData.scripts or {}
         print("[RSQ] Showing " .. #scripts .. " scripts for game:", gameData.name)
         
@@ -632,43 +633,80 @@ local function showAdvancedGamesGUI()
         else
             for index, scriptData in ipairs(scripts) do
                 if scriptData and scriptData.name and scriptData.url then
-                    print("[RSQ] Adding script:", scriptData.name)
+                    print("[RSQ] Adding script:", scriptData.name, "URL:", scriptData.url)
                     
-                    local scriptItem = Instance.new("Frame", scriptsScroll)
-                    scriptItem.Size = UDim2.new(1, 0, 0, 80)
-                    scriptItem.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
-                    scriptItem.BackgroundTransparency = 0.2
-                    Instance.new("UICorner", scriptItem).CornerRadius = UDim.new(0, 8)
-                    scriptItem.LayoutOrder = index
+                    -- Script card (SAME AS GAME CARD LAYOUT)
+                    local scriptCard = Instance.new("Frame", scriptsScroll)
+                    scriptCard.Size = UDim2.new(1, 0, 0, 100)
+                    scriptCard.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+                    scriptCard.BackgroundTransparency = 0.3
+                    Instance.new("UICorner", scriptCard).CornerRadius = UDim.new(0, 8)
+                    scriptCard.LayoutOrder = index
                     
-                    local scriptName = Instance.new("TextLabel", scriptItem)
-                    scriptName.Size = UDim2.new(0.7, -10, 0, 30)
+                    -- Script icon/icon (SAME AS GAME ICON)
+                    local scriptIcon = Instance.new("Frame", scriptCard)
+                    scriptIcon.Size = UDim2.new(0, 80, 0, 80)
+                    scriptIcon.Position = UDim2.new(0, 10, 0.5, -40)
+                    scriptIcon.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+                    Instance.new("UICorner", scriptIcon).CornerRadius = UDim.new(0, 6)
+                    
+                    local iconLabel = Instance.new("TextLabel", scriptIcon)
+                    iconLabel.Size = UDim2.new(1, 0, 1, 0)
+                    iconLabel.Text = "📜"
+                    iconLabel.Font = Enum.Font.GothamBold
+                    iconLabel.TextSize = 24
+                    iconLabel.TextColor3 = Color3.new(1, 1, 1)
+                    iconLabel.BackgroundTransparency = 1
+                    
+                    -- Script info (SAME AS GAME INFO)
+                    local scriptInfo = Instance.new("Frame", scriptCard)
+                    scriptInfo.Size = UDim2.new(0.6, 0, 1, 0)
+                    scriptInfo.Position = UDim2.new(0, 100, 0, 0)
+                    scriptInfo.BackgroundTransparency = 1
+                    
+                    -- Script name (INSTEAD OF GAME NAME)
+                    local scriptName = Instance.new("TextLabel", scriptInfo)
+                    scriptName.Size = UDim2.new(1, -10, 0, 30)
                     scriptName.Position = UDim2.new(0, 10, 0, 10)
-                    scriptName.Text = scriptData.name
+                    scriptName.Text = scriptData.name or "Unnamed Script"
                     scriptName.Font = Enum.Font.GothamBold
-                    scriptName.TextSize = 14
+                    scriptName.TextSize = 16
                     scriptName.TextColor3 = Color3.new(1, 1, 1)
                     scriptName.TextXAlignment = Enum.TextXAlignment.Left
                     scriptName.BackgroundTransparency = 1
                     
-                    local urlPreview = Instance.new("TextLabel", scriptItem)
-                    urlPreview.Size = UDim2.new(0.7, -10, 0, 20)
+                    -- Script URL preview (INSTEAD OF GAME ID)
+                    local urlPreview = Instance.new("TextLabel", scriptInfo)
+                    urlPreview.Size = UDim2.new(1, -10, 0, 20)
                     urlPreview.Position = UDim2.new(0, 10, 0, 40)
-                    urlPreview.Text = string.sub(scriptData.url, 1, 40) .. "..."
+                    urlPreview.Text = "URL: " .. string.sub(scriptData.url or "", 1, 30) .. "..."
                     urlPreview.Font = Enum.Font.Gotham
-                    urlPreview.TextSize = 11
+                    urlPreview.TextSize = 12
                     urlPreview.TextColor3 = Color3.fromRGB(150, 150, 150)
                     urlPreview.TextXAlignment = Enum.TextXAlignment.Left
                     urlPreview.BackgroundTransparency = 1
                     
-                    local executeBtn = Instance.new("TextButton", scriptItem)
-                    executeBtn.Size = UDim2.new(0, 100, 0, 30)
-                    executeBtn.Position = UDim2.new(1, -110, 0.5, -15)
+                    -- Added by info (INSTEAD OF SCRIPT COUNT)
+                    local addedByInfo = Instance.new("TextLabel", scriptInfo)
+                    addedByInfo.Size = UDim2.new(1, -10, 0, 20)
+                    addedByInfo.Position = UDim2.new(0, 10, 0, 60)
+                    addedByInfo.Text = "Added by: " .. (scriptData.addedBy or "Unknown")
+                    addedByInfo.Font = Enum.Font.Gotham
+                    addedByInfo.TextSize = 12
+                    addedByInfo.TextColor3 = Color3.fromRGB(0, 200, 255)
+                    addedByInfo.TextXAlignment = Enum.TextXAlignment.Left
+                    addedByInfo.BackgroundTransparency = 1
+                    
+                    -- Execute button (INSTEAD OF VIEW SCRIPTS BUTTON)
+                    local executeBtn = Instance.new("TextButton", scriptCard)
+                    executeBtn.Size = UDim2.new(0, 120, 0, 30)
+                    executeBtn.Position = UDim2.new(1, -140, 0.5, -15)
                     executeBtn.Text = "⚡ Execute"
                     executeBtn.Font = Enum.Font.GothamBold
                     executeBtn.TextSize = 12
                     executeBtn.TextColor3 = Color3.new(1, 1, 1)
                     executeBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+                    executeBtn.BackgroundTransparency = 0.2
                     Instance.new("UICorner", executeBtn).CornerRadius = UDim.new(0, 6)
                     
                     executeBtn.MouseButton1Click:Connect(function()
