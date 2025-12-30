@@ -10,6 +10,7 @@ local TeleportService = game:GetService("TeleportService")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
+local MarketplaceService = game:GetService("MarketplaceService")
 local player = Players.LocalPlayer
 local USER_ID = tostring(player.UserId)
 local USER_NAME = player.Name
@@ -46,6 +47,7 @@ local IsGuiOpen = false -- Track if GUI is currently open
 local OpenButton = nil -- Reference to the open button
 local CurrentGUI = nil -- Reference to current GUI
 local IsInitializing = true -- Track initialization state
+local HasShownGUIAlready = false -- Track if GUI has been shown before
 
 -- Function to get data folder
 local function getDataFolder()
@@ -119,6 +121,27 @@ local function clearKeyStatus()
     end
 end
 
+-- Function to check if GUI is already loaded
+local function isGUILoaded()
+    -- Check in CoreGui
+    for _, gui in pairs(CoreGui:GetChildren()) do
+        if gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" then
+            return true
+        end
+    end
+    
+    -- Check in PlayerGui
+    if player.PlayerGui then
+        for _, gui in pairs(player.PlayerGui:GetChildren()) do
+            if gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" then
+                return true
+            end
+        end
+    end
+    
+    return false
+end
+
 -- Function to create open button
 local function createOpenButton()
     -- Remove existing open button if it exists
@@ -187,6 +210,12 @@ local function createOpenButton()
             button.Text = "🔓"
             button.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
         else
+            -- Check if GUI is already loaded
+            if isGUILoaded() then
+                createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
+                return
+            end
+            
             -- Open appropriate GUI based on key status
             if KeyActive and CurrentKey then
                 showAdvancedGamesGUI()
@@ -631,8 +660,30 @@ local function showTeleportConfirmation(gameId, gameName)
     yesBtn.MouseButton1Click:Connect(function()
         createNotify("Teleporting to Game ID: " .. gameId, Color3.fromRGB(40, 200, 80))
         teleportGui:Destroy()
-        task.wait(1)
-        TeleportService:Teleport(tonumber(gameId), player)
+        
+        -- Convert gameId to number for teleport
+        local gameIdNumber = tonumber(gameId)
+        if gameIdNumber then
+            -- Try teleport with error handling
+            local success, err = pcall(function()
+                TeleportService:Teleport(gameIdNumber, player)
+            end)
+            
+            if not success then
+                createNotify("❌ Teleport failed: " .. tostring(err), Color3.fromRGB(255, 50, 50))
+                
+                -- Try alternative teleport method
+                task.wait(1)
+                createNotify("Trying alternative teleport method...", Color3.fromRGB(255, 140, 0))
+                
+                -- Use MarketplaceService to launch game
+                pcall(function()
+                    MarketplaceService:PromptGamePassPurchase(player, gameIdNumber)
+                end)
+            end
+        else
+            createNotify("❌ Invalid Game ID format", Color3.fromRGB(255, 50, 50))
+        end
     end)
     
     noBtn.MouseButton1Click:Connect(function()
@@ -684,6 +735,12 @@ end
 -- ADVANCED GAMES GUI (ONLY SHOWS AFTER VALID KEY)
 --==================================================--
 local function showAdvancedGamesGUI()
+    -- Check if GUI is already loaded
+    if isGUILoaded() then
+        createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
+        return
+    end
+    
     -- Prevent duplicate GUI
     if CurrentGUI and CurrentGUI.Parent then
         CurrentGUI:Destroy()
@@ -691,6 +748,8 @@ local function showAdvancedGamesGUI()
     end
     
     IsGuiOpen = true
+    HasShownGUIAlready = true
+    
     if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
         OpenButton.ToggleButton.Text = "🔒"
         OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
@@ -1159,6 +1218,12 @@ end
 -- INITIAL KEY GUI
 --==================================================--
 local function showKeyGUI()
+    -- Check if GUI is already loaded
+    if isGUILoaded() then
+        createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
+        return
+    end
+    
     -- Prevent duplicate GUI
     if CurrentGUI and CurrentGUI.Parent then
         CurrentGUI:Destroy()
@@ -1166,6 +1231,8 @@ local function showKeyGUI()
     end
     
     IsGuiOpen = true
+    HasShownGUIAlready = true
+    
     if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
         OpenButton.ToggleButton.Text = "🔒"
         OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
