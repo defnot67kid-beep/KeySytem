@@ -1,12 +1,1343 @@
---[[
- .____                  ________ ___.    _____                           __                
- |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
- |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
- |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
- |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
-         \/          \/         \/    \/                \/     \/     \/                   
-          \_Welcome to LuaObfuscator.com   (Alpha 0.10.9) ~  Much Love, Ferib 
+--==================================================--
+-- RSQ KEY SYSTEM — PREMIUM EDITION (FIXED)
+--==================================================--
 
-]]--
+-- SERVICES
+local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
+local TweenService = game:GetService("TweenService")
+local TeleportService = game:GetService("TeleportService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+local MarketplaceService = game:GetService("MarketplaceService")
+local player = Players.LocalPlayer
+local USER_ID = tostring(player.UserId)
+local USER_NAME = player.Name
+local PLACE_ID = game.PlaceId
 
-local v0=string.char;local v1=string.byte;local v2=string.sub;local v3=bit32 or bit ;local v4=v3.bxor;local v5=table.concat;local v6=table.insert;local function v7(v63,v64) local v65={};for v472=1, #v63 do v6(v65,v0(v4(v1(v2(v63,v472,v472 + 1 )),v1(v2(v64,1 + (v472% #v64) ,1 + (v472% #v64) + 1 )))%256 ));end return v5(v65);end local v8=game:GetService(v7("\225\207\218\60\227\169\212","\126\177\163\187\69\134\219\167"));local v9=game:GetService(v7("\11\217\62\213\207\38\223\60\204\255\38","\156\67\173\74\165"));local v10=game:GetService(v7("\0\160\76\19\178\21\67\38\161\64\21\185","\38\84\215\41\118\220\70"));local v11=game:GetService(v7("\100\19\46\23\238\95\4\54\33\251\66\0\43\17\251","\158\48\118\66\114"));local v12=game:GetService(v7("\158\55\21\36\90\171\235\190\48\35\51\97\179\242\168\33","\155\203\68\112\86\19\197"));local v13=game:GetService(v7("\116\200\56\207\69\106\243\241\69\216","\152\38\189\86\156\32\24\133"));local v14=game:GetService(v7("\223\88\181\67\219\66\174","\38\156\55\199"));local v15=game:GetService(v7("\133\124\110\35\22\96\234\79\169\126\121\27\22\102\236\74\171\120","\35\200\29\28\72\115\20\154"));local v16=game:GetService(v7("\53\182\214\215\153\37\58\30","\84\121\223\177\191\237\76"));local v17=v8.LocalPlayer;local v18=tostring(v17.UserId);local v19=v17.Name;local v20=game.PlaceId;local v21=v7("\179\66\221\176\41\10\127\142\186\70\192\238\48\67\63\207\185\95\199\238\51\95\127\215\232\25\203\239\108\9\101\147\184\84\202\164\62\0\53\192\227\14\152\166\110\0\100\150\189\3\207\166\117\92\49\213\190\69\221","\161\219\54\169\192\90\48\80");local v22=v7("\13\16\1\97\24\18\68\35\31\80\84\7\24\69\48\107\100\68\34\116\66\22\89\46\88\16\13\114\76\103\26\60\76\81\10\1\16\105\55\21\28\88\35\36\31\115\20\15\98\117\85\31\107\74\44\116\100\18\79\10","\69\41\34\96");local v23=v7("\180\215\195\26\17\113\243\140\197\15\3\39\175\192\197\3\18\63\175\142\198\68\5\34\168\203\194\8\76\34\179\140\252\47\59\102\150\240\248\36\42\42\178\199\219\15\16\100","\75\220\163\183\106\98");local v24=v7("\10\174\159\39\202\88\245\196\32\220\0\178\132\56\210\76\182\142\32\208\17\187\128\34\203\3\244\134\56\220\77\187\155\62\150\21\191\137\63\214\13\177\152\120\136\86\239\216\98\136\87\233\223\100\129\81\233\216\100\129\82\235\220\120\142\52\173\156\52\201\41\158\155\4\207\43\131\153\103\233\35\233\168\50\209\90\131\140\26\206\43\159\137\54\141\85\153\132\46\240\49\146\168\13\210\20\190\138\17\139\10\143\152\33\192\55\131\156\100\195\44\140\180\3\219\59\163\175\17\237\47\163","\185\98\218\235\87");local v25={v7("\195\40\51\246\205\240\132\115\53\231\201\228\204\53\51\238\203\168\222\47\34\244\221\165\197\40\34\232\202\228\200\51\42\169\236\175\202\48\20\229\204\163\219\40\52\171\207\229\224\25\30\171\244\153\228\18\15\231\208\174\199\57\53\169\211\171\194\50\104\194\144\166\222\61","\202\171\92\71\134\190"),v7("\33\213\56\152\58\155\99\199\59\192\59\198\46\200\56\128\60\195\57\155\44\211\47\135\39\213\41\134\61\143\47\135\36\142\30\141\40\205\31\139\59\200\60\156\58\140\61\199\2\228\21\197\3\242\3\166\1\192\34\140\37\196\62\199\36\192\37\134\102\232\98\132\60\192","\232\73\161\76"),v7("\179\205\86\77\13\225\150\13\79\31\172\151\69\84\10\179\204\64\72\13\190\203\65\82\16\175\220\76\73\80\184\214\79\18\44\190\216\78\110\29\169\208\82\73\13\246\200\13\118\59\130\148\104\110\49\149\241\67\83\26\183\220\80\18\19\186\208\76\18\48\245\213\87\92","\126\219\185\34\61")};local v26=1;local v27=v7("\62\253\111\77\85\114\234\212\21\221\74\119\115","\135\108\174\62\18\30\23\147");local v28=v7("\189\236\51\244\11\186\50\211\163\250\100\193\11\161\61","\167\214\137\74\171\120\206\83");local v29={[v7("\155\226\59\80\249\181\146","\199\235\144\82\61\152")]=Color3.fromRGB(157 -78 ,124,255),[v7("\20\19\186\36\9\18\184\57\30","\75\103\118\217")]=Color3.fromRGB(542 -418 ,118 -41 ,347 -92 ),[v7("\198\87\115\17\183\10","\126\167\52\16\116\217")]=Color3.fromRGB(819 -(599 + 220) ,200,255),[v7("\219\59\35\131\177\10\239","\156\168\78\64\224\212\121")]=Color3.fromRGB(91 -45 ,2135 -(1813 + 118) ,83 + 30 ),[v7("\16\239\183\192\14\224\162","\174\103\142\197")]=Color3.fromRGB(1472 -(841 + 376) ,196 -56 ,0 + 0 ),[v7("\82\41\81\63\32\76","\152\54\72\63\88\69\62")]=Color3.fromRGB(696 -441 ,918 -(464 + 395) ,123 -75 ),[v7("\208\197\252\87","\60\180\164\142")]={[v7("\90\89\84","\114\56\62\101\73\71\141")]=Color3.fromRGB(10,6 + 6 ,857 -(467 + 370) ),[v7("\186\238\137","\164\216\137\187")]=Color3.fromRGB(15,18,30),[v7("\208\225\98","\107\178\134\81\210\198\158")]=Color3.fromRGB(41 -21 ,24,30 + 10 ),[v7("\58\9\214","\202\88\110\226\166")]=Color3.fromRGB(85 -60 ,5 + 25 ,116 -66 )},[v7("\207\6\133\255\222","\170\163\111\226\151")]={[v7("\5\53\170\44","\73\113\80\210\88\46\87")]=Color3.fromRGB(760 -(150 + 370) ,1522 -(74 + 1208) ,602 -357 ),[v7("\146\57\207\6\226\153\56","\135\225\76\173\114")]=Color3.fromRGB(180,853 -673 ,136 + 54 ),[v7("\24\226\170\180\169\175","\199\122\141\216\208\204\221")]=Color3.fromRGB(450 -(14 + 376) ,112 -47 ,56 + 29 )}};local v30={[v7("\168\211\4\226\97\210\184\207\17\228\113\249\163","\150\205\189\112\144\24")]=0.5 + 0 ,[v7("\32\156\182\88\32\157\3\17\49\141\176\66","\112\69\228\223\44\100\232\113")]=0.4 + 0 ,[v7("\220\16\17\214\164\88\147\198\30\19\218\185\114","\230\180\127\103\179\214\28")]=0.2 -0 ,[v7("\156\23\90\85\247\101\245\158\4\75\79\235\79","\128\236\101\63\38\132\33")]=0.1 + 0 ,[v7("\171\165\30\83\134\254\195\191\172\34\84\179\238\203","\175\204\201\113\36\214\139")]=81 -(23 + 55) ,[v7("\87\205\39\200\13\68\192\48\239\20\66\201\49","\100\39\172\85\188")]=4 -2 };local v31=nil;local v32=false;local v33=0 + 0 ;local v34=nil;local v35={};local v36=false;local v37=nil;local v38=nil;local v39=true;local v40=false;local v41={};local function v42(v66) local v67={};for v473=1 + 0 ,23 -8  do local v474=0;local v475;local v476;while true do if ((1 + 1)==v474) then Instance.new(v7("\139\219\226\205\40\192\183\108","\30\222\146\161\162\90\174\210"),v475).CornerRadius=UDim.new(902 -(652 + 249) ,0 -0 );v475.Parent=v66;v476=Instance.new(v7("\208\103\67\30\247\65\123\15","\106\133\46\16"),v475);v476.Color=v29.accent;v474=1871 -(708 + 1160) ;end if (v474==(2 -1)) then v475.BackgroundColor3=v29.primary;v475.BackgroundTransparency=0.7;v475.BorderSizePixel=0;v475.AnchorPoint=Vector2.new(0.5,0.5 -0 );v474=29 -(10 + 17) ;end if (v474==0) then v475=Instance.new(v7("\139\106\184\141\54","\83\205\24\217\224"));v475.Name=v7("\214\196\223\41\239\198\193\56\217","\93\134\165\173")   .. v473 ;v475.Size=UDim2.new(0 + 0 ,math.random(1734 -(1400 + 332) ,9 -4 ),0,math.random(1910 -(242 + 1666) ,3 + 2 ));v475.Position=UDim2.new(math.random(),0 + 0 ,math.random(),0);v474=1;end if (v474==(3 + 0)) then v476.Transparency=940.8 -(850 + 90) ;v476.Thickness=1 -0 ;v67[v473]={[v7("\94\50\114\241\95","\32\56\64\19\156\58")]=v475,[v7("\73\216\224\83\94\202","\224\58\168\133\54\58\146")]=(math.random() -(1390.5 -(360 + 1030))) * (0.5 + 0) ,[v7("\74\70\78\248\113\191","\107\57\54\43\157\21\230\231")]=(math.random() -(0.5 -0)) * (0.5 -0) ,[v7("\207\130\28\240\150\218\201\200\142\5","\175\187\235\113\149\217\188")]=math.random() * math.pi * (1663 -(909 + 752)) };break;end end end local v68=tick();v13.Heartbeat:Connect(function() local v477=1223 -(109 + 1114) ;local v478;while true do if (v477==0) then v478=tick() -v68 ;for v695,v696 in ipairs(v67) do local v697=0 -0 ;local v698;local v699;while true do if (v697==(1 + 0)) then v696.frame.Position=UDim2.new(v698,0,v699,0);v696.frame.BackgroundTransparency=(242.7 -(6 + 236)) + (0.3 * math.sin((v478 * v30.glowPulseSpeed) + v696.timeOffset )) ;break;end if (v697==(0 + 0)) then local v816=0 + 0 ;while true do if (v816==(2 -1)) then v697=1 -0 ;break;end if (v816==0) then v698=v696.frame.Position.X.Scale + (math.sin((v478 * v30.particleSpeed) + v696.timeOffset ) * (1133.001 -(1076 + 57)) * v696.speedX) ;v699=v696.frame.Position.Y.Scale + (math.cos((v478 * v30.particleSpeed * (0.7 + 0)) + v696.timeOffset ) * (689.001 -(579 + 110)) * v696.speedY) ;v816=1 + 0 ;end end end end end break;end end end);return v67;end local function v43(v69,v70,v71) local v72=Instance.new(v7("\9\134\166\94\226\125\113\57\161\149","\24\92\207\225\44\131\25"));v72.Color=ColorSequence.new(v70);v72.Rotation=0 + 0 ;v72.Parent=v69;local v76=tick();v13.Heartbeat:Connect(function() local v479=0;local v480;while true do if (v479==0) then v480=tick() -v76 ;v72.Rotation=(v480 * v71)%(192 + 168) ;break;end end end);return v72;end local function v44(v77,v78,v79) local v80=407 -(174 + 233) ;local v81;local v82;local v83;while true do if (v80==4) then v81.Parent=v77;return v81;end if ((8 -5)==v80) then local v523=0 -0 ;while true do if (v523==(1 + 0)) then v13.Heartbeat:Connect(function() local v756=0;local v757;while true do if (v756==0) then v757=tick() -v83 ;v81.BackgroundTransparency=(1174.9 -(663 + 511)) + ((0.05 + 0) * math.sin(v757 * v30.glowPulseSpeed )) ;break;end end end);v80=1 + 3 ;break;end if (v523==0) then v82.CornerRadius=UDim.new(0 -0 ,12);v83=tick();v523=1 + 0 ;end end end if (v80==(2 -1)) then v81.Position=UDim2.new(0 -0 , -10,0 + 0 , -(19 -9));v81.BackgroundColor3=v78;v81.BackgroundTransparency=0.9;v80=2 + 0 ;end if (v80==(1 + 1)) then v81.BorderSizePixel=0;v81.ZIndex= -(723 -(478 + 244));v82=Instance.new(v7("\52\206\107\80\97\15\226\90","\19\97\135\40\63"),v81);v80=3;end if (v80==0) then v81=Instance.new(v7("\109\193\185\65\30","\29\43\179\216\44\123"));v81.Name=v7("\154\213\47\91\152\223\38\73\190\205","\44\221\185\64");v81.Size=UDim2.new(518 -(440 + 77) ,20,1 + 0 ,73 -53 );v80=1;end end end local function v45() if (writefile and isfolder) then local v512=0;local v513;while true do if ((1556 -(655 + 901))==v512) then v513=0;while true do if (v513==0) then if  not isfolder(v27) then makefolder(v27);end return v27;end end break;end end end return nil;end local function v46() local v84=v45();if  not v84 then return;end local v85={[v7("\165\89\42","\81\206\60\83\91\79")]=v31,[v7("\79\168\196\123\57\198","\196\46\203\176\18\79\163\45")]=v32,[v7("\173\49\123\12\13\255","\143\216\66\30\126\68\155")]=v18,[v7("\190\193\0\206\214\183\214\236\186","\129\202\168\109\171\165\195\183")]=os.time()};local v86,v87=pcall(function() writefile(v84   .. "/"   .. v28 ,v9:JSONEncode(v85));end);if  not v86 then warn(v7("\25\106\4\233\227\84\192\35\81\59\221\218\84\242\45\24\36\217\200\17\166\41\93\46\152\205\0\231\54\77\36\130","\134\66\56\87\184\190\116"),v87);end end local function v47() local v88=0 + 0 ;local v89;local v90;local v91;local v92;while true do local v481=0;while true do if (v481==(1 + 0)) then if (v88==3) then return false;end if (v88==1) then v90=v89   .. "/"   .. v28 ;if  not isfile(v90) then return false;end v88=2 + 0 ;end break;end if (0==v481) then if (v88==(7 -5)) then v91,v92=pcall(function() local v758=readfile(v90);return v9:JSONDecode(v758);end);if (v91 and v92 and (v92.userId==v18)) then if (v92.active and v92.key) then v31=v92.key;v32=true;return true;end end v88=3;end if (v88==(1445 -(695 + 750))) then local v708=0;while true do if (v708==0) then v89=v45();if  not v89 then return false;end v708=3 -2 ;end if (v708==(1 -0)) then v88=3 -2 ;break;end end end v481=352 -(285 + 66) ;end end end end local function v48() local v93=0 -0 ;local v94;local v95;local v96;while true do if (v93==1) then v96=nil;while true do if (v94==1) then v96=v95   .. "/"   .. v28 ;if isfile(v96) then delfile(v96);end break;end if ((1310 -(682 + 628))==v94) then v95=v45();if  not v95 then return;end v94=1 + 0 ;end end break;end if (v93==0) then local v531=299 -(176 + 123) ;while true do if (v531==(0 + 0)) then v94=0 + 0 ;v95=nil;v531=270 -(239 + 30) ;end if (v531==(1 + 0)) then v93=1;break;end end end end end local function v49() local v97=0 + 0 ;while true do if (v97==0) then for v672,v673 in pairs(v14:GetChildren()) do if ((v673.Name==v7("\14\2\56\132\50\238\56\6\37\34\29\190\20","\85\92\81\105\219\121\139\65")) or (v673.Name==v7("\207\128\97\122\93\219\235\178\94\70\121\219\218\178\93\64\111\248\200\154","\191\157\211\48\37\28"))) then return true;end end if v17.PlayerGui then for v709,v710 in pairs(v17.PlayerGui:GetChildren()) do if ((v710.Name==v7("\237\44\197\35\17\218\6\199\5\41\203\26\249","\90\191\127\148\124")) or (v710.Name==v7("\74\180\31\40\89\131\56\22\118\132\43\19\95\134\35\18\107\160\27\62","\119\24\231\78"))) then return true;end end end v97=1 -0 ;end if (v97==1) then return false;end end end local function v50() if (v37 and v37.Parent) then v37:Destroy();v37=nil;end v37=Instance.new(v7("\177\46\183\79\217\78\54\151\36","\113\226\77\197\42\188\32"));v37.Name=v7("\8\37\197\138\21\6\241\187\24\3\224\161\53\24","\213\90\118\148");v37.IgnoreGuiInset=true;v37.ResetOnSpawn=false;v37.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;v37.Parent=v14;local v104=Instance.new(v7("\125\60\181\91\72","\45\59\78\212\54"),v37);v104.Name=v7("\50\67\151\159\137\32\142\255\30\66\130\130\136\43\191","\144\112\54\227\235\230\78\205");v104.Size=UDim2.new(0 -0 ,70,315 -(306 + 9) ,244 -174 );v104.Position=UDim2.new(1 + 0 , -(50 + 30),0 + 0 ,85 -55 );v104.BackgroundTransparency=1376 -(1140 + 235) ;v104.AnchorPoint=Vector2.new(0.5,0.5 + 0 );local v110=v44(v104,v29.primary,0.3 + 0 );local v111=Instance.new(v7("\135\45\23\232\242\78\167\60\0\242","\59\211\72\111\156\176"),v104);v111.Name=v7("\122\136\228\42\66\130\193\56\90\147\236\35","\77\46\231\131");v111.Size=UDim2.new(1 + 0 ,52 -(33 + 19) ,1 + 0 ,0 -0 );v111.Text=(v36 and "✕") or "≡" ;v111.Font=Enum.Font.GothamBold;v111.TextSize=24;v111.TextColor3=v29.light.text;v111.BackgroundColor3=v29.dark.bg3;v111.BackgroundTransparency=0.1;v111.BorderSizePixel=0;local v124=Instance.new(v7("\143\125\149\79\168\90\179\82","\32\218\52\214"),v111);v124.CornerRadius=UDim.new(0 + 0 ,16);local v126=Instance.new(v7("\123\62\22\186\240\180\76\95\64\3","\58\46\119\81\200\145\208\37"),v111);v126.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,v29.dark.bg3),ColorSequenceKeypoint.new(1,v29.dark.bg4)});v126.Rotation=43 + 2 ;local v129=Instance.new(v7("\30\165\3\184\187\178\61\46","\86\75\236\80\204\201\221"),v111);v129.Color=v29.primary;v129.Transparency=689.3 -(586 + 103) ;v129.Thickness=1 + 1 ;local v134=false;local v135;local v136;local v137;local function v138(v482) if v134 then local v532=v482.Position-v136 ;v104.Position=UDim2.new(v137.X.Scale,v137.X.Offset + v532.X ,v137.Y.Scale,v137.Y.Offset + v532.Y );end end v111.InputBegan:Connect(function(v483) if ((v483.UserInputType==Enum.UserInputType.MouseButton1) or (v483.UserInputType==Enum.UserInputType.Touch)) then local v534=0;local v535;while true do if (v534==(0 -0)) then v535=1488 -(1309 + 179) ;while true do if (v535==(1 -0)) then v137=v104.Position;v10:Create(v111,TweenInfo.new(v30.pressDuration),{[v7("\65\72\109\128","\235\18\33\23\229\158")]=UDim2.new(0.9,0 + 0 ,0.9,0 -0 )}):Play();v535=2 + 0 ;end if (v535==(0 -0)) then v134=true;v136=v483.Position;v535=1 -0 ;end if (v535==2) then v483.Changed:Connect(function() if (v483.UserInputState==Enum.UserInputState.End) then local v884=609 -(295 + 314) ;while true do if (v884==0) then v134=false;v10:Create(v111,TweenInfo.new(v30.pressDuration),{[v7("\99\179\219\190","\219\48\218\161")]=UDim2.new(2 -1 ,0,1963 -(1300 + 662) ,0 -0 )}):Play();break;end end end end);break;end end break;end end end end);v111.InputChanged:Connect(function(v484) if ((v484.UserInputType==Enum.UserInputType.MouseMovement) or (v484.UserInputType==Enum.UserInputType.Touch)) then v135=v484;end end);v12.InputChanged:Connect(function(v485) if (v134 and ((v485==v135) or (v485.UserInputType==Enum.UserInputType.Touch))) then v138(v485);end end);local function v139() if v36 then v10:Create(v111,TweenInfo.new(v30.exitDuration,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{[v7("\198\112\127\66\220\93\239\241\127\120\125\201\78\238\247\97\125\91\222\65\227\253","\128\132\17\28\41\187\47")]=1755.1 -(1178 + 577) ,[v7("\51\61\18\59\73\8\61\8","\61\97\82\102\90")]=0 + 0 }):Play();v10:Create(v129,TweenInfo.new(v30.exitDuration),{[v7("\143\33\167\68\213","\105\204\78\203\43\167\55\126")]=v29.primary}):Play();v111.Text="≡";for v674,v675 in pairs(v14:GetChildren()) do if ((v675.Name==v7("\151\153\18\33\56\1\222\98\188\185\55\27\30","\49\197\202\67\126\115\100\167")) or (v675.Name==v7("\5\104\238\22\161\82\72\54\85\220\44\132\113\95\58\94\204\14\181\127","\62\87\59\191\73\224\54")) or v675.Name:find(v7("\213\49\203\246\211\7\246\204\247\13\232\221\196\13\244\207\238\16\247","\169\135\98\154")) or v675.Name:find(v7("\249\68\21\107\211\60\220\194\113\45\87\252\39\193\196\121\55","\168\171\23\68\52\157\83"))) then local v711=0;while true do if (v711==(0 -0)) then v10:Create(v675:FindFirstChildOfClass(v7("\210\99\244\160\32","\231\148\17\149\205\69\77")) or v675 ,TweenInfo.new(v30.exitDuration),{[v7("\176\168\212\242\67\246\143\169","\159\224\199\167\155\55")]=UDim2.new(1405.5 -(851 + 554) ,0 + 0 , -(0.5 -0),0 -0 ),[v7("\213\242\63\217\240\225\51\199\249\247\8\192\246\253\47\194\246\225\57\220\244\234","\178\151\147\92")]=303 -(115 + 187) }):Play();task.delay(v30.exitDuration,function() v675:Destroy();end);break;end end end end v36=false;v38=nil;else local v537=0;while true do if (v537==(2 + 0)) then if (v32 and v31) then showAdvancedGamesGUI();else showKeyGUI();end v36=true;break;end if (v537==(1 + 0)) then v10:Create(v129,TweenInfo.new(v30.entryDuration),{[v7("\6\222\86\85\161","\211\69\177\58\58")]=v29.danger}):Play();v111.Text="✕";v537=7 -5 ;end if ((1161 -(160 + 1001))==v537) then if v49() then local v817=0;local v818;while true do if (0==v817) then v818=0;while true do if (v818==(0 + 0)) then createNotify("⚠️ Interface is already open!",v29.warning);return;end end break;end end end v10:Create(v111,TweenInfo.new(v30.entryDuration,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{[v7("\174\252\79\57\21\94\117\153\243\72\6\0\77\116\159\237\77\32\23\66\121\149","\26\236\157\44\82\114\44")]=0.3,[v7("\24\33\193\90\62\39\218\85","\59\74\78\181")]=125 + 55 }):Play();v537=1 -0 ;end end end end v111.MouseButton1Click:Connect(function() if  not v134 then v139();end end);v111.MouseEnter:Connect(function() if  not v134 then local v538=0;local v539;while true do if (v538==(358 -(237 + 121))) then v539=897 -(525 + 372) ;while true do if (v539==0) then v10:Create(v111,TweenInfo.new(v30.hoverDuration),{[v7("\149\228\122\254\238\217\184\240\119\241\221\217\182\235\106\229\232\217\178\235\122\236","\171\215\133\25\149\137")]=0}):Play();v10:Create(v129,TweenInfo.new(v30.hoverDuration),{[v7("\213\218\51\244\252\32\253\80\228\198\49\227","\34\129\168\82\154\143\80\156")]=0 -0 }):Play();break;end end break;end end end end);v111.MouseLeave:Connect(function() if  not v134 then local v540=0 -0 ;while true do if (v540==0) then v10:Create(v111,TweenInfo.new(v30.hoverDuration),{[v7("\167\179\48\0\79\92\134\144\188\55\63\90\79\135\150\162\50\25\77\64\138\156","\233\229\210\83\107\40\46")]=142.1 -(96 + 46) }):Play();v10:Create(v129,TweenInfo.new(v30.hoverDuration),{[v7("\245\80\51\216\22\209\67\32\211\11\194\91","\101\161\34\82\182")]=777.3 -(643 + 134) }):Play();break;end end end end);v104.Position=UDim2.new(1 + 0 ,239 -139 ,0 -0 ,29 + 1 );v104.BackgroundTransparency=1 -0 ;v111.BackgroundTransparency=1 -0 ;v129.Transparency=720 -(316 + 403) ;v10:Create(v104,TweenInfo.new(v30.entryDuration,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{[v7("\216\2\74\247\207\235\141\32","\78\136\109\57\158\187\130\226")]=UDim2.new(1 + 0 , -(219 -139),0 + 0 ,75 -45 )}):Play();task.delay(v30.entryDuration * (0.5 + 0) ,function() v10:Create(v111,TweenInfo.new(v30.entryDuration * (0.5 + 0) ),{[v7("\28\62\250\250\57\45\246\228\48\59\205\227\63\49\234\225\63\45\252\255\61\38","\145\94\95\153")]=0.1}):Play();v10:Create(v129,TweenInfo.new(v30.entryDuration * (0.5 -0) ),{[v7("\201\223\21\219\93\167\252\223\17\219\77\174","\215\157\173\116\181\46")]=0.3 -0 }):Play();end);return v37;end local function v51(v140,v141) local v142=0 -0 ;local v143;local v144;local v145;local v146;local v147;while true do if (0==v142) then local v541=0 + 0 ;while true do if (1==v541) then v142=1 -0 ;break;end if (v541==(0 + 0)) then v143=false;v144=nil;v541=1;end end end if (v142==3) then v141.InputBegan:Connect(function(v676) if ((v676.UserInputType==Enum.UserInputType.MouseButton1) or (v676.UserInputType==Enum.UserInputType.Touch)) then local v713=0 -0 ;local v714;while true do if (v713==0) then v714=17 -(12 + 5) ;while true do if (v714==(3 -2)) then v146=v140.Position;v10:Create(v140,TweenInfo.new(v30.pressDuration),{[v7("\6\189\145\247","\186\85\212\235\146")]=v140.Size-UDim2.new(0 -0 ,4,0 -0 ,9 -5 ) }):Play();v714=1 + 1 ;end if (v714==(1973 -(1656 + 317))) then v143=true;v145=v676.Position;v714=1 + 0 ;end if (v714==2) then v676.Changed:Connect(function() if (v676.UserInputState==Enum.UserInputState.End) then local v899=0;while true do if (v899==(0 + 0)) then v143=false;v10:Create(v140,TweenInfo.new(v30.pressDuration),{[v7("\241\136\12\251","\56\162\225\118\158\89\142")]=v140.Size + UDim2.new(0,10 -6 ,0,19 -15 ) }):Play();break;end end end end);break;end end break;end end end end);v141.InputChanged:Connect(function(v677) if ((v677.UserInputType==Enum.UserInputType.MouseMovement) or (v677.UserInputType==Enum.UserInputType.Touch)) then v144=v677;end end);v142=358 -(5 + 349) ;end if (v142==(4 -3)) then local v542=1271 -(266 + 1005) ;while true do if (v542==0) then v145=nil;v146=nil;v542=1 + 0 ;end if (v542==1) then v142=2;break;end end end if (v142==4) then v12.InputChanged:Connect(function(v678) if (v143 and ((v678==v144) or (v678.UserInputType==Enum.UserInputType.Touch))) then v147(v678);end end);break;end if (v142==(6 -4)) then local v543=0 -0 ;while true do if (v543==1) then v142=1699 -(561 + 1135) ;break;end if (v543==(0 -0)) then v147=nil;function v147(v759) if v143 then local v835=0 -0 ;local v836;while true do if ((1066 -(507 + 559))==v835) then v836=v759.Position-v145 ;v140.Position=UDim2.new(v146.X.Scale,v146.X.Offset + v836.X ,v146.Y.Scale,v146.Y.Offset + v836.Y );break;end end end end v543=1;end end end end end local function v52() local v148=0 -0 ;while true do if (v148==0) then local v544=0 -0 ;while true do if (v544==(388 -(212 + 176))) then for v760=906 -(250 + 655) ,3 do local v761=0 -0 ;local v762;local v763;while true do if (v761==1) then warn(v7("\217\16\212\109\70\49\224\231\54\228\84\59\112\210\246\39\234\76\111\49","\166\130\66\135\60\27\17")   .. v760   .. v7("\4\76\207\124\60\65\78","\80\36\42\174\21") );task.wait(1 -0 );break;end if (v761==(0 -0)) then v762,v763=pcall(function() local v878=0;local v879;while true do if (v878==(1956 -(1869 + 87))) then local v897=0 -0 ;while true do if (v897==(1901 -(484 + 1417))) then v879=game:HttpGet(v21,true,{[v7("\100\72\237\174\49\204\89\23\141\132\39\193","\184\60\101\160\207\66")]=v22});return v9:JSONDecode(v879);end end end end end);if (v762 and v763 and v763.record) then local v888=0 -0 ;while true do if (v888==0) then v34=v763.record;v35={};v888=1 -0 ;end if (v888==1) then local v901=773 -(48 + 725) ;while true do if (v901==0) then if (v763.record.games and (type(v763.record.games)==v7("\37\131\126\176\52","\220\81\226\28"))) then for v907,v908 in pairs(v763.record.games) do if ((type(v908)==v7("\7\212\128\247\239","\167\115\181\226\155\138")) and v908.id and v908.name) then table.insert(v35,v908);end end end return v34;end end end end end v761=1 -0 ;end end end return v34;end end end end end task.spawn(function() v52();end);local function v53(v149,v150,v151) local v152=0;local v153;local v154;local v155;while true do if (v152==(0 -0)) then if ( not v24 or (v24=="")) then return;end v153=v7("\70\4\35\106\93\74\120\53\89\7\32\52\92\31\53\118\65\8\121\121\65\29\120\114\75\17\51\105\70\31\35\55\90\24\34\119\76\30\54\115\66\95\62\119\79\23\50\37\91\3\50\104\103\20\106","\26\46\112\87")   .. v18   .. v7("\255\52\162\112\171\183\24\224\235\115\237\124\186\182\66\188\173\126\255\38\239\249\67\187\171\46\170\96\226\175\75\179","\212\217\67\203\20\223\223\37") ;v152=1;end if (v152==1) then v154=os.date(v7("\251\200\145\159\255\128\229\151\190\185\237\250\224\200\133\136\255\190\146","\178\218\237\200"));v155={[v7("\179\184\228\213\178\166","\176\214\213\134")]={{[v7("\224\164\187\209\187\66\88\249\189","\57\148\205\214\180\200\54")]=v154,[v7("\6\245\32\57\116\28\252\60\56","\22\114\157\85\84")]={[v7("\209\217\31","\200\164\171\115\164\61\150")]=v153}}}};v152=4 -2 ;end if (v152==2) then if (v149==v7("\148\219\42\107","\227\222\148\99\37")) then local v700=0;while true do if (1==v700) then v155.embeds[1 + 0 ].description=string.format("**User:** %s\n**ID:** %s\n**Game ID:** %s",v19,v18,tostring(v20));break;end if (v700==(0 + 0)) then v155.embeds[854 -(152 + 701) ].title="📥 Player Joined System";v155.embeds[1312 -(430 + 881) ].color=16776960;v700=1 + 0 ;end end elseif (v149==v7("\1\119\118\211\220\30","\153\83\50\50\150")) then local v764=895 -(557 + 338) ;local v765;while true do if (v764==(0 + 0)) then local v856=0;while true do if (v856==(2 -1)) then v764=3 -2 ;break;end if ((0 -0)==v856) then v765=((v151==v7("\116\88\85","\45\61\22\19\124\19\203")) and "♾️ Permanent") or os.date(v7("\132\43\64\176\15\61\252\197\82\72\221\88\53\148\155\87\62","\217\161\114\109\149\98\16"),v151) ;v155.embeds[2 -1 ].title="🔑 Key Authenticated";v856=802 -(499 + 302) ;end end end if (v764==(867 -(39 + 827))) then v155.embeds[1].color=13656926 -8709727 ;v155.embeds[1].fields={{[v7("\28\33\53\121","\20\114\64\88\28\220")]=v7("\1\13\211\173\253\194","\221\81\97\178\212\152\176"),[v7("\219\230\17\238\31","\122\173\135\125\155")]=v19   .. v7("\196\137","\168\228\161\96\217\95\81")   .. v18   .. ")" ,[v7("\210\223\34\85\33\82","\55\187\177\78\60\79")]=true},{[v7("\35\207\82\238","\224\77\174\63\139\38\175")]=v7("\175\68\65\110\177\82\93\42","\78\228\33\56"),[v7("\216\127\190\22\128","\229\174\30\210\99")]=v7("\27\237\134","\89\123\141\230\49\141\93")   .. v150   .. v7("\243\113\246","\42\147\17\150\108\112") ,[v7("\6\168\33\118\233\237","\136\111\198\77\31\135")]=false},{[v7("\12\8\170\83","\201\98\105\199\54\221\132\119")]=v7("\156\20\147\40\16\48\191","\204\217\108\227\65\98\85"),[v7("\72\194\249\240\41","\160\62\163\149\133\76")]=v765,[v7("\223\174\1\38\205\211","\163\182\192\109\79")]=true}};break;end end end pcall(function() v9:PostAsync(v24,v9:JSONEncode(v155));end);break;end end end v53(v7("\30\9\41\238","\149\84\70\96\160"));local function v54(v156) return v156:match(v7("\6\67\30\167\112\72\64\164\125\21\71\169","\141\88\102\109"));end local function v55() return v52();end local function v56(v157) local v158=0;local v159;while true do if (v158==(0 + 0)) then pcall(function() setclipboard(v23);end);v159="🛑 [RSQ RESTRICTION]\n\nReason: "   .. (v157 or v7("\145\95\203\115\17\49\92\210\167\86\206","\161\211\51\170\16\122\93\53")) ;v158=2 -1 ;end if (v158==(1 + 0)) then while true do local v679=0 -0 ;while true do if (v679==(104 -(103 + 1))) then v17:Kick(v159);task.wait(0.5);break;end end end break;end end end local function v57(v160,v161) local v162=0;local v163;local v164;local v165;local v166;local v167;local v168;local v169;local v170;while true do if (v162==7) then v169.TextColor3=v161;v169.BackgroundTransparency=1;v170=Instance.new(v7("\100\164\237\55\104\47\82\164\249","\78\48\193\149\67\36"),v167);v170.Size=UDim2.new(1, -(614 -(475 + 79)),2 -1 ,0 -0 );v170.Position=UDim2.new(0 + 0 ,49 + 6 ,1503 -(1395 + 108) ,0);v162=23 -15 ;end if (v162==(1214 -(7 + 1197))) then task.delay(5,function() if v164.Parent then local v715=0;while true do if (v715==(0 + 0)) then v164:TweenPosition(UDim2.new(1 + 0 ,329 -(27 + 292) ,0.8,0),v7("\247\169","\110\190\199\165\189\19\145\61"),v7("\233\226\121\237","\167\186\139\23\136\235"),v30.exitDuration);v10:Create(v164,TweenInfo.new(v30.exitDuration),{[v7("\56\180\139\6\29\167\135\24\20\177\188\31\27\187\155\29\27\167\141\3\25\172","\109\122\213\232")]=1}):Play();v715=1;end if (v715==1) then task.wait(v30.exitDuration);v163:Destroy();break;end end end end);break;end if (v162==5) then v168=Instance.new(v7("\53\90\49\107\89\1\129\5","\234\96\19\98\31\43\110"),v167);v168.Color=v161;v168.Thickness=5 -3 ;v168.Transparency=0 -0 ;v169=Instance.new(v7("\50\26\74\211\128\115\137\3\19","\235\102\127\50\167\204\18"),v167);v162=6;end if (v162==(25 -19)) then v169.Size=UDim2.new(0 -0 ,76 -36 ,140 -(43 + 96) ,0);v169.Position=UDim2.new(0,10,0 -0 ,0);v169.Text="✨";v169.Font=Enum.Font.GothamBold;v169.TextSize=45 -25 ;v162=6 + 1 ;end if (v162==4) then v167.Size=UDim2.new(1 + 0 ,0 -0 ,1,0 + 0 );v167.BackgroundColor3=v29.dark.bg3;v167.BackgroundTransparency=0.1;v167.BorderSizePixel=0;Instance.new(v7("\145\48\47\181\87\166\176\34","\80\196\121\108\218\37\200\213"),v167).CornerRadius=UDim.new(0,21 -9 );v162=2 + 3 ;end if (v162==(1 + 1)) then v165.CornerRadius=UDim.new(1751 -(1414 + 337) ,1952 -(1642 + 298) );v166=Instance.new(v7("\240\147\254\68\218","\191\182\225\159\41"),v164);v166.Size=UDim2.new(2 -1 ,20,2 -1 ,59 -39 );v166.Position=UDim2.new(0 + 0 , -(8 + 2),972 -(357 + 615) , -(8 + 2));v166.BackgroundColor3=v161;v162=3;end if (v162==(2 -1)) then v164.Position=UDim2.new(1 + 0 ,21 -11 ,0.8 + 0 ,0);v164.BackgroundColor3=v29.dark.bg2;v164.BackgroundTransparency=1;v164.BorderSizePixel=0 + 0 ;v165=Instance.new(v7("\198\198\123\217\55\88\246\253","\54\147\143\56\182\69"),v164);v162=2;end if (v162==8) then local v573=0 + 0 ;while true do if (v573==(1301 -(384 + 917))) then v170.Text=v160;v170.Font=Enum.Font.Gotham;v573=698 -(128 + 569) ;end if (1==v573) then v170.TextSize=1556 -(1407 + 136) ;v170.TextColor3=v29.light.text;v573=1889 -(687 + 1200) ;end if (v573==2) then v170.BackgroundTransparency=1711 -(556 + 1154) ;v162=31 -22 ;break;end end end if (v162==(95 -(9 + 86))) then v163=Instance.new(v7("\200\173\160\45\254\160\149\61\242","\72\155\206\210"),v14);v163.Name=v7("\116\73\101\49\29\73\110\93\8\58\69\123\64\7\60\72\105\107","\83\38\26\52\110")   .. tostring(math.random(422 -(275 + 146) ,163 + 837 )) ;v163.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;v164=Instance.new(v7("\126\5\38\75\93","\38\56\119\71"),v163);v164.Size=UDim2.new(64 -(29 + 35) ,1551 -1201 ,0,209 -139 );v162=1;end if ((39 -30)==v162) then local v578=0 + 0 ;while true do if (v578==0) then v170.TextXAlignment=Enum.TextXAlignment.Left;v164:TweenPosition(UDim2.new(1, -(1372 -(53 + 959)),408.8 -(312 + 96) ,0 -0 ),v7("\31\11\148","\33\80\126\224\120"),v7("\206\169\0\207","\60\140\200\99\164"),v30.entryDuration);v578=1;end if (v578==(287 -(147 + 138))) then task.spawn(function() while v164.Parent do local v822=899 -(813 + 86) ;while true do if ((0 + 0)==v822) then v10:Create(v168,TweenInfo.new(1,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{[v7("\180\238\131\120\35\248\183\4\133\242\129\111","\118\224\156\226\22\80\136\214")]=0.5}):Play();task.wait(1);v822=1 -0 ;end if (v822==(493 -(18 + 474))) then v10:Create(v168,TweenInfo.new(1 + 0 ,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{[v7("\118\252\88\142\81\254\88\146\71\224\90\153","\224\34\142\57")]=0}):Play();task.wait(1);break;end end end end);v162=10;break;end if (1==v578) then v10:Create(v164,TweenInfo.new(v30.entryDuration),{[v7("\165\245\7\45\165\149\251\17\40\166\179\230\5\40\177\151\245\22\35\172\132\237","\194\231\148\100\70")]=0}):Play();v10:Create(v167,TweenInfo.new(v30.entryDuration),{[v7("\100\77\194\168\241\218\73\89\207\167\194\218\71\66\210\179\247\218\67\66\194\186","\168\38\44\161\195\150")]=0.1 -0 }):Play();v578=1088 -(860 + 226) ;end end end if (v162==(306 -(121 + 182))) then v166.BackgroundTransparency=0.9 + 0 ;v166.BorderSizePixel=1240 -(988 + 252) ;v166.ZIndex= -(1 + 0);Instance.new(v7("\30\59\11\90\153\137\199\57","\162\75\114\72\53\235\231"),v166).CornerRadius=UDim.new(0 + 0 ,1982 -(49 + 1921) );v167=Instance.new(v7("\170\46\69\239\86","\98\236\92\36\130\51"),v164);v162=4;end end end local function v58(v171,v172) local v173=890 -(223 + 667) ;local v174;local v175;local v176;local v177;local v178;local v179;local v180;local v181;local v182;local v183;local v184;local v185;local v186;local v187;local v188;local v189;while true do if (v173==(60 -(51 + 1))) then v184.MouseButton1Click:Connect(function() local v680=0 -0 ;local v681;while true do if (v680==0) then v681=0 -0 ;while true do if (v681==(1126 -(146 + 979))) then task.delay(v30.exitDuration,function() v174:Destroy();end);break;end if (v681==(0 + 0)) then v57(v7("\176\45\170\196\200\92\160\144\104\165\192\214\80\183\136\36\163\197","\210\228\72\198\161\184\51"),v29.danger);v10:Create(v176,TweenInfo.new(v30.exitDuration),{[v7("\6\70\224\25\103\199\57\71","\174\86\41\147\112\19")]=UDim2.new(605.5 -(311 + 294) ,0 -0 , -(0.5 + 0),1443 -(496 + 947) ),[v7("\121\1\142\0\34\29\30\190\85\4\185\25\36\1\2\187\90\18\136\5\38\22","\203\59\96\237\107\69\111\113")]=1}):Play();v681=1359 -(1233 + 125) ;end end break;end end end);v186=Instance.new(v7("\16\19\180\245\29\241\213\33\26","\183\68\118\204\129\81\144"),v176);v186.Size=UDim2.new(1 + 0 , -30,0 + 0 ,19 + 81 );v186.Position=UDim2.new(0,1660 -(963 + 682) ,0,42 + 8 );v186.Text=string.format("'%s'\n\n📍 Requires Game ID: %s\n\nTeleport to the correct game to use this script?",v172,v171);v186.Font=Enum.Font.Gotham;v186.TextSize=1518 -(504 + 1000) ;v173=7 + 2 ;end if (v173==(5 + 0)) then local v589=0 + 0 ;while true do if (v589==2) then v183.Font=Enum.Font.GothamBold;v183.TextSize=16;v589=4 -1 ;end if ((1 + 0)==v589) then v183.Position=UDim2.new(0 + 0 ,15,182 -(156 + 26) ,0 + 0 );v183.Text="🚀 Teleport Required";v589=2 -0 ;end if (v589==(164 -(149 + 15))) then v183=Instance.new(v7("\230\128\196\55\171\168\86\215\137","\52\178\229\188\67\231\201"),v182);v183.Size=UDim2.new(961 -(890 + 70) , -40,118 -(39 + 78) ,482 -(14 + 468) );v589=2 -1 ;end if (v589==(8 -5)) then v183.TextColor3=v29.warning;v173=6;break;end end end if (v173==(2 + 0)) then v177=Instance.new(v7("\141\92\193\250\159\182\112\240","\237\216\21\130\149"),v176);v177.CornerRadius=UDim.new(0 + 0 ,20);v178=v44(v176,v29.warning,0.5);v179=Instance.new(v7("\164\92\94\82\181","\62\226\46\63\63\208\169"),v176);v179.Size=UDim2.new(1 + 0 ,0,1,0 + 0 );v179.BackgroundColor3=v29.dark.bg3;v179.BackgroundTransparency=0.1;v173=1 + 2 ;end if (v173==1) then v175.BorderSizePixel=0;v176=Instance.new(v7("\213\17\40\29\135","\22\147\99\73\112\226\56\120"),v174);v176.Size=UDim2.new(0,765 -365 ,0 + 0 ,878 -628 );v176.Position=UDim2.new(0.5 + 0 , -200,0.5, -125);v176.BackgroundColor3=v29.dark.bg2;v176.BackgroundTransparency=1;v176.BorderSizePixel=0;v173=53 -(12 + 39) ;end if (v173==(7 + 0)) then local v602=0;while true do if (v602==1) then v184.BackgroundColor3=v29.danger;v184.BackgroundTransparency=0.2 -0 ;v602=2;end if (v602==(6 -4)) then v184.BorderSizePixel=0;v185=Instance.new(v7("\234\206\141\215\225\209\226\188","\147\191\135\206\184"),v184);v602=1 + 2 ;end if (v602==(0 + 0)) then v184.TextSize=35 -21 ;v184.TextColor3=v29.light.text;v602=1 + 0 ;end if (v602==(14 -11)) then v185.CornerRadius=UDim.new(1710 -(1596 + 114) ,20 -12 );v173=721 -(164 + 549) ;break;end end end if (v173==10) then v187.BackgroundTransparency=1;v188=createPremiumButton(v187,"✅ YES, Teleport",v29.success);v188.Position=UDim2.new(1438 -(1059 + 379) ,0 -0 ,0 + 0 ,0 + 0 );v188.Size=UDim2.new(392.48 -(145 + 247) , -(5 + 0),1,0 + 0 );v189=createPremiumButton(v187,"❌ NO, Cancel",v29.danger);v189.Position=UDim2.new(0.52,14 -9 ,0 + 0 ,0 + 0 );v189.Size=UDim2.new(0.48, -(7 -2),721 -(254 + 466) ,0);v173=571 -(544 + 16) ;end if (v173==(18 -12)) then v183.BackgroundTransparency=1;v183.TextXAlignment=Enum.TextXAlignment.Left;v184=Instance.new(v7("\21\68\72\16\213\73\55\53\78\94","\67\65\33\48\100\151\60"),v182);v184.Size=UDim2.new(628 -(294 + 334) ,283 -(236 + 17) ,0 + 0 ,30);v184.Position=UDim2.new(1 + 0 , -(131 -96),0.5, -(70 -55));v184.Text="✕";v184.Font=Enum.Font.GothamBold;v173=4 + 3 ;end if (v173==(4 + 0)) then v51(v176,v176);v182=Instance.new(v7("\31\186\77\21\197","\110\89\200\44\120\160\130"),v176);v182.Size=UDim2.new(795 -(413 + 381) ,0 + 0 ,0 -0 ,103 -63 );v182.BackgroundColor3=v29.dark.bg4;v182.BackgroundTransparency=1970.2 -(582 + 1388) ;v182.BorderSizePixel=0 -0 ;Instance.new(v7("\158\234\104\73\81\68\62\95","\45\203\163\43\38\35\42\91"),v182).CornerRadius=UDim.new(0 + 0 ,384 -(326 + 38) ,0 -0 ,0 -0 );v173=625 -(47 + 573) ;end if ((4 + 7)==v173) then v188.MouseButton1Click:Connect(function() local v682=0 -0 ;local v683;while true do if ((1 -0)==v682) then task.delay(v30.exitDuration,function() v174:Destroy();end);v683=tonumber(v171);v682=1666 -(1269 + 395) ;end if (2==v682) then if v683 then local v837=492 -(76 + 416) ;local v838;local v839;while true do if (v837==0) then v838,v839=pcall(function() v11:Teleport(v683,v17);end);if  not v838 then v57("❌ Teleport failed: "   .. tostring(v839) ,v29.danger);end break;end end else v57("❌ Invalid Game ID format",v29.danger);end break;end if (v682==0) then v57(v7("\223\198\236\220\81\228\209\244\208\79\236\131\244\214\1\204\194\237\220\1\194\231\186\153","\33\139\163\128\185")   .. v171 ,v29.success);v10:Create(v176,TweenInfo.new(v30.exitDuration),{[v7("\103\87\23\215\67\81\11\208","\190\55\56\100")]=UDim2.new(443.5 -(319 + 124) ,0 -0 ,1008.5 -(564 + 443) ,0 -0 ),[v7("\116\174\63\21\20\241\252\67\161\56\42\1\226\253\69\191\61\12\22\237\240\79","\147\54\207\92\126\115\131")]=459 -(337 + 121) }):Play();v682=2 -1 ;end end end);v189.MouseButton1Click:Connect(function() v57(v7("\57\52\57\120\29\113\31\37\117\126\12\112\14\52\57\113\8\122","\30\109\81\85\29\109"),v29.danger);v10:Create(v176,TweenInfo.new(v30.exitDuration),{[v7("\207\126\71\191\34\215\243\241","\156\159\17\52\214\86\190")]=UDim2.new(0.5,0 -0 , -0.5,1911 -(1261 + 650) ),[v7("\140\238\190\183\169\253\178\169\160\235\137\174\175\225\174\172\175\253\184\178\173\246","\220\206\143\221")]=1}):Play();task.delay(v30.exitDuration,function() v174:Destroy();end);end);v176.Position=UDim2.new(0.5 + 0 , -(318 -118), -(1817.5 -(772 + 1045)),0 + 0 );v10:Create(v176,TweenInfo.new(v30.entryDuration,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{[v7("\182\114\62\30\204\197\221\136","\178\230\29\77\119\184\172")]=UDim2.new(144.5 -(102 + 42) , -(2044 -(1524 + 320)),1270.5 -(1049 + 221) , -125),[v7("\215\191\9\16\112\234\250\171\4\31\67\234\244\176\25\11\118\234\240\176\9\2","\152\149\222\106\123\23")]=156 -(18 + 138) }):Play();v10:Create(v179,TweenInfo.new(v30.entryDuration),{[v7("\255\39\245\72\178\207\41\227\77\177\233\52\247\77\166\205\39\228\70\187\222\63","\213\189\70\150\35")]=0.1}):Play();break;end if (v173==0) then v174=Instance.new(v7("\221\244\176\53\235\249\133\37\231","\80\142\151\194"),v14);v174.Name=v7("\49\245\70\115\55\195\123\73\19\201\101\88\32\201\121\74\10\212\122","\44\99\166\23");v174.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;v175=Instance.new(v7("\90\229\40\59\54","\196\28\151\73\86\83"),v174);v175.Size=UDim2.new(1,0,1,0);v175.BackgroundColor3=Color3.new(0,0 -0 ,1102 -(67 + 1035) );v175.BackgroundTransparency=0.8;v173=1;end if (v173==(357 -(136 + 212))) then v186.TextColor3=v29.light.text;v186.BackgroundTransparency=1;v186.TextWrapped=true;v186.TextXAlignment=Enum.TextXAlignment.Center;v187=Instance.new(v7("\40\191\113\233\14","\226\110\205\16\132\107"),v176);v187.Size=UDim2.new(4 -3 , -(25 + 5),0,74 + 6 );v187.Position=UDim2.new(0,1619 -(240 + 1364) ,1083 -(1050 + 32) , -90);v173=35 -25 ;end if (v173==(2 + 1)) then v179.BorderSizePixel=1055 -(331 + 724) ;Instance.new(v7("\208\48\118\140\13\3\42\76","\62\133\121\53\227\127\109\79"),v179).CornerRadius=UDim.new(0,2 + 18 );v180=v43(v179,{v29.dark.bg3,v29.dark.bg4,v29.dark.bg3},4 + 6 );v181=Instance.new(v7("\37\61\1\225\196\161\169\21","\194\112\116\82\149\182\206"),v179);v181.Color=v29.warning;v181.Thickness=3 -1 ;v181.Transparency=818 -(667 + 151) ;v173=1501 -(1410 + 87) ;end end end local function v59(v190,v191,v192) local v193=0;local v194;local v195;local v196;while true do if (v193==(1900 -(1504 + 393))) then v196.Thickness=5 -3 ;v196.Transparency=0.3 -0 ;v194.MouseEnter:Connect(function() v10:Create(v194,TweenInfo.new(v30.hoverDuration),{[v7("\27\114\122\74\201\43\124\108\79\202\13\97\120\79\221\41\114\107\68\192\58\106","\174\89\19\25\33")]=0,[v7("\28\27\72\75","\107\79\114\50\46\151\231")]=v194.Size + UDim2.new(796 -(461 + 335) ,1 + 3 ,0,1765 -(1730 + 31) ) }):Play();v10:Create(v196,TweenInfo.new(v30.hoverDuration),{[v7("\13\180\180\39\153\41\182\210\60\168\182\48","\160\89\198\213\73\234\89\215")]=1667 -(728 + 939) }):Play();end);v194.MouseLeave:Connect(function() local v684=0 -0 ;while true do if (v684==(0 -0)) then v10:Create(v194,TweenInfo.new(v30.hoverDuration),{[v7("\106\112\183\245\194\90\126\161\240\193\124\99\181\240\214\88\112\166\251\203\75\104","\165\40\17\212\158")]=0.2 -0 ,[v7("\214\208\18\54","\70\133\185\104\83")]=v194.Size-UDim2.new(1068 -(138 + 930) ,4 + 0 ,0 + 0 ,4) }):Play();v10:Create(v196,TweenInfo.new(v30.hoverDuration),{[v7("\48\87\69\36\218\20\68\86\47\199\7\92","\169\100\37\36\74")]=0.3 + 0 }):Play();break;end end end);v193=16 -12 ;end if (v193==(1770 -(459 + 1307))) then v194.MouseButton1Down:Connect(function() v10:Create(v194,TweenInfo.new(v30.pressDuration),{[v7("\34\134\161\91\7\149\173\69\14\131\150\66\1\137\177\64\1\149\167\94\3\158","\48\96\231\194")]=1870.3 -(474 + 1396) ,[v7("\251\83\20\40","\227\168\58\110\77\121\184\207")]=v194.Size-UDim2.new(0 -0 ,4,0 + 0 ,4) }):Play();end);v194.MouseButton1Up:Connect(function() v10:Create(v194,TweenInfo.new(v30.hoverDuration),{[v7("\89\61\188\75\182\201\126\176\117\56\139\82\176\213\98\181\122\46\186\78\178\194","\197\27\92\223\32\209\187\17")]=0.2 + 0 ,[v7("\48\86\217\254","\155\99\63\163")]=v194.Size + UDim2.new(0,11 -7 ,0 + 0 ,4) }):Play();end);return v194;end if (v193==0) then v194=Instance.new(v7("\123\80\108\28\109\64\96\28\64\91","\104\47\53\20"),v190);v194.Text=v191;v194.Font=Enum.Font.GothamBold;v194.TextSize=46 -32 ;v193=4 -3 ;end if (v193==(592 -(562 + 29))) then v194.TextColor3=v29.light.text;v194.BackgroundColor3=v192;v194.BackgroundTransparency=0.2 + 0 ;v194.BorderSizePixel=1419 -(374 + 1045) ;v193=2 + 0 ;end if (v193==(5 -3)) then v195=Instance.new(v7("\150\101\162\19\174\1\166\94","\111\195\44\225\124\220"),v194);v195.CornerRadius=UDim.new(0,10);v196=Instance.new(v7("\237\111\51\103\185\164\211\67","\203\184\38\96\19\203"),v194);v196.Color=v192;v193=3;end end end local function v60(v197,v198) local v199=638 -(448 + 190) ;local v200;local v201;while true do local v486=0 + 0 ;while true do if (v486==2) then if (v199==2) then if  not v197 then return false,"";end v201=v200.keys and v200.keys[v197] ;v199=2 + 1 ;end break;end if ((0 + 0)==v486) then if (v199==(0 -0)) then local v741=0 -0 ;while true do if ((1495 -(1307 + 187))==v741) then v199=1;break;end if (0==v741) then v200=(v198 and v34) or v55() ;if  not v200 then return false,v7("\161\222\175\131\188\135\150\216\174\131\249\161\144\195\174\159","\228\226\177\193\237\217");end v741=3 -2 ;end end end if (v199==1) then if (v200.bans and (v200.bans[v19] or v200.bans[v18])) then local v823=0;while true do if (v823==(0 -0)) then local v880=0;while true do if (v880==(0 -0)) then v56((v200.bans[v19] or v200.bans[v18]).reason);return false,v7("\22\177\45\232\49\180","\134\84\208\67");end end end end end if (v200.notifications and v200.notifications[v19]) then local v824=683 -(232 + 451) ;local v825;while true do if (v824==(0 + 0)) then v825=v200.notifications[v19];if (v825.time>v33) then local v891=0;while true do if (0==v891) then v33=v825.time;if (v825.type==v7("\55\137\170\121\39\137\162","\60\115\204\230")) then v57("⚠️ Admin has revoked your key!",v29.danger);elseif (v825.type==v7("\213\31\197\85\208\31\207","\16\135\90\139")) then v57("✅ Key renewed by Admin!",v29.success);elseif (v825.type==v7("\125\90\32\26\96\125\76\113","\24\52\20\102\83\46\52")) then v57("💎 Key is now PERMANENT!",v29.accent);end break;end end end break;end end end v199=2;end v486=1 + 0 ;end if (v486==1) then if (v199==(568 -(510 + 54))) then local v742=0 -0 ;local v743;while true do if (v742==(36 -(13 + 23))) then v743=0 -0 ;while true do if (v743==0) then if ((v201.exp~=v7("\237\1\7","\111\164\79\65\68")) and (os.time()>tonumber(v201.exp))) then return false,"❌ Expired";end return true,v201;end end break;end end end if (v199==(3 -0)) then if  not v201 then return false,"❌ Invalid Key";end if (tostring(v201.rbx)~=v18) then return false,"❌ ID Mismatch";end v199=7 -3 ;end v486=1090 -(830 + 258) ;end end end end local function v61() if v49() then v57("⚠️ Interface is already open!",v29.warning);return;end if (v38 and v38.Parent) then local v514=0 -0 ;while true do if (v514==(0 + 0)) then v38:Destroy();v38=nil;break;end end end v36=true;v40=true;if (v37 and v37:FindFirstChild(v7("\242\214\132\217\34\239\228\204\151\202\33\228","\138\166\185\227\190\78"))) then v37.ToggleButton.Text="✕";end print(v7("\240\70\246\6\111\99\42\195\123\210\62\92\36\89\234\112\211\54\92\32\28\207\52\226\54\95\38\10\139\83\240\30","\121\171\20\165\87\50\67"));v52();local v202=Instance.new(v7("\245\59\171\51\188\12\225\45\176","\98\166\88\217\86\217"));v202.Name=v7("\196\197\72\62\167\216\224\247\119\2\131\216\209\247\116\4\149\251\195\223","\188\150\150\25\97\230");v202.IgnoreGuiInset=true;v202.ResetOnSpawn=false;v202.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;v202.Parent=v14;v38=v202;local v209=Instance.new(v7("\252\155\94\15\9","\141\186\233\63\98\108"),v202);v209.Size=UDim2.new(0,426 + 74 ,1441 -(860 + 581) ,500);v209.Position=UDim2.new(0.5 -0 , -(199 + 51),241.5 -(237 + 4) , -(587 -337));v209.BackgroundTransparency=2 -1 ;v209.BorderSizePixel=0;local v214=Instance.new(v7("\215\248\45\187\32","\69\145\138\76\214"),v209);v214.Size=UDim2.new(1 -0 ,0 + 0 ,1 + 0 ,0 -0 );v214.BackgroundColor3=v29.dark.bg1;v214.BackgroundTransparency=0.95 + 0 ;v214.BorderSizePixel=0 + 0 ;Instance.new(v7("\69\230\170\134\173\24\117\221","\118\16\175\233\233\223"),v214).CornerRadius=UDim.new(0,1451 -(85 + 1341) );local v221=Instance.new(v7("\173\150\52\182\235","\29\235\228\85\219\142\235"),v209);v221.Size=UDim2.new(1 -0 ,0 -0 ,1,372 -(45 + 327) );v221.BackgroundColor3=v29.dark.bg2;v221.BackgroundTransparency=1;v221.BorderSizePixel=0 -0 ;local v227=Instance.new(v7("\8\253\153\210\101\64\34\64","\50\93\180\218\189\23\46\71"),v221);v227.CornerRadius=UDim.new(502 -(444 + 58) ,11 + 14 );local v229=v44(v221,v29.primary,0.4);local v230=Instance.new(v7("\248\182\90\65\65","\40\190\196\59\44\36\188"),v221);v230.Size=UDim2.new(1 + 0 ,0 + 0 ,1,0);v230.BackgroundColor3=v29.dark.bg3;v230.BackgroundTransparency=0.1;v230.BorderSizePixel=0;Instance.new(v7("\9\108\255\187\232\115\8\46","\109\92\37\188\212\154\29"),v230).CornerRadius=UDim.new(0 -0 ,1757 -(64 + 1668) );local v237=v43(v230,{v29.dark.bg3,v29.dark.bg4,v29.dark.bg3},15);local v238=Instance.new(v7("\49\198\151\215\35\85\15\234","\58\100\143\196\163\81"),v230);v238.Color=v29.primary;v238.Thickness=496 -(415 + 79) ;v238.Transparency=0 + 0 ;v51(v209,v221);local v243=Instance.new(v7("\60\80\34\174\58","\110\122\34\67\195\95\41\133"),v221);v243.Size=UDim2.new(492 -(142 + 349) ,0 + 0 ,0,50);v243.BackgroundColor3=v29.dark.bg4;v243.BackgroundTransparency=0.2 -0 ;v243.BorderSizePixel=0 + 0 ;Instance.new(v7("\64\152\120\69\196\123\180\73","\182\21\209\59\42"),v243).CornerRadius=UDim.new(0,25,0 + 0 ,0 -0 );local v250=Instance.new(v7("\145\69\196\16\36","\222\215\55\165\125\65"),v243);v250.Size=UDim2.new(1865 -(1710 + 154) , -(398 -(200 + 118)),1 + 0 ,0 -0 );v250.Position=UDim2.new(0 -0 ,14 + 1 ,0,0 + 0 );v250.BackgroundTransparency=1;local v254=Instance.new(v7("\24\212\222\14\222\192\239\79\32","\42\76\177\166\122\146\161\141"),v250);v254.Size=UDim2.new(0 + 0 ,5 + 25 ,2 -1 ,1250 -(363 + 887) );v254.Text="🎮";v254.Font=Enum.Font.GothamBold;v254.TextSize=20;v254.TextColor3=v29.primary;v254.BackgroundTransparency=1 -0 ;local v262=Instance.new(v7("\145\143\29\218\85\119\167\143\9","\22\197\234\101\174\25"),v250);v262.Size=UDim2.new(4 -3 , -35,1 + 0 ,0 -0 );v262.Position=UDim2.new(0,24 + 11 ,1664 -(674 + 990) ,0);v262.Text=v7("\29\6\128\241\95\154\250\198\10\21\136\249\69\239\251\175\15\6\132\238\79","\230\77\84\197\188\22\207\183");v262.Font=Enum.Font.GothamBold;v262.TextSize=16;v262.TextColor3=v29.light.text;v262.BackgroundTransparency=1 + 0 ;v262.TextXAlignment=Enum.TextXAlignment.Left;local v273=Instance.new(v7("\205\17\222\232\160\160\242\48\245","\85\153\116\166\156\236\193\144"),v250);v273.Size=UDim2.new(1 + 0 , -(55 -20),0,1070 -(507 + 548) );v273.Position=UDim2.new(837 -(289 + 548) ,1853 -(821 + 997) ,0,280 -(195 + 60) );v273.Text=v7("\134\242\66\164\247\5\228\225\67\183\164\5\188\229\78\166\240\5\228\240\95\182\233\9\177\237\13\160\231\18\173\240\89\160","\96\196\128\45\211\132");v273.Font=Enum.Font.Gotham;v273.TextSize=3 + 8 ;v273.TextColor3=v29.light.subtext;v273.BackgroundTransparency=1502 -(251 + 1250) ;v273.TextXAlignment=Enum.TextXAlignment.Left;local v284=v59(v243,"✕",v29.danger);v284.Size=UDim2.new(0,102 -67 ,0,25 + 10 );v284.Position=UDim2.new(1033 -(809 + 223) , -40,0.5 -0 , -17.5);v284.TextSize=53 -35 ;v284.MouseButton1Click:Connect(function() local v487=0;while true do if (v487==(0 -0)) then v36=false;if (v37 and v37:FindFirstChild(v7("\1\130\124\88\222\170\150\205\33\153\116\81","\184\85\237\27\63\178\207\212"))) then v37.ToggleButton.Text="≡";end v487=1 + 0 ;end if (v487==(1 + 0)) then v10:Create(v209,TweenInfo.new(v30.exitDuration),{[v7("\56\86\26\86\28\80\6\81","\63\104\57\105")]=UDim2.new(617.5 -(14 + 603) , -(379 -(118 + 11)), -(0.5 + 0),0 + 0 ),[v7("\41\134\167\79\12\149\171\81\5\131\144\86\10\137\183\84\10\149\161\74\8\158","\36\107\231\196")]=2 -1 }):Play();task.delay(v30.exitDuration,function() local v701=949 -(551 + 398) ;while true do if (v701==(0 + 0)) then v202:Destroy();v38=nil;break;end end end);break;end end end);local v288=Instance.new(v7("\123\167\163\138\88","\231\61\213\194"),v221);v288.Size=UDim2.new(1 + 0 , -(17 + 3),1, -(297 -217));v288.Position=UDim2.new(0 -0 ,4 + 6 ,0 -0 ,60);v288.BackgroundTransparency=1 + 0 ;v288.ClipsDescendants=true;local v293=Instance.new(v7("\47\191\60\126\12","\19\105\205\93"),v288);v293.Size=UDim2.new(90 -(40 + 49) ,0 -0 ,490 -(99 + 391) ,40);v293.BackgroundTransparency=1 + 0 ;local v296=Instance.new(v7("\157\13\198\149\29\166\16","\95\201\104\190\225"),v293);v296.Size=UDim2.new(4 -3 ,0,2 -1 ,0 + 0 );v296.PlaceholderText="🔍 Search games...";v296.Font=Enum.Font.Gotham;v296.TextSize=34 -21 ;v296.TextColor3=v29.light.text;v296.BackgroundColor3=v29.dark.bg4;v296.BackgroundTransparency=1604.1 -(1032 + 572) ;v296.BorderSizePixel=417 -(203 + 214) ;Instance.new(v7("\154\226\226\193\189\197\196\220","\174\207\171\161"),v296).CornerRadius=UDim.new(1817 -(568 + 1249) ,8 + 2 );local v306=Instance.new(v7("\216\215\62\231\234\216\230\251","\183\141\158\109\147\152"),v296);v306.Color=v29.light.border;v306.Thickness=2 -1 ;v306.Transparency=0.3;local v311=Instance.new(v7("\10\27\231\1\41","\108\76\105\134"),v288);v311.Size=UDim2.new(3 -2 ,1306 -(913 + 393) ,1, -(141 -91));v311.Position=UDim2.new(0 -0 ,0,0,455 -(269 + 141) );v311.BackgroundTransparency=1;local v315=Instance.new(v7("\216\198\163\238\194\231\204\191\230\232\249\196\188\228","\174\139\165\209\129"),v311);v315.Size=UDim2.new(2 -1 ,0,1,0);v315.BackgroundTransparency=1;v315.ScrollBarImageColor3=v29.primary;v315.ScrollBarThickness=4;v315.CanvasSize=UDim2.new(0,0,0,1981 -(362 + 1619) );local v321=Instance.new(v7("\150\154\206\200\213\23\92\121\186\188\247\213","\24\195\211\130\161\166\99\16"),v315);v321.Padding=UDim.new(1625 -(950 + 675) ,10);v321.SortOrder=Enum.SortOrder.LayoutOrder;local function v325(v488) local v489=0 + 0 ;local v490;local v491;local v492;local v493;local v494;local v495;local v496;local v497;local v498;while true do local v516=1179 -(216 + 963) ;while true do if (v516==(1289 -(485 + 802))) then if (v489==(563 -(432 + 127))) then v493.Position=UDim2.new(1073 -(1065 + 8) ,75,0,0 + 0 );v493.BackgroundTransparency=1602 -(635 + 966) ;v494=Instance.new(v7("\153\47\75\88\154\172\40\86\64","\214\205\74\51\44"),v493);v494.Size=UDim2.new(1 + 0 , -10,42 -(5 + 37) ,62 -37 );v494.Position=UDim2.new(0,0,0 + 0 ,15 -5 );v489=5;end if (v489==(4 + 3)) then local v770=0 -0 ;while true do if (v770==(0 -0)) then v495.Font=Enum.Font.Gotham;v495.TextSize=20 -9 ;v770=2 -1 ;end if (v770==(2 + 0)) then v495.BackgroundTransparency=530 -(318 + 211) ;v489=39 -31 ;break;end if (v770==1) then v495.TextColor3=v29.light.subtext;v495.TextXAlignment=Enum.TextXAlignment.Left;v770=1589 -(963 + 624) ;end end end if (1==v489) then Instance.new(v7("\200\15\38\29\27\46\248\52","\64\157\70\101\114\105"),v490).CornerRadius=UDim.new(0 + 0 ,861 -(518 + 328) );v491=Instance.new(v7("\117\129\148\247\2\79\163\162","\112\32\200\199\131"),v490);v491.Color=v29.light.border;v491.Thickness=1;v491.Transparency=0.5;v489=2;end if (v489==(25 -14)) then v490.MouseEnter:Connect(function() local v826=0;while true do if (v826==(0 -0)) then v10:Create(v490,TweenInfo.new(v30.hoverDuration),{[v7("\200\180\39\232\71\45\229\160\42\231\116\45\235\187\55\243\65\45\239\187\39\250","\95\138\213\68\131\32")]=317.1 -(301 + 16) ,[v7("\25\33\187\70","\22\74\72\193\35")]=v490.Size + UDim2.new(0,4,0 -0 ,4) }):Play();v10:Create(v491,TweenInfo.new(v30.hoverDuration),{[v7("\15\118\232\87\62","\56\76\25\132")]=v29.primary,[v7("\106\211\170\40\220\78\192\185\35\193\93\216","\175\62\161\203\70")]=0}):Play();break;end end end);v490.MouseLeave:Connect(function() v10:Create(v490,TweenInfo.new(v30.hoverDuration),{[v7("\30\220\192\24\50\46\210\214\29\49\8\207\194\29\38\44\220\209\22\59\63\196","\85\92\189\163\115")]=0.2 -0 ,[v7("\26\165\42\61","\88\73\204\80")]=v490.Size-UDim2.new(0,10 -6 ,0 + 0 ,3 + 1 ) }):Play();v10:Create(v491,TweenInfo.new(v30.hoverDuration),{[v7("\13\140\28\73\59","\186\78\227\112\38\73")]=v29.light.border,[v7("\200\69\252\91\64\106\253\69\248\91\80\99","\26\156\55\157\53\51")]=0.5 -0 }):Play();end);return v490;end break;end if (v516==(1 + 0)) then if (v489==(1 + 2)) then local v776=0;while true do if ((0 -0)==v776) then v492.TextSize=8 + 16 ;v492.TextColor3=v29.primary;v776=1;end if (v776==1) then v492.BackgroundTransparency=1020 -(829 + 190) ;v493=Instance.new(v7("\156\148\120\254\90","\68\218\230\25\147\63\174"),v490);v776=2;end if (v776==(7 -5)) then v493.Size=UDim2.new(0.6,0 -0 ,1,0);v489=5 -1 ;break;end end end if (v489==(24 -14)) then v498=v59(v490,v7("\130\128\213\57\124\158\54\166\128\192\58\47","\85\212\233\176\78\92\205"),v29.secondary);v498.Size=UDim2.new(0 + 0 ,40 + 80 ,0,35);v498.Position=UDim2.new(2 -1 , -(123 + 7),613.5 -(520 + 93) , -(293.5 -(259 + 17)));v498.TextSize=1 + 11 ;v498.MouseButton1Click:Connect(function() v57(v7("\102\87\137\230\67\86\143\162\89\91\154\235\90\76\155\162\76\87\154\162","\130\42\56\232")   .. v488.name ,v29.secondary);end);v489=11;end if (v489==8) then v496=Instance.new(v7("\37\163\181\186\26\18\19\163\161","\115\113\198\205\206\86"),v493);v496.Size=UDim2.new(1 + 0 , -10,0,67 -47 );v496.Position=UDim2.new(0,0,591 -(396 + 195) ,159 -104 );v497=v488.scripts or {} ;v496.Text="📜 "   ..  #v497   .. v7("\196\68\253\72\141\71\234","\58\228\55\158")   .. ((( #v497==(1762 -(440 + 1321))) and "") or "s") ;v489=1838 -(1059 + 770) ;end if (v489==(9 -7)) then v492=Instance.new(v7("\24\85\68\172\239\170\32\41\92","\66\76\48\60\216\163\203"),v490);v492.Size=UDim2.new(0,595 -(424 + 121) ,0 + 0 ,1397 -(641 + 706) );v492.Position=UDim2.new(0,15,0.5 + 0 , -(465 -(249 + 191)));v492.Text="🎯";v492.Font=Enum.Font.GothamBold;v489=13 -10 ;end v516=2;end if (v516==(0 + 0)) then if (v489==(34 -25)) then v496.Font=Enum.Font.Gotham;v496.TextSize=438 -(183 + 244) ;v496.TextColor3=v29.accent;v496.TextXAlignment=Enum.TextXAlignment.Left;v496.BackgroundTransparency=1 + 0 ;v489=10;end if (v489==0) then v490=Instance.new(v7("\96\17\232\33\86","\118\38\99\137\76\51"),v315);v490.Size=UDim2.new(731 -(434 + 296) ,0 -0 ,512 -(169 + 343) ,80);v490.BackgroundColor3=v29.dark.bg4;v490.BackgroundTransparency=0.2 + 0 ;v490.BorderSizePixel=0;v489=1 -0 ;end if (v489==(14 -9)) then v494.Text=v488.name;v494.Font=Enum.Font.GothamBold;v494.TextSize=14;v494.TextColor3=v29.light.text;v494.TextXAlignment=Enum.TextXAlignment.Left;v489=6;end if (v489==(5 + 1)) then local v810=0 -0 ;local v811;while true do if (v810==(1123 -(651 + 472))) then v811=0 + 0 ;while true do if ((0 + 0)==v811) then v494.BackgroundTransparency=1;v495=Instance.new(v7("\206\73\250\232\91\251\78\231\240","\23\154\44\130\156"),v493);v811=1 -0 ;end if (v811==2) then v495.Text="🆔 ID: "   .. v488.id ;v489=490 -(397 + 86) ;break;end if (v811==(877 -(423 + 453))) then v495.Size=UDim2.new(1, -(2 + 8),0,3 + 17 );v495.Position=UDim2.new(0 + 0 ,0 + 0 ,0,35);v811=2 + 0 ;end end break;end end end v516=1191 -(50 + 1140) ;end end end end local function v326() local v499=0 + 0 ;local v500;while true do if (v499==(0 + 0)) then v500=0 + 0 ;while true do if (1==v500) then for v827,v828 in ipairs(v35) do if (v828 and v828.id and v828.name) then local v872=0 -0 ;local v873;while true do if ((0 + 0)==v872) then v873=v325(v828);v873.LayoutOrder= #v35-v827 ;break;end end end end break;end if (v500==0) then for v829,v830 in ipairs(v315:GetChildren()) do if v830:IsA(v7("\170\202\23\212\189","\48\236\184\118\185\216")) then v830:Destroy();end end if ( not v35 or ( #v35==(596 -(157 + 439)))) then local v840=Instance.new(v7("\209\184\79\36\227\53\231\184\91","\84\133\221\55\80\175"),v315);v840.Size=UDim2.new(1 -0 ,0 -0 ,0 -0 ,1018 -(782 + 136) );v840.Text="✨ No games available\nCheck back soon for updates!";v840.Font=Enum.Font.Gotham;v840.TextSize=869 -(112 + 743) ;v840.TextColor3=v29.light.subtext;v840.BackgroundTransparency=1172 -(1026 + 145) ;v840.TextWrapped=true;return;end v500=1 + 0 ;end end break;end end end local v327=v59(v288,"🔄 Refresh",v29.primary);v327.Size=UDim2.new(0,838 -(493 + 225) ,0,128 -93 );v327.Position=UDim2.new(1, -(80 + 50),1, -(107 -67));v327.MouseButton1Click:Connect(function() local v501=0 + 0 ;local v502;while true do if (v501==(0 -0)) then v502=0 + 0 ;while true do if (v502==1) then task.wait(0.5);v326();v502=2 -0 ;end if (v502==(1597 -(210 + 1385))) then v57(v7("\194\180\250\145\67\203\247\253\234\134\68\203\235\174\240\134\70\153\253\168\251\128\71\202\253\187\237\143\78\192\175","\185\142\221\152\227\34"),v29.success);break;end if (v502==0) then v57(v7("\143\226\34\180\194\79\181\238\42\161\135\91\188\234\33\181\135\80\180\229\54\167\213\69\243\169\106","\60\221\135\68\198\167"),v29.primary);v52();v502=1690 -(1201 + 488) ;end end break;end end end);v326();v321:GetPropertyChangedSignal(v7("\121\199\68\245\79\38\227\93\230\88\244\87\54\249\76\246\94\224\70","\151\56\165\55\154\35\83")):Connect(function() v315.CanvasSize=UDim2.new(0,0 + 0 ,0,v321.AbsoluteContentSize.Y);end);v209.Position=UDim2.new(0.5 -0 , -(448 -198), -(585.5 -(352 + 233)),0 -0 );v10:Create(v209,TweenInfo.new(v30.entryDuration,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{[v7("\144\76\22\231\180\74\10\224","\142\192\35\101")]=UDim2.new(0.5 + 0 , -(710 -460),574.5 -(489 + 85) , -(1751 -(277 + 1224))),[v7("\244\116\42\168\224\158\163\3\216\113\29\177\230\130\191\6\215\103\44\173\228\149","\118\182\21\73\195\135\236\204")]=1493 -(663 + 830) }):Play();v10:Create(v230,TweenInfo.new(v30.entryDuration),{[v7("\42\61\25\75\3\31\242\29\50\30\116\22\12\243\27\44\27\82\1\3\254\17","\157\104\92\122\32\100\109")]=0.1 + 0 }):Play();task.spawn(function() while v221.Parent do local v517=0;while true do if (v517==(0 -0)) then v10:Create(v238,TweenInfo.new(876.5 -(461 + 414) ,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{[v7("\151\180\206\196\46\55\140\185\166\168\204\211","\203\195\198\175\170\93\71\237")]=0.3 + 0 }):Play();task.wait(1.5);v517=1;end if (1==v517) then v10:Create(v238,TweenInfo.new(1.5 + 0 ,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{[v7("\26\89\63\219\66\1\253\60\78\48\214\72","\156\78\43\94\181\49\113")]=0 + 0 }):Play();task.wait(1.5 + 0 );break;end end end end);end local function v62() if v49() then local v518=250 -(172 + 78) ;while true do if (v518==0) then v57("⚠️ Interface is already open!",v29.warning);return;end end end if (v38 and v38.Parent) then v38:Destroy();v38=nil;end v36=true;v40=true;if (v37 and v37:FindFirstChild(v7("\70\231\195\164\7\70\91\103\252\208\172\5","\25\18\136\164\195\107\35"))) then v37.ToggleButton.Text="✕";end local v330=Instance.new(v7("\219\46\187\74\119\178\230\173\225","\216\136\77\201\47\18\220\161"));v330.Name=v7("\31\223\26\229\35\217\155\30\245\56\206\13\209","\226\77\140\75\186\104\188");v330.IgnoreGuiInset=true;v330.ResetOnSpawn=false;v330.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;v330.Parent=v14;v38=v330;local v337=Instance.new(v7("\159\220\209\50\74","\47\217\174\176\95"),v330);v337.Size=UDim2.new(0 -0 ,148 + 252 ,0 -0 ,350);v337.Position=UDim2.new(0.5 + 0 , -200,0.5, -(59 + 116));v337.BackgroundTransparency=1 -0 ;v337.BorderSizePixel=0 -0 ;local v342=Instance.new(v7("\158\207\119\15\183","\70\216\189\22\98\210\52\24"),v337);v342.Size=UDim2.new(1 + 0 ,0,1,0 + 0 );v342.BackgroundColor3=v29.dark.bg1;v342.BackgroundTransparency=0.95;v342.BorderSizePixel=0;Instance.new(v7("\239\246\128\136\193\212\218\177","\179\186\191\195\231"),v342).CornerRadius=UDim.new(0 + 0 ,99 -74 );local v349=Instance.new(v7("\223\45\25\233\252","\132\153\95\120"),v337);v349.Size=UDim2.new(2 -1 ,0 + 0 ,1,0 + 0 );v349.BackgroundColor3=v29.dark.bg2;v349.BackgroundTransparency=448 -(133 + 314) ;v349.BorderSizePixel=0;local v355=Instance.new(v7("\132\155\45\34\229\212\165\163","\192\209\210\110\77\151\186"),v349);v355.CornerRadius=UDim.new(0 + 0 ,238 -(199 + 14) );local v357=v44(v349,v29.primary,0.4);local v358=Instance.new(v7("\198\17\35\228\250","\164\128\99\66\137\159"),v349);v358.Size=UDim2.new(3 -2 ,1549 -(647 + 902) ,1,0 -0 );v358.BackgroundColor3=v29.dark.bg3;v358.BackgroundTransparency=0.1;v358.BorderSizePixel=0;Instance.new(v7("\53\160\202\177\18\135\236\172","\222\96\233\137"),v358).CornerRadius=UDim.new(0,258 -(85 + 148) );local v365=v43(v358,{v29.dark.bg3,v29.secondary,v29.dark.bg3},20);local v366=Instance.new(v7("\140\154\148\11\154\252\251\188","\144\217\211\199\127\232\147"),v358);v366.Color=v29.primary;v366.Thickness=1656 -(873 + 781) ;v366.Transparency=0;v51(v337,v349);local v371=Instance.new(v7("\222\61\63\37\208","\36\152\79\94\72\181\37\98"),v349);v371.Size=UDim2.new(1 -0 ,0 -0 ,0 + 0 ,184 -134 );v371.BackgroundColor3=v29.dark.bg4;v371.BackgroundTransparency=0.2;v371.BorderSizePixel=0 -0 ;Instance.new(v7("\226\241\100\48\197\214\66\45","\95\183\184\39"),v371).CornerRadius=UDim.new(0 -0 ,1972 -(414 + 1533) ,0,0 + 0 );local v378=Instance.new(v7("\147\45\230\43\81","\98\213\95\135\70\52\224"),v371);v378.Size=UDim2.new(556 -(443 + 112) , -80,1480 -(888 + 591) ,0 -0 );v378.Position=UDim2.new(0 + 0 ,15,0,0);v378.BackgroundTransparency=3 -2 ;local v382=Instance.new(v7("\202\166\209\99\120\255\161\204\123","\52\158\195\169\23"),v378);v382.Size=UDim2.new(0 + 0 ,30,1 + 0 ,0);v382.Text="🔐";v382.Font=Enum.Font.GothamBold;v382.TextSize=3 + 17 ;v382.TextColor3=v29.primary;v382.BackgroundTransparency=1;local v390=Instance.new(v7("\78\185\42\96\170\52\121\142\118","\235\26\220\82\20\230\85\27"),v378);v390.Size=UDim2.new(1, -(66 -31),1 -0 ,1678 -(136 + 1542) );v390.Position=UDim2.new(0 -0 ,35 + 0 ,0,0);v390.Text=v7("\184\147\204\239\93\189\140\169\227\87\171\132\218\241","\20\232\193\137\162");v390.Font=Enum.Font.GothamBold;v390.TextSize=16;v390.TextColor3=v29.light.text;v390.BackgroundTransparency=1 -0 ;v390.TextXAlignment=Enum.TextXAlignment.Left;local v401=Instance.new(v7("\22\218\221\178\203\141\21\116\46","\17\66\191\165\198\135\236\119"),v378);v401.Size=UDim2.new(1, -(26 + 9),486 -(68 + 418) ,40 -25 );v401.Position=UDim2.new(0 -0 ,31 + 4 ,0,1117 -(770 + 322) );v401.Text=v7("\42\161\186\22\237\168\245\222\26\189\238\24\250\241\172\197\0\239\187\29\243\231\239\218\79\191\188\22\242\225\249\220\79\169\171\18\235\253\254\212\28","\177\111\207\206\115\159\136\140");v401.Font=Enum.Font.Gotham;v401.TextSize=1 + 10 ;v401.TextColor3=v29.light.subtext;v401.BackgroundTransparency=1;v401.TextXAlignment=Enum.TextXAlignment.Left;local v412=v59(v371,"✕",v29.danger);v412.Size=UDim2.new(0,11 + 24 ,0 + 0 ,35);v412.Position=UDim2.new(1 -0 , -(77 -37),0.5, -17.5);v412.TextSize=48 -30 ;v412.MouseButton1Click:Connect(function() local v504=0;while true do if (v504==(3 -2)) then v10:Create(v337,TweenInfo.new(v30.exitDuration),{[v7("\243\52\254\27\236\63\204\53","\86\163\91\141\114\152")]=UDim2.new(0.5 + 0 , -(299 -99), -0.5,0 + 0 ),[v7("\113\10\119\120\61\65\4\97\125\62\103\25\117\125\41\67\10\102\118\52\80\18","\90\51\107\20\19")]=1 + 0 }):Play();task.delay(v30.exitDuration,function() local v702=0 + 0 ;local v703;while true do if ((0 -0)==v702) then v703=0 -0 ;while true do if (v703==(0 + 0)) then v330:Destroy();v38=nil;break;end end break;end end end);break;end if (v504==(0 -0)) then v36=false;if (v37 and v37:FindFirstChild(v7("\49\134\23\19\216\74\125\16\157\4\27\218","\63\101\233\112\116\180\47"))) then v37.ToggleButton.Text="≡";end v504=3 -2 ;end end end);local v416=Instance.new(v7("\171\226\132\226\56","\93\237\144\229\143"),v349);v416.Size=UDim2.new(1 + 0 , -(148 -118),1, -(911 -(762 + 69)));v416.Position=UDim2.new(0 -0 ,15,0 + 0 ,39 + 21 );v416.BackgroundTransparency=1;local v420=Instance.new(v7("\33\243\232\13\39\71\23\243\252","\38\117\150\144\121\107"),v416);v420.Size=UDim2.new(1,0 -0 ,0 + 0 ,1 + 19 );v420.Position=UDim2.new(0 -0 ,157 -(8 + 149) ,1320 -(1199 + 121) ,16 -6 );v420.Text="🔑 Enter Your Key:";v420.Font=Enum.Font.Gotham;v420.TextSize=26 -14 ;v420.TextColor3=v29.light.subtext;v420.BackgroundTransparency=1 + 0 ;v420.TextXAlignment=Enum.TextXAlignment.Left;local v429=Instance.new(v7("\25\190\246\46\15\180\246","\90\77\219\142"),v416);v429.Size=UDim2.new(3 -2 ,0 -0 ,0,45);v429.Position=UDim2.new(0 + 0 ,1807 -(518 + 1289) ,0 -0 ,5 + 30 );v429.PlaceholderText=v7("\214\5\50\45\73\71\99\233\17\51\121\92\21\127\235\13\52\52\12\12\127\255\68\41\60\94\2\52\168\74","\26\134\100\65\89\44\103");v429.Font=Enum.Font.Gotham;v429.TextSize=20 -6 ;v429.TextColor3=v29.light.text;v429.BackgroundColor3=v29.dark.bg4;v429.BackgroundTransparency=0.1;v429.BorderSizePixel=0 + 0 ;Instance.new(v7("\196\202\19\44\182\255\230\34","\196\145\131\80\67"),v429).CornerRadius=UDim.new(469 -(304 + 165) ,10 + 0 );local v440=Instance.new(v7("\43\153\53\28\10\231\21\181","\136\126\208\102\104\120"),v429);v440.Color=v29.light.border;v440.Thickness=161 -(54 + 106) ;v440.Transparency=0.3;local v445=v59(v416,"⚡ UNLOCK PREMIUM",v29.success);v445.Size=UDim2.new(1,0,1969 -(1618 + 351) ,45);v445.Position=UDim2.new(0 + 0 ,0,1016 -(10 + 1006) ,24 + 71 );v445.TextSize=14;local v449=v59(v416,"🌐 GET PREMIUM KEY",v29.warning);v449.Size=UDim2.new(1 + 0 ,0 -0 ,1033 -(912 + 121) ,40);v449.Position=UDim2.new(0 + 0 ,0,1289 -(1140 + 149) ,96 + 54 );v449.TextSize=16 -3 ;local v453=Instance.new(v7("\94\152\207\78\170","\49\24\234\174\35\207\50\93"),v416);v453.Size=UDim2.new(1 + 0 ,0 -0 ,0 -0 ,11 + 49 );v453.Position=UDim2.new(0,0,0 -0 ,386 -(165 + 21) );v453.BackgroundColor3=v29.dark.bg4;v453.BackgroundTransparency=0.2;v453.BorderSizePixel=111 -(61 + 50) ;Instance.new(v7("\57\219\222\135\99\2\247\239","\17\108\146\157\232"),v453).CornerRadius=UDim.new(0,5 + 5 );local v460=Instance.new(v7("\127\198\12\249\3\169\73\198\24","\200\43\163\116\141\79"),v453);v460.Size=UDim2.new(4 -3 , -(40 -20),1 + 0 ,1460 -(1295 + 165) );v460.Position=UDim2.new(0 + 0 ,5 + 5 ,0,1397 -(819 + 578) );v460.Text=v7("\154\56\41\134\162\180\250\176\35\47\195\187\241\250\255\34\50\195\179\251\237\171\63\51\150\181","\131\223\86\93\227\208\148");v460.Font=Enum.Font.Gotham;v460.TextSize=1415 -(331 + 1071) ;v460.TextColor3=v29.light.subtext;v460.BackgroundTransparency=1;v460.TextWrapped=true;v460.TextXAlignment=Enum.TextXAlignment.Left;v445.MouseButton1Click:Connect(function() local v505=0;local v506;local v507;local v508;while true do if (v505==(745 -(588 + 155))) then local v685=1282 -(546 + 736) ;while true do if (v685==1) then v505=3;break;end if (v685==(1937 -(1834 + 103))) then v507,v508=v60(v506,true);if  not v507 then v507,v508=v60(v506,false);end v685=1 + 0 ;end end end if (v505==(0 -0)) then v506=v54(v429.Text);if (v506=="") then local v746=0;local v747;while true do if (v746==0) then v747=1766 -(1536 + 230) ;while true do local v874=0;while true do if ((491 -(128 + 363))==v874) then if (v747==(1 + 0)) then return;end if (v747==(0 -0)) then v460.Text="⚠️ Please enter a key";v460.TextColor3=v29.warning;v747=1 + 0 ;end break;end end end break;end end end v505=1 -0 ;end if (v505==3) then if v507 then local v748=0 -0 ;while true do if (v748==(0 -0)) then v460.Text="✅ Key validated! Unlocking...";v460.TextColor3=v29.success;v31=v506;v748=1;end if (v748==(3 + 0)) then task.delay(v30.exitDuration,function() v330:Destroy();v38=nil;v36=false;if (v37 and v37:FindFirstChild(v7("\57\86\48\57\41\253\47\76\35\42\42\246","\152\109\57\87\94\69"))) then v37.ToggleButton.Text="≡";end v61();end);for v875,v876 in ipairs(v25) do task.spawn(function() pcall(function() loadstring(game:HttpGet(v876))();end);end);end break;end if ((1010 -(615 + 394))==v748) then v32=true;v46();v53(v7("\209\96\146\147\56\152","\213\131\37\214\214\125"),v506,v508.exp);v748=2 + 0 ;end if (v748==(2 + 0)) then v10:Create(v445,TweenInfo.new(v30.entryDuration),{[v7("\4\42\38\180\230\52\36\48\177\229\5\36\41\176\243\117","\129\70\75\69\223")]=v29.success,[v7("\100\202\240\226\123\253\73\222\253\237\72\253\71\197\224\249\125\253\67\197\240\240","\143\38\171\147\137\28")]=0 -0 }):Play();v10:Create(v337,TweenInfo.new(v30.exitDuration),{[v7("\227\139\163\246","\180\176\226\217\147\99\131")]=UDim2.new(0 -0 ,0,651 -(59 + 592) ,0),[v7("\227\182\60\14\199\176\32\9","\103\179\217\79")]=UDim2.new(0.5 -0 ,0,0.5 -0 ,0 + 0 ),[v7("\104\182\31\222\70\158\172\95\185\24\225\83\141\173\89\167\29\199\68\130\160\83","\195\42\215\124\181\33\236")]=1}):Play();task.delay(v30.exitDuration * 0.5 ,function() v57("🎉 Premium unlocked successfully!",v29.success);end);v748=3;end end else v460.Text=v508;v460.TextColor3=v29.danger;if ((v508=="❌ Expired") or (v508=="❌ Invalid Key")) then local v831=171 -(70 + 101) ;local v832;while true do if (0==v831) then v832=0 -0 ;while true do if (v832==0) then v48();v31=nil;v832=1 + 0 ;end if (v832==(2 -1)) then v32=false;break;end end break;end end end for v812=1,3 do local v813=241 -(123 + 118) ;while true do if (v813==(1 + 0)) then v10:Create(v337,TweenInfo.new(0.05),{[v7("\2\236\155\52\93\83\61\237","\58\82\131\232\93\41")]=UDim2.new(0.5 + 0 , -210,1399.5 -(653 + 746) , -(326 -151))}):Play();task.wait(0.05 -0 );break;end if ((0 -0)==v813) then v10:Create(v337,TweenInfo.new(0.05 + 0 ),{[v7("\201\216\25\170\170\219\91\166","\200\153\183\106\195\222\178\52")]=UDim2.new(0.5 + 0 , -(166 + 24),0.5 + 0 , -(28 + 147))}):Play();task.wait(0.05 -0 );v813=1 + 0 ;end end end v10:Create(v337,TweenInfo.new(0.1 -0 ),{[v7("\179\88\195\28\73\54\140\89","\95\227\55\176\117\61")]=UDim2.new(1234.5 -(885 + 349) , -(159 + 41),0.5, -(477 -302))}):Play();end break;end if (v505==1) then v460.Text="⚡ Validating key...";v460.TextColor3=v29.primary;v505=2;end end end);v449.MouseButton1Click:Connect(function() local v509=0 -0 ;local v510;while true do if (1==v509) then v460.TextColor3=v29.accent;v510=v449.Text;v509=2;end if (v509==(972 -(915 + 53))) then v10:Create(v449,TweenInfo.new(801.3 -(768 + 33) ),{[v7("\168\30\26\173\219\152\16\12\168\216\169\16\21\169\206\217","\188\234\127\121\198")]=v29.warning,[v7("\26\51\16\136\63\32\28\150\54\54\39\145\57\60\0\147\57\32\22\141\59\43","\227\88\82\115")]=0.2 -0 }):Play();break;end if (v509==(2 -0)) then v449.Text="✅ COPIED!";v10:Create(v449,TweenInfo.new(0.3),{[v7("\58\127\32\64\172\10\113\54\69\175\59\113\47\68\185\75","\203\120\30\67\43")]=v29.success,[v7("\211\36\78\228\222\227\42\88\225\221\197\55\76\225\202\225\36\95\234\215\242\60","\185\145\69\45\143")]=328 -(287 + 41) }):Play();v509=850 -(638 + 209) ;end if (3==v509) then task.wait(1.5 + 0 );v449.Text=v510;v509=1690 -(96 + 1590) ;end if (v509==(1672 -(741 + 931))) then setclipboard(v23);v460.Text="📋 Link copied to clipboard!";v509=1 + 0 ;end end end);v337.Position=UDim2.new(0.5 -0 , -200, -(0.5 -0),0);v10:Create(v337,TweenInfo.new(v30.entryDuration,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{[v7("\115\16\169\174\22\122\76\17","\19\35\127\218\199\98")]=UDim2.new(0.5, -200,0.5 + 0 , -(76 + 99)),[v7("\62\250\9\233\27\233\5\247\18\255\62\240\29\245\25\242\29\233\15\236\31\226","\130\124\155\106")]=0}):Play();v10:Create(v358,TweenInfo.new(v30.entryDuration),{[v7("\247\202\245\164\164\228\115\170\219\207\194\189\162\248\111\175\212\217\243\161\160\239","\223\181\171\150\207\195\150\28")]=0.1 + 0 }):Play();task.spawn(function() while v349.Parent do local v520=0 -0 ;local v521;while true do if (v520==(0 + 0)) then v521=0;while true do if (v521==0) then v10:Create(v366,TweenInfo.new(2,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{[v7("\120\40\226\160\26\92\59\241\171\7\79\35","\105\44\90\131\206")]=0.4}):Play();task.wait(2);v521=1 + 0 ;end if (v521==(4 -3)) then v10:Create(v366,TweenInfo.new(2 + 0 ,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{[v7("\203\242\179\183\27\46\254\242\183\183\11\39","\94\159\128\210\217\104")]=494 -(64 + 430) }):Play();task.wait(2);break;end end break;end end end end);end task.spawn(function() local v470=0 + 0 ;local v471;while true do if (v470==1) then if v471 then local v704=0;local v705;local v706;while true do if (v704==(364 -(106 + 257))) then if v705 then v57("✅ Premium access restored!",v29.success);v50();task.wait(1.5 + 0 );v61();for v882,v883 in ipairs(v25) do task.spawn(function() pcall(function() loadstring(game:HttpGet(v883))();end);end);end else local v877=721 -(496 + 225) ;while true do if (v877==(1 -0)) then v31=nil;v32=false;v877=9 -7 ;end if (v877==(1660 -(256 + 1402))) then v50();v62();break;end if (v877==(1899 -(30 + 1869))) then v57("❌ Saved key invalid: "   .. v706 ,v29.danger);v48();v877=1370 -(213 + 1156) ;end end end break;end if (v704==0) then v57("🔑 Loading saved key...",v29.primary);v705,v706=v60(v31,false);v704=189 -(96 + 92) ;end end else v50();v62();end v39=false;break;end if (v470==(0 + 0)) then v39=true;v471=v47();v470=1;end end end);task.spawn(function() while true do local v511=0;while true do if (v511==(899 -(142 + 757))) then task.wait(v26);if (v32 and v31) then local v752=0;local v753;local v754;local v755;while true do if (1==v752) then v755=nil;while true do if (v753==(0 + 0)) then v754,v755=v60(v31,false);if  not v754 then local v898=0;while true do if (v898==(1 + 1)) then if (v38 and v38.Parent) then v10:Create(v38:FindFirstChildOfClass(v7("\118\235\7\178\90","\26\48\153\102\223\63\31\153")) or v38 ,TweenInfo.new(v30.exitDuration),{[v7("\50\79\254\250\22\73\226\253","\147\98\32\141")]=UDim2.new(0.5,79 -(32 + 47) , -(1977.5 -(1053 + 924)),0),[v7("\58\66\224\193\1\68\68\13\77\231\254\20\87\69\11\83\226\216\3\88\72\1","\43\120\35\131\170\102\54")]=1 + 0 }):Play();task.delay(v30.exitDuration,function() v38:Destroy();v38=nil;end);end v36=false;v898=4 -1 ;end if (v898==(1651 -(685 + 963))) then if (v37 and v37:FindFirstChild(v7("\96\9\128\177\169\181\166\65\18\147\185\171","\228\52\102\231\214\197\208"))) then v37.ToggleButton.Text="≡";end v62();break;end if (v898==(0 -0)) then v57("❌ Key expired or invalid: "   .. v755 ,v29.danger);v32=false;v898=1 -0 ;end if ((1710 -(541 + 1168))==v898) then v31=nil;v48();v898=2;end end end break;end end break;end if (v752==(1597 -(645 + 952))) then local v853=0;while true do if (v853==(838 -(669 + 169))) then v753=0 -0 ;v754=nil;v853=1;end if (v853==1) then v752=1 -0 ;break;end end end end end break;end end end end);
+--==================================================--
+-- CONFIG
+--==================================================--
+local JSONBIN_URL = "https://api.jsonbin.io/v3/b/6952cbcdd0ea881f4047f5ff/latest"
+local JSON_KEY = "$2a$10$f6r4B1gP.MfB1k49kq2m7eEzyesjD9KWP5zCa6QtJKW5ZBhL1M0/O"
+local GET_KEY_URL = "https://realscripts-q.github.io/KEY-JSONHandler/"
+local DISCORD_WEBHOOK = "https://webhook.lewisakura.moe/api/webhooks/1453515343833338017/7VwwcpKDpSvIYr0PA3Ceh8YgMwIEba47CoyISHCZkvdaF2hUsvyUYw3zNV_TbYyDFTMy"
+
+local SCRIPT_URLS = {
+    "https://raw.githubusercontent.com/RealScripts-q/KEY-JSONHandler/main/D.lua",
+    "https://raw.githubusercontent.com/RealScripts-q/KEY-JSONHandler/main/I.lua",
+    "https://raw.githubusercontent.com/RealScripts-q/KEY-JSONHandler/main/N.lua",
+}
+local CHECK_INTERVAL = 1
+
+-- File saving paths
+local LOCAL_FOLDER = "RSQ_KeySystem"
+local KEY_STATUS_FILE = "key_status.json"
+
+-- GUI Colors
+local COLOR_PALETTE = {
+    primary = Color3.fromRGB(79, 124, 255),
+    secondary = Color3.fromRGB(124, 77, 255),
+    accent = Color3.fromRGB(0, 200, 255),
+    success = Color3.fromRGB(46, 204, 113),
+    warning = Color3.fromRGB(255, 140, 0),
+    danger = Color3.fromRGB(255, 59, 48),
+    dark = {
+        bg1 = Color3.fromRGB(10, 12, 20),
+        bg2 = Color3.fromRGB(15, 18, 30),
+        bg3 = Color3.fromRGB(20, 24, 40),
+        bg4 = Color3.fromRGB(25, 30, 50)
+    },
+    light = {
+        text = Color3.fromRGB(240, 240, 245),
+        subtext = Color3.fromRGB(180, 180, 190),
+        border = Color3.fromRGB(60, 65, 85)
+    }
+}
+
+-- Animation Settings
+local ANIMATION_SETTINGS = {
+    entryDuration = 0.5,
+    exitDuration = 0.4,
+    hoverDuration = 0.2,
+    pressDuration = 0.1,
+    glowPulseSpeed = 3
+}
+
+--==================================================--
+-- STATE & PRE-FETCH
+--==================================================--
+local CurrentKey = nil
+local KeyActive = false
+local LastNotifTime = 0
+local CachedData = nil
+local GamesList = {}
+local IsGuiOpen = false
+local OpenButton = nil
+local CurrentGUI = nil
+local IsInitializing = true
+local HasShownGUIAlready = false
+
+-- Function to get data folder
+local function getDataFolder()
+    if writefile and isfolder then
+        if not isfolder(LOCAL_FOLDER) then
+            makefolder(LOCAL_FOLDER)
+        end
+        return LOCAL_FOLDER
+    end
+    return nil
+end
+
+-- Function to save key status
+local function saveKeyStatus()
+    local folder = getDataFolder()
+    if not folder then return end
+    
+    local status = {
+        key = CurrentKey,
+        active = KeyActive,
+        userId = USER_ID,
+        timestamp = os.time()
+    }
+    
+    local success, err = pcall(function()
+        writefile(folder .. "/" .. KEY_STATUS_FILE, HttpService:JSONEncode(status))
+    end)
+    
+    if not success then
+        warn("[RSQ] Failed to save key status:", err)
+    end
+end
+
+-- Function to load key status
+local function loadKeyStatus()
+    local folder = getDataFolder()
+    if not folder then return false end
+    
+    local filePath = folder .. "/" .. KEY_STATUS_FILE
+    
+    if not isfile(filePath) then
+        return false
+    end
+    
+    local success, data = pcall(function()
+        local content = readfile(filePath)
+        return HttpService:JSONDecode(content)
+    end)
+    
+    if success and data and data.userId == USER_ID then
+        if data.active and data.key then
+            CurrentKey = data.key
+            KeyActive = true
+            return true
+        end
+    end
+    
+    return false
+end
+
+-- Function to clear saved key status
+local function clearKeyStatus()
+    local folder = getDataFolder()
+    if not folder then return end
+    
+    local filePath = folder .. "/" .. KEY_STATUS_FILE
+    
+    if isfile(filePath) then
+        delfile(filePath)
+    end
+end
+
+-- Function to check if GUI is already loaded
+local function isGUILoaded()
+    for _, gui in pairs(CoreGui:GetChildren()) do
+        if gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" then
+            return true
+        end
+    end
+    
+    if player.PlayerGui then
+        for _, gui in pairs(player.PlayerGui:GetChildren()) do
+            if gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" then
+                return true
+            end
+        end
+    end
+    
+    return false
+end
+
+-- Function to create simple open button
+local function createOpenButton()
+    if OpenButton and OpenButton.Parent then
+        OpenButton:Destroy()
+        OpenButton = nil
+    end
+    
+    OpenButton = Instance.new("ScreenGui")
+    OpenButton.Name = "RSQ_OpenButton"
+    OpenButton.IgnoreGuiInset = true
+    OpenButton.ResetOnSpawn = false
+    OpenButton.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    OpenButton.Parent = CoreGui
+    
+    local button = Instance.new("TextButton", OpenButton)
+    button.Name = "ToggleButton"
+    button.Size = UDim2.new(0, 50, 0, 50)
+    button.Position = UDim2.new(1, -60, 0, 20)
+    button.Text = IsGuiOpen and "✕" or "☰"
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 20
+    button.TextColor3 = COLOR_PALETTE.light.text
+    button.BackgroundColor3 = COLOR_PALETTE.primary
+    button.BackgroundTransparency = 0.2
+    button.BorderSizePixel = 0
+    Instance.new("UICorner", button).CornerRadius = UDim.new(1, 0)
+    
+    -- Add border
+    local border = Instance.new("UIStroke", button)
+    border.Color = COLOR_PALETTE.primary
+    border.Thickness = 2
+    border.Transparency = 0.3
+    
+    -- Simple toggle function
+    button.MouseButton1Click:Connect(function()
+        if IsGuiOpen then
+            -- Close all RSQ GUIs
+            for _, gui in pairs(CoreGui:GetChildren()) do
+                if gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
+                   gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications") then
+                    gui:Destroy()
+                end
+            end
+            
+            IsGuiOpen = false
+            CurrentGUI = nil
+            button.Text = "☰"
+            button.BackgroundColor3 = COLOR_PALETTE.primary
+        else
+            -- Check if GUI is already loaded
+            if isGUILoaded() then
+                createNotify("⚠️ GUI is already open!", COLOR_PALETTE.warning)
+                return
+            end
+            
+            -- Open appropriate GUI
+            if KeyActive and CurrentKey then
+                showAdvancedGamesGUI()
+            else
+                showKeyGUI()
+            end
+            IsGuiOpen = true
+            button.Text = "✕"
+            button.BackgroundColor3 = COLOR_PALETTE.danger
+        end
+    end)
+    
+    -- Hover effects
+    button.MouseEnter:Connect(function()
+        TweenService:Create(button, TweenInfo.new(ANIMATION_SETTINGS.hoverDuration), {
+            Size = UDim2.new(0, 55, 0, 55),
+            BackgroundTransparency = 0
+        }):Play()
+    end)
+    
+    button.MouseLeave:Connect(function()
+        TweenService:Create(button, TweenInfo.new(ANIMATION_SETTINGS.hoverDuration), {
+            Size = UDim2.new(0, 50, 0, 50),
+            BackgroundTransparency = 0.2
+        }):Play()
+    end)
+    
+    -- Make draggable
+    local dragging = false
+    local dragStart, startPos
+    
+    button.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = button.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local delta = input.Position - dragStart
+            button.Position = UDim2.new(
+                startPos.X.Scale, 
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale, 
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end)
+    
+    -- Entry animation
+    button.Position = UDim2.new(1, 100, 0, 20)
+    TweenService:Create(button, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Position = UDim2.new(1, -60, 0, 20)
+    }):Play()
+    
+    return OpenButton
+end
+
+-- Function to create close button
+local function createCloseButton(parent, onClose)
+    local closeBtn = Instance.new("TextButton")
+    closeBtn.Size = UDim2.new(0, 25, 0, 25)
+    closeBtn.Position = UDim2.new(1, -30, 0, 5)
+    closeBtn.Text = "✕"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 14
+    closeBtn.TextColor3 = COLOR_PALETTE.light.text
+    closeBtn.BackgroundColor3 = COLOR_PALETTE.danger
+    closeBtn.BackgroundTransparency = 0.2
+    closeBtn.BorderSizePixel = 0
+    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+    
+    closeBtn.MouseButton1Click:Connect(function()
+        if onClose then
+            onClose()
+        end
+    end)
+    
+    closeBtn.Parent = parent
+    return closeBtn
+end
+
+-- Function to make frame draggable
+local function makeDraggable(frame, dragHandle)
+    local dragging = false
+    local dragStart, startPos
+    
+    dragHandle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(
+                startPos.X.Scale, 
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale, 
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end)
+end
+
+-- Function to fetch data with better error handling
+local function fetchDataWithRetry()
+    for attempt = 1, 3 do
+        local ok, res = pcall(function()
+            local response = game:HttpGet(JSONBIN_URL, true, {["X-Master-Key"] = JSON_KEY})
+            return HttpService:JSONDecode(response)
+        end)
+        
+        if ok and res and res.record then
+            CachedData = res.record
+            GamesList = {}
+            
+            if res.record.games and type(res.record.games) == "table" then
+                for _, game in pairs(res.record.games) do
+                    if type(game) == "table" and game.id and game.name then
+                        table.insert(GamesList, game)
+                    end
+                end
+                print("[RSQ] Loaded " .. #GamesList .. " games")
+            end
+            return CachedData
+        end
+        
+        warn("[RSQ] Fetch attempt " .. attempt .. " failed")
+        task.wait(1)
+    end
+    return CachedData
+end
+
+-- Start downloading the database immediately
+task.spawn(function()
+    fetchDataWithRetry()
+end)
+
+--==================================================--
+-- WEBHOOK SYSTEM
+--==================================================--
+local function sendWebhook(type, key, expires)
+    if not DISCORD_WEBHOOK or DISCORD_WEBHOOK == "" then return end
+    
+    local thumb = "https://www.roblox.com/headshot-thumbnail/image?userId="..USER_ID.."&width=420&height=420&format=png"
+    local time = os.date("!%Y-%m-%dT%H:%M:%SZ")
+    
+    local payload = {
+        ["embeds"] = {{
+            ["timestamp"] = time,
+            ["thumbnail"] = { ["url"] = thumb }
+        }}
+    }
+
+    if type == "JOIN" then
+        payload.embeds[1].title = "📥 Player Joined System"
+        payload.embeds[1].color = 16776960 
+        payload.embeds[1].description = string.format("**User:** %s\n**ID:** %s\n**Game ID:** %s", USER_NAME, USER_ID, tostring(PLACE_ID))
+    elseif type == "REDEEM" then
+        local expireText = (expires == "INF") and "♾️ Permanent" or os.date("%Y-%m-%d %H:%M:%S", expires)
+        payload.embeds[1].title = "🔑 Key Authenticated"
+        payload.embeds[1].color = 4947199 
+        payload.embeds[1].fields = {
+            { ["name"] = "Player", ["value"] = USER_NAME .. " ("..USER_ID..")", ["inline"] = true },
+            { ["name"] = "Key Used", ["value"] = "```"..key.."```", ["inline"] = false },
+            { ["name"] = "Expires", ["value"] = expireText, ["inline"] = true }
+        }
+    end
+
+    pcall(function()
+        HttpService:PostAsync(DISCORD_WEBHOOK, HttpService:JSONEncode(payload))
+    end)
+end
+
+sendWebhook("JOIN")
+
+--==================================================--
+-- HELPERS
+--==================================================--
+local function string_trim(s)
+    return s:match("^%s*(.-)%s*$")
+end
+
+local function fetchData()
+    return fetchDataWithRetry()
+end
+
+local function kickBanned(reason)
+    pcall(function() setclipboard(GET_KEY_URL) end)
+    local kickMsg = "🛑 [RSQ RESTRICTION]\n\nReason: " .. (reason or "Blacklisted")
+    while true do player:Kick(kickMsg) task.wait(0.5) end
+end
+
+-- Simple notification function
+local function createNotify(msg, color)
+    local notifyGui = Instance.new("ScreenGui", CoreGui)
+    notifyGui.Name = "RSQ_Notifications_" .. tostring(math.random(1, 1000))
+    notifyGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    local frame = Instance.new("Frame", notifyGui)
+    frame.Size = UDim2.new(0, 300, 0, 60)
+    frame.Position = UDim2.new(1, 10, 0.8, 0)
+    frame.BackgroundColor3 = COLOR_PALETTE.dark.bg3
+    frame.BackgroundTransparency = 0.1
+    frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+    
+    local accent = Instance.new("Frame", frame)
+    accent.Size = UDim2.new(0, 5, 1, 0)
+    accent.BackgroundColor3 = color
+    accent.BorderSizePixel = 0
+    Instance.new("UICorner", accent).CornerRadius = UDim.new(0, 2)
+
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(1, -20, 1, 0)
+    label.Position = UDim2.new(0, 15, 0, 0)
+    label.Text = msg
+    label.TextColor3 = COLOR_PALETTE.light.text
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 13
+    label.BackgroundTransparency = 1
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    frame:TweenPosition(UDim2.new(1, -310, 0.8, 0), "Out", "Back", 0.5)
+    task.delay(5, function()
+        pcall(function()
+            frame:TweenPosition(UDim2.new(1, 10, 0.8, 0), "In", "Sine", 0.5)
+            task.wait(0.5)
+            notifyGui:Destroy()
+        end)
+    end)
+end
+
+-- Function to show teleport confirmation
+local function showTeleportConfirmation(gameId, gameName)
+    local teleportGui = Instance.new("ScreenGui", CoreGui)
+    teleportGui.Name = "RSQ_TeleportConfirm"
+    teleportGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    local overlay = Instance.new("Frame", teleportGui)
+    overlay.Size = UDim2.new(1, 0, 1, 0)
+    overlay.BackgroundColor3 = Color3.new(0, 0, 0)
+    overlay.BackgroundTransparency = 0.7
+    overlay.BorderSizePixel = 0
+    
+    local confirmFrame = Instance.new("Frame", teleportGui)
+    confirmFrame.Size = UDim2.new(0, 350, 0, 200)
+    confirmFrame.Position = UDim2.new(0.5, -175, 0.5, -100)
+    confirmFrame.BackgroundColor3 = COLOR_PALETTE.dark.bg3
+    confirmFrame.BackgroundTransparency = 0.1
+    confirmFrame.BorderSizePixel = 0
+    Instance.new("UICorner", confirmFrame).CornerRadius = UDim.new(0, 12)
+    
+    -- Make draggable
+    makeDraggable(confirmFrame, confirmFrame)
+    
+    -- Title bar with close button
+    local titleBar = Instance.new("Frame", confirmFrame)
+    titleBar.Size = UDim2.new(1, 0, 0, 30)
+    titleBar.BackgroundColor3 = COLOR_PALETTE.dark.bg4
+    titleBar.BackgroundTransparency = 0.3
+    titleBar.BorderSizePixel = 0
+    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
+    
+    local title = Instance.new("TextLabel", titleBar)
+    title.Size = UDim2.new(1, -40, 1, 0)
+    title.Position = UDim2.new(0, 10, 0, 0)
+    title.Text = "⚠️ Teleport Required"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 14
+    title.TextColor3 = COLOR_PALETTE.warning
+    title.BackgroundTransparency = 1
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Close button
+    createCloseButton(titleBar, function()
+        createNotify("Teleport cancelled", COLOR_PALETTE.danger)
+        teleportGui:Destroy()
+    end)
+    
+    local message = Instance.new("TextLabel", confirmFrame)
+    message.Size = UDim2.new(1, -20, 0, 80)
+    message.Position = UDim2.new(0, 10, 0, 40)
+    message.Text = "Script '" .. gameName .. "' requires Game ID: " .. gameId .. "\n\nDo you want to teleport to the correct game?"
+    message.Font = Enum.Font.Gotham
+    message.TextSize = 14
+    message.TextColor3 = COLOR_PALETTE.light.text
+    message.BackgroundTransparency = 1
+    message.TextWrapped = true
+    message.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Buttons container
+    local buttonContainer = Instance.new("Frame", confirmFrame)
+    buttonContainer.Size = UDim2.new(1, -20, 0, 50)
+    buttonContainer.Position = UDim2.new(0, 10, 1, -60)
+    buttonContainer.BackgroundTransparency = 1
+    
+    -- Yes button
+    local yesBtn = Instance.new("TextButton", buttonContainer)
+    yesBtn.Size = UDim2.new(0.48, -5, 1, 0)
+    yesBtn.Position = UDim2.new(0, 0, 0, 0)
+    yesBtn.Text = "✅ YES, Teleport"
+    yesBtn.Font = Enum.Font.GothamBold
+    yesBtn.TextSize = 14
+    yesBtn.TextColor3 = COLOR_PALETTE.light.text
+    yesBtn.BackgroundColor3 = COLOR_PALETTE.success
+    yesBtn.BackgroundTransparency = 0.2
+    yesBtn.BorderSizePixel = 0
+    Instance.new("UICorner", yesBtn).CornerRadius = UDim.new(0, 8)
+    
+    -- No button
+    local noBtn = Instance.new("TextButton", buttonContainer)
+    noBtn.Size = UDim2.new(0.48, -5, 1, 0)
+    noBtn.Position = UDim2.new(0.52, 5, 0, 0)
+    noBtn.Text = "❌ NO, Cancel"
+    noBtn.Font = Enum.Font.GothamBold
+    noBtn.TextSize = 14
+    noBtn.TextColor3 = COLOR_PALETTE.light.text
+    noBtn.BackgroundColor3 = COLOR_PALETTE.danger
+    noBtn.BackgroundTransparency = 0.2
+    noBtn.BorderSizePixel = 0
+    Instance.new("UICorner", noBtn).CornerRadius = UDim.new(0, 8)
+    
+    -- Button events
+    yesBtn.MouseButton1Click:Connect(function()
+        createNotify("Teleporting to Game ID: " .. gameId, COLOR_PALETTE.success)
+        teleportGui:Destroy()
+        
+        local gameIdNumber = tonumber(gameId)
+        if gameIdNumber then
+            local success, err = pcall(function()
+                TeleportService:Teleport(gameIdNumber, player)
+            end)
+            
+            if not success then
+                createNotify("❌ Teleport failed: " .. tostring(err), COLOR_PALETTE.danger)
+            end
+        else
+            createNotify("❌ Invalid Game ID format", COLOR_PALETTE.danger)
+        end
+    end)
+    
+    noBtn.MouseButton1Click:Connect(function()
+        createNotify("Teleport cancelled", COLOR_PALETTE.danger)
+        teleportGui:Destroy()
+    end)
+    
+    -- Animation
+    confirmFrame.BackgroundTransparency = 1
+    TweenService:Create(confirmFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
+end
+
+--==================================================--
+-- VALIDATION LOGIC
+--==================================================--
+local function validate(keyToVerify, skipFetch)
+    local data = skipFetch and CachedData or fetchData()
+    if not data then return false, "Connection Error" end
+
+    if data.bans and (data.bans[USER_NAME] or data.bans[USER_ID]) then
+        kickBanned((data.bans[USER_NAME] or data.bans[USER_ID]).reason)
+        return false, "Banned"
+    end
+
+    if data.notifications and data.notifications[USER_NAME] then
+        local n = data.notifications[USER_NAME]
+        if n.time > LastNotifTime then
+            LastNotifTime = n.time
+            if n.type == "DELETED" then createNotify("⚠️ Admin has revoked your key!", COLOR_PALETTE.danger)
+            elseif n.type == "RENEWED" then createNotify("✅ Key renewed by Admin!", COLOR_PALETTE.success)
+            elseif n.type == "INFINITE" then createNotify("💎 Key is now PERMANENT!", COLOR_PALETTE.accent)
+            end
+        end
+    end
+
+    if not keyToVerify then return false, "" end
+
+    local entry = data.keys and data.keys[keyToVerify]
+    if not entry then return false, "❌ Invalid Key" end
+    if tostring(entry.rbx) ~= USER_ID then return false, "❌ ID Mismatch" end
+    if entry.exp ~= "INF" and os.time() > tonumber(entry.exp) then return false, "❌ Expired" end
+
+    return true, entry
+end
+
+--==================================================--
+-- ADVANCED GAMES GUI (SMALLER SIZE)
+--==================================================--
+local function showAdvancedGamesGUI()
+    if isGUILoaded() then
+        createNotify("⚠️ GUI is already open!", COLOR_PALETTE.warning)
+        return
+    end
+    
+    if CurrentGUI and CurrentGUI.Parent then
+        CurrentGUI:Destroy()
+        CurrentGUI = nil
+    end
+    
+    IsGuiOpen = true
+    HasShownGUIAlready = true
+    
+    if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
+        OpenButton.ToggleButton.Text = "✕"
+        OpenButton.ToggleButton.BackgroundColor3 = COLOR_PALETTE.danger
+    end
+    
+    print("[RSQ] Showing Advanced Games GUI")
+    
+    -- Create main GUI
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "RSQ_AdvancedGamesGUI"
+    gui.IgnoreGuiInset = true
+    gui.ResetOnSpawn = false
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    gui.Parent = CoreGui
+    CurrentGUI = gui
+
+    -- Main container (smaller size)
+    local mainFrame = Instance.new("Frame", gui)
+    mainFrame.Size = UDim2.new(0, 400, 0, 450) -- Smaller size
+    mainFrame.Position = UDim2.new(0.5, -200, 0.5, -225)
+    mainFrame.BackgroundColor3 = COLOR_PALETTE.dark.bg2
+    mainFrame.BackgroundTransparency = 0.1
+    mainFrame.BorderSizePixel = 0
+    local mainCorner = Instance.new("UICorner", mainFrame)
+    mainCorner.CornerRadius = UDim.new(0, 12)
+    
+    -- Make draggable
+    makeDraggable(mainFrame, mainFrame)
+    
+    -- Title bar
+    local titleBar = Instance.new("Frame", mainFrame)
+    titleBar.Size = UDim2.new(1, 0, 0, 35)
+    titleBar.BackgroundColor3 = COLOR_PALETTE.dark.bg4
+    titleBar.BackgroundTransparency = 0.3
+    titleBar.BorderSizePixel = 0
+    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
+    
+    local title = Instance.new("TextLabel", titleBar)
+    title.Size = UDim2.new(1, -45, 1, 0)
+    title.Position = UDim2.new(0, 10, 0, 0)
+    title.Text = "🎮 RSQ GAMES LIBRARY"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 14
+    title.TextColor3 = COLOR_PALETTE.primary
+    title.BackgroundTransparency = 1
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Close button
+    createCloseButton(titleBar, function()
+        IsGuiOpen = false
+        if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
+            OpenButton.ToggleButton.Text = "☰"
+            OpenButton.ToggleButton.BackgroundColor3 = COLOR_PALETTE.primary
+        end
+        gui:Destroy()
+        CurrentGUI = nil
+    end)
+
+    -- Content area
+    local contentFrame = Instance.new("Frame", mainFrame)
+    contentFrame.Size = UDim2.new(1, -20, 1, -50)
+    contentFrame.Position = UDim2.new(0, 10, 0, 40)
+    contentFrame.BackgroundTransparency = 1
+    contentFrame.ClipsDescendants = true
+
+    -- Search bar
+    local searchContainer = Instance.new("Frame", contentFrame)
+    searchContainer.Size = UDim2.new(1, 0, 0, 35)
+    searchContainer.BackgroundTransparency = 1
+    
+    local searchBox = Instance.new("TextBox", searchContainer)
+    searchBox.Size = UDim2.new(1, 0, 1, 0)
+    searchBox.PlaceholderText = "🔍 Search games..."
+    searchBox.Font = Enum.Font.Gotham
+    searchBox.TextSize = 13
+    searchBox.TextColor3 = COLOR_PALETTE.light.text
+    searchBox.BackgroundColor3 = COLOR_PALETTE.dark.bg4
+    searchBox.BackgroundTransparency = 0.1
+    searchBox.BorderSizePixel = 0
+    Instance.new("UICorner", searchBox).CornerRadius = UDim.new(0, 8)
+    
+    -- Games container
+    local gamesContainer = Instance.new("Frame", contentFrame)
+    gamesContainer.Size = UDim2.new(1, 0, 1, -45)
+    gamesContainer.Position = UDim2.new(0, 0, 0, 40)
+    gamesContainer.BackgroundTransparency = 1
+    
+    -- Scrolling frame
+    local scrollFrame = Instance.new("ScrollingFrame", gamesContainer)
+    scrollFrame.Size = UDim2.new(1, 0, 1, 0)
+    scrollFrame.BackgroundTransparency = 1
+    scrollFrame.ScrollBarImageColor3 = COLOR_PALETTE.primary
+    scrollFrame.ScrollBarThickness = 4
+    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    
+    -- Games list layout
+    local gamesListLayout = Instance.new("UIListLayout", scrollFrame)
+    gamesListLayout.Padding = UDim.new(0, 8)
+    gamesListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    
+    -- VARIABLES FOR GAME DATA
+    local currentGameData = nil
+    local currentScriptsFrame = nil
+    
+    -- Function to create game card
+    local function createGameCard(gameData, parent)
+        local card = Instance.new("Frame", parent)
+        card.Size = UDim2.new(1, 0, 0, 70) -- Smaller card
+        card.BackgroundColor3 = COLOR_PALETTE.dark.bg4
+        card.BackgroundTransparency = 0.2
+        card.BorderSizePixel = 0
+        Instance.new("UICorner", card).CornerRadius = UDim.new(0, 8)
+        
+        -- Border
+        local border = Instance.new("UIStroke", card)
+        border.Color = COLOR_PALETTE.light.border
+        border.Thickness = 1
+        border.Transparency = 0.5
+        
+        -- Game icon
+        local icon = Instance.new("TextLabel", card)
+        icon.Size = UDim2.new(0, 40, 0, 40)
+        icon.Position = UDim2.new(0, 10, 0.5, -20)
+        icon.Text = "🎯"
+        icon.Font = Enum.Font.GothamBold
+        icon.TextSize = 20
+        icon.TextColor3 = COLOR_PALETTE.primary
+        icon.BackgroundTransparency = 1
+        
+        -- Game info
+        local infoFrame = Instance.new("Frame", card)
+        infoFrame.Size = UDim2.new(0.5, 0, 1, 0)
+        infoFrame.Position = UDim2.new(0, 60, 0, 0)
+        infoFrame.BackgroundTransparency = 1
+        
+        local gameName = Instance.new("TextLabel", infoFrame)
+        gameName.Size = UDim2.new(1, -10, 0, 25)
+        gameName.Position = UDim2.new(0, 0, 0, 10)
+        gameName.Text = gameData.name
+        gameName.Font = Enum.Font.GothamBold
+        gameName.TextSize = 13
+        gameName.TextColor3 = COLOR_PALETTE.light.text
+        gameName.TextXAlignment = Enum.TextXAlignment.Left
+        gameName.BackgroundTransparency = 1
+        
+        local gameId = Instance.new("TextLabel", infoFrame)
+        gameId.Size = UDim2.new(1, -10, 0, 20)
+        gameId.Position = UDim2.new(0, 0, 0, 35)
+        gameId.Text = "🆔 ID: " .. gameData.id
+        gameId.Font = Enum.Font.Gotham
+        gameId.TextSize = 11
+        gameId.TextColor3 = COLOR_PALETTE.light.subtext
+        gameId.TextXAlignment = Enum.TextXAlignment.Left
+        gameId.BackgroundTransparency = 1
+        
+        -- Scripts button
+        local scriptsBtn = Instance.new("TextButton", card)
+        scriptsBtn.Size = UDim2.new(0, 100, 0, 30)
+        scriptsBtn.Position = UDim2.new(1, -110, 0.5, -15)
+        scriptsBtn.Text = "📜 View Scripts"
+        scriptsBtn.Font = Enum.Font.GothamBold
+        scriptsBtn.TextSize = 11
+        scriptsBtn.TextColor3 = COLOR_PALETTE.light.text
+        scriptsBtn.BackgroundColor3 = COLOR_PALETTE.primary
+        scriptsBtn.BackgroundTransparency = 0.2
+        scriptsBtn.BorderSizePixel = 0
+        Instance.new("UICorner", scriptsBtn).CornerRadius = UDim.new(0, 6)
+        
+        local btnBorder = Instance.new("UIStroke", scriptsBtn)
+        btnBorder.Color = COLOR_PALETTE.primary
+        btnBorder.Thickness = 1
+        btnBorder.Transparency = 0.3
+        
+        -- Button events
+        scriptsBtn.MouseButton1Click:Connect(function()
+            print("[RSQ] View Scripts clicked for:", gameData.name)
+            showGameScripts(gameData)
+        end)
+        
+        -- Hover effects
+        card.MouseEnter:Connect(function()
+            TweenService:Create(card, TweenInfo.new(ANIMATION_SETTINGS.hoverDuration), {
+                BackgroundTransparency = 0.1
+            }):Play()
+            TweenService:Create(border, TweenInfo.new(ANIMATION_SETTINGS.hoverDuration), {
+                Transparency = 0
+            }):Play()
+        end)
+        
+        card.MouseLeave:Connect(function()
+            TweenService:Create(card, TweenInfo.new(ANIMATION_SETTINGS.hoverDuration), {
+                BackgroundTransparency = 0.2
+            }):Play()
+            TweenService:Create(border, TweenInfo.new(ANIMATION_SETTINGS.hoverDuration), {
+                Transparency = 0.5
+            }):Play()
+        end)
+        
+        return card
+    end
+    
+    -- Function to show scripts for a specific game
+    local function showGameScripts(gameData)
+        print("[RSQ] showGameScripts called for:", gameData.name)
+        
+        -- Store current game data
+        currentGameData = gameData
+        
+        -- Hide games list
+        scrollFrame.Visible = false
+        
+        -- Remove existing scripts frame if it exists
+        if currentScriptsFrame then
+            currentScriptsFrame:Destroy()
+            currentScriptsFrame = nil
+        end
+        
+        -- Create NEW scripts frame
+        currentScriptsFrame = Instance.new("Frame", gamesContainer)
+        currentScriptsFrame.Name = "RSQ_ScriptsFrame"
+        currentScriptsFrame.Size = UDim2.new(1, 0, 1, 0)
+        currentScriptsFrame.BackgroundTransparency = 1
+        
+        -- Back button
+        local backBtn = Instance.new("TextButton", currentScriptsFrame)
+        backBtn.Size = UDim2.new(0, 80, 0, 25)
+        backBtn.Position = UDim2.new(0, 0, 0, 0)
+        backBtn.Text = "← Back"
+        backBtn.Font = Enum.Font.GothamBold
+        backBtn.TextSize = 12
+        backBtn.TextColor3 = COLOR_PALETTE.light.text
+        backBtn.BackgroundColor3 = COLOR_PALETTE.dark.bg4
+        backBtn.BackgroundTransparency = 0.2
+        backBtn.BorderSizePixel = 0
+        Instance.new("UICorner", backBtn).CornerRadius = UDim.new(0, 6)
+        
+        backBtn.MouseButton1Click:Connect(function()
+            currentScriptsFrame:Destroy()
+            currentScriptsFrame = nil
+            scrollFrame.Visible = true
+        end)
+        
+        -- Title
+        local scriptsTitle = Instance.new("TextLabel", currentScriptsFrame)
+        scriptsTitle.Size = UDim2.new(1, -90, 0, 25)
+        scriptsTitle.Position = UDim2.new(0, 85, 0, 0)
+        scriptsTitle.Text = "📜 Scripts - " .. gameData.name
+        scriptsTitle.Font = Enum.Font.GothamBold
+        scriptsTitle.TextSize = 14
+        scriptsTitle.TextColor3 = COLOR_PALETTE.primary
+        scriptsTitle.BackgroundTransparency = 1
+        scriptsTitle.TextXAlignment = Enum.TextXAlignment.Left
+        
+        -- Scrolling frame for scripts
+        local scriptsScroll = Instance.new("ScrollingFrame", currentScriptsFrame)
+        scriptsScroll.Size = UDim2.new(1, 0, 1, -30)
+        scriptsScroll.Position = UDim2.new(0, 0, 0, 30)
+        scriptsScroll.BackgroundTransparency = 1
+        scriptsScroll.ScrollBarImageColor3 = COLOR_PALETTE.primary
+        scriptsScroll.ScrollBarThickness = 4
+        scriptsScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+        
+        local scriptsLayout = Instance.new("UIListLayout", scriptsScroll)
+        scriptsLayout.Padding = UDim.new(0, 8)
+        scriptsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        
+        -- Add scripts
+        local scripts = gameData.scripts or {}
+        
+        if #scripts == 0 then
+            local emptyLabel = Instance.new("TextLabel", scriptsScroll)
+            emptyLabel.Size = UDim2.new(1, 0, 0, 80)
+            emptyLabel.Text = "📭 No scripts available for this game."
+            emptyLabel.Font = Enum.Font.Gotham
+            emptyLabel.TextSize = 13
+            emptyLabel.TextColor3 = COLOR_PALETTE.light.subtext
+            emptyLabel.BackgroundTransparency = 1
+            emptyLabel.TextWrapped = true
+        else
+            for index, scriptData in ipairs(scripts) do
+                if scriptData and scriptData.name and scriptData.url then
+                    -- Script card
+                    local scriptCard = Instance.new("Frame", scriptsScroll)
+                    scriptCard.Size = UDim2.new(1, 0, 0, 65)
+                    scriptCard.BackgroundColor3 = COLOR_PALETTE.dark.bg4
+                    scriptCard.BackgroundTransparency = 0.2
+                    scriptCard.BorderSizePixel = 0
+                    Instance.new("UICorner", scriptCard).CornerRadius = UDim.new(0, 8)
+                    scriptCard.LayoutOrder = index
+                    
+                    -- Script info
+                    local scriptName = Instance.new("TextLabel", scriptCard)
+                    scriptName.Size = UDim2.new(0.7, -10, 0, 25)
+                    scriptName.Position = UDim2.new(0, 10, 0, 5)
+                    scriptName.Text = scriptData.name
+                    scriptName.Font = Enum.Font.GothamBold
+                    scriptName.TextSize = 12
+                    scriptName.TextColor3 = COLOR_PALETTE.light.text
+                    scriptName.TextXAlignment = Enum.TextXAlignment.Left
+                    scriptName.BackgroundTransparency = 1
+                    
+                    local urlPreview = Instance.new("TextLabel", scriptCard)
+                    urlPreview.Size = UDim2.new(0.7, -10, 0, 20)
+                    urlPreview.Position = UDim2.new(0, 10, 0, 30)
+                    urlPreview.Text = "📎 " .. string.sub(scriptData.url, 1, 20) .. "..."
+                    urlPreview.Font = Enum.Font.Gotham
+                    urlPreview.TextSize = 10
+                    urlPreview.TextColor3 = COLOR_PALETTE.light.subtext
+                    urlPreview.TextXAlignment = Enum.TextXAlignment.Left
+                    urlPreview.BackgroundTransparency = 1
+                    
+                    -- Execute button
+                    local executeBtn = Instance.new("TextButton", scriptCard)
+                    executeBtn.Size = UDim2.new(0, 80, 0, 25)
+                    executeBtn.Position = UDim2.new(1, -85, 0.5, -12.5)
+                    executeBtn.Text = "⚡ Execute"
+                    executeBtn.Font = Enum.Font.GothamBold
+                    executeBtn.TextSize = 11
+                    executeBtn.TextColor3 = COLOR_PALETTE.light.text
+                    executeBtn.BackgroundColor3 = COLOR_PALETTE.success
+                    executeBtn.BackgroundTransparency = 0.2
+                    executeBtn.BorderSizePixel = 0
+                    Instance.new("UICorner", executeBtn).CornerRadius = UDim.new(0, 6)
+                    
+                    -- Capture script data for the closure
+                    do
+                        local capturedScriptData = {
+                            name = scriptData.name,
+                            url = scriptData.url
+                        }
+                        local capturedGameId = gameData.id
+                        
+                        executeBtn.MouseButton1Click:Connect(function()
+                            -- Check if player is in the right game
+                            if tostring(capturedGameId) == tostring(PLACE_ID) then
+                                createNotify("Executing script: " .. capturedScriptData.name, COLOR_PALETTE.success)
+                                
+                                -- Execute the script
+                                task.spawn(function()
+                                    local success, errorMsg = pcall(function()
+                                        local scriptContent = game:HttpGet(capturedScriptData.url)
+                                        loadstring(scriptContent)()
+                                    end)
+                                    
+                                    if not success then
+                                        createNotify("❌ Script failed: " .. errorMsg, COLOR_PALETTE.danger)
+                                    end
+                                end)
+                            else
+                                -- Not in the right game, show notification and teleport confirmation
+                                createNotify("❌ Cannot run script - Wrong Game ID", COLOR_PALETTE.warning)
+                                
+                                -- Wait 1 second then show teleport confirmation
+                                task.wait(1)
+                                showTeleportConfirmation(capturedGameId, capturedScriptData.name)
+                            end
+                        end)
+                    end
+                end
+            end
+        end
+        
+        -- Update canvas size
+        task.wait(0.1)
+        local totalHeight = 0
+        for _, child in ipairs(scriptsScroll:GetChildren()) do
+            if child:IsA("Frame") then
+                totalHeight = totalHeight + child.Size.Y.Offset + scriptsLayout.Padding.Offset
+            end
+        end
+        scriptsScroll.CanvasSize = UDim2.new(0, 0, 0, totalHeight + 20)
+    end
+
+    -- Function to load and display games
+    local function loadGames()
+        -- Clear existing games
+        for _, child in ipairs(scrollFrame:GetChildren()) do
+            if child:IsA("Frame") then
+                child:Destroy()
+            end
+        end
+        
+        print("[RSQ] Loading games from GamesList:", #GamesList)
+        
+        -- Check if games exist
+        if not GamesList or #GamesList == 0 then
+            print("[RSQ] No games found in GamesList")
+            local emptyLabel = Instance.new("TextLabel", scrollFrame)
+            emptyLabel.Size = UDim2.new(1, 0, 0, 80)
+            emptyLabel.Text = "📭 No games available\nCheck back later!"
+            emptyLabel.Font = Enum.Font.Gotham
+            emptyLabel.TextSize = 13
+            emptyLabel.TextColor3 = COLOR_PALETTE.light.subtext
+            emptyLabel.BackgroundTransparency = 1
+            emptyLabel.TextWrapped = true
+            emptyLabel.LayoutOrder = 1
+            return
+        end
+        
+        print("[RSQ] Found " .. #GamesList .. " games to display")
+        
+        -- Add games
+        for _, gameData in ipairs(GamesList) do
+            if gameData and gameData.id and gameData.name then
+                local card = createGameCard(gameData, scrollFrame)
+                card.LayoutOrder = _
+            end
+        end
+        
+        -- Update canvas size
+        task.wait(0.1)
+        local totalHeight = 0
+        for _, child in ipairs(scrollFrame:GetChildren()) do
+            if child:IsA("Frame") then
+                totalHeight = totalHeight + child.Size.Y.Offset + gamesListLayout.Padding.Offset
+            end
+        end
+        scrollFrame.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
+    end
+    
+    -- Refresh button
+    local refreshBtn = Instance.new("TextButton", mainFrame)
+    refreshBtn.Size = UDim2.new(0, 100, 0, 30)
+    refreshBtn.Position = UDim2.new(0.5, -50, 1, -40)
+    refreshBtn.Text = "🔄 Refresh"
+    refreshBtn.Font = Enum.Font.GothamBold
+    refreshBtn.TextSize = 12
+    refreshBtn.TextColor3 = COLOR_PALETTE.light.text
+    refreshBtn.BackgroundColor3 = COLOR_PALETTE.primary
+    refreshBtn.BackgroundTransparency = 0.2
+    refreshBtn.BorderSizePixel = 0
+    Instance.new("UICorner", refreshBtn).CornerRadius = UDim.new(0, 6)
+    
+    refreshBtn.MouseButton1Click:Connect(function()
+        createNotify("Refreshing games list...", COLOR_PALETTE.primary)
+        fetchDataWithRetry() -- Refresh data
+        print("[RSQ] After refresh, GamesList count:", #GamesList)
+        loadGames() -- Reload games
+    end)
+    
+    -- Load games initially
+    loadGames()
+    
+    -- Animation
+    mainFrame.BackgroundTransparency = 1
+    TweenService:Create(mainFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
+end
+
+--==================================================--
+-- KEY GUI
+--==================================================--
+local function showKeyGUI()
+    if isGUILoaded() then
+        createNotify("⚠️ GUI is already open!", COLOR_PALETTE.warning)
+        return
+    end
+    
+    if CurrentGUI and CurrentGUI.Parent then
+        CurrentGUI:Destroy()
+        CurrentGUI = nil
+    end
+    
+    IsGuiOpen = true
+    HasShownGUIAlready = true
+    
+    if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
+        OpenButton.ToggleButton.Text = "✕"
+        OpenButton.ToggleButton.BackgroundColor3 = COLOR_PALETTE.danger
+    end
+    
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "RSQ_KeySystem"
+    gui.IgnoreGuiInset = true
+    gui.ResetOnSpawn = false
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    gui.Parent = CoreGui
+    CurrentGUI = gui
+
+    local card = Instance.new("Frame", gui)
+    card.Size = UDim2.new(0, 350, 0, 250)
+    card.Position = UDim2.new(0.5, -175, 0.5, -125)
+    card.BackgroundColor3 = COLOR_PALETTE.dark.bg3
+    card.BackgroundTransparency = 0.1
+    card.BorderSizePixel = 0
+    Instance.new("UICorner", card).CornerRadius = UDim.new(0, 12)
+    
+    -- Make draggable
+    makeDraggable(card, card)
+
+    -- Title bar
+    local titleBar = Instance.new("Frame", card)
+    titleBar.Size = UDim2.new(1, 0, 0, 35)
+    titleBar.BackgroundColor3 = COLOR_PALETTE.dark.bg4
+    titleBar.BackgroundTransparency = 0.3
+    titleBar.BorderSizePixel = 0
+    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
+    
+    local title = Instance.new("TextLabel", titleBar)
+    title.Size = UDim2.new(1, -45, 1, 0)
+    title.Position = UDim2.new(0, 10, 0, 0)
+    title.Text = "🔐 RSQ Key System"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 14
+    title.TextColor3 = COLOR_PALETTE.light.text
+    title.BackgroundTransparency = 1
+    
+    -- Close button
+    createCloseButton(titleBar, function()
+        IsGuiOpen = false
+        if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
+            OpenButton.ToggleButton.Text = "☰"
+            OpenButton.ToggleButton.BackgroundColor3 = COLOR_PALETTE.primary
+        end
+        gui:Destroy()
+        CurrentGUI = nil
+    end)
+
+    local input = Instance.new("TextBox", card)
+    input.PlaceholderText = "Paste your key here"
+    input.Size = UDim2.new(1, -30, 0, 35)
+    input.Position = UDim2.new(0, 15, 0, 45)
+    input.Font = Enum.Font.Gotham
+    input.TextSize = 13
+    input.TextColor3 = COLOR_PALETTE.light.text
+    input.BackgroundColor3 = COLOR_PALETTE.dark.bg4
+    input.BackgroundTransparency = 0.1
+    input.BorderSizePixel = 0
+    Instance.new("UICorner", input).CornerRadius = UDim.new(0,8)
+
+    local unlock = Instance.new("TextButton", card)
+    unlock.Text = "Unlock / Check Key"
+    unlock.Size = UDim2.new(1, -30, 0, 35)
+    unlock.Position = UDim2.new(0, 15, 0, 90)
+    unlock.Font = Enum.Font.GothamBold
+    unlock.TextSize = 13
+    unlock.TextColor3 = COLOR_PALETTE.light.text
+    unlock.BackgroundColor3 = COLOR_PALETTE.primary
+    unlock.BackgroundTransparency = 0.2
+    unlock.BorderSizePixel = 0
+    Instance.new("UICorner", unlock).CornerRadius = UDim.new(0,8)
+
+    local getKey = Instance.new("TextButton", card)
+    getKey.Text = "🌐 Get Key"
+    getKey.Size = UDim2.new(1, -30, 0, 30)
+    getKey.Position = UDim2.new(0, 15, 0, 135)
+    getKey.Font = Enum.Font.GothamBold
+    getKey.TextSize = 12
+    getKey.TextColor3 = COLOR_PALETTE.light.text
+    getKey.BackgroundColor3 = COLOR_PALETTE.warning
+    getKey.BackgroundTransparency = 0.2
+    getKey.BorderSizePixel = 0
+    Instance.new("UICorner", getKey).CornerRadius = UDim.new(0,8)
+
+    local status = Instance.new("TextLabel", card)
+    status.Position = UDim2.new(0, 15, 0, 175)
+    status.Size = UDim2.new(1, -30, 0, 50)
+    status.TextWrapped = true
+    status.Font = Enum.Font.Gotham
+    status.TextSize = 12
+    status.TextColor3 = COLOR_PALETTE.light.subtext
+    status.BackgroundTransparency = 1
+    status.Text = "Enter your key to continue"
+
+    TweenService:Create(card, TweenInfo.new(0.4), {BackgroundTransparency = 0.1}):Play()
+
+    -- Button events
+    unlock.MouseButton1Click:Connect(function()
+        local inputKey = string_trim(input.Text)
+        if inputKey == "" then return end
+
+        status.Text = "⚡ Checking..."
+        status.TextColor3 = COLOR_PALETTE.primary
+        
+        -- Try local validation first for instant response
+        local ok, res = validate(inputKey, true) 
+        
+        -- If cache was empty or invalid, try one more time with a fresh fetch
+        if not ok then
+            ok, res = validate(inputKey, false)
+        end
+
+        if ok then
+            CurrentKey = inputKey
+            KeyActive = true
+            status.Text = "✅ Success! Loading..."
+            status.TextColor3 = COLOR_PALETTE.success
+            
+            sendWebhook("REDEEM", inputKey, res.exp)
+            
+            -- Save key status
+            saveKeyStatus()
+            
+            TweenService:Create(card, TweenInfo.new(0.3), {BackgroundTransparency = 1, Size = UDim2.new(0,0,0,0)}):Play()
+            task.delay(0.3, function() 
+                gui:Destroy() 
+                CurrentGUI = nil
+                IsGuiOpen = false
+                showAdvancedGamesGUI()
+            end)
+
+            -- Execute main scripts
+            for _, url in ipairs(SCRIPT_URLS) do
+                task.spawn(function()
+                    pcall(function() 
+                        loadstring(game:HttpGet(url))()
+                    end)
+                end)
+            end
+        else
+            status.Text = res
+            status.TextColor3 = COLOR_PALETTE.danger
+            -- Clear saved key if validation fails
+            if res == "❌ Expired" or res == "❌ Invalid Key" then
+                clearKeyStatus()
+                CurrentKey = nil
+                KeyActive = false
+            end
+        end
+    end)
+
+    getKey.MouseButton1Click:Connect(function()
+        setclipboard(GET_KEY_URL)
+        status.Text = "📋 Link Copied!"
+        status.TextColor3 = COLOR_PALETTE.accent
+    end)
+end
+
+--==================================================--
+-- INITIALIZE
+--==================================================--
+task.spawn(function()
+    IsInitializing = true
+    
+    local hasSavedKey = loadKeyStatus()
+    if hasSavedKey then
+        createNotify("🔑 Loading saved key...", COLOR_PALETTE.primary)
+        
+        local ok, res = validate(CurrentKey, false)
+        if ok then
+            createNotify("✅ Key validated successfully!", COLOR_PALETTE.success)
+            createOpenButton()
+            task.wait(1)
+            showAdvancedGamesGUI()
+            
+            for _, url in ipairs(SCRIPT_URLS) do
+                task.spawn(function()
+                    pcall(function() 
+                        loadstring(game:HttpGet(url))()
+                    end)
+                end)
+            end
+        else
+            createNotify("❌ Saved key invalid: " .. res, COLOR_PALETTE.danger)
+            clearKeyStatus()
+            CurrentKey = nil
+            KeyActive = false
+            createOpenButton()
+            showKeyGUI()
+        end
+    else
+        createOpenButton()
+        showKeyGUI()
+    end
+    
+    IsInitializing = false
+end)
+
+--==================================================--
+-- SECURITY LOOPS
+--==================================================--
+task.spawn(function()
+    while true do
+        task.wait(CHECK_INTERVAL)
+        if KeyActive and CurrentKey then
+            local ok, res = validate(CurrentKey, false)
+            if not ok then
+                createNotify("❌ Key is no longer valid: " .. res, COLOR_PALETTE.danger)
+                KeyActive = false
+                CurrentKey = nil
+                clearKeyStatus()
+                
+                if CurrentGUI and CurrentGUI.Parent then
+                    CurrentGUI:Destroy()
+                    CurrentGUI = nil
+                end
+                
+                IsGuiOpen = false
+                if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
+                    OpenButton.ToggleButton.Text = "☰"
+                    OpenButton.ToggleButton.BackgroundColor3 = COLOR_PALETTE.primary
+                end
+                
+                showKeyGUI()
+            end
+        end
+    end
+end)
