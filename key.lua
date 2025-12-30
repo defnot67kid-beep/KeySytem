@@ -45,6 +45,7 @@ local GamesList = {} -- Store games data
 local IsGuiOpen = false -- Track if GUI is currently open
 local OpenButton = nil -- Reference to the open button
 local CurrentGUI = nil -- Reference to current GUI
+local IsInitializing = true -- Track initialization state
 
 -- Function to get data folder
 local function getDataFolder()
@@ -137,11 +138,11 @@ local function createOpenButton()
     button.Name = "ToggleButton"
     button.Size = UDim2.new(0, 60, 0, 60)
     button.Position = UDim2.new(1, -70, 0, 20)
-    button.Text = "🔓"
+    button.Text = IsGuiOpen and "🔒" or "🔓"
     button.Font = Enum.Font.GothamBold
     button.TextSize = 24
     button.TextColor3 = Color3.new(1, 1, 1)
-    button.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+    button.BackgroundColor3 = IsGuiOpen and Color3.fromRGB(255, 140, 0) or Color3.fromRGB(79, 124, 255)
     button.BackgroundTransparency = 0.2
     button.BorderSizePixel = 0
     Instance.new("UICorner", button).CornerRadius = UDim.new(1, 0)
@@ -151,6 +152,52 @@ local function createOpenButton()
     shadow.Color = Color3.fromRGB(0, 0, 0)
     shadow.Transparency = 0.5
     shadow.Thickness = 2
+    
+    -- Function to toggle GUI
+    local function toggleGUI()
+        if IsGuiOpen then
+            -- Close all RSQ GUIs
+            local existingGuis = {}
+            
+            -- Check in CoreGui
+            for _, gui in pairs(CoreGui:GetChildren()) do
+                if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
+                    gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications")) then
+                    table.insert(existingGuis, gui)
+                end
+            end
+            
+            -- Check in PlayerGui
+            if player.PlayerGui then
+                for _, gui in pairs(player.PlayerGui:GetChildren()) do
+                    if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
+                        gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications")) then
+                        table.insert(existingGuis, gui)
+                    end
+                end
+            end
+            
+            -- Destroy all found GUIs
+            for _, gui in ipairs(existingGuis) do
+                gui:Destroy()
+            end
+            
+            IsGuiOpen = false
+            CurrentGUI = nil
+            button.Text = "🔓"
+            button.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+        else
+            -- Open appropriate GUI based on key status
+            if KeyActive and CurrentKey then
+                showAdvancedGamesGUI()
+            else
+                showKeyGUI()
+            end
+            IsGuiOpen = true
+            button.Text = "🔒"
+            button.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+        end
+    end
     
     -- Make draggable
     local dragging = false
@@ -199,42 +246,8 @@ local function createOpenButton()
     end)
     
     button.MouseButton1Click:Connect(function()
-        if IsGuiOpen then
-            -- Close all RSQ GUIs
-            local existingGuis = {}
-            
-            -- Check in CoreGui
-            for _, gui in pairs(CoreGui:GetChildren()) do
-                if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
-                    gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications")) then
-                    gui:Destroy()
-                end
-            end
-            
-            -- Check in PlayerGui
-            if player.PlayerGui then
-                for _, gui in pairs(player.PlayerGui:GetChildren()) do
-                    if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
-                        gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications")) then
-                        gui:Destroy()
-                    end
-                end
-            end
-            
-            IsGuiOpen = false
-            CurrentGUI = nil
-            button.Text = "🔓"
-            button.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-        else
-            -- Open appropriate GUI based on key status
-            if KeyActive and CurrentKey then
-                showAdvancedGamesGUI()
-            else
-                showKeyGUI()
-            end
-            IsGuiOpen = true
-            button.Text = "🔒"
-            button.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+        if not dragging then
+            toggleGUI()
         end
     end)
     
@@ -674,6 +687,7 @@ local function showAdvancedGamesGUI()
     -- Prevent duplicate GUI
     if CurrentGUI and CurrentGUI.Parent then
         CurrentGUI:Destroy()
+        CurrentGUI = nil
     end
     
     IsGuiOpen = true
@@ -1148,6 +1162,7 @@ local function showKeyGUI()
     -- Prevent duplicate GUI
     if CurrentGUI and CurrentGUI.Parent then
         CurrentGUI:Destroy()
+        CurrentGUI = nil
     end
     
     IsGuiOpen = true
@@ -1323,6 +1338,8 @@ end
 --==================================================--
 -- Check for saved key first
 task.spawn(function()
+    IsInitializing = true
+    
     local hasSavedKey = loadKeyStatus()
     if hasSavedKey then
         -- Auto-open advanced GUI if key is saved and valid
@@ -1359,6 +1376,8 @@ task.spawn(function()
         createOpenButton()
         showKeyGUI()
     end
+    
+    IsInitializing = false
 end)
 
 --==================================================--
