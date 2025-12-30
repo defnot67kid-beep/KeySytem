@@ -1,5 +1,5 @@
 --==================================================--
--- RSQ KEY SYSTEM — PREMIUM EDITION (FIXED)
+-- RSQ KEY SYSTEM — FULL LOCAL SCRIPT (ULTRA-FAST UPDATE)
 --==================================================--
 
 -- SERVICES
@@ -19,8 +19,8 @@ local PLACE_ID = game.PlaceId
 --==================================================--
 -- CONFIG
 --==================================================--
-local JSONBIN_URL = "https://api.jsonbin.io/v3/b/6952cbcdd0ea881f4047f5ff/latest"
-local JSON_KEY = "$2a$10$f6r4B1gP.MfB1k49kq2m7eEzyesjD9KWP5zCa6QtJKW5ZBhL1M0/O"
+local JSONBIN_URL = "https://api.jsonbin.io/v3/b/695418f4ae596e708fbaa2c0/latest"
+local JSON_KEY = "$2a$10$lJsjtUi1Uhv4Rf/UaeMP7.GU5IwIEkAfdNZGpxyIesXLCj7hasRRG"
 local GET_KEY_URL = "https://realscripts-q.github.io/KEY-JSONHandler/"
 local DISCORD_WEBHOOK = "https://webhook.lewisakura.moe/api/webhooks/1453515343833338017/7VwwcpKDpSvIYr0PA3Ceh8YgMwIEba47CoyISHCZkvdaF2hUsvyUYw3zNV_TbYyDFTMy"
 
@@ -29,41 +29,11 @@ local SCRIPT_URLS = {
     "https://raw.githubusercontent.com/RealScripts-q/KEY-JSONHandler/main/I.lua",
     "https://raw.githubusercontent.com/RealScripts-q/KEY-JSONHandler/main/N.lua",
 }
-local CHECK_INTERVAL = 1
+local CHECK_INTERVAL = 1 -- Reduced to 1 second for faster background checks
 
 -- File saving paths
 local LOCAL_FOLDER = "RSQ_KeySystem"
 local KEY_STATUS_FILE = "key_status.json"
-
--- GUI Colors
-local COLOR_PALETTE = {
-    primary = Color3.fromRGB(79, 124, 255),
-    secondary = Color3.fromRGB(124, 77, 255),
-    accent = Color3.fromRGB(0, 200, 255),
-    success = Color3.fromRGB(46, 204, 113),
-    warning = Color3.fromRGB(255, 140, 0),
-    danger = Color3.fromRGB(255, 59, 48),
-    dark = {
-        bg1 = Color3.fromRGB(10, 12, 20),
-        bg2 = Color3.fromRGB(15, 18, 30),
-        bg3 = Color3.fromRGB(20, 24, 40),
-        bg4 = Color3.fromRGB(25, 30, 50)
-    },
-    light = {
-        text = Color3.fromRGB(240, 240, 245),
-        subtext = Color3.fromRGB(180, 180, 190),
-        border = Color3.fromRGB(60, 65, 85)
-    }
-}
-
--- Animation Settings
-local ANIMATION_SETTINGS = {
-    entryDuration = 0.5,
-    exitDuration = 0.4,
-    hoverDuration = 0.2,
-    pressDuration = 0.1,
-    glowPulseSpeed = 3
-}
 
 --==================================================--
 -- STATE & PRE-FETCH
@@ -71,13 +41,13 @@ local ANIMATION_SETTINGS = {
 local CurrentKey = nil
 local KeyActive = false
 local LastNotifTime = 0
-local CachedData = nil
-local GamesList = {}
-local IsGuiOpen = false
-local OpenButton = nil
-local CurrentGUI = nil
-local IsInitializing = true
-local HasShownGUIAlready = false
+local CachedData = nil -- Global cache for instant local validation
+local GamesList = {} -- Store games data
+local IsGuiOpen = false -- Track if GUI is currently open
+local OpenButton = nil -- Reference to the open button
+local CurrentGUI = nil -- Reference to current GUI
+local IsInitializing = true -- Track initialization state
+local HasShownGUIAlready = false -- Track if GUI has been shown before
 
 -- Function to get data folder
 local function getDataFolder()
@@ -128,6 +98,7 @@ local function loadKeyStatus()
     end)
     
     if success and data and data.userId == USER_ID then
+        -- Check if key is still valid (if it has expiration)
         if data.active and data.key then
             CurrentKey = data.key
             KeyActive = true
@@ -152,12 +123,14 @@ end
 
 -- Function to check if GUI is already loaded
 local function isGUILoaded()
+    -- Check in CoreGui
     for _, gui in pairs(CoreGui:GetChildren()) do
         if gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" then
             return true
         end
     end
     
+    -- Check in PlayerGui
     if player.PlayerGui then
         for _, gui in pairs(player.PlayerGui:GetChildren()) do
             if gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" then
@@ -169,8 +142,9 @@ local function isGUILoaded()
     return false
 end
 
--- Function to create simple open button
+-- Function to create open button
 local function createOpenButton()
+    -- Remove existing open button if it exists
     if OpenButton and OpenButton.Parent then
         OpenButton:Destroy()
         OpenButton = nil
@@ -185,78 +159,96 @@ local function createOpenButton()
     
     local button = Instance.new("TextButton", OpenButton)
     button.Name = "ToggleButton"
-    button.Size = UDim2.new(0, 50, 0, 50)
-    button.Position = UDim2.new(1, -60, 0, 20)
-    button.Text = IsGuiOpen and "✕" or "☰"
+    button.Size = UDim2.new(0, 60, 0, 60)
+    button.Position = UDim2.new(1, -70, 0, 20)
+    button.Text = IsGuiOpen and "🔒" or "🔓"
     button.Font = Enum.Font.GothamBold
-    button.TextSize = 20
-    button.TextColor3 = COLOR_PALETTE.light.text
-    button.BackgroundColor3 = COLOR_PALETTE.primary
+    button.TextSize = 24
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.BackgroundColor3 = IsGuiOpen and Color3.fromRGB(255, 140, 0) or Color3.fromRGB(79, 124, 255)
     button.BackgroundTransparency = 0.2
     button.BorderSizePixel = 0
     Instance.new("UICorner", button).CornerRadius = UDim.new(1, 0)
     
-    -- Add border
-    local border = Instance.new("UIStroke", button)
-    border.Color = COLOR_PALETTE.primary
-    border.Thickness = 2
-    border.Transparency = 0.3
+    -- Add shadow
+    local shadow = Instance.new("UIStroke", button)
+    shadow.Color = Color3.fromRGB(0, 0, 0)
+    shadow.Transparency = 0.5
+    shadow.Thickness = 2
     
-    -- Simple toggle function
-    button.MouseButton1Click:Connect(function()
+    -- Function to toggle GUI
+    local function toggleGUI()
         if IsGuiOpen then
             -- Close all RSQ GUIs
+            local existingGuis = {}
+            
+            -- Check in CoreGui
             for _, gui in pairs(CoreGui:GetChildren()) do
-                if gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
-                   gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications") then
-                    gui:Destroy()
+                if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
+                    gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications")) then
+                    table.insert(existingGuis, gui)
                 end
+            end
+            
+            -- Check in PlayerGui
+            if player.PlayerGui then
+                for _, gui in pairs(player.PlayerGui:GetChildren()) do
+                    if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
+                        gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications")) then
+                        table.insert(existingGuis, gui)
+                    end
+                end
+            end
+            
+            -- Destroy all found GUIs
+            for _, gui in ipairs(existingGuis) do
+                gui:Destroy()
             end
             
             IsGuiOpen = false
             CurrentGUI = nil
-            button.Text = "☰"
-            button.BackgroundColor3 = COLOR_PALETTE.primary
+            button.Text = "🔓"
+            button.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
         else
             -- Check if GUI is already loaded
             if isGUILoaded() then
-                createNotify("⚠️ GUI is already open!", COLOR_PALETTE.warning)
+                createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
                 return
             end
             
-            -- Open appropriate GUI
+            -- Open appropriate GUI based on key status
             if KeyActive and CurrentKey then
                 showAdvancedGamesGUI()
             else
                 showKeyGUI()
             end
             IsGuiOpen = true
-            button.Text = "✕"
-            button.BackgroundColor3 = COLOR_PALETTE.danger
+            button.Text = "🔒"
+            button.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
         end
-    end)
-    
-    -- Hover effects
-    button.MouseEnter:Connect(function()
-        TweenService:Create(button, TweenInfo.new(ANIMATION_SETTINGS.hoverDuration), {
-            Size = UDim2.new(0, 55, 0, 55),
-            BackgroundTransparency = 0
-        }):Play()
-    end)
-    
-    button.MouseLeave:Connect(function()
-        TweenService:Create(button, TweenInfo.new(ANIMATION_SETTINGS.hoverDuration), {
-            Size = UDim2.new(0, 50, 0, 50),
-            BackgroundTransparency = 0.2
-        }):Play()
-    end)
+    end
     
     -- Make draggable
     local dragging = false
-    local dragStart, startPos
+    local dragInput
+    local dragStart
+    local startPos
+    
+    local function update(input)
+        if dragging then
+            local delta = input.Position - dragStart
+            button.Position = UDim2.new(
+                startPos.X.Scale, 
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale, 
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end
     
     button.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or 
+           input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
             dragStart = input.Position
             startPos = button.Position
@@ -269,58 +261,70 @@ local function createOpenButton()
         end
     end)
     
+    button.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or 
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    
     UserInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        if dragging and (input == dragInput or input.UserInputType == Enum.UserInputType.Touch) then
+            update(input)
+        end
+    end)
+    
+    button.MouseButton1Click:Connect(function()
+        if not dragging then
+            toggleGUI()
+        end
+    end)
+    
+    -- Add hover effects
+    button.MouseEnter:Connect(function()
+        if not dragging then
+            TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 65, 0, 65)}):Play()
+        end
+    end)
+    
+    button.MouseLeave:Connect(function()
+        if not dragging then
+            TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 60, 0, 60)}):Play()
+        end
+    end)
+    
+    -- Animation on creation
+    button.Position = UDim2.new(1, 100, 0, 20)
+    TweenService:Create(button, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Position = UDim2.new(1, -70, 0, 20)
+    }):Play()
+    
+    return OpenButton
+end
+
+-- Enhanced function to make frame draggable for mobile and desktop
+local function makeDraggable(frame, dragHandle)
+    local dragging = false
+    local dragInput
+    local dragStart
+    local startPos
+    
+    local function update(input)
+        if dragging then
             local delta = input.Position - dragStart
-            button.Position = UDim2.new(
+            frame.Position = UDim2.new(
                 startPos.X.Scale, 
                 startPos.X.Offset + delta.X,
                 startPos.Y.Scale, 
                 startPos.Y.Offset + delta.Y
             )
         end
-    end)
+    end
     
-    -- Entry animation
-    button.Position = UDim2.new(1, 100, 0, 20)
-    TweenService:Create(button, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-        Position = UDim2.new(1, -60, 0, 20)
-    }):Play()
-    
-    return OpenButton
-end
-
--- Function to create close button
-local function createCloseButton(parent, onClose)
-    local closeBtn = Instance.new("TextButton")
-    closeBtn.Size = UDim2.new(0, 25, 0, 25)
-    closeBtn.Position = UDim2.new(1, -30, 0, 5)
-    closeBtn.Text = "✕"
-    closeBtn.Font = Enum.Font.GothamBold
-    closeBtn.TextSize = 14
-    closeBtn.TextColor3 = COLOR_PALETTE.light.text
-    closeBtn.BackgroundColor3 = COLOR_PALETTE.danger
-    closeBtn.BackgroundTransparency = 0.2
-    closeBtn.BorderSizePixel = 0
-    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
-    
-    closeBtn.MouseButton1Click:Connect(function()
-        if onClose then
-            onClose()
-        end
-    end)
-    
-    closeBtn.Parent = parent
-    return closeBtn
-end
-
--- Function to make frame draggable
-local function makeDraggable(frame, dragHandle)
-    local dragging = false
-    local dragStart, startPos
-    
+    -- Mouse input for desktop
     dragHandle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or 
+           input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
             dragStart = input.Position
             startPos = frame.Position
@@ -333,51 +337,139 @@ local function makeDraggable(frame, dragHandle)
         end
     end)
     
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local delta = input.Position - dragStart
-            frame.Position = UDim2.new(
-                startPos.X.Scale, 
-                startPos.X.Offset + delta.X,
-                startPos.Y.Scale, 
-                startPos.Y.Offset + delta.Y
-            )
+    dragHandle.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or 
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
         end
     end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and (input == dragInput or input.UserInputType == Enum.UserInputType.Touch) then
+            update(input)
+        end
+    end)
+    
+    -- Touch support for mobile
+    if UserInputService.TouchEnabled then
+        RunService.Heartbeat:Connect(function()
+            if dragging and UserInputService:IsMouseButtonPressed(Enum.UserInputType.Touch) then
+                local touchPos = UserInputService:GetMouseLocation()
+                local delta = touchPos - dragStart
+                frame.Position = UDim2.new(
+                    startPos.X.Scale, 
+                    startPos.X.Offset + delta.X,
+                    startPos.Y.Scale, 
+                    startPos.Y.Offset + delta.Y
+                )
+            end
+        end)
+    end
 end
 
 -- Function to fetch data with better error handling
 local function fetchDataWithRetry()
     for attempt = 1, 3 do
         local ok, res = pcall(function()
+            -- Try with headers first
             local response = game:HttpGet(JSONBIN_URL, true, {["X-Master-Key"] = JSON_KEY})
             return HttpService:JSONDecode(response)
         end)
         
         if ok and res and res.record then
             CachedData = res.record
+            -- Debug logging
+            print("[RSQ] Data fetched successfully")
+            
+            -- Convert games to proper table format
             GamesList = {}
             
-            if res.record.games and type(res.record.games) == "table" then
-                for _, game in pairs(res.record.games) do
-                    if type(game) == "table" and game.id and game.name then
-                        table.insert(GamesList, game)
+            -- Handle games data - check if it exists and is a table
+            if res.record.games then
+                print("[RSQ] Games data type:", type(res.record.games))
+                
+                -- If games is already an array
+                if type(res.record.games) == "table" then
+                    local gameCount = 0
+                    
+                    -- Check if it's an array (numeric keys)
+                    local isArray = false
+                    for k, _ in pairs(res.record.games) do
+                        if type(k) == "number" then
+                            isArray = true
+                            break
+                        end
                     end
+                    
+                    if isArray then
+                        -- It's already an array
+                        GamesList = res.record.games
+                        gameCount = #GamesList
+                    else
+                        -- It's an object, convert to array
+                        for _, game in pairs(res.record.games) do
+                            if type(game) == "table" and game.id and game.name then
+                                table.insert(GamesList, game)
+                                gameCount = gameCount + 1
+                            end
+                        end
+                    end
+                    
+                    print("[RSQ] Loaded " .. gameCount .. " games")
+                    
+                    -- Print each game for debugging
+                    for i, game in ipairs(GamesList) do
+                        if game and game.id and game.name then
+                            local scriptCount = #(game.scripts or {})
+                            print(string.format("[RSQ] Game %d: %s (ID: %s) - %d scripts", 
+                                i, game.name, game.id, scriptCount))
+                        end
+                    end
+                else
+                    print("[RSQ] Games is not a table, type:", type(res.record.games))
                 end
-                print("[RSQ] Loaded " .. #GamesList .. " games")
+            else
+                print("[RSQ] No games field found in data")
             end
             return CachedData
+        else
+            -- Try without headers as fallback
+            local ok2, res2 = pcall(function()
+                local response = game:HttpGet(JSONBIN_URL)
+                return HttpService:JSONDecode(response)
+            end)
+            
+            if ok2 and res2 and res2.record then
+                CachedData = res2.record
+                print("[RSQ] Data fetched without headers")
+                
+                -- Same games processing logic as above
+                GamesList = {}
+                if res2.record.games and type(res2.record.games) == "table" then
+                    local gameCount = 0
+                    for _, game in pairs(res2.record.games) do
+                        if type(game) == "table" and game.id and game.name then
+                            table.insert(GamesList, game)
+                            gameCount = gameCount + 1
+                        end
+                    end
+                    print("[RSQ] Loaded " .. gameCount .. " games (no headers)")
+                end
+                return CachedData
+            end
+            
+            warn("[RSQ] Fetch attempt " .. attempt .. " failed: " .. tostring(res))
+            task.wait(1)
         end
-        
-        warn("[RSQ] Fetch attempt " .. attempt .. " failed")
-        task.wait(1)
     end
     return CachedData
 end
 
--- Start downloading the database immediately
+-- Start downloading the database immediately on execution
 task.spawn(function()
+    print("[RSQ] Starting initial data fetch...")
     fetchDataWithRetry()
+    print("[RSQ] Initial fetch complete. GamesList count:", #GamesList)
 end)
 
 --==================================================--
@@ -435,7 +527,6 @@ local function kickBanned(reason)
     while true do player:Kick(kickMsg) task.wait(0.5) end
 end
 
--- Simple notification function
 local function createNotify(msg, color)
     local notifyGui = Instance.new("ScreenGui", CoreGui)
     notifyGui.Name = "RSQ_Notifications_" .. tostring(math.random(1, 1000))
@@ -444,8 +535,7 @@ local function createNotify(msg, color)
     local frame = Instance.new("Frame", notifyGui)
     frame.Size = UDim2.new(0, 300, 0, 60)
     frame.Position = UDim2.new(1, 10, 0.8, 0)
-    frame.BackgroundColor3 = COLOR_PALETTE.dark.bg3
-    frame.BackgroundTransparency = 0.1
+    frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
     frame.BorderSizePixel = 0
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
     
@@ -459,7 +549,7 @@ local function createNotify(msg, color)
     label.Size = UDim2.new(1, -20, 1, 0)
     label.Position = UDim2.new(0, 15, 0, 0)
     label.Text = msg
-    label.TextColor3 = COLOR_PALETTE.light.text
+    label.TextColor3 = Color3.new(1, 1, 1)
     label.Font = Enum.Font.GothamBold
     label.TextSize = 13
     label.BackgroundTransparency = 1
@@ -490,18 +580,17 @@ local function showTeleportConfirmation(gameId, gameName)
     local confirmFrame = Instance.new("Frame", teleportGui)
     confirmFrame.Size = UDim2.new(0, 350, 0, 200)
     confirmFrame.Position = UDim2.new(0.5, -175, 0.5, -100)
-    confirmFrame.BackgroundColor3 = COLOR_PALETTE.dark.bg3
-    confirmFrame.BackgroundTransparency = 0.1
+    confirmFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
     confirmFrame.BorderSizePixel = 0
     Instance.new("UICorner", confirmFrame).CornerRadius = UDim.new(0, 12)
     
     -- Make draggable
     makeDraggable(confirmFrame, confirmFrame)
     
-    -- Title bar with close button
+    -- Title bar
     local titleBar = Instance.new("Frame", confirmFrame)
     titleBar.Size = UDim2.new(1, 0, 0, 30)
-    titleBar.BackgroundColor3 = COLOR_PALETTE.dark.bg4
+    titleBar.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
     titleBar.BackgroundTransparency = 0.3
     titleBar.BorderSizePixel = 0
     Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
@@ -512,13 +601,23 @@ local function showTeleportConfirmation(gameId, gameName)
     title.Text = "⚠️ Teleport Required"
     title.Font = Enum.Font.GothamBold
     title.TextSize = 14
-    title.TextColor3 = COLOR_PALETTE.warning
+    title.TextColor3 = Color3.fromRGB(255, 140, 0)
     title.BackgroundTransparency = 1
     title.TextXAlignment = Enum.TextXAlignment.Left
     
     -- Close button
-    createCloseButton(titleBar, function()
-        createNotify("Teleport cancelled", COLOR_PALETTE.danger)
+    local closeBtn = Instance.new("TextButton", titleBar)
+    closeBtn.Size = UDim2.new(0, 25, 0, 25)
+    closeBtn.Position = UDim2.new(1, -30, 0.5, -12.5)
+    closeBtn.Text = "✕"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 14
+    closeBtn.TextColor3 = Color3.new(1, 1, 1)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    closeBtn.BorderSizePixel = 0
+    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+    
+    closeBtn.MouseButton1Click:Connect(function()
         teleportGui:Destroy()
     end)
     
@@ -528,70 +627,73 @@ local function showTeleportConfirmation(gameId, gameName)
     message.Text = "Script '" .. gameName .. "' requires Game ID: " .. gameId .. "\n\nDo you want to teleport to the correct game?"
     message.Font = Enum.Font.Gotham
     message.TextSize = 14
-    message.TextColor3 = COLOR_PALETTE.light.text
+    message.TextColor3 = Color3.new(1, 1, 1)
     message.BackgroundTransparency = 1
     message.TextWrapped = true
     message.TextXAlignment = Enum.TextXAlignment.Left
     
-    -- Buttons container
-    local buttonContainer = Instance.new("Frame", confirmFrame)
-    buttonContainer.Size = UDim2.new(1, -20, 0, 50)
-    buttonContainer.Position = UDim2.new(0, 10, 1, -60)
-    buttonContainer.BackgroundTransparency = 1
-    
     -- Yes button
-    local yesBtn = Instance.new("TextButton", buttonContainer)
-    yesBtn.Size = UDim2.new(0.48, -5, 1, 0)
-    yesBtn.Position = UDim2.new(0, 0, 0, 0)
+    local yesBtn = Instance.new("TextButton", confirmFrame)
+    yesBtn.Size = UDim2.new(0, 140, 0, 40)
+    yesBtn.Position = UDim2.new(0.5, -150, 1, -60)
     yesBtn.Text = "✅ YES, Teleport"
     yesBtn.Font = Enum.Font.GothamBold
     yesBtn.TextSize = 14
-    yesBtn.TextColor3 = COLOR_PALETTE.light.text
-    yesBtn.BackgroundColor3 = COLOR_PALETTE.success
-    yesBtn.BackgroundTransparency = 0.2
+    yesBtn.TextColor3 = Color3.new(1, 1, 1)
+    yesBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
     yesBtn.BorderSizePixel = 0
     Instance.new("UICorner", yesBtn).CornerRadius = UDim.new(0, 8)
     
     -- No button
-    local noBtn = Instance.new("TextButton", buttonContainer)
-    noBtn.Size = UDim2.new(0.48, -5, 1, 0)
-    noBtn.Position = UDim2.new(0.52, 5, 0, 0)
+    local noBtn = Instance.new("TextButton", confirmFrame)
+    noBtn.Size = UDim2.new(0, 140, 0, 40)
+    noBtn.Position = UDim2.new(0.5, 10, 1, -60)
     noBtn.Text = "❌ NO, Cancel"
     noBtn.Font = Enum.Font.GothamBold
     noBtn.TextSize = 14
-    noBtn.TextColor3 = COLOR_PALETTE.light.text
-    noBtn.BackgroundColor3 = COLOR_PALETTE.danger
-    noBtn.BackgroundTransparency = 0.2
+    noBtn.TextColor3 = Color3.new(1, 1, 1)
+    noBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
     noBtn.BorderSizePixel = 0
     Instance.new("UICorner", noBtn).CornerRadius = UDim.new(0, 8)
     
     -- Button events
     yesBtn.MouseButton1Click:Connect(function()
-        createNotify("Teleporting to Game ID: " .. gameId, COLOR_PALETTE.success)
+        createNotify("Teleporting to Game ID: " .. gameId, Color3.fromRGB(40, 200, 80))
         teleportGui:Destroy()
         
+        -- Convert gameId to number for teleport
         local gameIdNumber = tonumber(gameId)
         if gameIdNumber then
+            -- Try teleport with error handling
             local success, err = pcall(function()
                 TeleportService:Teleport(gameIdNumber, player)
             end)
             
             if not success then
-                createNotify("❌ Teleport failed: " .. tostring(err), COLOR_PALETTE.danger)
+                createNotify("❌ Teleport failed: " .. tostring(err), Color3.fromRGB(255, 50, 50))
+                
+                -- Try alternative teleport method
+                task.wait(1)
+                createNotify("Trying alternative teleport method...", Color3.fromRGB(255, 140, 0))
+                
+                -- Use MarketplaceService to launch game
+                pcall(function()
+                    MarketplaceService:PromptGamePassPurchase(player, gameIdNumber)
+                end)
             end
         else
-            createNotify("❌ Invalid Game ID format", COLOR_PALETTE.danger)
+            createNotify("❌ Invalid Game ID format", Color3.fromRGB(255, 50, 50))
         end
     end)
     
     noBtn.MouseButton1Click:Connect(function()
-        createNotify("Teleport cancelled", COLOR_PALETTE.danger)
+        createNotify("Teleport cancelled", Color3.fromRGB(255, 59, 48))
         teleportGui:Destroy()
     end)
     
     -- Animation
     confirmFrame.BackgroundTransparency = 1
-    TweenService:Create(confirmFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
+    TweenService:Create(confirmFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0}):Play()
 end
 
 --==================================================--
@@ -601,18 +703,20 @@ local function validate(keyToVerify, skipFetch)
     local data = skipFetch and CachedData or fetchData()
     if not data then return false, "Connection Error" end
 
+    -- Ban Logic
     if data.bans and (data.bans[USER_NAME] or data.bans[USER_ID]) then
         kickBanned((data.bans[USER_NAME] or data.bans[USER_ID]).reason)
         return false, "Banned"
     end
 
+    -- Notifications
     if data.notifications and data.notifications[USER_NAME] then
         local n = data.notifications[USER_NAME]
         if n.time > LastNotifTime then
             LastNotifTime = n.time
-            if n.type == "DELETED" then createNotify("⚠️ Admin has revoked your key!", COLOR_PALETTE.danger)
-            elseif n.type == "RENEWED" then createNotify("✅ Key renewed by Admin!", COLOR_PALETTE.success)
-            elseif n.type == "INFINITE" then createNotify("💎 Key is now PERMANENT!", COLOR_PALETTE.accent)
+            if n.type == "DELETED" then createNotify("⚠️ Admin has revoked your key!", Color3.fromRGB(255, 50, 50))
+            elseif n.type == "RENEWED" then createNotify("✅ Key renewed by Admin!", Color3.fromRGB(50, 255, 50))
+            elseif n.type == "INFINITE" then createNotify("💎 Key is now PERMANENT!", Color3.fromRGB(0, 200, 255))
             end
         end
     end
@@ -628,14 +732,16 @@ local function validate(keyToVerify, skipFetch)
 end
 
 --==================================================--
--- ADVANCED GAMES GUI (SMALLER SIZE)
+-- ADVANCED GAMES GUI (ONLY SHOWS AFTER VALID KEY)
 --==================================================--
 local function showAdvancedGamesGUI()
+    -- Check if GUI is already loaded
     if isGUILoaded() then
-        createNotify("⚠️ GUI is already open!", COLOR_PALETTE.warning)
+        createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
         return
     end
     
+    -- Prevent duplicate GUI
     if CurrentGUI and CurrentGUI.Parent then
         CurrentGUI:Destroy()
         CurrentGUI = nil
@@ -645,11 +751,14 @@ local function showAdvancedGamesGUI()
     HasShownGUIAlready = true
     
     if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
-        OpenButton.ToggleButton.Text = "✕"
-        OpenButton.ToggleButton.BackgroundColor3 = COLOR_PALETTE.danger
+        OpenButton.ToggleButton.Text = "🔒"
+        OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
     end
     
     print("[RSQ] Showing Advanced Games GUI")
+    print("[RSQ] Current GamesList count:", #GamesList)
+    
+    fetchDataWithRetry()
     
     -- Create main GUI
     local gui = Instance.new("ScreenGui")
@@ -662,41 +771,62 @@ local function showAdvancedGamesGUI()
 
     -- Main container (smaller size)
     local mainFrame = Instance.new("Frame", gui)
-    mainFrame.Size = UDim2.new(0, 400, 0, 450) -- Smaller size
-    mainFrame.Position = UDim2.new(0.5, -200, 0.5, -225)
-    mainFrame.BackgroundColor3 = COLOR_PALETTE.dark.bg2
+    mainFrame.Size = UDim2.new(0, 450, 0, 400) -- Smaller size
+    mainFrame.Position = UDim2.new(0.5, -225, 0.5, -200)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(15, 20, 30)
     mainFrame.BackgroundTransparency = 0.1
     mainFrame.BorderSizePixel = 0
+    
     local mainCorner = Instance.new("UICorner", mainFrame)
     mainCorner.CornerRadius = UDim.new(0, 12)
     
     -- Make draggable
     makeDraggable(mainFrame, mainFrame)
     
+    -- Glass effect
+    local glassFrame = Instance.new("Frame", mainFrame)
+    glassFrame.Size = UDim2.new(1, 0, 1, 0)
+    glassFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    glassFrame.BackgroundTransparency = 0.95
+    glassFrame.BorderSizePixel = 0
+    Instance.new("UICorner", glassFrame).CornerRadius = UDim.new(0, 12)
+
     -- Title bar
     local titleBar = Instance.new("Frame", mainFrame)
-    titleBar.Size = UDim2.new(1, 0, 0, 35)
-    titleBar.BackgroundColor3 = COLOR_PALETTE.dark.bg4
-    titleBar.BackgroundTransparency = 0.3
+    titleBar.Size = UDim2.new(1, 0, 0, 40) -- Smaller title bar
+    titleBar.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
     titleBar.BorderSizePixel = 0
-    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
+    
+    local titleCorner = Instance.new("UICorner", titleBar)
+    titleCorner.CornerRadius = UDim.new(0, 12, 0, 0)
     
     local title = Instance.new("TextLabel", titleBar)
-    title.Size = UDim2.new(1, -45, 1, 0)
-    title.Position = UDim2.new(0, 10, 0, 0)
+    title.Size = UDim2.new(1, -60, 1, 0)
+    title.Position = UDim2.new(0, 15, 0, 0)
     title.Text = "🎮 RSQ GAMES LIBRARY"
     title.Font = Enum.Font.GothamBold
-    title.TextSize = 14
-    title.TextColor3 = COLOR_PALETTE.primary
+    title.TextSize = 14 -- Smaller font
+    title.TextColor3 = Color3.fromRGB(79, 124, 255)
     title.BackgroundTransparency = 1
     title.TextXAlignment = Enum.TextXAlignment.Left
     
     -- Close button
-    createCloseButton(titleBar, function()
+    local closeBtn = Instance.new("TextButton", titleBar)
+    closeBtn.Size = UDim2.new(0, 25, 0, 25)
+    closeBtn.Position = UDim2.new(1, -30, 0.5, -12.5)
+    closeBtn.Text = "✕"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 14
+    closeBtn.TextColor3 = Color3.new(1, 1, 1)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    closeBtn.BorderSizePixel = 0
+    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+    
+    closeBtn.MouseButton1Click:Connect(function()
         IsGuiOpen = false
         if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
-            OpenButton.ToggleButton.Text = "☰"
-            OpenButton.ToggleButton.BackgroundColor3 = COLOR_PALETTE.primary
+            OpenButton.ToggleButton.Text = "🔓"
+            OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
         end
         gui:Destroy()
         CurrentGUI = nil
@@ -704,150 +834,33 @@ local function showAdvancedGamesGUI()
 
     -- Content area
     local contentFrame = Instance.new("Frame", mainFrame)
-    contentFrame.Size = UDim2.new(1, -20, 1, -50)
-    contentFrame.Position = UDim2.new(0, 10, 0, 40)
+    contentFrame.Size = UDim2.new(1, -20, 1, -60) -- Adjusted for smaller frame
+    contentFrame.Position = UDim2.new(0, 10, 0, 50)
     contentFrame.BackgroundTransparency = 1
     contentFrame.ClipsDescendants = true
 
-    -- Search bar
-    local searchContainer = Instance.new("Frame", contentFrame)
-    searchContainer.Size = UDim2.new(1, 0, 0, 35)
-    searchContainer.BackgroundTransparency = 1
-    
-    local searchBox = Instance.new("TextBox", searchContainer)
-    searchBox.Size = UDim2.new(1, 0, 1, 0)
-    searchBox.PlaceholderText = "🔍 Search games..."
-    searchBox.Font = Enum.Font.Gotham
-    searchBox.TextSize = 13
-    searchBox.TextColor3 = COLOR_PALETTE.light.text
-    searchBox.BackgroundColor3 = COLOR_PALETTE.dark.bg4
-    searchBox.BackgroundTransparency = 0.1
-    searchBox.BorderSizePixel = 0
-    Instance.new("UICorner", searchBox).CornerRadius = UDim.new(0, 8)
-    
-    -- Games container
-    local gamesContainer = Instance.new("Frame", contentFrame)
-    gamesContainer.Size = UDim2.new(1, 0, 1, -45)
-    gamesContainer.Position = UDim2.new(0, 0, 0, 40)
-    gamesContainer.BackgroundTransparency = 1
-    
-    -- Scrolling frame
-    local scrollFrame = Instance.new("ScrollingFrame", gamesContainer)
+    -- Scrolling frame for games
+    local scrollFrame = Instance.new("ScrollingFrame", contentFrame)
     scrollFrame.Size = UDim2.new(1, 0, 1, 0)
     scrollFrame.BackgroundTransparency = 1
-    scrollFrame.ScrollBarImageColor3 = COLOR_PALETTE.primary
     scrollFrame.ScrollBarThickness = 4
+    scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(79, 124, 255)
     scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-    
-    -- Games list layout
+    scrollFrame.Visible = true
+
+    -- Games list container
     local gamesListLayout = Instance.new("UIListLayout", scrollFrame)
-    gamesListLayout.Padding = UDim.new(0, 8)
+    gamesListLayout.Padding = UDim.new(0, 8) -- Smaller padding
     gamesListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    
+
     -- VARIABLES FOR GAME DATA
     local currentGameData = nil
     local currentScriptsFrame = nil
-    
-    -- Function to create game card
-    local function createGameCard(gameData, parent)
-        local card = Instance.new("Frame", parent)
-        card.Size = UDim2.new(1, 0, 0, 70) -- Smaller card
-        card.BackgroundColor3 = COLOR_PALETTE.dark.bg4
-        card.BackgroundTransparency = 0.2
-        card.BorderSizePixel = 0
-        Instance.new("UICorner", card).CornerRadius = UDim.new(0, 8)
-        
-        -- Border
-        local border = Instance.new("UIStroke", card)
-        border.Color = COLOR_PALETTE.light.border
-        border.Thickness = 1
-        border.Transparency = 0.5
-        
-        -- Game icon
-        local icon = Instance.new("TextLabel", card)
-        icon.Size = UDim2.new(0, 40, 0, 40)
-        icon.Position = UDim2.new(0, 10, 0.5, -20)
-        icon.Text = "🎯"
-        icon.Font = Enum.Font.GothamBold
-        icon.TextSize = 20
-        icon.TextColor3 = COLOR_PALETTE.primary
-        icon.BackgroundTransparency = 1
-        
-        -- Game info
-        local infoFrame = Instance.new("Frame", card)
-        infoFrame.Size = UDim2.new(0.5, 0, 1, 0)
-        infoFrame.Position = UDim2.new(0, 60, 0, 0)
-        infoFrame.BackgroundTransparency = 1
-        
-        local gameName = Instance.new("TextLabel", infoFrame)
-        gameName.Size = UDim2.new(1, -10, 0, 25)
-        gameName.Position = UDim2.new(0, 0, 0, 10)
-        gameName.Text = gameData.name
-        gameName.Font = Enum.Font.GothamBold
-        gameName.TextSize = 13
-        gameName.TextColor3 = COLOR_PALETTE.light.text
-        gameName.TextXAlignment = Enum.TextXAlignment.Left
-        gameName.BackgroundTransparency = 1
-        
-        local gameId = Instance.new("TextLabel", infoFrame)
-        gameId.Size = UDim2.new(1, -10, 0, 20)
-        gameId.Position = UDim2.new(0, 0, 0, 35)
-        gameId.Text = "🆔 ID: " .. gameData.id
-        gameId.Font = Enum.Font.Gotham
-        gameId.TextSize = 11
-        gameId.TextColor3 = COLOR_PALETTE.light.subtext
-        gameId.TextXAlignment = Enum.TextXAlignment.Left
-        gameId.BackgroundTransparency = 1
-        
-        -- Scripts button
-        local scriptsBtn = Instance.new("TextButton", card)
-        scriptsBtn.Size = UDim2.new(0, 100, 0, 30)
-        scriptsBtn.Position = UDim2.new(1, -110, 0.5, -15)
-        scriptsBtn.Text = "📜 View Scripts"
-        scriptsBtn.Font = Enum.Font.GothamBold
-        scriptsBtn.TextSize = 11
-        scriptsBtn.TextColor3 = COLOR_PALETTE.light.text
-        scriptsBtn.BackgroundColor3 = COLOR_PALETTE.primary
-        scriptsBtn.BackgroundTransparency = 0.2
-        scriptsBtn.BorderSizePixel = 0
-        Instance.new("UICorner", scriptsBtn).CornerRadius = UDim.new(0, 6)
-        
-        local btnBorder = Instance.new("UIStroke", scriptsBtn)
-        btnBorder.Color = COLOR_PALETTE.primary
-        btnBorder.Thickness = 1
-        btnBorder.Transparency = 0.3
-        
-        -- Button events
-        scriptsBtn.MouseButton1Click:Connect(function()
-            print("[RSQ] View Scripts clicked for:", gameData.name)
-            showGameScripts(gameData)
-        end)
-        
-        -- Hover effects
-        card.MouseEnter:Connect(function()
-            TweenService:Create(card, TweenInfo.new(ANIMATION_SETTINGS.hoverDuration), {
-                BackgroundTransparency = 0.1
-            }):Play()
-            TweenService:Create(border, TweenInfo.new(ANIMATION_SETTINGS.hoverDuration), {
-                Transparency = 0
-            }):Play()
-        end)
-        
-        card.MouseLeave:Connect(function()
-            TweenService:Create(card, TweenInfo.new(ANIMATION_SETTINGS.hoverDuration), {
-                BackgroundTransparency = 0.2
-            }):Play()
-            TweenService:Create(border, TweenInfo.new(ANIMATION_SETTINGS.hoverDuration), {
-                Transparency = 0.5
-            }):Play()
-        end)
-        
-        return card
-    end
-    
+
     -- Function to show scripts for a specific game
     local function showGameScripts(gameData)
         print("[RSQ] showGameScripts called for:", gameData.name)
+        print("[RSQ] Scripts count:", #(gameData.scripts or {}))
         
         -- Store current game data
         currentGameData = gameData
@@ -861,109 +874,101 @@ local function showAdvancedGamesGUI()
             currentScriptsFrame = nil
         end
         
-        -- Create NEW scripts frame
-        currentScriptsFrame = Instance.new("Frame", gamesContainer)
-        currentScriptsFrame.Name = "RSQ_ScriptsFrame"
+        -- Create NEW scripts scrolling frame
+        currentScriptsFrame = Instance.new("ScrollingFrame", contentFrame)
+        currentScriptsFrame.Name = "RSQ_ScriptsScroll"
         currentScriptsFrame.Size = UDim2.new(1, 0, 1, 0)
+        currentScriptsFrame.Position = UDim2.new(0, 0, 0, 0)
         currentScriptsFrame.BackgroundTransparency = 1
+        currentScriptsFrame.ScrollBarThickness = 4
+        currentScriptsFrame.ScrollBarImageColor3 = Color3.fromRGB(79, 124, 255)
+        currentScriptsFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+        currentScriptsFrame.Visible = true
         
-        -- Back button
-        local backBtn = Instance.new("TextButton", currentScriptsFrame)
-        backBtn.Size = UDim2.new(0, 80, 0, 25)
-        backBtn.Position = UDim2.new(0, 0, 0, 0)
-        backBtn.Text = "← Back"
-        backBtn.Font = Enum.Font.GothamBold
-        backBtn.TextSize = 12
-        backBtn.TextColor3 = COLOR_PALETTE.light.text
-        backBtn.BackgroundColor3 = COLOR_PALETTE.dark.bg4
-        backBtn.BackgroundTransparency = 0.2
-        backBtn.BorderSizePixel = 0
-        Instance.new("UICorner", backBtn).CornerRadius = UDim.new(0, 6)
-        
-        backBtn.MouseButton1Click:Connect(function()
-            currentScriptsFrame:Destroy()
-            currentScriptsFrame = nil
-            scrollFrame.Visible = true
-        end)
-        
-        -- Title
-        local scriptsTitle = Instance.new("TextLabel", currentScriptsFrame)
-        scriptsTitle.Size = UDim2.new(1, -90, 0, 25)
-        scriptsTitle.Position = UDim2.new(0, 85, 0, 0)
-        scriptsTitle.Text = "📜 Scripts - " .. gameData.name
-        scriptsTitle.Font = Enum.Font.GothamBold
-        scriptsTitle.TextSize = 14
-        scriptsTitle.TextColor3 = COLOR_PALETTE.primary
-        scriptsTitle.BackgroundTransparency = 1
-        scriptsTitle.TextXAlignment = Enum.TextXAlignment.Left
-        
-        -- Scrolling frame for scripts
-        local scriptsScroll = Instance.new("ScrollingFrame", currentScriptsFrame)
-        scriptsScroll.Size = UDim2.new(1, 0, 1, -30)
-        scriptsScroll.Position = UDim2.new(0, 0, 0, 30)
-        scriptsScroll.BackgroundTransparency = 1
-        scriptsScroll.ScrollBarImageColor3 = COLOR_PALETTE.primary
-        scriptsScroll.ScrollBarThickness = 4
-        scriptsScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-        
-        local scriptsLayout = Instance.new("UIListLayout", scriptsScroll)
+        -- Create scripts list layout
+        local scriptsLayout = Instance.new("UIListLayout", currentScriptsFrame)
         scriptsLayout.Padding = UDim.new(0, 8)
         scriptsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        
+        -- Update title bar
+        title.Text = "📜 Scripts - " .. gameData.name
         
         -- Add scripts
         local scripts = gameData.scripts or {}
         
         if #scripts == 0 then
-            local emptyLabel = Instance.new("TextLabel", scriptsScroll)
+            -- Empty state
+            local emptyLabel = Instance.new("TextLabel", currentScriptsFrame)
             emptyLabel.Size = UDim2.new(1, 0, 0, 80)
             emptyLabel.Text = "📭 No scripts available for this game."
             emptyLabel.Font = Enum.Font.Gotham
             emptyLabel.TextSize = 13
-            emptyLabel.TextColor3 = COLOR_PALETTE.light.subtext
+            emptyLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
             emptyLabel.BackgroundTransparency = 1
             emptyLabel.TextWrapped = true
+            emptyLabel.LayoutOrder = 1
         else
             for index, scriptData in ipairs(scripts) do
                 if scriptData and scriptData.name and scriptData.url then
-                    -- Script card
-                    local scriptCard = Instance.new("Frame", scriptsScroll)
-                    scriptCard.Size = UDim2.new(1, 0, 0, 65)
-                    scriptCard.BackgroundColor3 = COLOR_PALETTE.dark.bg4
-                    scriptCard.BackgroundTransparency = 0.2
+                    print("[RSQ] Adding script:", scriptData.name)
+                    
+                    -- Script card (smaller)
+                    local scriptCard = Instance.new("Frame", currentScriptsFrame)
+                    scriptCard.Size = UDim2.new(1, 0, 0, 70) -- Smaller card
+                    scriptCard.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+                    scriptCard.BackgroundTransparency = 0.3
                     scriptCard.BorderSizePixel = 0
                     Instance.new("UICorner", scriptCard).CornerRadius = UDim.new(0, 8)
                     scriptCard.LayoutOrder = index
                     
-                    -- Script info
-                    local scriptName = Instance.new("TextLabel", scriptCard)
-                    scriptName.Size = UDim2.new(0.7, -10, 0, 25)
-                    scriptName.Position = UDim2.new(0, 10, 0, 5)
+                    -- Script info (compact layout)
+                    local scriptInfo = Instance.new("Frame", scriptCard)
+                    scriptInfo.Size = UDim2.new(0.7, 0, 1, 0)
+                    scriptInfo.Position = UDim2.new(0, 10, 0, 0)
+                    scriptInfo.BackgroundTransparency = 1
+                    
+                    -- Script name
+                    local scriptName = Instance.new("TextLabel", scriptInfo)
+                    scriptName.Size = UDim2.new(1, -10, 0, 25)
+                    scriptName.Position = UDim2.new(0, 0, 0, 5)
                     scriptName.Text = scriptData.name
                     scriptName.Font = Enum.Font.GothamBold
-                    scriptName.TextSize = 12
-                    scriptName.TextColor3 = COLOR_PALETTE.light.text
+                    scriptName.TextSize = 13
+                    scriptName.TextColor3 = Color3.new(1, 1, 1)
                     scriptName.TextXAlignment = Enum.TextXAlignment.Left
                     scriptName.BackgroundTransparency = 1
                     
-                    local urlPreview = Instance.new("TextLabel", scriptCard)
-                    urlPreview.Size = UDim2.new(0.7, -10, 0, 20)
-                    urlPreview.Position = UDim2.new(0, 10, 0, 30)
-                    urlPreview.Text = "📎 " .. string.sub(scriptData.url, 1, 20) .. "..."
+                    -- URL preview
+                    local urlPreview = Instance.new("TextLabel", scriptInfo)
+                    urlPreview.Size = UDim2.new(1, -10, 0, 20)
+                    urlPreview.Position = UDim2.new(0, 0, 0, 30)
+                    urlPreview.Text = "📎 " .. string.sub(scriptData.url, 1, 25) .. "..."
                     urlPreview.Font = Enum.Font.Gotham
-                    urlPreview.TextSize = 10
-                    urlPreview.TextColor3 = COLOR_PALETTE.light.subtext
+                    urlPreview.TextSize = 11
+                    urlPreview.TextColor3 = Color3.fromRGB(150, 150, 150)
                     urlPreview.TextXAlignment = Enum.TextXAlignment.Left
                     urlPreview.BackgroundTransparency = 1
                     
-                    -- Execute button
+                    -- Added by info
+                    local addedByInfo = Instance.new("TextLabel", scriptInfo)
+                    addedByInfo.Size = UDim2.new(1, -10, 0, 15)
+                    addedByInfo.Position = UDim2.new(0, 0, 0, 50)
+                    addedByInfo.Text = "👤 " .. (scriptData.addedBy or "Unknown")
+                    addedByInfo.Font = Enum.Font.Gotham
+                    addedByInfo.TextSize = 10
+                    addedByInfo.TextColor3 = Color3.fromRGB(0, 200, 255)
+                    addedByInfo.TextXAlignment = Enum.TextXAlignment.Left
+                    addedByInfo.BackgroundTransparency = 1
+                    
+                    -- Execute button (smaller)
                     local executeBtn = Instance.new("TextButton", scriptCard)
                     executeBtn.Size = UDim2.new(0, 80, 0, 25)
                     executeBtn.Position = UDim2.new(1, -85, 0.5, -12.5)
                     executeBtn.Text = "⚡ Execute"
                     executeBtn.Font = Enum.Font.GothamBold
                     executeBtn.TextSize = 11
-                    executeBtn.TextColor3 = COLOR_PALETTE.light.text
-                    executeBtn.BackgroundColor3 = COLOR_PALETTE.success
+                    executeBtn.TextColor3 = Color3.new(1, 1, 1)
+                    executeBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
                     executeBtn.BackgroundTransparency = 0.2
                     executeBtn.BorderSizePixel = 0
                     Instance.new("UICorner", executeBtn).CornerRadius = UDim.new(0, 6)
@@ -979,7 +984,7 @@ local function showAdvancedGamesGUI()
                         executeBtn.MouseButton1Click:Connect(function()
                             -- Check if player is in the right game
                             if tostring(capturedGameId) == tostring(PLACE_ID) then
-                                createNotify("Executing script: " .. capturedScriptData.name, COLOR_PALETTE.success)
+                                createNotify("Executing script: " .. capturedScriptData.name, Color3.fromRGB(40, 200, 80))
                                 
                                 -- Execute the script
                                 task.spawn(function()
@@ -989,12 +994,12 @@ local function showAdvancedGamesGUI()
                                     end)
                                     
                                     if not success then
-                                        createNotify("❌ Script failed: " .. errorMsg, COLOR_PALETTE.danger)
+                                        createNotify("❌ Script failed: " .. errorMsg, Color3.fromRGB(255, 50, 50))
                                     end
                                 end)
                             else
                                 -- Not in the right game, show notification and teleport confirmation
-                                createNotify("❌ Cannot run script - Wrong Game ID", COLOR_PALETTE.warning)
+                                createNotify("❌ Cannot run script - Wrong Game ID", Color3.fromRGB(255, 140, 0))
                                 
                                 -- Wait 1 second then show teleport confirmation
                                 task.wait(1)
@@ -1009,12 +1014,24 @@ local function showAdvancedGamesGUI()
         -- Update canvas size
         task.wait(0.1)
         local totalHeight = 0
-        for _, child in ipairs(scriptsScroll:GetChildren()) do
+        for _, child in ipairs(currentScriptsFrame:GetChildren()) do
             if child:IsA("Frame") then
                 totalHeight = totalHeight + child.Size.Y.Offset + scriptsLayout.Padding.Offset
             end
         end
-        scriptsScroll.CanvasSize = UDim2.new(0, 0, 0, totalHeight + 20)
+        currentScriptsFrame.CanvasSize = UDim2.new(0, 0, 0, totalHeight + 20)
+    end
+    
+    -- Function to show games list
+    local function showGamesList()
+        -- Hide scripts frame if it exists
+        if currentScriptsFrame then
+            currentScriptsFrame.Visible = false
+        end
+        
+        -- Show games list
+        scrollFrame.Visible = true
+        title.Text = "🎮 RSQ GAMES LIBRARY"
     end
 
     -- Function to load and display games
@@ -1036,7 +1053,7 @@ local function showAdvancedGamesGUI()
             emptyLabel.Text = "📭 No games available\nCheck back later!"
             emptyLabel.Font = Enum.Font.Gotham
             emptyLabel.TextSize = 13
-            emptyLabel.TextColor3 = COLOR_PALETTE.light.subtext
+            emptyLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
             emptyLabel.BackgroundTransparency = 1
             emptyLabel.TextWrapped = true
             emptyLabel.LayoutOrder = 1
@@ -1048,8 +1065,85 @@ local function showAdvancedGamesGUI()
         -- Add games
         for _, gameData in ipairs(GamesList) do
             if gameData and gameData.id and gameData.name then
-                local card = createGameCard(gameData, scrollFrame)
-                card.LayoutOrder = _
+                print("[RSQ] Adding game:", gameData.name, "ID:", gameData.id)
+                
+                -- Game card (smaller)
+                local gameCard = Instance.new("Frame", scrollFrame)
+                gameCard.Size = UDim2.new(1, 0, 0, 70) -- Smaller card
+                gameCard.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+                gameCard.BackgroundTransparency = 0.3
+                gameCard.BorderSizePixel = 0
+                Instance.new("UICorner", gameCard).CornerRadius = UDim.new(0, 8)
+                
+                -- Game info (compact layout)
+                local gameInfo = Instance.new("Frame", gameCard)
+                gameInfo.Size = UDim2.new(0.7, 0, 1, 0)
+                gameInfo.Position = UDim2.new(0, 10, 0, 0)
+                gameInfo.BackgroundTransparency = 1
+                
+                -- Game name
+                local gameName = Instance.new("TextLabel", gameInfo)
+                gameName.Size = UDim2.new(1, -10, 0, 25)
+                gameName.Position = UDim2.new(0, 0, 0, 5)
+                gameName.Text = gameData.name
+                gameName.Font = Enum.Font.GothamBold
+                gameName.TextSize = 13
+                gameName.TextColor3 = Color3.new(1, 1, 1)
+                gameName.TextXAlignment = Enum.TextXAlignment.Left
+                gameName.BackgroundTransparency = 1
+                
+                -- Game ID
+                local gameId = Instance.new("TextLabel", gameInfo)
+                gameId.Size = UDim2.new(1, -10, 0, 20)
+                gameId.Position = UDim2.new(0, 0, 0, 30)
+                gameId.Text = "🆔 ID: " .. gameData.id
+                gameId.Font = Enum.Font.Gotham
+                gameId.TextSize = 11
+                gameId.TextColor3 = Color3.fromRGB(150, 150, 150)
+                gameId.TextXAlignment = Enum.TextXAlignment.Left
+                gameId.BackgroundTransparency = 1
+                
+                -- Script count
+                local scriptCount = Instance.new("TextLabel", gameInfo)
+                scriptCount.Size = UDim2.new(1, -10, 0, 15)
+                scriptCount.Position = UDim2.new(0, 0, 0, 50)
+                local scripts = gameData.scripts or {}
+                scriptCount.Text = "📜 " .. #scripts .. " script" .. (#scripts == 1 and "" or "s")
+                scriptCount.Font = Enum.Font.Gotham
+                scriptCount.TextSize = 10
+                scriptCount.TextColor3 = Color3.fromRGB(0, 200, 255)
+                scriptCount.TextXAlignment = Enum.TextXAlignment.Left
+                scriptCount.BackgroundTransparency = 1
+                
+                -- Scripts list button (smaller)
+                local scriptsBtn = Instance.new("TextButton", gameCard)
+                scriptsBtn.Size = UDim2.new(0, 80, 0, 25)
+                scriptsBtn.Position = UDim2.new(1, -85, 0.5, -12.5)
+                scriptsBtn.Text = "📜 View"
+                scriptsBtn.Font = Enum.Font.GothamBold
+                scriptsBtn.TextSize = 11
+                scriptsBtn.TextColor3 = Color3.new(1, 1, 1)
+                scriptsBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+                scriptsBtn.BackgroundTransparency = 0.2
+                scriptsBtn.BorderSizePixel = 0
+                Instance.new("UICorner", scriptsBtn).CornerRadius = UDim.new(0, 6)
+                
+                -- Capture game data in a local variable for the closure
+                do
+                    local capturedGameData = {
+                        id = gameData.id,
+                        name = gameData.name,
+                        scripts = gameData.scripts or {}
+                    }
+                    
+                    scriptsBtn.MouseButton1Click:Connect(function()
+                        print("[RSQ] View Scripts clicked for:", capturedGameData.name)
+                        print("[RSQ] Scripts count in captured data:", #capturedGameData.scripts)
+                        showGameScripts(capturedGameData)
+                    end)
+                end
+            else
+                print("[RSQ] Invalid game data:", gameData)
             end
         end
         
@@ -1064,24 +1158,52 @@ local function showAdvancedGamesGUI()
         scrollFrame.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
     end
     
-    -- Refresh button
+    -- Back button for scripts view
+    local backBtn = Instance.new("TextButton", titleBar)
+    backBtn.Name = "RSQ_BackBtn"
+    backBtn.Size = UDim2.new(0, 80, 0, 25)
+    backBtn.Position = UDim2.new(0, 10, 0.5, -12.5)
+    backBtn.Text = "← Back"
+    backBtn.Font = Enum.Font.GothamBold
+    backBtn.TextSize = 11
+    backBtn.TextColor3 = Color3.new(1, 1, 1)
+    backBtn.BackgroundColor3 = Color3.fromRGB(60, 65, 80)
+    backBtn.Visible = false
+    backBtn.BorderSizePixel = 0
+    Instance.new("UICorner", backBtn).CornerRadius = UDim.new(0, 6)
+    
+    backBtn.MouseButton1Click:Connect(function()
+        showGamesList()
+        backBtn.Visible = false
+    end)
+    
+    -- Function to show scripts (updated to show back button)
+    local originalShowGameScripts = showGameScripts
+    showGameScripts = function(gameData)
+        originalShowGameScripts(gameData)
+        backBtn.Visible = true
+    end
+    
+    -- Refresh button (smaller)
     local refreshBtn = Instance.new("TextButton", mainFrame)
-    refreshBtn.Size = UDim2.new(0, 100, 0, 30)
-    refreshBtn.Position = UDim2.new(0.5, -50, 1, -40)
+    refreshBtn.Size = UDim2.new(0, 100, 0, 25)
+    refreshBtn.Position = UDim2.new(0.5, -50, 1, -35)
     refreshBtn.Text = "🔄 Refresh"
     refreshBtn.Font = Enum.Font.GothamBold
-    refreshBtn.TextSize = 12
-    refreshBtn.TextColor3 = COLOR_PALETTE.light.text
-    refreshBtn.BackgroundColor3 = COLOR_PALETTE.primary
+    refreshBtn.TextSize = 11
+    refreshBtn.TextColor3 = Color3.new(1, 1, 1)
+    refreshBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
     refreshBtn.BackgroundTransparency = 0.2
     refreshBtn.BorderSizePixel = 0
     Instance.new("UICorner", refreshBtn).CornerRadius = UDim.new(0, 6)
     
     refreshBtn.MouseButton1Click:Connect(function()
-        createNotify("Refreshing games list...", COLOR_PALETTE.primary)
+        createNotify("Refreshing games list...", Color3.fromRGB(79, 124, 255))
         fetchDataWithRetry() -- Refresh data
         print("[RSQ] After refresh, GamesList count:", #GamesList)
         loadGames() -- Reload games
+        showGamesList() -- Show games list
+        backBtn.Visible = false
     end)
     
     -- Load games initially
@@ -1093,14 +1215,16 @@ local function showAdvancedGamesGUI()
 end
 
 --==================================================--
--- KEY GUI
+-- INITIAL KEY GUI
 --==================================================--
 local function showKeyGUI()
+    -- Check if GUI is already loaded
     if isGUILoaded() then
-        createNotify("⚠️ GUI is already open!", COLOR_PALETTE.warning)
+        createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
         return
     end
     
+    -- Prevent duplicate GUI
     if CurrentGUI and CurrentGUI.Parent then
         CurrentGUI:Destroy()
         CurrentGUI = nil
@@ -1110,8 +1234,8 @@ local function showKeyGUI()
     HasShownGUIAlready = true
     
     if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
-        OpenButton.ToggleButton.Text = "✕"
-        OpenButton.ToggleButton.BackgroundColor3 = COLOR_PALETTE.danger
+        OpenButton.ToggleButton.Text = "🔒"
+        OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
     end
     
     local gui = Instance.new("ScreenGui")
@@ -1123,10 +1247,10 @@ local function showKeyGUI()
     CurrentGUI = gui
 
     local card = Instance.new("Frame", gui)
-    card.Size = UDim2.new(0, 350, 0, 250)
+    card.Size = UDim2.new(0, 350, 0, 250) -- Smaller
     card.Position = UDim2.new(0.5, -175, 0.5, -125)
-    card.BackgroundColor3 = COLOR_PALETTE.dark.bg3
-    card.BackgroundTransparency = 0.1
+    card.BackgroundColor3 = Color3.fromRGB(20, 24, 36)
+    card.BackgroundTransparency = 1
     card.BorderSizePixel = 0
     Instance.new("UICorner", card).CornerRadius = UDim.new(0, 12)
     
@@ -1136,7 +1260,7 @@ local function showKeyGUI()
     -- Title bar
     local titleBar = Instance.new("Frame", card)
     titleBar.Size = UDim2.new(1, 0, 0, 35)
-    titleBar.BackgroundColor3 = COLOR_PALETTE.dark.bg4
+    titleBar.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
     titleBar.BackgroundTransparency = 0.3
     titleBar.BorderSizePixel = 0
     Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
@@ -1147,15 +1271,26 @@ local function showKeyGUI()
     title.Text = "🔐 RSQ Key System"
     title.Font = Enum.Font.GothamBold
     title.TextSize = 14
-    title.TextColor3 = COLOR_PALETTE.light.text
+    title.TextColor3 = Color3.new(1,1,1)
     title.BackgroundTransparency = 1
     
     -- Close button
-    createCloseButton(titleBar, function()
+    local closeBtn = Instance.new("TextButton", titleBar)
+    closeBtn.Size = UDim2.new(0, 22, 0, 22)
+    closeBtn.Position = UDim2.new(1, -25, 0.5, -11)
+    closeBtn.Text = "✕"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 12
+    closeBtn.TextColor3 = Color3.new(1, 1, 1)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    closeBtn.BorderSizePixel = 0
+    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+    
+    closeBtn.MouseButton1Click:Connect(function()
         IsGuiOpen = false
         if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
-            OpenButton.ToggleButton.Text = "☰"
-            OpenButton.ToggleButton.BackgroundColor3 = COLOR_PALETTE.primary
+            OpenButton.ToggleButton.Text = "🔓"
+            OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
         end
         gui:Destroy()
         CurrentGUI = nil
@@ -1167,9 +1302,8 @@ local function showKeyGUI()
     input.Position = UDim2.new(0, 15, 0, 45)
     input.Font = Enum.Font.Gotham
     input.TextSize = 13
-    input.TextColor3 = COLOR_PALETTE.light.text
-    input.BackgroundColor3 = COLOR_PALETTE.dark.bg4
-    input.BackgroundTransparency = 0.1
+    input.TextColor3 = Color3.new(1,1,1)
+    input.BackgroundColor3 = Color3.fromRGB(14,18,30)
     input.BorderSizePixel = 0
     Instance.new("UICorner", input).CornerRadius = UDim.new(0,8)
 
@@ -1179,9 +1313,8 @@ local function showKeyGUI()
     unlock.Position = UDim2.new(0, 15, 0, 90)
     unlock.Font = Enum.Font.GothamBold
     unlock.TextSize = 13
-    unlock.TextColor3 = COLOR_PALETTE.light.text
-    unlock.BackgroundColor3 = COLOR_PALETTE.primary
-    unlock.BackgroundTransparency = 0.2
+    unlock.TextColor3 = Color3.new(1,1,1)
+    unlock.BackgroundColor3 = Color3.fromRGB(0,140,255)
     unlock.BorderSizePixel = 0
     Instance.new("UICorner", unlock).CornerRadius = UDim.new(0,8)
 
@@ -1191,9 +1324,8 @@ local function showKeyGUI()
     getKey.Position = UDim2.new(0, 15, 0, 135)
     getKey.Font = Enum.Font.GothamBold
     getKey.TextSize = 12
-    getKey.TextColor3 = COLOR_PALETTE.light.text
-    getKey.BackgroundColor3 = COLOR_PALETTE.warning
-    getKey.BackgroundTransparency = 0.2
+    getKey.TextColor3 = Color3.new(1,1,1)
+    getKey.BackgroundColor3 = Color3.fromRGB(255,140,0)
     getKey.BorderSizePixel = 0
     Instance.new("UICorner", getKey).CornerRadius = UDim.new(0,8)
 
@@ -1203,11 +1335,11 @@ local function showKeyGUI()
     status.TextWrapped = true
     status.Font = Enum.Font.Gotham
     status.TextSize = 12
-    status.TextColor3 = COLOR_PALETTE.light.subtext
+    status.TextColor3 = Color3.fromRGB(210,210,210)
     status.BackgroundTransparency = 1
     status.Text = "Enter your key to continue"
 
-    TweenService:Create(card, TweenInfo.new(0.4), {BackgroundTransparency = 0.1}):Play()
+    TweenService:Create(card, TweenInfo.new(0.4), {BackgroundTransparency = 0}):Play()
 
     -- Button events
     unlock.MouseButton1Click:Connect(function()
@@ -1215,7 +1347,6 @@ local function showKeyGUI()
         if inputKey == "" then return end
 
         status.Text = "⚡ Checking..."
-        status.TextColor3 = COLOR_PALETTE.primary
         
         -- Try local validation first for instant response
         local ok, res = validate(inputKey, true) 
@@ -1229,7 +1360,6 @@ local function showKeyGUI()
             CurrentKey = inputKey
             KeyActive = true
             status.Text = "✅ Success! Loading..."
-            status.TextColor3 = COLOR_PALETTE.success
             
             sendWebhook("REDEEM", inputKey, res.exp)
             
@@ -1248,13 +1378,13 @@ local function showKeyGUI()
             for _, url in ipairs(SCRIPT_URLS) do
                 task.spawn(function()
                     pcall(function() 
-                        loadstring(game:HttpGet(url))()
+                        local scriptContent = game:HttpGet(url)
+                        loadstring(scriptContent)() 
                     end)
                 end)
             end
         else
             status.Text = res
-            status.TextColor3 = COLOR_PALETTE.danger
             -- Clear saved key if validation fails
             if res == "❌ Expired" or res == "❌ Invalid Key" then
                 clearKeyStatus()
@@ -1267,36 +1397,41 @@ local function showKeyGUI()
     getKey.MouseButton1Click:Connect(function()
         setclipboard(GET_KEY_URL)
         status.Text = "📋 Link Copied!"
-        status.TextColor3 = COLOR_PALETTE.accent
     end)
 end
 
 --==================================================--
 -- INITIALIZE
 --==================================================--
+-- Check for saved key first
 task.spawn(function()
     IsInitializing = true
     
     local hasSavedKey = loadKeyStatus()
     if hasSavedKey then
-        createNotify("🔑 Loading saved key...", COLOR_PALETTE.primary)
+        -- Auto-open advanced GUI if key is saved and valid
+        createNotify("Loading saved key...", Color3.fromRGB(79, 124, 255))
         
+        -- Validate the saved key
         local ok, res = validate(CurrentKey, false)
         if ok then
-            createNotify("✅ Key validated successfully!", COLOR_PALETTE.success)
+            createNotify("✅ Key validated successfully!", Color3.fromRGB(40, 200, 80))
             createOpenButton()
+            -- Auto-open the advanced games GUI
             task.wait(1)
             showAdvancedGamesGUI()
             
+            -- Execute main scripts
             for _, url in ipairs(SCRIPT_URLS) do
                 task.spawn(function()
                     pcall(function() 
-                        loadstring(game:HttpGet(url))()
+                        local scriptContent = game:HttpGet(url)
+                        loadstring(scriptContent)() 
                     end)
                 end)
             end
         else
-            createNotify("❌ Saved key invalid: " .. res, COLOR_PALETTE.danger)
+            createNotify("❌ Saved key is invalid: " .. res, Color3.fromRGB(255, 50, 50))
             clearKeyStatus()
             CurrentKey = nil
             KeyActive = false
@@ -1304,6 +1439,7 @@ task.spawn(function()
             showKeyGUI()
         end
     else
+        -- No saved key, show initial GUI
         createOpenButton()
         showKeyGUI()
     end
@@ -1312,7 +1448,7 @@ task.spawn(function()
 end)
 
 --==================================================--
--- SECURITY LOOPS
+-- SECURITY LOOPS (HIGH FREQUENCY)
 --==================================================--
 task.spawn(function()
     while true do
@@ -1320,11 +1456,13 @@ task.spawn(function()
         if KeyActive and CurrentKey then
             local ok, res = validate(CurrentKey, false)
             if not ok then
-                createNotify("❌ Key is no longer valid: " .. res, COLOR_PALETTE.danger)
+                -- Key expired or invalid
+                createNotify("❌ Key is no longer valid: " .. res, Color3.fromRGB(255, 50, 50))
                 KeyActive = false
                 CurrentKey = nil
                 clearKeyStatus()
                 
+                -- Close any open GUIs
                 if CurrentGUI and CurrentGUI.Parent then
                     CurrentGUI:Destroy()
                     CurrentGUI = nil
@@ -1332,10 +1470,11 @@ task.spawn(function()
                 
                 IsGuiOpen = false
                 if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
-                    OpenButton.ToggleButton.Text = "☰"
-                    OpenButton.ToggleButton.BackgroundColor3 = COLOR_PALETTE.primary
+                    OpenButton.ToggleButton.Text = "🔓"
+                    OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
                 end
                 
+                -- Show key GUI again
                 showKeyGUI()
             end
         end
