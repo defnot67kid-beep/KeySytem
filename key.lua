@@ -7,6 +7,7 @@ local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
 local TweenService = game:GetService("TweenService")
 local TeleportService = game:GetService("TeleportService")
+local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local USER_ID = tostring(player.UserId)
 local USER_NAME = player.Name
@@ -231,6 +232,46 @@ local function createNotify(msg, color)
     end)
 end
 
+-- Function to make a frame draggable
+local function makeDraggable(frame, dragHandle)
+    local dragging = false
+    local dragInput
+    local dragStart
+    local startPos
+    
+    dragHandle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    dragHandle.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input == dragInput then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(
+                startPos.X.Scale, 
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale, 
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end)
+end
+
 -- Function to show teleport confirmation
 local function showTeleportConfirmation(gameId, gameName)
     local teleportGui = Instance.new("ScreenGui", player.PlayerGui)
@@ -247,19 +288,44 @@ local function showTeleportConfirmation(gameId, gameName)
     confirmFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
     Instance.new("UICorner", confirmFrame).CornerRadius = UDim.new(0, 12)
     
-    local title = Instance.new("TextLabel", confirmFrame)
-    title.Size = UDim2.new(1, -20, 0, 40)
-    title.Position = UDim2.new(0, 10, 0, 10)
+    -- Make draggable
+    makeDraggable(confirmFrame, confirmFrame)
+    
+    -- Title bar
+    local titleBar = Instance.new("Frame", confirmFrame)
+    titleBar.Size = UDim2.new(1, 0, 0, 30)
+    titleBar.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+    titleBar.BackgroundTransparency = 0.3
+    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
+    
+    local title = Instance.new("TextLabel", titleBar)
+    title.Size = UDim2.new(1, -40, 1, 0)
+    title.Position = UDim2.new(0, 10, 0, 0)
     title.Text = "⚠️ Teleport Required"
     title.Font = Enum.Font.GothamBold
-    title.TextSize = 16
+    title.TextSize = 14
     title.TextColor3 = Color3.fromRGB(255, 140, 0)
     title.BackgroundTransparency = 1
     title.TextXAlignment = Enum.TextXAlignment.Left
     
+    -- Close button
+    local closeBtn = Instance.new("TextButton", titleBar)
+    closeBtn.Size = UDim2.new(0, 25, 0, 25)
+    closeBtn.Position = UDim2.new(1, -30, 0.5, -12.5)
+    closeBtn.Text = "✕"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 14
+    closeBtn.TextColor3 = Color3.new(1, 1, 1)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+    
+    closeBtn.MouseButton1Click:Connect(function()
+        teleportGui:Destroy()
+    end)
+    
     local message = Instance.new("TextLabel", confirmFrame)
     message.Size = UDim2.new(1, -20, 0, 80)
-    message.Position = UDim2.new(0, 10, 0, 50)
+    message.Position = UDim2.new(0, 10, 0, 40)
     message.Text = "Script '" .. gameName .. "' requires Game ID: " .. gameId .. "\n\nDo you want to teleport to the correct game?"
     message.Font = Enum.Font.Gotham
     message.TextSize = 14
@@ -371,6 +437,9 @@ local function showAdvancedGamesGUI()
     local mainCorner = Instance.new("UICorner", mainFrame)
     mainCorner.CornerRadius = UDim.new(0, 12)
     
+    -- Make draggable
+    makeDraggable(mainFrame, mainFrame)
+    
     -- Glass effect
     local glassFrame = Instance.new("Frame", mainFrame)
     glassFrame.Size = UDim2.new(1, 0, 1, 0)
@@ -389,7 +458,7 @@ local function showAdvancedGamesGUI()
     titleCorner.CornerRadius = UDim.new(0, 12, 0, 0)
     
     local title = Instance.new("TextLabel", titleBar)
-    title.Size = UDim2.new(1, -20, 1, 0)
+    title.Size = UDim2.new(1, -60, 1, 0)
     title.Position = UDim2.new(0, 20, 0, 0)
     title.Text = "🎮 RSQ GAMES LIBRARY"
     title.Font = Enum.Font.GothamBold
@@ -794,25 +863,50 @@ local function showKeyGUI()
     gui.Parent = player:WaitForChild("PlayerGui")
 
     local card = Instance.new("Frame", gui)
-    card.Size = UDim2.new(0, 430, 0, 300) -- Reduced height (removed View Games button)
+    card.Size = UDim2.new(0, 430, 0, 300)
     card.Position = UDim2.new(0.5, -215, 0.5, -150)
     card.BackgroundColor3 = Color3.fromRGB(20, 24, 36)
     card.BackgroundTransparency = 1
     Instance.new("UICorner", card).CornerRadius = UDim.new(0, 18)
+    
+    -- Make draggable
+    makeDraggable(card, card)
 
-    local title = Instance.new("TextLabel", card)
-    title.Size = UDim2.new(1, -40, 0, 36)
-    title.Position = UDim2.new(0, 20, 0, 14)
+    -- Title bar
+    local titleBar = Instance.new("Frame", card)
+    titleBar.Size = UDim2.new(1, 0, 0, 40)
+    titleBar.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+    titleBar.BackgroundTransparency = 0.3
+    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 18, 0, 0)
+    
+    local title = Instance.new("TextLabel", titleBar)
+    title.Size = UDim2.new(1, -50, 1, 0)
+    title.Position = UDim2.new(0, 15, 0, 0)
     title.Text = "🔐 RSQ Key System"
     title.Font = Enum.Font.GothamBold
     title.TextSize = 16
     title.TextColor3 = Color3.new(1,1,1)
     title.BackgroundTransparency = 1
+    
+    -- Close button
+    local closeBtn = Instance.new("TextButton", titleBar)
+    closeBtn.Size = UDim2.new(0, 25, 0, 25)
+    closeBtn.Position = UDim2.new(1, -30, 0.5, -12.5)
+    closeBtn.Text = "✕"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 14
+    closeBtn.TextColor3 = Color3.new(1, 1, 1)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+    
+    closeBtn.MouseButton1Click:Connect(function()
+        gui:Destroy()
+    end)
 
     local input = Instance.new("TextBox", card)
     input.PlaceholderText = "Paste your key here"
     input.Size = UDim2.new(1, -40, 0, 40)
-    input.Position = UDim2.new(0, 20, 0, 60)
+    input.Position = UDim2.new(0, 20, 0, 50)
     input.Font = Enum.Font.Gotham
     input.TextSize = 14
     input.TextColor3 = Color3.new(1,1,1)
@@ -822,7 +916,7 @@ local function showKeyGUI()
     local unlock = Instance.new("TextButton", card)
     unlock.Text = "Unlock / Check Key"
     unlock.Size = UDim2.new(1, -40, 0, 40)
-    unlock.Position = UDim2.new(0, 20, 0, 110)
+    unlock.Position = UDim2.new(0, 20, 0, 100)
     unlock.Font = Enum.Font.GothamBold
     unlock.TextSize = 15
     unlock.TextColor3 = Color3.new(1,1,1)
@@ -832,7 +926,7 @@ local function showKeyGUI()
     local getKey = Instance.new("TextButton", card)
     getKey.Text = "🌐 Get Key"
     getKey.Size = UDim2.new(1, -40, 0, 36)
-    getKey.Position = UDim2.new(0, 20, 0, 158)
+    getKey.Position = UDim2.new(0, 20, 0, 148)
     getKey.Font = Enum.Font.GothamBold
     getKey.TextSize = 14
     getKey.TextColor3 = Color3.new(1,1,1)
@@ -840,7 +934,7 @@ local function showKeyGUI()
     Instance.new("UICorner", getKey).CornerRadius = UDim.new(0,10)
 
     local status = Instance.new("TextLabel", card)
-    status.Position = UDim2.new(0, 20, 0, 205)
+    status.Position = UDim2.new(0, 20, 0, 195)
     status.Size = UDim2.new(1, -40, 0, 70)
     status.TextWrapped = true
     status.Font = Enum.Font.Gotham
