@@ -1635,7 +1635,1818 @@ button.mini {
 </div>
 
 <script>
-const _0x2d7081=_0x4e60;(function(_0x4c6322,_0x2a717c){const _0x5ec8dc=_0x4e60,_0x5a233b=_0x4c6322();while(!![]){try{const _0x4ee3db=parseInt(_0x5ec8dc(0x2ed))/0x1+parseInt(_0x5ec8dc(0x228))/0x2*(parseInt(_0x5ec8dc(0x306))/0x3)+parseInt(_0x5ec8dc(0x279))/0x4+-parseInt(_0x5ec8dc(0x303))/0x5+parseInt(_0x5ec8dc(0x1d4))/0x6+-parseInt(_0x5ec8dc(0x28b))/0x7*(parseInt(_0x5ec8dc(0x238))/0x8)+-parseInt(_0x5ec8dc(0x25d))/0x9*(parseInt(_0x5ec8dc(0x1e2))/0xa);if(_0x4ee3db===_0x2a717c)break;else _0x5a233b['push'](_0x5a233b['shift']());}catch(_0x391e81){_0x5a233b['push'](_0x5a233b['shift']());}}}(_0x4c4f,0x1f1c2));const BIN_ID=_0x2d7081(0x1aa),JSON_KEY='$2a$10$f6r4B1gP.MfB1k49kq2m7eEzyesjD9KWP5zCa6QtJKW5ZBhL1M0/O',MASTER_KEY=_0x2d7081(0x24e),SUPER_ADMIN=_0x2d7081(0x22c),OWNER_PASS='RSQ-OWNER-PLSTEALME2',MOD_CONFIG={'BANNED':[/fuck/gi,/shit/gi,/nigger/gi,/faggot/gi,/retard/gi,/bitch/gi,/porn/gi,/sex/gi],'LEET':{'0':'o','1':'i','3':'e','4':'a','5':'s','7':'t','8':'b','@':'a','$':'s','!':'i','*':''}};let dataCache=null,lastFetchTime=0x0;const CACHE_TTL=0x3e8;let pendingUpdates=[],isUpdating=![],currentUser=null,isAdminAuthenticated=![],activeReplyTarget=null,activeEmojiPicker=null,chatPollingInterval=null,statsPollingInterval=null,typingTimeout=null,lastTypingTime=0x0,unreadCount=0x0,lastSeenMessageTime=0x0,userLastActivity={};const ACTIVITY_TIMEOUT=0x7530;let hasTrackedView=![];const USER_ID_KEY=_0x2d7081(0x272);let currentGameId=null,selectedGame=null,gameImageData=null;function now(){const _0x2fab56=_0x2d7081;return Math['floor'](Date[_0x2fab56(0x250)]()/0x3e8);}function moderate(_0x57b1c4){const _0x28770d=_0x2d7081;if(!_0x57b1c4)return![];let _0x167808=_0x57b1c4[_0x28770d(0x183)]();for(let _0x3ed1a8 in MOD_CONFIG[_0x28770d(0x300)]){_0x167808=_0x167808['split'](_0x3ed1a8)['join'](MOD_CONFIG[_0x28770d(0x300)][_0x3ed1a8]);}return _0x167808=_0x167808[_0x28770d(0x2a4)](/[^a-zA-Z ]/g,''),MOD_CONFIG['BANNED'][_0x28770d(0x263)](_0x4b7d68=>_0x4b7d68['test'](_0x167808)||_0x4b7d68['test'](_0x57b1c4));}function showToast(_0x2b9472,_0x1f88a1='info',_0x4345a5=0xbb8){const _0x4508e4=_0x2d7081,_0x463925=document[_0x4508e4(0x17b)](_0x4508e4(0x1bf));_0x463925[_0x4508e4(0x26a)]=_0x4508e4(0x1f1)+_0x1f88a1,_0x463925[_0x4508e4(0x227)]=_0x2b9472,document[_0x4508e4(0x24d)]['appendChild'](_0x463925),setTimeout(()=>{const _0x51aced=_0x4508e4;_0x463925['style']['opacity']='0',_0x463925[_0x51aced(0x1d2)][_0x51aced(0x260)]=_0x51aced(0x2dc),setTimeout(()=>_0x463925[_0x51aced(0x1a5)](),0x12c);},_0x4345a5);}function generateUserId(){const _0x364a77=_0x2d7081;return'user_'+Math[_0x364a77(0x2aa)]()[_0x364a77(0x2ca)](0x24)[_0x364a77(0x295)](0x2,0xf)+Math['random']()[_0x364a77(0x2ca)](0x24)['substring'](0x2,0xf);}function getUserIdentifier(){const _0x3cf666=_0x2d7081;let _0xed9476=localStorage[_0x3cf666(0x2e5)](USER_ID_KEY);return!_0xed9476&&(_0xed9476=generateUserId(),localStorage[_0x3cf666(0x28f)](USER_ID_KEY,_0xed9476)),_0xed9476;}function showLoading(_0x4a414b=_0x2d7081(0x2e6)){const _0x2ddd8f=_0x2d7081;document['getElementById'](_0x2ddd8f(0x287))[_0x2ddd8f(0x227)]=_0x4a414b,document[_0x2ddd8f(0x175)](_0x2ddd8f(0x1b4))['classList']['remove']('hidden');}function hideLoading(){const _0x1b6e33=_0x2d7081;document['getElementById'](_0x1b6e33(0x1b4))[_0x1b6e33(0x297)][_0x1b6e33(0x2db)]('hidden');}async function trackViewAndActivity(){const _0x510041=_0x2d7081,_0x411ad4=getUserIdentifier(),_0x58b590=Date[_0x510041(0x250)](),_0x1b0d67=await api('GET');if(!_0x1b0d67[_0x510041(0x2dd)])_0x1b0d67[_0x510041(0x2dd)]={};if(!_0x1b0d67[_0x510041(0x28d)])_0x1b0d67[_0x510041(0x28d)]={};!_0x1b0d67[_0x510041(0x2dd)][_0x411ad4]&&(_0x1b0d67[_0x510041(0x2dd)][_0x411ad4]=_0x58b590,hasTrackedView=!![]);_0x1b0d67['activity'][_0x411ad4]=_0x58b590;for(const _0x51e404 in _0x1b0d67[_0x510041(0x28d)]){_0x58b590-_0x1b0d67[_0x510041(0x28d)][_0x51e404]>ACTIVITY_TIMEOUT&&delete _0x1b0d67[_0x510041(0x28d)][_0x51e404];}await batchUpdate({'views':_0x1b0d67[_0x510041(0x2dd)],'activity':_0x1b0d67[_0x510041(0x28d)]}),updateStatsDisplay(_0x1b0d67);}function updateStatsDisplay(_0x32adb2){const _0x5221a5=_0x2d7081,_0xf782de=_0x32adb2['views']?Object[_0x5221a5(0x1b5)](_0x32adb2[_0x5221a5(0x2dd)])[_0x5221a5(0x2fb)]:0x0,_0xa2c7c7=_0x32adb2[_0x5221a5(0x28d)]?Object['keys'](_0x32adb2[_0x5221a5(0x28d)])[_0x5221a5(0x2fb)]:0x0;document[_0x5221a5(0x175)]('viewCount')[_0x5221a5(0x227)]=_0xf782de[_0x5221a5(0x309)](),document['getElementById'](_0x5221a5(0x19c))[_0x5221a5(0x227)]=_0xa2c7c7;const _0x2f53e2=new Set();_0x32adb2[_0x5221a5(0x2a1)]&&_0x32adb2[_0x5221a5(0x2a1)][_0x5221a5(0x17a)](_0x22c577=>_0x2f53e2[_0x5221a5(0x2db)](_0x22c577[_0x5221a5(0x278)])),document[_0x5221a5(0x175)](_0x5221a5(0x218))[_0x5221a5(0x227)]=_0x2f53e2[_0x5221a5(0x226)],document[_0x5221a5(0x175)]('chatMessageCount')['textContent']=_0x32adb2[_0x5221a5(0x2a1)]?_0x32adb2[_0x5221a5(0x2a1)][_0x5221a5(0x2fb)]:0x0;}async function api(_0x4dadb2,_0x5597b0=null,_0xaead3e=![]){const _0x1a7d22=_0x2d7081;if(_0x4dadb2===_0x1a7d22(0x2b0)&&!_0xaead3e&&dataCache&&Date[_0x1a7d22(0x250)]()-lastFetchTime<CACHE_TTL)return dataCache;try{const _0x1fdc5e=Date['now'](),_0x8611cf=await fetch(_0x1a7d22(0x229)+BIN_ID+(_0x4dadb2===_0x1a7d22(0x2b0)?_0x1a7d22(0x29b):''),{'method':_0x4dadb2,'headers':{'Content-Type':_0x1a7d22(0x273),'X-Master-Key':JSON_KEY,'X-Bin-Versioning':_0x1a7d22(0x24a)},'body':_0x5597b0?JSON[_0x1a7d22(0x2e7)](_0x5597b0):null}),_0x5db839=await _0x8611cf[_0x1a7d22(0x18f)]();if(_0x4dadb2===_0x1a7d22(0x2b0)){dataCache=_0x5db839['record'],lastFetchTime=Date[_0x1a7d22(0x250)]();if(pendingUpdates[_0x1a7d22(0x2fb)]>0x0){for(const _0x110c7c of pendingUpdates){Object['assign'](dataCache,_0x110c7c);}pendingUpdates=[];}}else _0x4dadb2===_0x1a7d22(0x187)&&(dataCache=_0x5597b0,lastFetchTime=Date[_0x1a7d22(0x250)]());return document[_0x1a7d22(0x175)]('connectionStatus')['className']=_0x1a7d22(0x1f2),document[_0x1a7d22(0x175)](_0x1a7d22(0x282))[_0x1a7d22(0x1c8)]=_0x1a7d22(0x21a),dataCache;}catch(_0x4dd4ec){return console['error'](_0x1a7d22(0x2bd),_0x4dd4ec),document['getElementById'](_0x1a7d22(0x282))['className']=_0x1a7d22(0x18d),document['getElementById'](_0x1a7d22(0x282))[_0x1a7d22(0x1c8)]=_0x1a7d22(0x181),dataCache||null;}}async function batchUpdate(_0x585cea){const _0x28541f=_0x2d7081;if(isUpdating){pendingUpdates[_0x28541f(0x2f1)](_0x585cea);return;}isUpdating=!![];try{const _0x5dfd16=await api('GET',null,!![]);Object[_0x28541f(0x296)](_0x5dfd16,_0x585cea),await api(_0x28541f(0x187),_0x5dfd16);while(pendingUpdates[_0x28541f(0x2fb)]>0x0){const _0x48a7d4=pendingUpdates[_0x28541f(0x23a)]();Object['assign'](_0x5dfd16,_0x48a7d4),await api(_0x28541f(0x187),_0x5dfd16);}}catch(_0x801ab5){console[_0x28541f(0x2e2)](_0x28541f(0x199),_0x801ab5),dataCache&&Object[_0x28541f(0x296)](dataCache,_0x585cea);}finally{isUpdating=![];}}async function updateChat(){const _0x4baffb=_0x2d7081,_0x4a4fb5=await api(_0x4baffb(0x2b0));if(!_0x4a4fb5)return;updateStatsDisplay(_0x4a4fb5);if(_0x4a4fb5['bans']&&_0x4a4fb5[_0x4baffb(0x29a)][currentUser]){document[_0x4baffb(0x175)](_0x4baffb(0x2b8))[_0x4baffb(0x297)]['add'](_0x4baffb(0x1da)),document['getElementById']('chat-window')[_0x4baffb(0x297)]['add'](_0x4baffb(0x1da));return;}const _0x791eb2=document[_0x4baffb(0x175)](_0x4baffb(0x2a8)),_0x48c72b=document[_0x4baffb(0x175)]('chat-toggle');_0x791eb2['classList'][_0x4baffb(0x307)]('hidden')&&_0x48c72b[_0x4baffb(0x297)][_0x4baffb(0x1a5)](_0x4baffb(0x1da));const _0x517b99=document[_0x4baffb(0x175)]('pinned-area');_0x4a4fb5['pinned']&&_0x4a4fb5[_0x4baffb(0x22f)][_0x4baffb(0x30d)]&&_0x4a4fb5[_0x4baffb(0x22f)][_0x4baffb(0x275)]?(_0x517b99[_0x4baffb(0x297)][_0x4baffb(0x1a5)]('hidden'),document['getElementById'](_0x4baffb(0x2d4))[_0x4baffb(0x227)]=_0x4a4fb5[_0x4baffb(0x22f)][_0x4baffb(0x275)]):_0x517b99[_0x4baffb(0x297)][_0x4baffb(0x2db)](_0x4baffb(0x1da)),renderMessages(_0x4a4fb5[_0x4baffb(0x2a1)]||[]);}function renderMessages(_0xcdf7d4){const _0x24eaf2=_0x2d7081,_0x52e1f4=document[_0x24eaf2(0x175)](_0x24eaf2(0x1fa)),_0x42f242=Date[_0x24eaf2(0x250)]();if(_0xcdf7d4[_0x24eaf2(0x2fb)]>0x0){const _0x19bfc1=_0xcdf7d4[_0xcdf7d4[_0x24eaf2(0x2fb)]-0x1],_0x18aeb2=_0x19bfc1[_0x24eaf2(0x173)]||0x0,_0x43f099=document[_0x24eaf2(0x175)]('chat-window')['classList'][_0x24eaf2(0x307)](_0x24eaf2(0x1da));_0x18aeb2>lastSeenMessageTime&&_0x43f099&&_0x19bfc1[_0x24eaf2(0x278)]!==currentUser&&(lastSeenMessageTime=_0x18aeb2,unreadCount++,updateUnreadBadge());}if(_0xcdf7d4[_0x24eaf2(0x2fb)]===0x0){_0x52e1f4[_0x24eaf2(0x1c8)]='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22empty-state\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22empty-state-icon\x22>💬</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div>No\x20messages\x20yet.\x20Be\x20the\x20first\x20to\x20say\x20hello!</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20';return;}_0x52e1f4[_0x24eaf2(0x1c8)]=_0xcdf7d4['map']((_0x23bc8b,_0x55644f)=>{const _0x4455aa=_0x24eaf2,_0x31b99f=_0x23bc8b[_0x4455aa(0x278)]===SUPER_ADMIN,_0x4e05ec=_0x23bc8b['user']==='SYSTEM',_0x274106=_0x23bc8b[_0x4455aa(0x278)]===currentUser,_0x435e4c=_0x23bc8b['timestamp']?new Date(_0x23bc8b['timestamp'])[_0x4455aa(0x259)]([],{'hour':_0x4455aa(0x179),'minute':'2-digit'}):_0x4455aa(0x2b2);let _0x41b39a='';_0x23bc8b[_0x4455aa(0x2b9)]&&(_0x41b39a=_0x4455aa(0x22b)+_0x23bc8b['replyTo'][_0x4455aa(0x278)]+'</strong>:\x20'+_0x23bc8b[_0x4455aa(0x2b9)]['text']+_0x4455aa(0x2c7));let _0x331b87='';return _0x23bc8b['reactions']&&Object[_0x4455aa(0x1b5)](_0x23bc8b[_0x4455aa(0x26b)])[_0x4455aa(0x2fb)]>0x0&&(_0x331b87=_0x4455aa(0x1c9)+Object[_0x4455aa(0x286)](_0x23bc8b[_0x4455aa(0x26b)])[_0x4455aa(0x2ea)](([_0x3b6637,_0x2ee515])=>{const _0x32bb0e=_0x4455aa,_0x529d2b=_0x23bc8b[_0x32bb0e(0x265)]?.[_0x3b6637]||[],_0xd808ce=_0x529d2b[_0x32bb0e(0x2a5)](currentUser),_0x22c103=_0x529d2b['length']>0x0?_0x529d2b[0x0]:null;return'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22reaction-btn-small\x20'+(_0xd808ce?_0x32bb0e(0x30d):'')+_0x32bb0e(0x1dd)+_0x55644f+_0x32bb0e(0x26e)+_0x3b6637+_0x32bb0e(0x1b9)+(_0x529d2b[_0x32bb0e(0x237)](',\x20')||_0x32bb0e(0x293))+_0x32bb0e(0x2d5)+_0x3b6637+_0x32bb0e(0x1c7)+_0x2ee515+'</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20';})[_0x4455aa(0x237)]('')+'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'),_0x4455aa(0x1a0)+(_0x4e05ec?_0x4455aa(0x1b6):'')+'\x20'+(_0x31b99f?_0x4455aa(0x2fc):'')+'\x20'+(_0x274106?_0x4455aa(0x191):'')+_0x4455aa(0x1fb)+_0x55644f+_0x4455aa(0x292)+_0x55644f+_0x4455aa(0x21d)+_0x55644f+')\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22msg-header\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22msg-user\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+(_0x31b99f?_0x4455aa(0x25e):'')+_0x4455aa(0x209)+_0x23bc8b[_0x4455aa(0x278)]+_0x4455aa(0x1ef)+_0x435e4c+_0x4455aa(0x239)+_0x41b39a+_0x4455aa(0x1b7)+_0x23bc8b[_0x4455aa(0x17f)]+'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+_0x331b87+'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22msg-actions\x22\x20id=\x22msg-actions-'+_0x55644f+_0x4455aa(0x1ba)+_0x55644f+_0x4455aa(0x1ec)+_0x55644f+_0x4455aa(0x26e)+_0x23bc8b[_0x4455aa(0x278)]+_0x4455aa(0x20f)+_0x23bc8b[_0x4455aa(0x17f)]+_0x4455aa(0x2cf)+(isAdminAuthenticated?_0x4455aa(0x2f4)+_0x55644f+_0x4455aa(0x291):'')+_0x4455aa(0x1bd)+(activeEmojiPicker===_0x55644f?renderEmojiPicker(_0x55644f):'')+_0x4455aa(0x1a6);})[_0x24eaf2(0x237)](''),activeEmojiPicker===null&&(_0x52e1f4[_0x24eaf2(0x29f)]=_0x52e1f4[_0x24eaf2(0x2f3)]);}function renderEmojiPicker(_0x3f919c){const _0x40b8f4=_0x2d7081;return'\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22emoji-picker\x22\x20id=\x22emoji-picker-'+_0x3f919c+'\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+['❤️','😂','🔥','💀','😮','😢','👍','👎','🎉','👏','🤔','😍'][_0x40b8f4(0x2ea)](_0x361cdc=>_0x40b8f4(0x2f9)+_0x3f919c+_0x40b8f4(0x26e)+_0x361cdc+_0x40b8f4(0x280)+_0x361cdc+'</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20')[_0x40b8f4(0x237)]('')+_0x40b8f4(0x2ec);}function openEmojiPicker(_0x2f8db0){activeEmojiPicker===_0x2f8db0?activeEmojiPicker=null:activeEmojiPicker=_0x2f8db0,updateChat();}function hideEmojiPicker(){activeEmojiPicker=null,updateChat();}function showMessageActions(_0x463570){const _0x522952=_0x2d7081,_0x1258d5=document['getElementById'](_0x522952(0x1ab)+_0x463570);_0x1258d5&&(_0x1258d5[_0x522952(0x1d2)][_0x522952(0x302)]='flex');}function _0x4e60(_0x316028,_0x34f08b){_0x316028=_0x316028-0x172;const _0x4c4f43=_0x4c4f();let _0x4e6017=_0x4c4f43[_0x316028];return _0x4e6017;}function hideMessageActions(_0x23e6b5){const _0x426e65=_0x2d7081,_0x5af8ec=document[_0x426e65(0x175)](_0x426e65(0x1ab)+_0x23e6b5);_0x5af8ec&&(_0x5af8ec[_0x426e65(0x1d2)]['display']=_0x426e65(0x1c5));}async function handleReaction(_0x1ac19d,_0xa57a35){const _0x4665da=_0x2d7081;if(!currentUser)return;const _0x4ba140=await api(_0x4665da(0x2b0));if(!_0x4ba140['chat']||!_0x4ba140['chat'][_0x1ac19d])return;if(!_0x4ba140[_0x4665da(0x2a1)][_0x1ac19d][_0x4665da(0x26b)])_0x4ba140[_0x4665da(0x2a1)][_0x1ac19d][_0x4665da(0x26b)]={};if(!_0x4ba140['chat'][_0x1ac19d]['reactionUsers'])_0x4ba140[_0x4665da(0x2a1)][_0x1ac19d]['reactionUsers']={};if(!_0x4ba140[_0x4665da(0x2a1)][_0x1ac19d][_0x4665da(0x265)][_0xa57a35])_0x4ba140[_0x4665da(0x2a1)][_0x1ac19d][_0x4665da(0x265)][_0xa57a35]=[];const _0x3c125b=_0x4ba140[_0x4665da(0x2a1)][_0x1ac19d][_0x4665da(0x265)][_0xa57a35],_0x12f034=_0x3c125b[_0x4665da(0x2d8)](currentUser),_0x30712d=_0x4ba140[_0x4665da(0x2a1)][_0x1ac19d]['reactions'][_0xa57a35]||0x0;if(_0x30712d===0x1&&_0x3c125b[_0x4665da(0x2fb)]===0x1&&_0x3c125b[0x0]===currentUser)delete _0x4ba140[_0x4665da(0x2a1)][_0x1ac19d][_0x4665da(0x26b)][_0xa57a35],delete _0x4ba140[_0x4665da(0x2a1)][_0x1ac19d]['reactionUsers'][_0xa57a35],showToast(_0x4665da(0x269),_0x4665da(0x24f),0x5dc);else _0x12f034===-0x1?(_0x4ba140['chat'][_0x1ac19d]['reactions'][_0xa57a35]=_0x30712d+0x1,_0x3c125b['push'](currentUser),showToast(_0x4665da(0x2ee)+_0xa57a35,_0x4665da(0x2cd),0x5dc)):(_0x4ba140['chat'][_0x1ac19d][_0x4665da(0x26b)][_0xa57a35]=_0x30712d-0x1,_0x3c125b[_0x4665da(0x2f6)](_0x12f034,0x1),_0x4ba140[_0x4665da(0x2a1)][_0x1ac19d][_0x4665da(0x26b)][_0xa57a35]<=0x0&&delete _0x4ba140['chat'][_0x1ac19d][_0x4665da(0x26b)][_0xa57a35],_0x3c125b['length']===0x0&&delete _0x4ba140[_0x4665da(0x2a1)][_0x1ac19d][_0x4665da(0x265)][_0xa57a35],showToast(_0x4665da(0x269),_0x4665da(0x24f),0x5dc));renderMessages(_0x4ba140['chat']),await batchUpdate({'chat':_0x4ba140[_0x4665da(0x2a1)]}),activeEmojiPicker=null;}function setupReply(_0x2b415d,_0x2c7050,_0x2ac82d){const _0x126bea=_0x2d7081;activeReplyTarget={'index':_0x2b415d,'user':_0x2c7050,'text':_0x2ac82d[_0x126bea(0x295)](0x0,0x32)+(_0x2ac82d[_0x126bea(0x2fb)]>0x32?_0x126bea(0x1cc):'')},document[_0x126bea(0x175)](_0x126bea(0x24b))['textContent']='Replying\x20to\x20'+_0x2c7050+':\x20'+activeReplyTarget[_0x126bea(0x275)],document[_0x126bea(0x175)]('reply-preview')['classList'][_0x126bea(0x1a5)]('hidden'),document[_0x126bea(0x175)](_0x126bea(0x267))[_0x126bea(0x2c4)]();}function cancelReply(){const _0x1f8fd9=_0x2d7081;activeReplyTarget=null,document[_0x1f8fd9(0x175)](_0x1f8fd9(0x2b1))[_0x1f8fd9(0x297)][_0x1f8fd9(0x2db)]('hidden');}async function sendChat(){const _0x1b6079=_0x2d7081,_0x129d1c=document[_0x1b6079(0x175)](_0x1b6079(0x267)),_0x39e168=_0x129d1c[_0x1b6079(0x26c)][_0x1b6079(0x276)]();if(!_0x39e168)return;if(moderate(_0x39e168)){showToast(_0x1b6079(0x216),_0x1b6079(0x2e2),0x7d0),_0x129d1c['value']='';return;}const _0x57762f=await api(_0x1b6079(0x2b0));if(_0x57762f[_0x1b6079(0x29a)]&&_0x57762f[_0x1b6079(0x29a)][currentUser]){showToast(_0x1b6079(0x1e5),_0x1b6079(0x2e2),0xbb8);return;}const _0x2ca35a={'user':currentUser,'txt':_0x39e168,'timestamp':Date['now'](),'replyTo':activeReplyTarget};_0x57762f[_0x1b6079(0x2a1)]=_0x57762f[_0x1b6079(0x2a1)]||[],_0x57762f[_0x1b6079(0x2a1)][_0x1b6079(0x2f1)](_0x2ca35a),_0x57762f[_0x1b6079(0x2a1)][_0x1b6079(0x2fb)]>0x64&&(_0x57762f['chat']=_0x57762f[_0x1b6079(0x2a1)][_0x1b6079(0x1bb)](-0x64)),renderMessages(_0x57762f['chat']),await batchUpdate({'chat':_0x57762f[_0x1b6079(0x2a1)]}),_0x129d1c[_0x1b6079(0x26c)]='',cancelReply(),clearTimeout(typingTimeout),document['getElementById'](_0x1b6079(0x17d))[_0x1b6079(0x297)][_0x1b6079(0x2db)](_0x1b6079(0x1da));}async function deleteMessage(_0x36b412){const _0x7d89f=_0x2d7081;if(!isAdminAuthenticated)return;if(!confirm(_0x7d89f(0x200)))return;const _0x5bc6a9=await api(_0x7d89f(0x2b0));_0x5bc6a9[_0x7d89f(0x2a1)]&&_0x5bc6a9[_0x7d89f(0x2a1)][_0x36b412]&&(_0x5bc6a9[_0x7d89f(0x2a1)]['splice'](_0x36b412,0x1),renderMessages(_0x5bc6a9[_0x7d89f(0x2a1)]),await batchUpdate({'chat':_0x5bc6a9['chat']}),showToast('Message\x20deleted','warning',0x7d0));}function updateUnreadBadge(){const _0x34dad9=_0x2d7081,_0x57a66d=document[_0x34dad9(0x175)](_0x34dad9(0x1f6));unreadCount>0x0?(_0x57a66d[_0x34dad9(0x227)]=unreadCount>0x63?'99+':unreadCount,_0x57a66d['classList'][_0x34dad9(0x1a5)](_0x34dad9(0x1da))):_0x57a66d[_0x34dad9(0x297)][_0x34dad9(0x2db)]('hidden');}function handleTyping(){const _0x3f593e=_0x2d7081;if(!currentUser)return;lastTypingTime=Date[_0x3f593e(0x250)](),clearTimeout(typingTimeout),document[_0x3f593e(0x175)](_0x3f593e(0x17d))['classList'][_0x3f593e(0x2db)](_0x3f593e(0x1da));}function showGameCreateView(){const _0x31d3fd=_0x2d7081;document[_0x31d3fd(0x175)](_0x31d3fd(0x1c1))[_0x31d3fd(0x297)][_0x31d3fd(0x2db)]('hidden'),document[_0x31d3fd(0x175)](_0x31d3fd(0x290))[_0x31d3fd(0x297)][_0x31d3fd(0x1a5)](_0x31d3fd(0x1da)),document[_0x31d3fd(0x175)]('gameNameInput')[_0x31d3fd(0x26c)]='',document[_0x31d3fd(0x175)](_0x31d3fd(0x196))[_0x31d3fd(0x26c)]='',document['getElementById']('gameImagePreview')[_0x31d3fd(0x1d2)][_0x31d3fd(0x302)]='none',document[_0x31d3fd(0x175)](_0x31d3fd(0x1e0))['style'][_0x31d3fd(0x302)]=_0x31d3fd(0x186),gameImageData=null,document['getElementById'](_0x31d3fd(0x1f5))[_0x31d3fd(0x227)]='';}function showGamesDashboard(){const _0x57f7c8=_0x2d7081;document[_0x57f7c8(0x175)](_0x57f7c8(0x290))[_0x57f7c8(0x297)][_0x57f7c8(0x2db)](_0x57f7c8(0x1da)),document[_0x57f7c8(0x175)](_0x57f7c8(0x194))[_0x57f7c8(0x297)][_0x57f7c8(0x2db)](_0x57f7c8(0x1da)),document[_0x57f7c8(0x175)]('adminDefaultView')[_0x57f7c8(0x297)][_0x57f7c8(0x1a5)](_0x57f7c8(0x1da)),loadGamesDashboard();}function showScriptManagement(_0x174670){const _0x41fec0=_0x2d7081;try{selectedGame=_0x174670,currentGameId=_0x174670['id'],document['getElementById'](_0x41fec0(0x1ff))[_0x41fec0(0x227)]=_0x174670['name'],document[_0x41fec0(0x175)](_0x41fec0(0x2e8))[_0x41fec0(0x227)]=_0x41fec0(0x1d7)+_0x174670['id'];const _0x42f4fd=document[_0x41fec0(0x175)]('currentGameImage');_0x174670[_0x41fec0(0x2bb)]?(_0x42f4fd['src']=_0x174670[_0x41fec0(0x2bb)],_0x42f4fd[_0x41fec0(0x1d2)][_0x41fec0(0x302)]=_0x41fec0(0x186)):_0x42f4fd[_0x41fec0(0x1d2)][_0x41fec0(0x302)]='none',document['getElementById'](_0x41fec0(0x1c1))['classList']['add'](_0x41fec0(0x1da)),document[_0x41fec0(0x175)](_0x41fec0(0x194))[_0x41fec0(0x297)]['remove']('hidden'),loadGameScripts();}catch(_0x5d1e55){console['error'](_0x41fec0(0x176),_0x5d1e55),showToast(_0x41fec0(0x2ef),'error');}}async function loadGameScripts(){const _0x32c9b4=_0x2d7081;if(!selectedGame)return;try{const _0x4ef573=await api(_0x32c9b4(0x2b0)),_0x8843ad=_0x4ef573['games']||[],_0x17fdf9=_0x8843ad['find'](_0x3508de=>_0x3508de&&_0x3508de['id']===selectedGame['id']);if(!_0x17fdf9){showToast(_0x32c9b4(0x254),_0x32c9b4(0x2e2)),showGamesDashboard();return;}const _0x1295b4=document[_0x32c9b4(0x175)](_0x32c9b4(0x2ab)),_0x3da19e=document[_0x32c9b4(0x175)](_0x32c9b4(0x2f0)),_0x22bc25=_0x17fdf9[_0x32c9b4(0x2b7)]&&Array['isArray'](_0x17fdf9[_0x32c9b4(0x2b7)])?_0x17fdf9[_0x32c9b4(0x2b7)]:[];if(_0x22bc25[_0x32c9b4(0x2fb)]===0x0){_0x1295b4[_0x32c9b4(0x1c8)]='',_0x3da19e[_0x32c9b4(0x297)][_0x32c9b4(0x1a5)]('hidden');return;}_0x3da19e['classList'][_0x32c9b4(0x2db)](_0x32c9b4(0x1da)),_0x1295b4[_0x32c9b4(0x1c8)]=_0x22bc25[_0x32c9b4(0x2ea)]((_0x279ac8,_0x23182a)=>{const _0x533338=_0x32c9b4;if(!_0x279ac8||typeof _0x279ac8!==_0x533338(0x1f0))return'';return _0x533338(0x1eb)+(_0x279ac8['name']||'Unnamed\x20Script')+_0x533338(0x27b)+new Date(_0x279ac8[_0x533338(0x2a7)]||Date['now']())['toLocaleDateString']()+_0x533338(0x308)+_0x279ac8[_0x533338(0x2d7)]+_0x533338(0x268)+(_0x279ac8[_0x533338(0x281)]||_0x533338(0x2c1))+_0x533338(0x233)+_0x23182a+_0x533338(0x2c0)+_0x279ac8[_0x533338(0x2d7)][_0x533338(0x2a4)](/'/g,'\x5c\x27')+_0x533338(0x20f)+_0x279ac8[_0x533338(0x240)][_0x533338(0x2a4)](/'/g,'\x5c\x27')+'\x27)\x22>Test</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20';})['join']('');}catch(_0x931a98){console['error'](_0x32c9b4(0x198),_0x931a98),showToast(_0x32c9b4(0x1b0),_0x32c9b4(0x2e2));}}document[_0x2d7081(0x175)]('gameImageInput')[_0x2d7081(0x257)](_0x2d7081(0x20b),function(_0xf96722){const _0x38877d=_0x2d7081,_0x5c857d=_0xf96722[_0x38877d(0x21e)][_0x38877d(0x174)][0x0];if(!_0x5c857d)return;if(_0x5c857d[_0x38877d(0x226)]>0x2*0x400*0x400){showToast(_0x38877d(0x21f),_0x38877d(0x2e2));return;}if(!_0x5c857d[_0x38877d(0x188)]['match'](_0x38877d(0x1a4))){showToast('Please\x20select\x20an\x20image\x20file.','error');return;}const _0x4f905c=new FileReader();_0x4f905c[_0x38877d(0x2b3)]=function(_0x1112bf){const _0x196a4e=_0x38877d,_0x57e8a3=new Image();_0x57e8a3[_0x196a4e(0x2b3)]=function(){const _0x539dc6=_0x196a4e,_0x2c2ffe=document[_0x539dc6(0x17b)](_0x539dc6(0x253)),_0x10e567=_0x2c2ffe[_0x539dc6(0x1f4)]('2d'),_0x3af16a=0x190,_0x1e4156=0x190;let _0x40c2c7=_0x57e8a3['width'],_0x5a4dc7=_0x57e8a3[_0x539dc6(0x271)];_0x40c2c7>_0x5a4dc7?_0x40c2c7>_0x3af16a&&(_0x5a4dc7*=_0x3af16a/_0x40c2c7,_0x40c2c7=_0x3af16a):_0x5a4dc7>_0x1e4156&&(_0x40c2c7*=_0x1e4156/_0x5a4dc7,_0x5a4dc7=_0x1e4156);_0x2c2ffe[_0x539dc6(0x241)]=_0x40c2c7,_0x2c2ffe['height']=_0x5a4dc7,_0x10e567[_0x539dc6(0x2ac)](_0x57e8a3,0x0,0x0,_0x40c2c7,_0x5a4dc7),gameImageData=_0x2c2ffe[_0x539dc6(0x204)](_0x539dc6(0x266),0.8);const _0x8e1298=document[_0x539dc6(0x175)]('gameImagePreview');_0x8e1298[_0x539dc6(0x29c)]=gameImageData,_0x8e1298[_0x539dc6(0x1d2)][_0x539dc6(0x302)]='block',document[_0x539dc6(0x175)](_0x539dc6(0x1e0))[_0x539dc6(0x1d2)]['display']='none';},_0x57e8a3['src']=_0x1112bf[_0x196a4e(0x21e)][_0x196a4e(0x2e3)];},_0x4f905c[_0x38877d(0x1c6)](_0x5c857d);});async function createGame(){const _0x2e6452=_0x2d7081,_0x345b3b=document[_0x2e6452(0x175)]('gameNameInput')[_0x2e6452(0x26c)][_0x2e6452(0x276)](),_0x156eed=document['getElementById']('gameIdInput')[_0x2e6452(0x26c)][_0x2e6452(0x276)](),_0x3d6a02=document[_0x2e6452(0x175)](_0x2e6452(0x1f5));if(!_0x345b3b||!_0x156eed){_0x3d6a02[_0x2e6452(0x227)]=_0x2e6452(0x1f9),_0x3d6a02[_0x2e6452(0x1d2)][_0x2e6452(0x18b)]=_0x2e6452(0x2da);return;}if(!/^\d+$/[_0x2e6452(0x284)](_0x156eed)){_0x3d6a02[_0x2e6452(0x227)]=_0x2e6452(0x1a8),_0x3d6a02['style'][_0x2e6452(0x18b)]=_0x2e6452(0x2da);return;}showLoading(_0x2e6452(0x247));try{const _0x58b47c=await api('GET',null,!![]);(!_0x58b47c[_0x2e6452(0x277)]||!Array[_0x2e6452(0x225)](_0x58b47c[_0x2e6452(0x277)]))&&(_0x58b47c[_0x2e6452(0x277)]=[]);const _0x5e053a=_0x58b47c[_0x2e6452(0x277)]['some'](_0x2b9868=>{const _0x384cea=_0x2e6452;if(_0x2b9868&&typeof _0x2b9868===_0x384cea(0x1f0)&&_0x2b9868['id'])return _0x2b9868['id']===_0x156eed;return![];});if(_0x5e053a){hideLoading(),_0x3d6a02[_0x2e6452(0x227)]=_0x2e6452(0x18c),_0x3d6a02[_0x2e6452(0x1d2)]['color']=_0x2e6452(0x2da),showToast(_0x2e6452(0x232),'error');return;}const _0x154e89={'id':_0x156eed,'name':_0x345b3b,'image':gameImageData||null,'scripts':[],'createdBy':currentUser,'createdAt':Date['now'](),'updatedAt':Date[_0x2e6452(0x250)]()};_0x58b47c[_0x2e6452(0x277)][_0x2e6452(0x2f1)](_0x154e89),await api(_0x2e6452(0x187),_0x58b47c),dataCache=null,lastFetchTime=0x0,hideLoading(),_0x3d6a02[_0x2e6452(0x227)]=_0x2e6452(0x1fd),_0x3d6a02['style'][_0x2e6452(0x18b)]='var(--success)',showToast(_0x2e6452(0x1fd),_0x2e6452(0x2cd)),setTimeout(()=>{showGamesDashboard();},0x5dc);}catch(_0x417349){hideLoading(),console[_0x2e6452(0x2e2)](_0x2e6452(0x1ce),_0x417349),_0x3d6a02['textContent']='Error\x20creating\x20game:\x20'+(_0x417349['message']||_0x2e6452(0x23d)),_0x3d6a02['style']['color']=_0x2e6452(0x2da),showToast(_0x2e6452(0x19a),'error');}}async function loadGamesDashboard(){const _0x3d554d=_0x2d7081;try{const _0x25290c=await api(_0x3d554d(0x2b0));let _0x285d0a=[];_0x25290c['games']&&Array[_0x3d554d(0x225)](_0x25290c[_0x3d554d(0x277)])&&(_0x285d0a=_0x25290c[_0x3d554d(0x277)]);document[_0x3d554d(0x175)]('totalGames')['textContent']=_0x285d0a[_0x3d554d(0x2fb)]+_0x3d554d(0x230)+(_0x285d0a[_0x3d554d(0x2fb)]!==0x1?'s':'');let _0x3b4b1a=0x0;_0x285d0a[_0x3d554d(0x17a)](_0x1204d4=>{const _0x2d7137=_0x3d554d;_0x1204d4&&_0x1204d4[_0x2d7137(0x2b7)]&&Array[_0x2d7137(0x225)](_0x1204d4[_0x2d7137(0x2b7)])&&(_0x3b4b1a+=_0x1204d4[_0x2d7137(0x2b7)][_0x2d7137(0x2fb)]);}),document[_0x3d554d(0x175)]('totalScripts')[_0x3d554d(0x227)]=_0x3b4b1a+_0x3d554d(0x1db)+(_0x3b4b1a!==0x1?'s':'');const _0x5dce26=document[_0x3d554d(0x175)](_0x3d554d(0x28c)),_0x5b0a3e=document[_0x3d554d(0x175)](_0x3d554d(0x299));if(_0x285d0a['length']===0x0){_0x5dce26[_0x3d554d(0x1c8)]='',_0x5b0a3e[_0x3d554d(0x297)][_0x3d554d(0x1a5)](_0x3d554d(0x1da));return;}_0x5b0a3e[_0x3d554d(0x297)][_0x3d554d(0x2db)](_0x3d554d(0x1da));const _0x4de2e7=_0x285d0a[_0x3d554d(0x2ba)](_0x34411b=>_0x34411b&&typeof _0x34411b==='object'&&_0x34411b['id']&&_0x34411b[_0x3d554d(0x240)]);_0x5dce26[_0x3d554d(0x1c8)]=_0x4de2e7[_0x3d554d(0x2ea)](_0x1565be=>{const _0x2a912e=_0x3d554d,_0x44c592=_0x1565be[_0x2a912e(0x2b7)]&&Array[_0x2a912e(0x225)](_0x1565be['scripts'])?_0x1565be[_0x2a912e(0x2b7)][_0x2a912e(0x2fb)]:0x0,_0xf5516=JSON[_0x2a912e(0x2e7)](_0x1565be)[_0x2a912e(0x2a4)](/"/g,_0x2a912e(0x255));return'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22game-card\x22\x20onclick=\x22showScriptManagement('+_0xf5516+_0x2a912e(0x180)+_0x1565be['id']+'\x27)\x22\x20title=\x22Delete\x20Game\x22>🗑️</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+(_0x1565be[_0x2a912e(0x2bb)]?_0x2a912e(0x2ff)+_0x1565be['image']+_0x2a912e(0x1c2)+_0x1565be[_0x2a912e(0x240)]+'\x22>':'<div\x20class=\x22game-card-image\x22\x20style=\x22display:flex;\x20align-items:center;\x20justify-content:center;\x20background:linear-gradient(135deg,\x20var(--primary),\x20var(--secondary));\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20style=\x22font-size:24px;\x20opacity:0.8;\x22>🎮</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>')+'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22game-card-title\x22>'+_0x1565be[_0x2a912e(0x240)]+_0x2a912e(0x2fe)+_0x1565be['id']+_0x2a912e(0x1e4)+_0x44c592+_0x2a912e(0x1db)+(_0x44c592!==0x1?'s':'')+_0x2a912e(0x178);})[_0x3d554d(0x237)]('');}catch(_0x73f35d){console[_0x3d554d(0x2e2)](_0x3d554d(0x193),_0x73f35d),showToast(_0x3d554d(0x1e8),_0x3d554d(0x2e2));}}async function addScriptToGame(){const _0x3102de=_0x2d7081;if(!selectedGame)return;const _0x4bac24=document[_0x3102de(0x175)](_0x3102de(0x2d2))[_0x3102de(0x26c)][_0x3102de(0x276)](),_0x2a0479=document[_0x3102de(0x175)](_0x3102de(0x20e))[_0x3102de(0x26c)][_0x3102de(0x276)](),_0x2ef4d6=document[_0x3102de(0x175)]('scriptAddStatus');if(!_0x4bac24||!_0x2a0479){_0x2ef4d6[_0x3102de(0x227)]=_0x3102de(0x1f9),_0x2ef4d6[_0x3102de(0x1d2)][_0x3102de(0x18b)]=_0x3102de(0x2da);return;}if(!_0x2a0479['startsWith'](_0x3102de(0x2a6))&&!_0x2a0479['startsWith'](_0x3102de(0x244))){_0x2ef4d6['textContent']=_0x3102de(0x189),_0x2ef4d6['style'][_0x3102de(0x18b)]=_0x3102de(0x2da);return;}showLoading(_0x3102de(0x2a3));try{const _0x37f1e9=await api(_0x3102de(0x2b0),null,!![]);(!_0x37f1e9[_0x3102de(0x277)]||!Array['isArray'](_0x37f1e9[_0x3102de(0x277)]))&&(_0x37f1e9[_0x3102de(0x277)]=[]);const _0x568965=_0x37f1e9['games'][_0x3102de(0x251)](_0x46fc54=>_0x46fc54&&_0x46fc54['id']===selectedGame['id']);if(_0x568965===-0x1){showToast(_0x3102de(0x254),'error'),hideLoading();return;}(!_0x37f1e9[_0x3102de(0x277)][_0x568965][_0x3102de(0x2b7)]||!Array['isArray'](_0x37f1e9[_0x3102de(0x277)][_0x568965][_0x3102de(0x2b7)]))&&(_0x37f1e9[_0x3102de(0x277)][_0x568965][_0x3102de(0x2b7)]=[]);const _0x3adc2a=_0x37f1e9[_0x3102de(0x277)][_0x568965]['scripts'][_0x3102de(0x263)](_0x4a03ac=>_0x4a03ac&&_0x4a03ac[_0x3102de(0x240)]&&_0x4a03ac['name'][_0x3102de(0x183)]()===_0x4bac24[_0x3102de(0x183)]());if(_0x3adc2a){hideLoading(),_0x2ef4d6[_0x3102de(0x227)]=_0x3102de(0x1b1),_0x2ef4d6[_0x3102de(0x1d2)][_0x3102de(0x18b)]=_0x3102de(0x2da),showToast(_0x3102de(0x242),'error');return;}_0x37f1e9[_0x3102de(0x277)][_0x568965]['scripts']['push']({'name':_0x4bac24,'url':_0x2a0479,'addedBy':currentUser,'addedAt':Date[_0x3102de(0x250)]()}),_0x37f1e9[_0x3102de(0x277)][_0x568965][_0x3102de(0x2d3)]=Date[_0x3102de(0x250)](),await api(_0x3102de(0x187),_0x37f1e9),dataCache=null,lastFetchTime=0x0,document[_0x3102de(0x175)](_0x3102de(0x2d2))['value']='',document[_0x3102de(0x175)]('scriptUrlInput')['value']='',_0x2ef4d6[_0x3102de(0x227)]=_0x3102de(0x1af),_0x2ef4d6[_0x3102de(0x1d2)]['color']=_0x3102de(0x294),hideLoading(),showToast(_0x3102de(0x1af),_0x3102de(0x2cd)),selectedGame=_0x37f1e9[_0x3102de(0x277)][_0x568965],loadGameScripts();}catch(_0x58f647){hideLoading(),console[_0x3102de(0x2e2)](_0x3102de(0x2bc),_0x58f647),_0x2ef4d6['textContent']=_0x3102de(0x20d)+(_0x58f647[_0x3102de(0x22a)]||_0x3102de(0x23d)),_0x2ef4d6['style'][_0x3102de(0x18b)]='var(--danger)',showToast('Failed\x20to\x20add\x20script',_0x3102de(0x2e2));}}async function deleteGame(_0x51b6ae){const _0x439031=_0x2d7081;if(!confirm('Are\x20you\x20sure\x20you\x20want\x20to\x20delete\x20this\x20game\x20and\x20all\x20its\x20scripts?'))return;showLoading(_0x439031(0x26d));try{const _0x1f1d85=await api(_0x439031(0x2b0),null,!![]),_0x364a75=_0x1f1d85[_0x439031(0x277)]||[],_0x1cef14=_0x364a75[_0x439031(0x251)](_0xca677e=>_0xca677e['id']===_0x51b6ae);if(_0x1cef14===-0x1){showToast(_0x439031(0x254),_0x439031(0x2e2)),hideLoading();return;}_0x364a75[_0x439031(0x2f6)](_0x1cef14,0x1),await api(_0x439031(0x187),_0x1f1d85),dataCache=null,lastFetchTime=0x0,hideLoading(),showToast(_0x439031(0x224),_0x439031(0x197)),loadGamesDashboard();}catch(_0x46b4a8){hideLoading(),console[_0x439031(0x2e2)](_0x439031(0x27e),_0x46b4a8),showToast(_0x439031(0x1d8),_0x439031(0x2e2));}}async function testScript(_0x3dc844,_0x2c5902){const _0x268742=_0x2d7081;showLoading(_0x268742(0x27a));try{const _0x427302=await fetch(_0x3dc844,{'method':'GET','mode':_0x268742(0x262)});hideLoading(),showToast(_0x268742(0x1cd)+_0x2c5902+_0x268742(0x30b),_0x268742(0x2cd));try{await navigator[_0x268742(0x2e9)][_0x268742(0x202)](_0x3dc844),showToast(_0x268742(0x182),_0x268742(0x24f));}catch(_0x23993f){console['log'](_0x268742(0x2d9),_0x23993f);}}catch(_0x4518d0){hideLoading(),console[_0x268742(0x2e2)](_0x268742(0x1e3),_0x4518d0),showToast(_0x268742(0x1cd)+_0x2c5902+_0x268742(0x23c),_0x268742(0x2e2));}}function toggleChat(_0x417fea){const _0x188c4e=_0x2d7081,_0x11b4c1=document[_0x188c4e(0x175)](_0x188c4e(0x2a8)),_0x1f42d4=document[_0x188c4e(0x175)](_0x188c4e(0x2b8));if(_0x417fea){_0x11b4c1[_0x188c4e(0x297)][_0x188c4e(0x1a5)](_0x188c4e(0x1da)),_0x1f42d4[_0x188c4e(0x297)][_0x188c4e(0x2db)]('hidden'),unreadCount=0x0,updateUnreadBadge();if(dataCache&&dataCache[_0x188c4e(0x2a1)]&&dataCache[_0x188c4e(0x2a1)][_0x188c4e(0x2fb)]>0x0){const _0x22555c=dataCache[_0x188c4e(0x2a1)][dataCache[_0x188c4e(0x2a1)]['length']-0x1];lastSeenMessageTime=_0x22555c[_0x188c4e(0x173)]||Date['now']();}}else _0x11b4c1[_0x188c4e(0x297)][_0x188c4e(0x2db)]('hidden'),_0x1f42d4[_0x188c4e(0x297)][_0x188c4e(0x1a5)]('hidden');updateChat();}function toggleAuth(_0x137a60){const _0x3aa9b0=_0x2d7081;document[_0x3aa9b0(0x175)](_0x3aa9b0(0x2c9))[_0x3aa9b0(0x297)]['toggle'](_0x3aa9b0(0x1da),!_0x137a60),document['getElementById']('loginView')[_0x3aa9b0(0x297)][_0x3aa9b0(0x1f3)](_0x3aa9b0(0x1da),_0x137a60);}function toggleFeedbackUI(_0x4b5e7d){const _0x55e316=_0x2d7081,_0x213459=document['getElementById'](_0x55e316(0x2df)),_0x397efd=document[_0x55e316(0x175)](_0x55e316(0x236));_0x4b5e7d?(_0x213459[_0x55e316(0x297)]['remove']('hidden'),_0x397efd[_0x55e316(0x297)][_0x55e316(0x2db)](_0x55e316(0x1da))):(_0x213459[_0x55e316(0x297)][_0x55e316(0x2db)](_0x55e316(0x1da)),_0x397efd[_0x55e316(0x297)][_0x55e316(0x1a5)](_0x55e316(0x1da)));}window[_0x2d7081(0x2b3)]=async()=>{const _0x5908d7=_0x2d7081;initParticleBackground();function _0x1d2fca(){const _0x143eea=_0x4e60,_0x2f3c3d=new Date();document[_0x143eea(0x175)](_0x143eea(0x219))[_0x143eea(0x227)]=_0x2f3c3d[_0x143eea(0x25a)]()[_0x143eea(0x2ca)]()[_0x143eea(0x27c)](0x2,'0')+':'+_0x2f3c3d['getMinutes']()[_0x143eea(0x2ca)]()[_0x143eea(0x27c)](0x2,'0');}_0x1d2fca(),setInterval(_0x1d2fca,0xea60);const _0x3d8a28=localStorage[_0x5908d7(0x2e5)](_0x5908d7(0x2d0));if(_0x3d8a28)try{const _0x1e5642=JSON[_0x5908d7(0x18e)](_0x3d8a28);document[_0x5908d7(0x175)](_0x5908d7(0x214))[_0x5908d7(0x26c)]=_0x1e5642['u'],document['getElementById'](_0x5908d7(0x208))[_0x5908d7(0x26c)]=_0x1e5642['p'],handleAuth(_0x5908d7(0x1a3));}catch(_0x341fa7){localStorage[_0x5908d7(0x220)]('rsq_session');}statsPollingInterval=setInterval(trackViewAndActivity,0x1388),trackViewAndActivity();const _0x33fbe0=document[_0x5908d7(0x175)](_0x5908d7(0x267));_0x33fbe0&&(_0x33fbe0[_0x5908d7(0x257)](_0x5908d7(0x195),handleTyping),_0x33fbe0[_0x5908d7(0x257)](_0x5908d7(0x29d),_0x116241=>{const _0x2a9158=_0x5908d7;_0x116241['key']===_0x2a9158(0x27d)&&!_0x116241['shiftKey']&&(_0x116241[_0x2a9158(0x1d5)](),sendChat());}),_0x33fbe0['addEventListener'](_0x5908d7(0x195),function(){const _0x3d5f67=_0x5908d7;this['style'][_0x3d5f67(0x271)]=_0x3d5f67(0x1d3),this[_0x3d5f67(0x1d2)]['height']=Math[_0x3d5f67(0x207)](this[_0x3d5f67(0x2f3)],0x64)+'px';})),document[_0x5908d7(0x257)](_0x5908d7(0x1a1),_0x18b045=>{const _0x55b72a=_0x5908d7;activeEmojiPicker!==null&&!_0x18b045['target'][_0x55b72a(0x211)](_0x55b72a(0x2ce))&&!_0x18b045['target']['closest'](_0x55b72a(0x288))&&hideEmojiPicker();}),document[_0x5908d7(0x175)](_0x5908d7(0x29e))[_0x5908d7(0x257)]('change',function(_0x3bb692){const _0x280813=_0x5908d7,_0x392d07=_0x3bb692[_0x280813(0x21e)][_0x280813(0x174)][0x0];_0x392d07&&_0x392d07['size']>0x2*0x400*0x400&&(showToast(_0x280813(0x21f),_0x280813(0x2e2)),this[_0x280813(0x26c)]='');}),document[_0x5908d7(0x175)](_0x5908d7(0x1e1))?.[_0x5908d7(0x257)](_0x5908d7(0x195),function(){const _0xd9720d=_0x5908d7,_0x4ada85=this[_0xd9720d(0x26c)][_0xd9720d(0x2fb)];document[_0xd9720d(0x175)](_0xd9720d(0x1fe))['textContent']=_0x4ada85+_0xd9720d(0x217);}),document[_0x5908d7(0x175)](_0x5908d7(0x221))?.[_0x5908d7(0x257)](_0x5908d7(0x195),function(){const _0x42602d=_0x5908d7,_0x15fc44=this['value'][_0x42602d(0x2fb)];document[_0x42602d(0x175)](_0x42602d(0x270))[_0x42602d(0x227)]=_0x15fc44+_0x42602d(0x203);});};function initParticleBackground(){const _0xa40b91=_0x2d7081,_0x21d9cf=document[_0xa40b91(0x175)](_0xa40b91(0x261)),_0xe9170b=_0x21d9cf['getContext']('2d');let _0x50e11a=[];function _0x903f36(){const _0x2b684d=_0xa40b91;_0x21d9cf[_0x2b684d(0x241)]=window[_0x2b684d(0x24c)],_0x21d9cf['height']=window[_0x2b684d(0x2bf)];}function _0x4b29c9(){const _0x38d677=_0xa40b91;_0x50e11a=[];const _0x364dd4=Math['min'](0x32,Math['floor'](_0x21d9cf[_0x38d677(0x241)]*_0x21d9cf[_0x38d677(0x271)]/0x4e20));for(let _0x191b3a=0x0;_0x191b3a<_0x364dd4;_0x191b3a++){_0x50e11a[_0x38d677(0x2f1)]({'x':Math[_0x38d677(0x2aa)]()*_0x21d9cf['width'],'y':Math[_0x38d677(0x2aa)]()*_0x21d9cf[_0x38d677(0x271)],'size':Math['random']()*1.5+0.5,'speedX':Math[_0x38d677(0x2aa)]()*0.3-0.15,'speedY':Math[_0x38d677(0x2aa)]()*0.3-0.15,'color':_0x38d677(0x30c)+(Math['random']()*0.1+0.05)+')'});}}function _0x234039(){const _0x358cc3=_0xa40b91;_0xe9170b[_0x358cc3(0x256)](0x0,0x0,_0x21d9cf[_0x358cc3(0x241)],_0x21d9cf[_0x358cc3(0x271)]);for(let _0x229571 of _0x50e11a){_0x229571['x']+=_0x229571[_0x358cc3(0x2c2)],_0x229571['y']+=_0x229571[_0x358cc3(0x1e9)];if(_0x229571['x']<0x0)_0x229571['x']=_0x21d9cf[_0x358cc3(0x241)];if(_0x229571['x']>_0x21d9cf[_0x358cc3(0x241)])_0x229571['x']=0x0;if(_0x229571['y']<0x0)_0x229571['y']=_0x21d9cf[_0x358cc3(0x271)];if(_0x229571['y']>_0x21d9cf[_0x358cc3(0x271)])_0x229571['y']=0x0;_0xe9170b[_0x358cc3(0x1df)](),_0xe9170b[_0x358cc3(0x2c8)](_0x229571['x'],_0x229571['y'],_0x229571[_0x358cc3(0x226)],0x0,Math['PI']*0x2),_0xe9170b[_0x358cc3(0x190)]=_0x229571[_0x358cc3(0x18b)],_0xe9170b[_0x358cc3(0x185)]();}requestAnimationFrame(_0x234039);}window[_0xa40b91(0x257)]('resize',()=>{_0x903f36(),_0x4b29c9();}),_0x903f36(),_0x4b29c9(),_0x234039();}function _0x4c4f(){const _0xce5f14=['error','result','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22display:flex;\x20gap:5px;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22mini\x20danger\x22\x20onclick=\x22keyAction(\x27','getItem','Loading...','stringify','currentGameId','clipboard','map','Wipe\x20all\x20chat\x20messages?\x0aThis\x20cannot\x20be\x20undone!','\x0a\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20','153512rElarb','Reacted\x20with\x20','Error\x20loading\x20game\x20details','noScriptsMessage','push','toUpperCase','scrollHeight','<button\x20class=\x22action-btn\x20delete\x22\x20onclick=\x22deleteMessage(','Invalid\x20username','splice','Feedback\x20submitted!\x20Thank\x20you.','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22emoji-btn\x22\x20onclick=\x22handleReaction(','keyCount','length','owner-msg','s-pass','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22game-card-id\x22>ID:\x20','<img\x20src=\x22','LEET','You\x20are\x20restricted\x20from\x20generating\x20keys','display','764880CLtDOE','Key\x20','adminPanel','3uoMIWJ','contains','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22script-url\x22\x20style=\x22font-size:11px;\x20opacity:0.9;\x20margin-bottom:8px;\x22>','toLocaleString','0/500','\x22\x20appears\x20to\x20be\x20valid','rgba(79,\x20124,\x20255,\x20','active','Logged\x20in\x20as\x20','timestamp','files','getElementById','Error\x20showing\x20script\x20management:','\x20banned','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','2-digit','forEach','createElement','\x20deleted','typingIndicator','fbSpinner','txt',')\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22game-actions\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22game-action-btn\x20delete\x22\x20onclick=\x22event.stopPropagation();\x20deleteGame(\x27','<div\x20class=\x22status-dot\x22></div><span>Disconnected</span>','URL\x20copied\x20to\x20clipboard','toLowerCase','banLogs','fill','block','PUT','type','Please\x20enter\x20a\x20valid\x20URL\x20starting\x20with\x20http://\x20or\x20https://','DELETED','color','Game\x20with\x20this\x20ID\x20already\x20exists','connection-status\x20disconnected','parse','json','fillStyle','current-user','mainSystem','Error\x20loading\x20games\x20dashboard:','scriptManagementView','input','gameIdInput','warning','Error\x20loading\x20game\x20scripts:','Batch\x20update\x20failed:','Failed\x20to\x20create\x20game','Admin\x20panel\x20opened','activeCount','Key\x20generated\x20(valid\x2024\x20hours)','Unbanned\x20','fb-user','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22msg-item\x20','click','keyOut','login','image.*','remove','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20','adminBtn','Game\x20ID\x20must\x20be\x20numeric','Account\x20created\x20successfully','6952cbcdd0ea881f4047f5ff','msg-actions-','notifications','\x27,\x20\x27renew\x27)\x22\x20title=\x22Renew\x20for\x2024h\x22>🔄</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22mini\x20success\x22\x20onclick=\x22keyAction(\x27','reason','Script\x20added\x20successfully!','Failed\x20to\x20load\x20scripts','Script\x20with\x20this\x20name\x20already\x20exists','onchange','\x20key\x20holders','loadingOverlay','keys','system','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22msg-content\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div><strong>Submitted:</strong>\x20','\x27)\x22\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20title=\x22','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22action-btn\x22\x20onclick=\x22openEmojiPicker(','slice','reload','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','signupSpinner','div','Chat\x20cleared','adminDefaultView','\x22\x20class=\x22game-card-image\x22\x20alt=\x22','focusBanId','fb-id','none','readAsDataURL','</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22reaction-count-small\x22>','innerHTML','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22reactions-container\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','Existing\x20key\x20found','Performing\x20system\x20reset...','...','Script\x20\x22','Create\x20game\x20error:','fbLogs','Admin\x20authentication\x20successful','exp','style','auto','1446150niGDGX','preventDefault','SYSTEM','ID:\x20','Error\x20deleting\x20game','inline-block','hidden','\x20script','read','\x22\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20onclick=\x22handleReaction(','Admin\x20privileges\x20granted','beginPath','imagePlaceholder','fb-msg','1521010fcRgjy','Test\x20script\x20error:','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22game-card-scripts\x22>','You\x20are\x20banned\x20from\x20chat','<div\x20style=\x22text-align:center;\x20padding:40px;\x20opacity:0.5;\x22>No\x20active\x20keys\x20found.</div>','loginSpinner','Failed\x20to\x20load\x20games','speedY','adminFeedbackListView','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22script-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22display:flex;\x20justify-content:space-between;\x20align-items:flex-start;\x20margin-bottom:8px;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-weight:600;\x20font-size:13px;\x20color:var(--secondary);\x22>',')\x22\x20title=\x22Add\x20reaction\x22>😊</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22action-btn\x22\x20onclick=\x22setupReply(','Using\x20existing\x20key','[GLOBAL\x20ANNOUNCEMENT]:\x20','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22msg-time\x22>','object','toast\x20','connection-status\x20connected','toggle','getContext','gameCreateStatus','unread-badge','feedbacks','Account\x20created!\x20Please\x20sign\x20in.','Please\x20fill\x20in\x20all\x20fields','chat-msgs','\x22\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20data-index=\x22','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:9px;\x20opacity:0.6;\x20margin-top:3px;\x22>','Game\x20created\x20successfully!','fbCharCount','currentGameName','Delete\x20this\x20message?','Unban\x20ALL\x20users?\x0aThis\x20cannot\x20be\x20undone.','writeText','/200','toDataURL','banCount','<div\x20style=\x22text-align:center;\x20padding:40px;\x20opacity:0.5;\x22>No\x20users\x20are\x20banned.</div>','min','l-pass','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','\x20set\x20to\x20infinite','change',')\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-weight:600;\x20font-size:12px;\x20color:var(--secondary);\x22>','Error\x20adding\x20script:\x20','scriptUrlInput','\x27,\x20\x27','globalMsgInput','closest','rbx','reverse','l-user','signup','Message\x20contains\x20blocked\x20content','/500','chatOnlineCount','currentTime','<div\x20class=\x22status-dot\x22></div><span>Connected</span>','users','Never',')\x22\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20onmouseleave=\x22hideMessageActions(','target','Image\x20too\x20large.\x20Max\x202MB\x20allowed.','removeItem','focusBanReason','Error\x20unbanning\x20users','\x27,\x20\x27delete\x27)\x22\x20title=\x22Delete\x20key\x22>🗑️</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22mini\x20warning\x22\x20onclick=\x22keyAction(\x27','Game\x20deleted!','isArray','size','textContent','95138ckLTRw','https://api.jsonbin.io/v3/b/','message','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22reply-quote\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Replying\x20to\x20<strong>','plstealme2','Unban\x20','msg','pinned','\x20game','all','Game\x20ID\x20already\x20exists','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22script-actions\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22mini\x20danger\x22\x20onclick=\x22deleteScript(','banNowView','Error\x20performing\x20reset','mainContentWrapper','join','48KSIaFa','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','shift','date','\x22\x20is\x20not\x20accessible','Unknown\x20error','keyLogs','Banning\x20all\x20key\x20holders...','name','width','Script\x20name\x20already\x20exists','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:10px;\x20opacity:0.6;\x20margin-top:2px;\x22>👤\x20Owner:\x20','https://','delete','time','Creating\x20game...','<div\x20class=\x22empty-state\x22><div\x20class=\x22empty-state-icon\x22>📝</div><div>No\x20feedbacks\x20found</div></div>','⚠️\x20CRITICAL\x20WARNING:\x0aThis\x20will\x20PERMANENTLY\x20wipe\x20[','false','replyPreviewText','innerWidth','body','roblox','info','now','findIndex','pass','canvas','Game\x20not\x20found','&quot;','clearRect','addEventListener','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','toLocaleTimeString','getHours','Feedback\x20from\x20','].\x0a\x0aThis\x20action\x20cannot\x20be\x20undone!','18bROnLw','<span\x20class=\x22owner-badge\x22>👑</span>','Banned\x20','transform','particles','no-cors','some','Invalid\x20username\x20or\x20password','reactionUsers','image/jpeg','chat-input','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22display:flex;\x20justify-content:space-between;\x20align-items:center;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:10px;\x20opacity:0.6;\x22>Added\x20by:\x20','Reaction\x20removed','className','reactions','value','Deleting\x20game...',',\x20\x27','adminInput','reasonCharCount','height','rsq_user_id','application/json','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:10px;\x20opacity:0.6;\x20margin-top:2px;\x22>🆔\x20ID:\x20','text','trim','games','user','733024nVjUxZ','Testing\x20script...','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:10px;\x20opacity:0.7;\x20background:rgba(255,255,255,0.05);\x20padding:2px\x206px;\x20border-radius:4px;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','padStart','Enter','Delete\x20game\x20error:','Please\x20fill\x20all\x20fields','\x27)\x22>','addedBy','connectionStatus','Access\x20denied:\x20Account\x20is\x20restricted','test','Enter\x20message\x20text','entries','loadingText','.action-btn',')</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:11px;\x20opacity:0.8;\x20margin-top:3px;\x22>','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div><strong>UserID:</strong>\x20','47551TxIUaE','gamesDashboard','activity','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22mini\x20danger\x22\x20onclick=\x22removeBan(\x27','setItem','gameCreateView',')\x22\x20title=\x22Delete\x22>🗑️</button>','\x22\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20onmouseenter=\x22showMessageActions(','No\x20reactions\x20yet','var(--success)','substring','assign','classList','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:10px;\x20opacity:0.6;\x22>📅\x20Date:\x20','noGamesMessage','bans','/latest','src','keypress','gameImageInput','scrollTop','userid','chat','renew','Adding\x20script...','replace','includes','http://','addedAt','chat-window','\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22margin-bottom:15px;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:12px;\x20opacity:0.8;\x20margin-bottom:5px;\x22>User\x20Information</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22background:rgba(255,255,255,0.03);\x20padding:10px;\x20border-radius:8px;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div><strong>Username:</strong>\x20','random','scriptsList','drawImage','onclick','Invalid\x20master\x20key','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:10px;\x20opacity:0.6;\x22>🎮\x20Roblox:\x20','GET','reply-preview','Just\x20now','onload','adminViewFeedbackUI','\x20renewed','\x20key','scripts','chat-toggle','replyTo','filter','image','Add\x20script\x20error:','API\x20Error:','Logged\x20out\x20successfully','innerHeight',')\x22>Delete</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22mini\x20warning\x22\x20onclick=\x22testScript(\x27','Unknown','speedX','authStatus','focus','viewFbContent','fbSearch','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','arc','signupView','toString','INF','keySpinner','success','.emoji-picker','\x27)\x22\x20title=\x22Reply\x22>↩️</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','rsq_session','\x20has\x20been\x20restricted','scriptNameInput','updatedAt','pinnedText','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22reaction-emoji-small\x22>','RENEWED','url','indexOf','Clipboard\x20copy\x20failed:','var(--danger)','add','translateX(100%)','views','Please\x20enter\x20a\x20Roblox\x20UserID','userFeedbackUI','welcomeUser','Welcome\x20back,\x20'];_0x4c4f=function(){return _0xce5f14;};return _0x4c4f();}async function handleAuth(_0x3e0ef3){const _0x3304af=_0x2d7081,_0x3b2a32=document[_0x3304af(0x175)](_0x3304af(0x2c3)),_0x5172c1=_0x3e0ef3===_0x3304af(0x215)?_0x3304af(0x1be):_0x3304af(0x1e7),_0x195b12=document[_0x3304af(0x175)](_0x5172c1);_0x3b2a32[_0x3304af(0x227)]='',_0x195b12['style'][_0x3304af(0x302)]=_0x3304af(0x1d9);const _0x3d37e6=document[_0x3304af(0x175)](_0x3e0ef3===_0x3304af(0x215)?'s-user':_0x3304af(0x214))[_0x3304af(0x26c)][_0x3304af(0x276)](),_0x5da310=document[_0x3304af(0x175)](_0x3e0ef3===_0x3304af(0x215)?_0x3304af(0x2fd):_0x3304af(0x208))[_0x3304af(0x26c)][_0x3304af(0x276)]();if(!_0x3d37e6||!_0x5da310){_0x3b2a32[_0x3304af(0x227)]=_0x3304af(0x1f9),_0x195b12['style'][_0x3304af(0x302)]='none';return;}const _0x2254e7=await api(_0x3304af(0x2b0),null,!![]);if(!_0x2254e7['users'])_0x2254e7[_0x3304af(0x21b)]={};if(_0x3e0ef3===_0x3304af(0x215)){if(_0x2254e7['users'][_0x3d37e6]){_0x3b2a32[_0x3304af(0x227)]='Username\x20already\x20exists',_0x195b12[_0x3304af(0x1d2)]['display']=_0x3304af(0x1c5);return;}if(moderate(_0x3d37e6)){_0x3b2a32[_0x3304af(0x227)]=_0x3304af(0x2f5),_0x195b12['style']['display']=_0x3304af(0x1c5);return;}_0x2254e7[_0x3304af(0x21b)][_0x3d37e6]={'pass':_0x5da310,'created':now()},await batchUpdate({'users':_0x2254e7[_0x3304af(0x21b)]}),_0x3b2a32[_0x3304af(0x227)]=_0x3304af(0x1f8),showToast(_0x3304af(0x1a9),_0x3304af(0x2cd)),_0x195b12[_0x3304af(0x1d2)]['display']=_0x3304af(0x1c5),toggleAuth(![]);}else{const _0x1de746=_0x3d37e6===SUPER_ADMIN&&_0x5da310===OWNER_PASS,_0x1aa29e=_0x2254e7[_0x3304af(0x21b)][_0x3d37e6]&&_0x2254e7[_0x3304af(0x21b)][_0x3d37e6][_0x3304af(0x252)]===_0x5da310;_0x1de746||_0x1aa29e?(currentUser=_0x3d37e6,localStorage[_0x3304af(0x28f)](_0x3304af(0x2d0),JSON[_0x3304af(0x2e7)]({'u':_0x3d37e6,'p':_0x5da310})),_0x3d37e6===SUPER_ADMIN&&(document[_0x3304af(0x175)](_0x3304af(0x1a7))[_0x3304af(0x297)][_0x3304af(0x1a5)](_0x3304af(0x1da)),showToast(_0x3304af(0x1de),'warning')),document[_0x3304af(0x175)]('authPanel')['classList'][_0x3304af(0x2db)](_0x3304af(0x1da)),document[_0x3304af(0x175)](_0x3304af(0x192))[_0x3304af(0x297)][_0x3304af(0x1a5)](_0x3304af(0x1da)),document[_0x3304af(0x175)](_0x3304af(0x2e0))['textContent']=_0x3304af(0x172)+_0x3d37e6,chatPollingInterval=setInterval(updateChat,0x7d0),updateChat(),setInterval(trackViewAndActivity,0x2710),showToast(_0x3304af(0x2e1)+_0x3d37e6+'!',_0x3304af(0x2cd))):(_0x3b2a32[_0x3304af(0x227)]='Invalid\x20credentials',_0x195b12['style'][_0x3304af(0x302)]=_0x3304af(0x1c5),showToast(_0x3304af(0x264),_0x3304af(0x2e2)));}}async function generateKey(){const _0x3b0767=_0x2d7081,_0x13b620=document['getElementById']('statusMsg'),_0x4a7d8f=document[_0x3b0767(0x175)](_0x3b0767(0x2cc));_0x13b620[_0x3b0767(0x227)]='',_0x4a7d8f[_0x3b0767(0x1d2)]['display']=_0x3b0767(0x1d9);const _0x1d3b9c=document['getElementById'](_0x3b0767(0x2a0))[_0x3b0767(0x26c)][_0x3b0767(0x276)]();if(!_0x1d3b9c){_0x13b620[_0x3b0767(0x227)]=_0x3b0767(0x2de),_0x4a7d8f[_0x3b0767(0x1d2)][_0x3b0767(0x302)]=_0x3b0767(0x1c5);return;}const _0x3d75d7=await api(_0x3b0767(0x2b0));if(_0x3d75d7[_0x3b0767(0x29a)]&&(_0x3d75d7[_0x3b0767(0x29a)][currentUser]||_0x3d75d7[_0x3b0767(0x29a)][_0x1d3b9c])){_0x13b620[_0x3b0767(0x227)]=_0x3b0767(0x301),_0x4a7d8f[_0x3b0767(0x1d2)][_0x3b0767(0x302)]=_0x3b0767(0x1c5),showToast(_0x3b0767(0x283),_0x3b0767(0x2e2));return;}_0x3d75d7[_0x3b0767(0x1b5)]=_0x3d75d7[_0x3b0767(0x1b5)]||{};let _0x2bcd15=null;for(const [_0x430e8d,_0x4de4f2]of Object[_0x3b0767(0x286)](_0x3d75d7[_0x3b0767(0x1b5)])){if(_0x4de4f2[_0x3b0767(0x278)]===currentUser&&_0x4de4f2[_0x3b0767(0x212)]===_0x1d3b9c){if(_0x4de4f2[_0x3b0767(0x1d1)]==='INF'||_0x4de4f2[_0x3b0767(0x1d1)]>now()){_0x2bcd15=_0x430e8d;break;}}}if(_0x2bcd15)document[_0x3b0767(0x175)](_0x3b0767(0x1a2))[_0x3b0767(0x227)]=_0x2bcd15,_0x13b620[_0x3b0767(0x227)]=_0x3b0767(0x1ca),showToast(_0x3b0767(0x1ed),_0x3b0767(0x24f));else{const _0x4cd697='RSQ-'+Math['random']()[_0x3b0767(0x2ca)](0x24)[_0x3b0767(0x295)](0x2,0xa)['toUpperCase']();_0x3d75d7[_0x3b0767(0x1b5)][_0x4cd697]={'user':currentUser,'rbx':_0x1d3b9c,'created':now(),'exp':now()+0x15180},await batchUpdate({'keys':_0x3d75d7[_0x3b0767(0x1b5)]}),document[_0x3b0767(0x175)]('keyOut')[_0x3b0767(0x227)]=_0x4cd697,_0x13b620[_0x3b0767(0x227)]=_0x3b0767(0x19d),showToast('New\x20key\x20generated!',_0x3b0767(0x2cd));}_0x4a7d8f[_0x3b0767(0x1d2)][_0x3b0767(0x302)]=_0x3b0767(0x1c5);}async function submitFeedback(){const _0x5e5175=_0x2d7081,_0x4f584b=document[_0x5e5175(0x175)]('fb-user')[_0x5e5175(0x26c)]['trim'](),_0x50ed63=document[_0x5e5175(0x175)](_0x5e5175(0x1c4))[_0x5e5175(0x26c)]['trim'](),_0x1c1d5d=document[_0x5e5175(0x175)]('fb-msg')[_0x5e5175(0x26c)][_0x5e5175(0x276)]();if(!_0x4f584b||!_0x50ed63||!_0x1c1d5d){showToast(_0x5e5175(0x27f),_0x5e5175(0x197),0x7d0);return;}const _0x64ac71=document[_0x5e5175(0x175)](_0x5e5175(0x17e));_0x64ac71[_0x5e5175(0x1d2)]['display']=_0x5e5175(0x1d9);const _0x1b2ac1=await api(_0x5e5175(0x2b0));_0x1b2ac1[_0x5e5175(0x1f7)]||=[],_0x1b2ac1[_0x5e5175(0x1f7)][_0x5e5175(0x2f1)]({'user':_0x4f584b,'id':_0x50ed63,'msg':_0x1c1d5d,'time':new Date()[_0x5e5175(0x309)](),'read':![]}),await batchUpdate({'feedbacks':_0x1b2ac1[_0x5e5175(0x1f7)]}),document[_0x5e5175(0x175)](_0x5e5175(0x19f))[_0x5e5175(0x26c)]='',document['getElementById'](_0x5e5175(0x1c4))[_0x5e5175(0x26c)]='',document[_0x5e5175(0x175)](_0x5e5175(0x1e1))['value']='',document[_0x5e5175(0x175)](_0x5e5175(0x1fe))[_0x5e5175(0x227)]=_0x5e5175(0x30a),_0x64ac71[_0x5e5175(0x1d2)][_0x5e5175(0x302)]=_0x5e5175(0x1c5),showToast(_0x5e5175(0x2f7),'success',0x7d0),toggleFeedbackUI(![]);}async function renderAdminFeedbacks(){const _0x3aa6df=_0x2d7081,_0x374d59=await api(_0x3aa6df(0x2b0)),_0x29e12b=_0x374d59['feedbacks']||[],_0x21dc7b=document[_0x3aa6df(0x175)](_0x3aa6df(0x2c6))[_0x3aa6df(0x26c)]['toLowerCase'](),_0x40e91c=_0x29e12b[_0x3aa6df(0x2ba)](_0x36e91f=>!_0x21dc7b||_0x36e91f[_0x3aa6df(0x278)][_0x3aa6df(0x183)]()['includes'](_0x21dc7b)||_0x36e91f['id'][_0x3aa6df(0x183)]()['includes'](_0x21dc7b)||_0x36e91f['msg'][_0x3aa6df(0x183)]()['includes'](_0x21dc7b)),_0x13689f=document[_0x3aa6df(0x175)](_0x3aa6df(0x1cf));if(_0x40e91c[_0x3aa6df(0x2fb)]===0x0){_0x13689f['innerHTML']=_0x3aa6df(0x248);return;}_0x13689f[_0x3aa6df(0x1c8)]=_0x40e91c[_0x3aa6df(0x213)]()[_0x3aa6df(0x2ea)]((_0x59fca8,_0x56cd5f)=>'\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22fb-item\x22\x20onclick=\x22viewSingleFeedback('+_0x56cd5f+_0x3aa6df(0x20c)+_0x59fca8[_0x3aa6df(0x278)]+'\x20('+_0x59fca8['id']+_0x3aa6df(0x289)+_0x59fca8['msg'][_0x3aa6df(0x295)](0x0,0x3c)+(_0x59fca8[_0x3aa6df(0x22e)][_0x3aa6df(0x2fb)]>0x3c?_0x3aa6df(0x1cc):'')+_0x3aa6df(0x1fc)+_0x59fca8[_0x3aa6df(0x246)]+_0x3aa6df(0x258)+(!_0x59fca8[_0x3aa6df(0x1dc)]?'<span\x20style=\x22background:var(--primary);\x20color:white;\x20font-size:9px;\x20padding:2px\x206px;\x20border-radius:10px;\x22>NEW</span>':'')+_0x3aa6df(0x2ec))[_0x3aa6df(0x237)]('');}function viewSingleFeedback(_0x2d8d35){const _0x13af7a=_0x2d7081,_0x96bf29=dataCache;if(!_0x96bf29['feedbacks']||!_0x96bf29['feedbacks'][_0x2d8d35])return;const _0x25801f=_0x96bf29[_0x13af7a(0x1f7)][_0x2d8d35];document[_0x13af7a(0x175)]('viewFbTitle')[_0x13af7a(0x227)]=_0x13af7a(0x25b)+_0x25801f[_0x13af7a(0x278)],document['getElementById'](_0x13af7a(0x2c5))[_0x13af7a(0x1c8)]=_0x13af7a(0x2a9)+_0x25801f['user']+_0x13af7a(0x28a)+_0x25801f['id']+_0x13af7a(0x1b8)+_0x25801f['time']+'</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:12px;\x20opacity:0.8;\x20margin-bottom:5px;\x22>Feedback\x20Message</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22background:rgba(255,255,255,0.03);\x20padding:15px;\x20border-radius:8px;\x20white-space:pre-wrap;\x20font-size:13px;\x20line-height:1.5;\x22>'+_0x25801f[_0x13af7a(0x22e)]+_0x13af7a(0x2f8),document[_0x13af7a(0x175)](_0x13af7a(0x1ea))[_0x13af7a(0x297)][_0x13af7a(0x2db)](_0x13af7a(0x1da)),document[_0x13af7a(0x175)](_0x13af7a(0x2b4))[_0x13af7a(0x297)][_0x13af7a(0x1a5)](_0x13af7a(0x1da)),!_0x25801f[_0x13af7a(0x1dc)]&&(_0x96bf29[_0x13af7a(0x1f7)][_0x2d8d35][_0x13af7a(0x1dc)]=!![],batchUpdate({'feedbacks':_0x96bf29[_0x13af7a(0x1f7)]}));}function closeSingleFeedback(){const _0x4abbb5=_0x2d7081;document['getElementById'](_0x4abbb5(0x2b4))['classList'][_0x4abbb5(0x2db)](_0x4abbb5(0x1da)),document[_0x4abbb5(0x175)](_0x4abbb5(0x1ea))[_0x4abbb5(0x297)][_0x4abbb5(0x1a5)]('hidden');}function openAdminFeedbacks(){const _0x97cf2a=_0x2d7081;document[_0x97cf2a(0x175)](_0x97cf2a(0x1c1))[_0x97cf2a(0x297)]['add'](_0x97cf2a(0x1da)),document[_0x97cf2a(0x175)]('adminFeedbackListView')[_0x97cf2a(0x297)][_0x97cf2a(0x1a5)](_0x97cf2a(0x1da)),renderAdminFeedbacks();}function returnToAdminPanel(){const _0xd6556c=_0x2d7081;document[_0xd6556c(0x175)]('adminFeedbackListView')[_0xd6556c(0x297)][_0xd6556c(0x2db)](_0xd6556c(0x1da)),document[_0xd6556c(0x175)]('adminViewFeedbackUI')[_0xd6556c(0x297)][_0xd6556c(0x2db)](_0xd6556c(0x1da)),document[_0xd6556c(0x175)]('adminDefaultView')[_0xd6556c(0x297)][_0xd6556c(0x1a5)](_0xd6556c(0x1da));}async function renderAdminKeys(){const _0x372223=_0x2d7081,_0x324022=document[_0x372223(0x175)](_0x372223(0x23e)),_0x528737=await api('GET'),_0x5619d7=_0x528737[_0x372223(0x1b5)]?Object[_0x372223(0x1b5)](_0x528737[_0x372223(0x1b5)])[_0x372223(0x2fb)]:0x0;document[_0x372223(0x175)](_0x372223(0x2fa))[_0x372223(0x227)]=_0x5619d7+_0x372223(0x2b6)+(_0x5619d7!==0x1?'s':'');if(!_0x528737['keys']||Object[_0x372223(0x1b5)](_0x528737[_0x372223(0x1b5)])['length']===0x0){_0x324022[_0x372223(0x1c8)]=_0x372223(0x1e6);return;}_0x324022[_0x372223(0x1c8)]=Object[_0x372223(0x1b5)](_0x528737[_0x372223(0x1b5)])[_0x372223(0x2ea)](_0x8a33c0=>{const _0x15013d=_0x372223,_0x4ff5bc=_0x528737[_0x15013d(0x1b5)][_0x8a33c0],_0x2fad9c=_0x4ff5bc[_0x15013d(0x1d1)]==='INF',_0x5cf04e=_0x2fad9c?_0x15013d(0x21c):new Date(_0x4ff5bc[_0x15013d(0x1d1)]*0x3e8)[_0x15013d(0x309)]();return'\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22fb-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-family:monospace;\x20color:var(--secondary);\x20font-weight:bold;\x20font-size:12px;\x22>'+_0x8a33c0+_0x15013d(0x243)+_0x4ff5bc[_0x15013d(0x278)]+_0x15013d(0x2af)+_0x4ff5bc['rbx']+'</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:10px;\x20opacity:0.6;\x22>⏰\x20Expires:\x20'+_0x5cf04e+_0x15013d(0x2e4)+_0x8a33c0+_0x15013d(0x223)+_0x8a33c0+_0x15013d(0x1ad)+_0x8a33c0+'\x27,\x20\x27inf\x27)\x22\x20title=\x22Make\x20infinite\x22>∞</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</div>';})[_0x372223(0x213)]()[_0x372223(0x237)]('');}async function keyAction(_0x176e3a,_0x474cbf){const _0x23af75=_0x2d7081,_0x334089=await api(_0x23af75(0x2b0));if(!_0x334089[_0x23af75(0x1b5)][_0x176e3a])return;_0x334089[_0x23af75(0x1ac)]||={};const _0x18bc88=_0x334089['keys'][_0x176e3a][_0x23af75(0x278)],_0x1b87d2={};if(_0x474cbf===_0x23af75(0x245)){if(!confirm('Delete\x20key\x20\x22'+_0x176e3a+'\x22?'))return;_0x334089[_0x23af75(0x1ac)][_0x18bc88]={'type':_0x23af75(0x18a),'key':_0x176e3a,'time':now()},delete _0x334089[_0x23af75(0x1b5)][_0x176e3a],_0x1b87d2[_0x23af75(0x1b5)]=_0x334089[_0x23af75(0x1b5)],_0x1b87d2[_0x23af75(0x1ac)]=_0x334089[_0x23af75(0x1ac)],showToast('Key\x20'+_0x176e3a+_0x23af75(0x17c),'warning',0x7d0);}else{if(_0x474cbf===_0x23af75(0x2a2))_0x334089[_0x23af75(0x1b5)][_0x176e3a][_0x23af75(0x1d1)]=now()+0x15180,_0x334089[_0x23af75(0x1ac)][_0x18bc88]={'type':_0x23af75(0x2d6),'key':_0x176e3a,'time':now()},_0x1b87d2[_0x23af75(0x1b5)]=_0x334089[_0x23af75(0x1b5)],_0x1b87d2[_0x23af75(0x1ac)]=_0x334089['notifications'],showToast(_0x23af75(0x304)+_0x176e3a+_0x23af75(0x2b5),_0x23af75(0x2cd),0x7d0);else _0x474cbf==='inf'&&(_0x334089[_0x23af75(0x1b5)][_0x176e3a][_0x23af75(0x1d1)]=_0x23af75(0x2cb),_0x334089[_0x23af75(0x1ac)][_0x18bc88]={'type':'INFINITE','key':_0x176e3a,'time':now()},_0x1b87d2[_0x23af75(0x1b5)]=_0x334089[_0x23af75(0x1b5)],_0x1b87d2[_0x23af75(0x1ac)]=_0x334089[_0x23af75(0x1ac)],showToast(_0x23af75(0x304)+_0x176e3a+_0x23af75(0x20a),_0x23af75(0x2cd),0x7d0));}await batchUpdate(_0x1b87d2),renderAdminKeys();}async function renderBanLogs(){const _0x3c97db=_0x2d7081,_0x2fa342=document['getElementById'](_0x3c97db(0x184)),_0x5003b0=await api('GET'),_0xadb055=_0x5003b0[_0x3c97db(0x29a)]?Object[_0x3c97db(0x1b5)](_0x5003b0[_0x3c97db(0x29a)])[_0x3c97db(0x2fb)]:0x0;document[_0x3c97db(0x175)](_0x3c97db(0x205))['textContent']=_0xadb055+_0x3c97db(0x177);if(!_0x5003b0[_0x3c97db(0x29a)]||Object[_0x3c97db(0x1b5)](_0x5003b0[_0x3c97db(0x29a)])[_0x3c97db(0x2fb)]===0x0){_0x2fa342[_0x3c97db(0x1c8)]=_0x3c97db(0x206);return;}_0x2fa342[_0x3c97db(0x1c8)]=Object[_0x3c97db(0x1b5)](_0x5003b0[_0x3c97db(0x29a)])[_0x3c97db(0x2ea)](_0x46229c=>'\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22fb-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-weight:600;\x20font-size:12px;\x20color:var(--danger);\x22>'+_0x46229c+_0x3c97db(0x274)+_0x5003b0['bans'][_0x46229c]['id']+'</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:10px;\x20opacity:0.6;\x22>📝\x20Reason:\x20'+_0x5003b0[_0x3c97db(0x29a)][_0x46229c][_0x3c97db(0x1ae)]+_0x3c97db(0x298)+_0x5003b0['bans'][_0x46229c][_0x3c97db(0x23b)]+_0x3c97db(0x28e)+_0x46229c+'\x27)\x22\x20title=\x22Unban\x20user\x22>🔓</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20')[_0x3c97db(0x237)]('');}async function removeBan(_0x4e5820){const _0x16c458=_0x2d7081;if(!confirm(_0x16c458(0x22d)+_0x4e5820+'?'))return;const _0x1d7aca=await api(_0x16c458(0x2b0));delete _0x1d7aca['bans'][_0x4e5820],await batchUpdate({'bans':_0x1d7aca['bans']}),renderBanLogs(),showToast(_0x4e5820+'\x20unbanned',_0x16c458(0x2cd),0x7d0);}function toggleBanNowView(_0x3ad42f){const _0x3ad993=_0x2d7081;_0x3ad42f?(document[_0x3ad993(0x175)](_0x3ad993(0x1c1))[_0x3ad993(0x297)]['add'](_0x3ad993(0x1da)),document[_0x3ad993(0x175)](_0x3ad993(0x234))[_0x3ad993(0x297)][_0x3ad993(0x1a5)](_0x3ad993(0x1da))):(document[_0x3ad993(0x175)](_0x3ad993(0x234))[_0x3ad993(0x297)]['add'](_0x3ad993(0x1da)),document[_0x3ad993(0x175)]('adminDefaultView')[_0x3ad993(0x297)][_0x3ad993(0x1a5)](_0x3ad993(0x1da)));}async function executeFocusBan(){const _0x3f7c3d=_0x2d7081,_0x128aa6=document[_0x3f7c3d(0x175)](_0x3f7c3d(0x1c3))['value'][_0x3f7c3d(0x276)](),_0x23533c=document[_0x3f7c3d(0x175)]('focusBanUser')['value']['trim'](),_0x4cd51f=document[_0x3f7c3d(0x175)](_0x3f7c3d(0x221))[_0x3f7c3d(0x26c)][_0x3f7c3d(0x276)]();if(!_0x128aa6||!_0x23533c||!_0x4cd51f){showToast(_0x3f7c3d(0x27f),_0x3f7c3d(0x197),0x7d0);return;}const _0xd8fe1=await api(_0x3f7c3d(0x2b0));_0xd8fe1['bans']||={},_0xd8fe1[_0x3f7c3d(0x29a)][_0x23533c]={'id':_0x128aa6,'reason':_0x4cd51f,'date':new Date()[_0x3f7c3d(0x309)]()},await batchUpdate({'bans':_0xd8fe1[_0x3f7c3d(0x29a)]}),showToast(_0x23533c+_0x3f7c3d(0x2d1),_0x3f7c3d(0x2e2),0xbb8),document[_0x3f7c3d(0x175)]('focusBanId')[_0x3f7c3d(0x26c)]='',document[_0x3f7c3d(0x175)]('focusBanUser')[_0x3f7c3d(0x26c)]='',document[_0x3f7c3d(0x175)](_0x3f7c3d(0x221))[_0x3f7c3d(0x26c)]='',toggleBanNowView(![]),renderBanLogs();}async function sendGlobalMsg(_0x55c33d){const _0x107687=_0x2d7081,_0x278a96=document['getElementById'](_0x107687(0x210))[_0x107687(0x26c)][_0x107687(0x276)]();if(!_0x278a96){showToast(_0x107687(0x285),_0x107687(0x197),0x7d0);return;}const _0x2f58cd=await api(_0x107687(0x2b0));_0x55c33d?(_0x2f58cd['pinned']={'text':_0x278a96,'active':!![]},showToast('Message\x20pinned\x20globally',_0x107687(0x2cd),0x7d0)):(_0x2f58cd[_0x107687(0x2a1)]||=[],_0x2f58cd[_0x107687(0x2a1)][_0x107687(0x2f1)]({'user':_0x107687(0x1d6),'txt':_0x107687(0x1ee)+_0x278a96,'timestamp':Date[_0x107687(0x250)]()}),showToast('Announcement\x20sent',_0x107687(0x2cd),0x7d0)),await batchUpdate(_0x55c33d?{'pinned':_0x2f58cd[_0x107687(0x22f)]}:{'chat':_0x2f58cd['chat']}),updateChat();}async function clearGlobals(){const _0x595a55=_0x2d7081;if(!confirm('Clear\x20all\x20pinned\x20messages?'))return;const _0x227320=await api(_0x595a55(0x2b0));_0x227320['pinned']={'text':'','active':![]},await batchUpdate({'pinned':_0x227320[_0x595a55(0x22f)]}),updateChat(),showToast('Pinned\x20messages\x20cleared','warning',0x7d0);}async function clearAllChat(){const _0x5c2d8c=_0x2d7081;if(!confirm(_0x5c2d8c(0x2eb)))return;const _0x388b76=await api('GET');_0x388b76['chat']=[],await batchUpdate({'chat':_0x388b76[_0x5c2d8c(0x2a1)]}),updateChat(),showToast(_0x5c2d8c(0x1c0),'warning',0x7d0);}async function banAllKeyHolders(){const _0x4a3f21=_0x2d7081;if(!confirm('WARNING:\x20This\x20will\x20ban\x20ALL\x20users\x20who\x20have\x20active\x20keys!\x0a\x0aAre\x20you\x20absolutely\x20sure?'))return;showLoading(_0x4a3f21(0x23f));try{const _0x4fa0f0=await api(_0x4a3f21(0x2b0));_0x4fa0f0[_0x4a3f21(0x29a)]||={};const _0x2ed184=_0x4fa0f0[_0x4a3f21(0x1b5)]||{};let _0xb1bc73=0x0;for(const _0xbe6c4b in _0x2ed184){const _0x151c5f=_0x2ed184[_0xbe6c4b];!_0x4fa0f0[_0x4a3f21(0x29a)][_0x151c5f[_0x4a3f21(0x278)]]&&(_0x4fa0f0['bans'][_0x151c5f['user']]={'id':_0x151c5f[_0x4a3f21(0x212)],'reason':'Mass\x20ban\x20-\x20All\x20key\x20holders','date':new Date()['toLocaleString']()},_0xb1bc73++);}await batchUpdate({'bans':_0x4fa0f0[_0x4a3f21(0x29a)]}),hideLoading(),showToast(_0x4a3f21(0x25f)+_0xb1bc73+_0x4a3f21(0x1b3),_0x4a3f21(0x197),0xbb8),renderBanLogs();}catch(_0x376a83){hideLoading(),showToast('Error\x20banning\x20key\x20holders',_0x4a3f21(0x2e2));}}async function unbanEveryone(){const _0x2a8d49=_0x2d7081;if(!confirm(_0x2a8d49(0x201)))return;showLoading('Unbanning\x20all\x20users...');try{const _0x29e5a1=await api(_0x2a8d49(0x2b0)),_0x2fb70e=Object[_0x2a8d49(0x1b5)](_0x29e5a1[_0x2a8d49(0x29a)]||{})[_0x2a8d49(0x2fb)];_0x29e5a1[_0x2a8d49(0x29a)]={},await batchUpdate({'bans':_0x29e5a1[_0x2a8d49(0x29a)]}),hideLoading(),showToast(_0x2a8d49(0x19e)+_0x2fb70e+'\x20users',_0x2a8d49(0x2cd),0xbb8),renderBanLogs();}catch(_0x2aec53){hideLoading(),showToast(_0x2a8d49(0x222),_0x2a8d49(0x2e2));}}async function masterReset(){const _0x8a5424=_0x2d7081,_0x5869f5=document[_0x8a5424(0x175)]('resetTarget')[_0x8a5424(0x26c)];if(!confirm(_0x8a5424(0x249)+_0x5869f5[_0x8a5424(0x2f2)]()+_0x8a5424(0x25c)))return;showLoading(_0x8a5424(0x1cb));try{const _0x3aa81b=await api(_0x8a5424(0x2b0));if(_0x5869f5==='chat'||_0x5869f5===_0x8a5424(0x231))_0x3aa81b[_0x8a5424(0x2a1)]=[];if(_0x5869f5==='bans'||_0x5869f5===_0x8a5424(0x231))_0x3aa81b[_0x8a5424(0x29a)]={};(_0x5869f5===_0x8a5424(0x21b)||_0x5869f5===_0x8a5424(0x231))&&(_0x3aa81b[_0x8a5424(0x21b)]={[SUPER_ADMIN]:{'pass':OWNER_PASS,'warns':0x0,'lastWarn':0x0,'timeoutUntil':0x0}}),_0x5869f5===_0x8a5424(0x231)&&(_0x3aa81b[_0x8a5424(0x1b5)]={},_0x3aa81b[_0x8a5424(0x1f7)]=[],_0x3aa81b[_0x8a5424(0x1ac)]={},_0x3aa81b['pinned']={'text':'','active':![]},_0x3aa81b[_0x8a5424(0x277)]=[]),await batchUpdate(_0x3aa81b),hideLoading(),showToast('System\x20'+_0x5869f5+'\x20reset\x20complete',_0x8a5424(0x2cd),0xbb8),setTimeout(()=>location['reload'](),0x3e8);}catch(_0x44ad59){hideLoading(),showToast(_0x8a5424(0x235),_0x8a5424(0x2e2));}}document[_0x2d7081(0x175)](_0x2d7081(0x1a7))[_0x2d7081(0x2ad)]=function(){const _0x277a4f=_0x2d7081;isAdminAuthenticated?(document[_0x277a4f(0x175)](_0x277a4f(0x305))['classList'][_0x277a4f(0x1a5)](_0x277a4f(0x1da)),showToast(_0x277a4f(0x19b),'warning'),loadGamesDashboard(),renderAdminKeys(),renderBanLogs()):document['getElementById'](_0x277a4f(0x26f))[_0x277a4f(0x297)]['toggle'](_0x277a4f(0x1da));},document[_0x2d7081(0x175)]('adminInput')[_0x2d7081(0x1b2)]=function(){const _0x378d34=_0x2d7081;this[_0x378d34(0x26c)]===MASTER_KEY?(isAdminAuthenticated=!![],this[_0x378d34(0x297)][_0x378d34(0x2db)](_0x378d34(0x1da)),document[_0x378d34(0x175)](_0x378d34(0x305))[_0x378d34(0x297)]['remove']('hidden'),showToast(_0x378d34(0x1d0),'success'),loadGamesDashboard(),renderAdminKeys(),renderBanLogs()):(showToast(_0x378d34(0x2ae),'error'),this[_0x378d34(0x26c)]='');};function closeAdmin(){const _0x3bab1b=_0x2d7081;document[_0x3bab1b(0x175)](_0x3bab1b(0x305))[_0x3bab1b(0x297)][_0x3bab1b(0x2db)](_0x3bab1b(0x1da)),showToast('Admin\x20panel\x20closed',_0x3bab1b(0x24f),0x5dc);}function logout(){const _0x3f183c=_0x2d7081;if(chatPollingInterval)clearInterval(chatPollingInterval);if(statsPollingInterval)clearInterval(statsPollingInterval);localStorage[_0x3f183c(0x220)](_0x3f183c(0x2d0)),showToast(_0x3f183c(0x2be),_0x3f183c(0x24f)),setTimeout(()=>location[_0x3f183c(0x1bc)](),0x1f4);}
+// ========== CONFIGURATION ==========
+const ACTIVE_BIN_ID = "695418f4ae596e708fbaa2c0";
+const BACKUP_BIN_ID = "6952cbcdd0ea881f4047f5ff";
+let CURRENT_BIN_ID = ACTIVE_BIN_ID;
+
+// Array of JSONBin keys to rotate through when one fails
+const JSON_KEYS = [
+    "$2a$10$lJsjtUi1Uhv4Rf/UaeMP7.GU5IwIEkAfdNZGpxyIesXLCj7hasRRG",
+    "$2a$10$f6r4B1gP.MfB1k49kq2m7eEzyesjD9KWP5zCa6QtJKW5ZBhL1M0/O"
+];
+let currentKeyIndex = 0;
+
+const MASTER_KEY = "roblox";
+const SUPER_ADMIN = "plstealme2";
+const OWNER_PASS = "RSQ-OWNER-PLSTEALME2";
+
+const MOD_CONFIG = {
+    BANNED: [/fuck/gi, /shit/gi, /nigger/gi, /faggot/gi, /retard/gi, /bitch/gi, /porn/gi, /sex/gi],
+    LEET: { '0':'o', '1':'i', '3':'e', '4':'a', '5':'s', '7':'t', '8':'b', '@':'a', '$':'s', '!':'i', '*':'' }
+};
+
+// ========== STATE MANAGEMENT ==========
+let dataCache = null;
+let lastFetchTime = 0;
+const CACHE_TTL = 1000;
+let pendingUpdates = [];
+let isUpdating = false;
+
+let currentUser = null;
+let isAdminAuthenticated = false;
+let activeReplyTarget = null;
+let activeEmojiPicker = null;
+let chatPollingInterval = null;
+let statsPollingInterval = null;
+let typingTimeout = null;
+let lastTypingTime = 0;
+
+let unreadCount = 0;
+let lastSeenMessageTime = 0;
+
+// User activity tracking
+let userLastActivity = {};
+const ACTIVITY_TIMEOUT = 30000;
+
+// View tracking
+let hasTrackedView = false;
+const USER_ID_KEY = 'rsq_user_id';
+
+// Game management
+let currentGameId = null;
+let selectedGame = null;
+let gameImageData = null;
+
+// API failure tracking
+let apiFailureCount = 0;
+const MAX_API_FAILURES = 3;
+
+// ========== UTILITY FUNCTIONS ==========
+function now() { return Math.floor(Date.now()/1000); }
+
+function moderate(text) {
+    if (!text) return false;
+    let clean = text.toLowerCase();
+    for (let key in MOD_CONFIG.LEET) { 
+        clean = clean.split(key).join(MOD_CONFIG.LEET[key]); 
+    }
+    clean = clean.replace(/[^a-zA-Z ]/g, "");
+    return MOD_CONFIG.BANNED.some(regex => regex.test(clean) || regex.test(text));
+}
+
+function showToast(message, type = 'info', duration = 3000) {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+}
+
+function generateUserId() {
+    return 'user_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+}
+
+function getUserIdentifier() {
+    let userId = localStorage.getItem(USER_ID_KEY);
+    if (!userId) {
+        userId = generateUserId();
+        localStorage.setItem(USER_ID_KEY, userId);
+    }
+    return userId;
+}
+
+// ========== LOADING FUNCTIONS ==========
+function showLoading(message = 'Loading...') {
+    document.getElementById('loadingText').textContent = message;
+    document.getElementById('loadingOverlay').classList.remove('hidden');
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.add('hidden');
+}
+
+// ========== AUTO-ROTATE JSON KEY SYSTEM ==========
+function getCurrentKey() {
+    return JSON_KEYS[currentKeyIndex];
+}
+
+function rotateToNextKey() {
+    currentKeyIndex = (currentKeyIndex + 1) % JSON_KEYS.length;
+    console.log(`Rotated to JSON key index: ${currentKeyIndex}`);
+    showToast(`Switched to backup API key ${currentKeyIndex + 1}/${JSON_KEYS.length}`, 'warning');
+    return getCurrentKey();
+}
+
+function rotateToBackupBin() {
+    if (CURRENT_BIN_ID === ACTIVE_BIN_ID) {
+        CURRENT_BIN_ID = BACKUP_BIN_ID;
+        console.log(`Rotated to backup BIN: ${BACKUP_BIN_ID}`);
+        showToast('Switched to backup database', 'warning');
+    } else {
+        CURRENT_BIN_ID = ACTIVE_BIN_ID;
+        console.log(`Rotated back to main BIN: ${ACTIVE_BIN_ID}`);
+        showToast('Switched back to main database', 'success');
+    }
+    // Clear cache to force fresh fetch
+    dataCache = null;
+    lastFetchTime = 0;
+    return CURRENT_BIN_ID;
+}
+
+// ========== API FUNCTIONS WITH AUTO-ROTATE ==========
+async function api(method, data = null, force = false) {
+    if (method === 'GET' && !force && dataCache && (Date.now() - lastFetchTime) < CACHE_TTL) {
+        return dataCache;
+    }
+    
+    let attempts = 0;
+    const maxAttempts = JSON_KEYS.length * 2; // Try all keys with both bins
+    
+    while (attempts < maxAttempts) {
+        try {
+            const currentBinId = CURRENT_BIN_ID;
+            const currentKey = getCurrentKey();
+            
+            console.log(`API attempt ${attempts + 1}: BIN=${currentBinId}, KEY=${currentKey.substring(0, 10)}...`);
+            
+            const startTime = Date.now();
+            const r = await fetch(`https://api.jsonbin.io/v3/b/${currentBinId}${method==='GET'?'/latest':''}`, {
+                method: method,
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-Master-Key": currentKey,
+                    "X-Bin-Versioning": "false" 
+                },
+                body: data ? JSON.stringify(data) : null
+            });
+            
+            if (!r.ok) {
+                throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+            }
+            
+            const res = await r.json();
+            
+            if (method === 'GET') {
+                dataCache = res.record;
+                lastFetchTime = Date.now();
+                apiFailureCount = 0; // Reset failure count on success
+                
+                if (pendingUpdates.length > 0) {
+                    for (const update of pendingUpdates) {
+                        Object.assign(dataCache, update);
+                    }
+                    pendingUpdates = [];
+                }
+            } else if (method === 'PUT') {
+                dataCache = data;
+                lastFetchTime = Date.now();
+                apiFailureCount = 0;
+            }
+            
+            document.getElementById('connectionStatus').className = 'connection-status connected';
+            document.getElementById('connectionStatus').innerHTML = '<div class="status-dot"></div><span>Connected</span>';
+            
+            return dataCache;
+        } catch (e) {
+            attempts++;
+            apiFailureCount++;
+            
+            console.error(`API Error attempt ${attempts}:`, e.message);
+            
+            if (attempts >= maxAttempts) {
+                // All attempts failed
+                document.getElementById('connectionStatus').className = 'connection-status disconnected';
+                document.getElementById('connectionStatus').innerHTML = '<div class="status-dot"></div><span>Disconnected</span>';
+                
+                if (apiFailureCount >= MAX_API_FAILURES) {
+                    showToast('Critical API failure. Trying backup systems...', 'error');
+                    
+                    // Try switching bins if we haven't already
+                    if (CURRENT_BIN_ID === ACTIVE_BIN_ID) {
+                        rotateToBackupBin();
+                        // Reset attempts to try again with new bin
+                        attempts = 0;
+                        apiFailureCount = 0;
+                        continue;
+                    }
+                }
+                
+                return dataCache || null;
+            }
+            
+            // Rotate to next key
+            rotateToNextKey();
+            
+            // If we've tried all keys, switch bins
+            if (attempts % JSON_KEYS.length === 0) {
+                rotateToBackupBin();
+            }
+            
+            // Small delay before retry
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+    }
+    
+    return dataCache || null;
+}
+
+async function batchUpdate(updates) {
+    if (isUpdating) {
+        pendingUpdates.push(updates);
+        return;
+    }
+    
+    isUpdating = true;
+    try {
+        const currentData = await api('GET', null, true);
+        Object.assign(currentData, updates);
+        await api('PUT', currentData);
+        
+        while (pendingUpdates.length > 0) {
+            const nextUpdate = pendingUpdates.shift();
+            Object.assign(currentData, nextUpdate);
+            await api('PUT', currentData);
+        }
+    } catch (e) {
+        console.error("Batch update failed:", e);
+        if (dataCache) {
+            Object.assign(dataCache, updates);
+        }
+    } finally {
+        isUpdating = false;
+    }
+}
+
+// ========== VIEW & ACTIVE TRACKING ==========
+async function trackViewAndActivity() {
+    const userId = getUserIdentifier();
+    const currentTime = Date.now();
+    
+    const data = await api('GET');
+    
+    if (!data.views) data.views = {};
+    if (!data.activity) data.activity = {};
+    
+    if (!data.views[userId]) {
+        data.views[userId] = currentTime;
+        hasTrackedView = true;
+    }
+    
+    data.activity[userId] = currentTime;
+    
+    for (const activeUserId in data.activity) {
+        if (currentTime - data.activity[activeUserId] > ACTIVITY_TIMEOUT) {
+            delete data.activity[activeUserId];
+        }
+    }
+    
+    await batchUpdate({
+        views: data.views,
+        activity: data.activity
+    });
+    
+    updateStatsDisplay(data);
+}
+
+function updateStatsDisplay(data) {
+    const viewCount = data.views ? Object.keys(data.views).length : 0;
+    const activeCount = data.activity ? Object.keys(data.activity).length : 0;
+    
+    document.getElementById('viewCount').textContent = viewCount.toLocaleString();
+    document.getElementById('activeCount').textContent = activeCount;
+    
+    const chatUsers = new Set();
+    if (data.chat) {
+        data.chat.forEach(msg => chatUsers.add(msg.user));
+    }
+    document.getElementById('chatOnlineCount').textContent = chatUsers.size;
+    document.getElementById('chatMessageCount').textContent = data.chat ? data.chat.length : 0;
+}
+
+// ========== CHAT SYSTEM ==========
+async function updateChat() {
+    const data = await api('GET');
+    if (!data) return;
+    
+    updateStatsDisplay(data);
+    
+    if (data.bans && data.bans[currentUser]) {
+        document.getElementById('chat-toggle').classList.add('hidden');
+        document.getElementById('chat-window').classList.add('hidden');
+        return;
+    }
+    
+    const chatWindow = document.getElementById('chat-window');
+    const chatToggle = document.getElementById('chat-toggle');
+    
+    if (chatWindow.classList.contains('hidden')) {
+        chatToggle.classList.remove('hidden');
+    }
+    
+    const pinnedArea = document.getElementById('pinned-area');
+    if (data.pinned && data.pinned.active && data.pinned.text) {
+        pinnedArea.classList.remove('hidden');
+        document.getElementById('pinnedText').textContent = data.pinned.text;
+    } else {
+        pinnedArea.classList.add('hidden');
+    }
+    
+    renderMessages(data.chat || []);
+}
+
+function renderMessages(messages) {
+    const container = document.getElementById('chat-msgs');
+    const currentTime = Date.now();
+    
+    if (messages.length > 0) {
+        const latestMsg = messages[messages.length - 1];
+        const latestTime = latestMsg.timestamp || 0;
+        const chatWindowHidden = document.getElementById('chat-window').classList.contains('hidden');
+        
+        if (latestTime > lastSeenMessageTime && chatWindowHidden && latestMsg.user !== currentUser) {
+            lastSeenMessageTime = latestTime;
+            unreadCount++;
+            updateUnreadBadge();
+        }
+    }
+    
+    if (messages.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">💬</div>
+                <div>No messages yet. Be the first to say hello!</div>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = messages.map((msg, index) => {
+        const isOwner = msg.user === SUPER_ADMIN;
+        const isSystem = msg.user === "SYSTEM";
+        const isCurrentUser = msg.user === currentUser;
+        
+        const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Just now';
+        
+        let replyHtml = '';
+        if (msg.replyTo) {
+            replyHtml = `
+                <div class="reply-quote">
+                    Replying to <strong>${msg.replyTo.user}</strong>: ${msg.replyTo.text}
+                </div>
+            `;
+        }
+        
+        let reactionsHtml = '';
+        if (msg.reactions && Object.keys(msg.reactions).length > 0) {
+            reactionsHtml = `
+                <div class="reactions-container">
+                    ${Object.entries(msg.reactions).map(([emoji, count]) => {
+                        const usersReacted = msg.reactionUsers?.[emoji] || [];
+                        const isUserReacted = usersReacted.includes(currentUser);
+                        const initiator = usersReacted.length > 0 ? usersReacted[0] : null;
+                        
+                        return `
+                            <button class="reaction-btn-small ${isUserReacted ? 'active' : ''}" 
+                                    onclick="handleReaction(${index}, '${emoji}')"
+                                    title="${usersReacted.join(', ') || 'No reactions yet'}">
+                                <span class="reaction-emoji-small">${emoji}</span>
+                                <span class="reaction-count-small">${count}</span>
+                            </button>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+        
+        return `
+            <div class="msg-item ${isSystem ? 'system' : ''} ${isOwner ? 'owner-msg' : ''} ${isCurrentUser ? 'current-user' : ''}" 
+                 data-index="${index}"
+                 onmouseenter="showMessageActions(${index})"
+                 onmouseleave="hideMessageActions(${index})">
+                
+                <div class="msg-header">
+                    <div class="msg-user">
+                        ${isOwner ? '<span class="owner-badge">👑</span>' : ''}
+                        ${msg.user}
+                    </div>
+                    <div class="msg-time">${time}</div>
+                </div>
+                
+                ${replyHtml}
+                
+                <div class="msg-content">
+                    ${msg.txt}
+                </div>
+                
+                ${reactionsHtml}
+                
+                <div class="msg-actions" id="msg-actions-${index}">
+                    <button class="action-btn" onclick="openEmojiPicker(${index})" title="Add reaction">😊</button>
+                    <button class="action-btn" onclick="setupReply(${index}, '${msg.user}', '${msg.txt}')" title="Reply">↩️</button>
+                    ${isAdminAuthenticated ? `<button class="action-btn delete" onclick="deleteMessage(${index})" title="Delete">🗑️</button>` : ''}
+                </div>
+                
+                ${activeEmojiPicker === index ? renderEmojiPicker(index) : ''}
+            </div>
+        `;
+    }).join('');
+    
+    if (activeEmojiPicker === null) {
+        container.scrollTop = container.scrollHeight;
+    }
+}
+
+function renderEmojiPicker(index) {
+    return `
+        <div class="emoji-picker" id="emoji-picker-${index}">
+            ${['❤️','😂','🔥','💀','😮','😢','👍','👎','🎉','👏','🤔','😍'].map(emoji => `
+                <button class="emoji-btn" onclick="handleReaction(${index}, '${emoji}')">${emoji}</button>
+            `).join('')}
+        </div>
+    `;
+}
+
+// ========== CHAT INTERACTIONS ==========
+function openEmojiPicker(index) {
+    if (activeEmojiPicker === index) {
+        activeEmojiPicker = null;
+    } else {
+        activeEmojiPicker = index;
+    }
+    updateChat();
+}
+
+function hideEmojiPicker() {
+    activeEmojiPicker = null;
+    updateChat();
+}
+
+function showMessageActions(index) {
+    const actions = document.getElementById(`msg-actions-${index}`);
+    if (actions) {
+        actions.style.display = 'flex';
+    }
+}
+
+function hideMessageActions(index) {
+    const actions = document.getElementById(`msg-actions-${index}`);
+    if (actions) {
+        actions.style.display = 'none';
+    }
+}
+
+async function handleReaction(index, emoji) {
+    if (!currentUser) return;
+    
+    const data = await api('GET');
+    if (!data.chat || !data.chat[index]) return;
+    
+    if (!data.chat[index].reactions) data.chat[index].reactions = {};
+    if (!data.chat[index].reactionUsers) data.chat[index].reactionUsers = {};
+    if (!data.chat[index].reactionUsers[emoji]) data.chat[index].reactionUsers[emoji] = [];
+    
+    const usersReacted = data.chat[index].reactionUsers[emoji];
+    const userIndex = usersReacted.indexOf(currentUser);
+    const currentCount = data.chat[index].reactions[emoji] || 0;
+    
+    if (currentCount === 1 && usersReacted.length === 1 && usersReacted[0] === currentUser) {
+        delete data.chat[index].reactions[emoji];
+        delete data.chat[index].reactionUsers[emoji];
+        showToast('Reaction removed', 'info', 1500);
+    } else if (userIndex === -1) {
+        data.chat[index].reactions[emoji] = currentCount + 1;
+        usersReacted.push(currentUser);
+        showToast(`Reacted with ${emoji}`, 'success', 1500);
+    } else {
+        data.chat[index].reactions[emoji] = currentCount - 1;
+        usersReacted.splice(userIndex, 1);
+        
+        if (data.chat[index].reactions[emoji] <= 0) {
+            delete data.chat[index].reactions[emoji];
+        }
+        if (usersReacted.length === 0) {
+            delete data.chat[index].reactionUsers[emoji];
+        }
+        showToast('Reaction removed', 'info', 1500);
+    }
+    
+    renderMessages(data.chat);
+    await batchUpdate({ chat: data.chat });
+    activeEmojiPicker = null;
+}
+
+function setupReply(index, user, text) {
+    activeReplyTarget = {
+        index: index,
+        user: user,
+        text: text.substring(0, 50) + (text.length > 50 ? '...' : '')
+    };
+    
+    document.getElementById('replyPreviewText').textContent = `Replying to ${user}: ${activeReplyTarget.text}`;
+    document.getElementById('reply-preview').classList.remove('hidden');
+    document.getElementById('chat-input').focus();
+}
+
+function cancelReply() {
+    activeReplyTarget = null;
+    document.getElementById('reply-preview').classList.add('hidden');
+}
+
+async function sendChat() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    
+    if (!text) return;
+    
+    if (moderate(text)) {
+        showToast('Message contains blocked content', 'error', 2000);
+        input.value = '';
+        return;
+    }
+    
+    const data = await api('GET');
+    
+    if (data.bans && data.bans[currentUser]) {
+        showToast('You are banned from chat', 'error', 3000);
+        return;
+    }
+    
+    const message = {
+        user: currentUser,
+        txt: text,
+        timestamp: Date.now(),
+        replyTo: activeReplyTarget
+    };
+    
+    data.chat = data.chat || [];
+    data.chat.push(message);
+    
+    if (data.chat.length > 100) {
+        data.chat = data.chat.slice(-100);
+    }
+    
+    renderMessages(data.chat);
+    await batchUpdate({ chat: data.chat });
+    
+    input.value = '';
+    cancelReply();
+    
+    clearTimeout(typingTimeout);
+    document.getElementById('typingIndicator').classList.add('hidden');
+}
+
+async function deleteMessage(index) {
+    if (!isAdminAuthenticated) return;
+    
+    if (!confirm('Delete this message?')) return;
+    
+    const data = await api('GET');
+    if (data.chat && data.chat[index]) {
+        data.chat.splice(index, 1);
+        
+        renderMessages(data.chat);
+        await batchUpdate({ chat: data.chat });
+        
+        showToast('Message deleted', 'warning', 2000);
+    }
+}
+
+function updateUnreadBadge() {
+    const badge = document.getElementById('unread-badge');
+    if (unreadCount > 0) {
+        badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+}
+
+function handleTyping() {
+    if (!currentUser) return;
+    
+    lastTypingTime = Date.now();
+    clearTimeout(typingTimeout);
+    document.getElementById('typingIndicator').classList.add('hidden');
+}
+
+// ========== GAME MANAGEMENT ==========
+function showGameCreateView() {
+    document.getElementById('adminDefaultView').classList.add('hidden');
+    document.getElementById('gameCreateView').classList.remove('hidden');
+    
+    document.getElementById('gameNameInput').value = '';
+    document.getElementById('gameIdInput').value = '';
+    document.getElementById('gameImagePreview').style.display = 'none';
+    document.getElementById('imagePlaceholder').style.display = 'block';
+    gameImageData = null;
+    document.getElementById('gameCreateStatus').textContent = '';
+}
+
+function showGamesDashboard() {
+    document.getElementById('gameCreateView').classList.add('hidden');
+    document.getElementById('scriptManagementView').classList.add('hidden');
+    document.getElementById('adminDefaultView').classList.remove('hidden');
+    loadGamesDashboard();
+}
+
+function showScriptManagement(game) {
+    try {
+        selectedGame = game;
+        currentGameId = game.id;
+        
+        document.getElementById('currentGameName').textContent = game.name;
+        document.getElementById('currentGameId').textContent = `ID: ${game.id}`;
+        
+        const gameImage = document.getElementById('currentGameImage');
+        if (game.image) {
+            gameImage.src = game.image;
+            gameImage.style.display = 'block';
+        } else {
+            gameImage.style.display = 'none';
+        }
+        
+        document.getElementById('adminDefaultView').classList.add('hidden');
+        document.getElementById('scriptManagementView').classList.remove('hidden');
+        
+        loadGameScripts();
+    } catch (error) {
+        console.error('Error showing script management:', error);
+        showToast('Error loading game details', 'error');
+    }
+}
+
+async function loadGameScripts() {
+    if (!selectedGame) return;
+    
+    try {
+        const data = await api('GET');
+        const games = data.games || [];
+        const game = games.find(g => g && g.id === selectedGame.id);
+        
+        if (!game) {
+            showToast('Game not found', 'error');
+            showGamesDashboard();
+            return;
+        }
+        
+        const scriptsList = document.getElementById('scriptsList');
+        const noScriptsMsg = document.getElementById('noScriptsMessage');
+        const scripts = (game.scripts && Array.isArray(game.scripts)) ? game.scripts : [];
+        
+        if (scripts.length === 0) {
+            scriptsList.innerHTML = '';
+            noScriptsMsg.classList.remove('hidden');
+            return;
+        }
+        
+        noScriptsMsg.classList.add('hidden');
+        
+        scriptsList.innerHTML = scripts.map((script, index) => {
+            if (!script || typeof script !== 'object') return '';
+            
+            return `
+                <div class="script-item">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                        <div style="font-weight:600; font-size:13px; color:var(--secondary);">${script.name || 'Unnamed Script'}</div>
+                        <div style="font-size:10px; opacity:0.7; background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px;">
+                            ${new Date(script.addedAt || Date.now()).toLocaleDateString()}
+                        </div>
+                    </div>
+                    <div class="script-url" style="font-size:11px; opacity:0.9; margin-bottom:8px;">${script.url}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="font-size:10px; opacity:0.6;">Added by: ${script.addedBy || 'Unknown'}</div>
+                        <div class="script-actions">
+                            <button class="mini danger" onclick="deleteScript(${index})">Delete</button>
+                            <button class="mini warning" onclick="testScript('${script.url.replace(/'/g, "\\'")}', '${script.name.replace(/'/g, "\\'")}')">Test</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error('Error loading game scripts:', error);
+        showToast('Failed to load scripts', 'error');
+    }
+}
+
+// Image upload
+document.getElementById('gameImageInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (file.size > 2 * 1024 * 1024) {
+        showToast('Image too large. Max 2MB allowed.', 'error');
+        return;
+    }
+    
+    if (!file.type.match('image.*')) {
+        showToast('Please select an image file.', 'error');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            const maxWidth = 400;
+            const maxHeight = 400;
+            
+            let width = img.width;
+            let height = img.height;
+            
+            if (width > height) {
+                if (width > maxWidth) {
+                    height *= maxWidth / width;
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width *= maxHeight / height;
+                    height = maxHeight;
+                }
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            gameImageData = canvas.toDataURL('image/jpeg', 0.8);
+            
+            const preview = document.getElementById('gameImagePreview');
+            preview.src = gameImageData;
+            preview.style.display = 'block';
+            document.getElementById('imagePlaceholder').style.display = 'none';
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+});
+
+async function createGame() {
+    const gameName = document.getElementById('gameNameInput').value.trim();
+    const gameId = document.getElementById('gameIdInput').value.trim();
+    const status = document.getElementById('gameCreateStatus');
+    
+    if (!gameName || !gameId) {
+        status.textContent = 'Please fill in all fields';
+        status.style.color = 'var(--danger)';
+        return;
+    }
+    
+    if (!/^\d+$/.test(gameId)) {
+        status.textContent = 'Game ID must be numeric';
+        status.style.color = 'var(--danger)';
+        return;
+    }
+    
+    showLoading('Creating game...');
+    
+    try {
+        const data = await api('GET', null, true);
+        
+        // Ensure games is always an array
+        if (!data.games || !Array.isArray(data.games)) {
+            data.games = [];
+        }
+        
+        // Check if game ID already exists
+        const gameExists = data.games.some(game => {
+            if (game && typeof game === 'object' && game.id) {
+                return game.id === gameId;
+            }
+            return false;
+        });
+        
+        if (gameExists) {
+            hideLoading();
+            status.textContent = 'Game with this ID already exists';
+            status.style.color = 'var(--danger)';
+            showToast('Game ID already exists', 'error');
+            return;
+        }
+        
+        // Create game object
+        const game = {
+            id: gameId,
+            name: gameName,
+            image: gameImageData || null,
+            scripts: [],
+            createdBy: currentUser,
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        };
+        
+        // Add to games array
+        data.games.push(game);
+        
+        // Save to database
+        await api('PUT', data);
+        
+        // Clear cache and force refresh
+        dataCache = null;
+        lastFetchTime = 0;
+        
+        hideLoading();
+        status.textContent = 'Game created successfully!';
+        status.style.color = 'var(--success)';
+        showToast('Game created successfully!', 'success');
+        
+        // Return to dashboard after delay
+        setTimeout(() => {
+            showGamesDashboard();
+        }, 1500);
+        
+    } catch (error) {
+        hideLoading();
+        console.error('Create game error:', error);
+        status.textContent = 'Error creating game: ' + (error.message || 'Unknown error');
+        status.style.color = 'var(--danger)';
+        showToast('Failed to create game', 'error');
+    }
+}
+
+async function loadGamesDashboard() {
+    try {
+        const data = await api('GET');
+        
+        // Ensure games is always an array
+        let games = [];
+        if (data.games && Array.isArray(data.games)) {
+            games = data.games;
+        }
+        
+        document.getElementById('totalGames').textContent = `${games.length} game${games.length !== 1 ? 's' : ''}`;
+        
+        let totalScripts = 0;
+        games.forEach(game => {
+            if (game && game.scripts && Array.isArray(game.scripts)) {
+                totalScripts += game.scripts.length;
+            }
+        });
+        document.getElementById('totalScripts').textContent = `${totalScripts} script${totalScripts !== 1 ? 's' : ''}`;
+        
+        const dashboard = document.getElementById('gamesDashboard');
+        const noGamesMsg = document.getElementById('noGamesMessage');
+        
+        if (games.length === 0) {
+            dashboard.innerHTML = '';
+            noGamesMsg.classList.remove('hidden');
+            return;
+        }
+        
+        noGamesMsg.classList.add('hidden');
+        
+        // Filter out any invalid game objects
+        const validGames = games.filter(game => game && typeof game === 'object' && game.id && game.name);
+        
+        dashboard.innerHTML = validGames.map(game => {
+            const scriptCount = (game.scripts && Array.isArray(game.scripts)) ? game.scripts.length : 0;
+            const gameJson = JSON.stringify(game).replace(/"/g, '&quot;');
+            
+            return `
+                <div class="game-card" onclick="showScriptManagement(${gameJson})">
+                    <div class="game-actions">
+                        <button class="game-action-btn delete" onclick="event.stopPropagation(); deleteGame('${game.id}')" title="Delete Game">🗑️</button>
+                    </div>
+                    ${game.image ? 
+                        `<img src="${game.image}" class="game-card-image" alt="${game.name}">` :
+                        `<div class="game-card-image" style="display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, var(--primary), var(--secondary));">
+                            <span style="font-size:24px; opacity:0.8;">🎮</span>
+                        </div>`
+                    }
+                    <div class="game-card-title">${game.name}</div>
+                    <div class="game-card-id">ID: ${game.id}</div>
+                    <div class="game-card-scripts">${scriptCount} script${scriptCount !== 1 ? 's' : ''}</div>
+                </div>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error('Error loading games dashboard:', error);
+        showToast('Failed to load games', 'error');
+    }
+}
+
+async function addScriptToGame() {
+    if (!selectedGame) return;
+    
+    const scriptName = document.getElementById('scriptNameInput').value.trim();
+    const scriptUrl = document.getElementById('scriptUrlInput').value.trim();
+    const status = document.getElementById('scriptAddStatus');
+    
+    if (!scriptName || !scriptUrl) {
+        status.textContent = 'Please fill in all fields';
+        status.style.color = 'var(--danger)';
+        return;
+    }
+    
+    if (!scriptUrl.startsWith('http://') && !scriptUrl.startsWith('https://')) {
+        status.textContent = 'Please enter a valid URL starting with http:// or https://';
+        status.style.color = 'var(--danger)';
+        return;
+    }
+    
+    showLoading('Adding script...');
+    
+    try {
+        const data = await api('GET', null, true);
+        
+        // Ensure games is always an array
+        if (!data.games || !Array.isArray(data.games)) {
+            data.games = [];
+        }
+        
+        const gameIndex = data.games.findIndex(g => g && g.id === selectedGame.id);
+        
+        if (gameIndex === -1) {
+            showToast('Game not found', 'error');
+            hideLoading();
+            return;
+        }
+        
+        if (!data.games[gameIndex].scripts || !Array.isArray(data.games[gameIndex].scripts)) {
+            data.games[gameIndex].scripts = [];
+        }
+        
+        // Check if script name already exists
+        const scriptExists = data.games[gameIndex].scripts.some(script => 
+            script && script.name && script.name.toLowerCase() === scriptName.toLowerCase()
+        );
+        
+        if (scriptExists) {
+            hideLoading();
+            status.textContent = 'Script with this name already exists';
+            status.style.color = 'var(--danger)';
+            showToast('Script name already exists', 'error');
+            return;
+        }
+        
+        // Add the script
+        data.games[gameIndex].scripts.push({
+            name: scriptName,
+            url: scriptUrl,
+            addedBy: currentUser,
+            addedAt: Date.now()
+        });
+        
+        data.games[gameIndex].updatedAt = Date.now();
+        
+        // Save to database
+        await api('PUT', data);
+        
+        // Clear cache
+        dataCache = null;
+        lastFetchTime = 0;
+        
+        document.getElementById('scriptNameInput').value = '';
+        document.getElementById('scriptUrlInput').value = '';
+        status.textContent = 'Script added successfully!';
+        status.style.color = 'var(--success)';
+        
+        hideLoading();
+        showToast('Script added successfully!', 'success');
+        
+        // Update selected game reference
+        selectedGame = data.games[gameIndex];
+        loadGameScripts();
+        
+    } catch (error) {
+        hideLoading();
+        console.error('Add script error:', error);
+        status.textContent = 'Error adding script: ' + (error.message || 'Unknown error');
+        status.style.color = 'var(--danger)';
+        showToast('Failed to add script', 'error');
+    }
+}
+
+async function deleteGame(gameId) {
+    if (!confirm('Are you sure you want to delete this game and all its scripts?')) return;
+    
+    showLoading('Deleting game...');
+    
+    try {
+        const data = await api('GET', null, true);
+        const games = data.games || [];
+        const gameIndex = games.findIndex(g => g.id === gameId);
+        
+        if (gameIndex === -1) {
+            showToast('Game not found', 'error');
+            hideLoading();
+            return;
+        }
+        
+        // Remove the game
+        games.splice(gameIndex, 1);
+        
+        // Save to database
+        await api('PUT', data);
+        
+        // Clear cache
+        dataCache = null;
+        lastFetchTime = 0;
+        
+        hideLoading();
+        showToast('Game deleted!', 'warning');
+        loadGamesDashboard();
+        
+    } catch (error) {
+        hideLoading();
+        console.error('Delete game error:', error);
+        showToast('Error deleting game', 'error');
+    }
+}
+
+async function testScript(url, name) {
+    showLoading('Testing script...');
+    
+    try {
+        // Try to fetch the script URL
+        const response = await fetch(url, { 
+            method: 'GET',
+            mode: 'no-cors'
+        });
+        
+        hideLoading();
+        
+        // Since we're using no-cors, we can't check response status
+        showToast(`Script "${name}" appears to be valid`, 'success');
+        
+        // Copy to clipboard
+        try {
+            await navigator.clipboard.writeText(url);
+            showToast('URL copied to clipboard', 'info');
+        } catch (clipboardError) {
+            console.log('Clipboard copy failed:', clipboardError);
+        }
+        
+    } catch (error) {
+        hideLoading();
+        console.error('Test script error:', error);
+        showToast(`Script "${name}" is not accessible`, 'error');
+    }
+}
+
+// ========== UI CONTROLS ==========
+function toggleChat(open) {
+    const win = document.getElementById('chat-window');
+    const toggle = document.getElementById('chat-toggle');
+    
+    if (open) {
+        win.classList.remove('hidden');
+        toggle.classList.add('hidden');
+        
+        unreadCount = 0;
+        updateUnreadBadge();
+        
+        if (dataCache && dataCache.chat && dataCache.chat.length > 0) {
+            const lastMsg = dataCache.chat[dataCache.chat.length - 1];
+            lastSeenMessageTime = lastMsg.timestamp || Date.now();
+        }
+    } else {
+        win.classList.add('hidden');
+        toggle.classList.remove('hidden');
+    }
+    
+    updateChat();
+}
+
+function toggleAuth(showSignup) {
+    document.getElementById('signupView').classList.toggle('hidden', !showSignup);
+    document.getElementById('loginView').classList.toggle('hidden', showSignup);
+}
+
+function toggleFeedbackUI(show) {
+    const fbUI = document.getElementById('userFeedbackUI');
+    const main = document.getElementById('mainContentWrapper');
+    if (show) {
+        fbUI.classList.remove('hidden');
+        main.classList.add('hidden');
+    } else {
+        fbUI.classList.add('hidden');
+        main.classList.remove('hidden');
+    }
+}
+
+// ========== INITIALIZATION ==========
+window.onload = async () => {
+    initParticleBackground();
+    
+    function updateTime() {
+        const now = new Date();
+        document.getElementById('currentTime').textContent = 
+            now.getHours().toString().padStart(2, '0') + ':' + 
+            now.getMinutes().toString().padStart(2, '0');
+    }
+    updateTime();
+    setInterval(updateTime, 60000);
+    
+    const saved = localStorage.getItem('rsq_session');
+    if (saved) {
+        try {
+            const session = JSON.parse(saved);
+            document.getElementById('l-user').value = session.u;
+            document.getElementById('l-pass').value = session.p;
+            handleAuth('login');
+        } catch (e) {
+            localStorage.removeItem('rsq_session');
+        }
+    }
+    
+    statsPollingInterval = setInterval(trackViewAndActivity, 5000);
+    trackViewAndActivity();
+    
+    const chatInput = document.getElementById('chat-input');
+    if (chatInput) {
+        chatInput.addEventListener('input', handleTyping);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendChat();
+            }
+        });
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+        });
+    }
+    
+    document.addEventListener('click', (e) => {
+        if (activeEmojiPicker !== null && !e.target.closest('.emoji-picker') && !e.target.closest('.action-btn')) {
+            hideEmojiPicker();
+        }
+    });
+    
+    document.getElementById('gameImageInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file && file.size > 2 * 1024 * 1024) {
+            showToast('Image too large. Max 2MB allowed.', 'error');
+            this.value = '';
+        }
+    });
+    
+    document.getElementById('fb-msg')?.addEventListener('input', function() {
+        const count = this.value.length;
+        document.getElementById('fbCharCount').textContent = `${count}/500`;
+    });
+    
+    document.getElementById('focusBanReason')?.addEventListener('input', function() {
+        const count = this.value.length;
+        document.getElementById('reasonCharCount').textContent = `${count}/200`;
+    });
+    
+    // Test connection on startup
+    setTimeout(() => {
+        api('GET').then(data => {
+            if (data) {
+                console.log('API connection successful:', data);
+                showToast('System connected successfully', 'success', 2000);
+            }
+        }).catch(e => {
+            console.error('Initial connection failed:', e);
+        });
+    }, 1000);
+};
+
+function initParticleBackground() {
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    
+    function createParticles() {
+        particles = [];
+        const particleCount = Math.min(50, Math.floor((canvas.width * canvas.height) / 20000));
+        
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 1.5 + 0.5,
+                speedX: Math.random() * 0.3 - 0.15,
+                speedY: Math.random() * 0.3 - 0.15,
+                color: `rgba(79, 124, 255, ${Math.random() * 0.1 + 0.05})`
+            });
+        }
+    }
+    
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        for (let particle of particles) {
+            particle.x += particle.speedX;
+            particle.y += particle.speedY;
+            
+            if (particle.x < 0) particle.x = canvas.width;
+            if (particle.x > canvas.width) particle.x = 0;
+            if (particle.y < 0) particle.y = canvas.height;
+            if (particle.y > canvas.height) particle.y = 0;
+            
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            ctx.fillStyle = particle.color;
+            ctx.fill();
+        }
+        
+        requestAnimationFrame(animateParticles);
+    }
+    
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        createParticles();
+    });
+    
+    resizeCanvas();
+    createParticles();
+    animateParticles();
+}
+
+// ========== AUTHENTICATION ==========
+async function handleAuth(type) {
+    const status = document.getElementById('authStatus');
+    const spinnerId = type === 'signup' ? 'signupSpinner' : 'loginSpinner';
+    const spinner = document.getElementById(spinnerId);
+    
+    status.textContent = '';
+    spinner.style.display = 'inline-block';
+    
+    const u = document.getElementById(type === 'signup' ? 's-user' : 'l-user').value.trim();
+    const p = document.getElementById(type === 'signup' ? 's-pass' : 'l-pass').value.trim();
+    
+    if (!u || !p) {
+        status.textContent = 'Please fill in all fields';
+        spinner.style.display = 'none';
+        return;
+    }
+    
+    const data = await api('GET', null, true);
+    if (!data.users) data.users = {};
+    
+    if (type === 'signup') {
+        if (data.users[u]) {
+            status.textContent = 'Username already exists';
+            spinner.style.display = 'none';
+            return;
+        }
+        
+        if (moderate(u)) {
+            status.textContent = 'Invalid username';
+            spinner.style.display = 'none';
+            return;
+        }
+        
+        data.users[u] = { pass: p, created: now() };
+        await batchUpdate({ users: data.users });
+        
+        status.textContent = 'Account created! Please sign in.';
+        showToast('Account created successfully', 'success');
+        spinner.style.display = 'none';
+        toggleAuth(false);
+        
+    } else {
+        const isOwner = (u === SUPER_ADMIN && p === OWNER_PASS);
+        const isRegular = (data.users[u] && data.users[u].pass === p);
+        
+        if (isOwner || isRegular) {
+            currentUser = u;
+            localStorage.setItem('rsq_session', JSON.stringify({ u, p }));
+            
+            if (u === SUPER_ADMIN) {
+                document.getElementById('adminBtn').classList.remove('hidden');
+                showToast('Admin privileges granted', 'warning');
+            }
+            
+            document.getElementById('authPanel').classList.add('hidden');
+            document.getElementById('mainSystem').classList.remove('hidden');
+            document.getElementById('welcomeUser').textContent = `Logged in as ${u}`;
+            
+            chatPollingInterval = setInterval(updateChat, 2000);
+            updateChat();
+            
+            setInterval(trackViewAndActivity, 10000);
+            
+            showToast(`Welcome back, ${u}!`, 'success');
+            
+        } else {
+            status.textContent = 'Invalid credentials';
+            spinner.style.display = 'none';
+            showToast('Invalid username or password', 'error');
+        }
+    }
+}
+
+// ========== KEY GENERATION ==========
+async function generateKey() {
+    const status = document.getElementById('statusMsg');
+    const spinner = document.getElementById('keySpinner');
+    
+    status.textContent = '';
+    spinner.style.display = 'inline-block';
+    
+    const rbxId = document.getElementById('userid').value.trim();
+    if (!rbxId) {
+        status.textContent = 'Please enter a Roblox UserID';
+        spinner.style.display = 'none';
+        return;
+    }
+    
+    const data = await api('GET');
+    
+    if (data.bans && (data.bans[currentUser] || data.bans[rbxId])) {
+        status.textContent = 'You are restricted from generating keys';
+        spinner.style.display = 'none';
+        showToast('Access denied: Account is restricted', 'error');
+        return;
+    }
+    
+    data.keys = data.keys || {};
+    
+    let existingKey = null;
+    for (const [key, keyData] of Object.entries(data.keys)) {
+        if (keyData.user === currentUser && keyData.rbx === rbxId) {
+            if (keyData.exp === "INF" || keyData.exp > now()) {
+                existingKey = key;
+                break;
+            }
+        }
+    }
+    
+    if (existingKey) {
+        document.getElementById('keyOut').textContent = existingKey;
+        status.textContent = 'Existing key found';
+        showToast('Using existing key', 'info');
+    } else {
+        const newKey = 'RSQ-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        data.keys[newKey] = {
+            user: currentUser,
+            rbx: rbxId,
+            created: now(),
+            exp: now() + 86400
+        };
+        
+        await batchUpdate({ keys: data.keys });
+        
+        document.getElementById('keyOut').textContent = newKey;
+        status.textContent = 'Key generated (valid 24 hours)';
+        showToast('New key generated!', 'success');
+    }
+    
+    spinner.style.display = 'none';
+}
+
+// ========== FEEDBACK FUNCTIONS ==========
+async function submitFeedback() {
+    const user = document.getElementById('fb-user').value.trim();
+    const id = document.getElementById('fb-id').value.trim();
+    const msg = document.getElementById('fb-msg').value.trim();
+    
+    if (!user || !id || !msg) {
+        showToast('Please fill all fields', 'warning', 2000);
+        return;
+    }
+    
+    const spinner = document.getElementById('fbSpinner');
+    spinner.style.display = 'inline-block';
+    
+    const data = await api('GET');
+    data.feedbacks ||= [];
+    data.feedbacks.push({
+        user: user,
+        id: id,
+        msg: msg,
+        time: new Date().toLocaleString(),
+        read: false
+    });
+    
+    await batchUpdate({ feedbacks: data.feedbacks });
+    
+    document.getElementById('fb-user').value = '';
+    document.getElementById('fb-id').value = '';
+    document.getElementById('fb-msg').value = '';
+    document.getElementById('fbCharCount').textContent = '0/500';
+    
+    spinner.style.display = 'none';
+    showToast('Feedback submitted! Thank you.', 'success', 2000);
+    toggleFeedbackUI(false);
+}
+
+async function renderAdminFeedbacks() {
+    const data = await api('GET');
+    const feedbacks = data.feedbacks || [];
+    const search = document.getElementById('fbSearch').value.toLowerCase();
+    
+    const filtered = feedbacks.filter(fb => 
+        !search || 
+        fb.user.toLowerCase().includes(search) || 
+        fb.id.toLowerCase().includes(search) ||
+        fb.msg.toLowerCase().includes(search)
+    );
+    
+    const fbLogs = document.getElementById('fbLogs');
+    if (filtered.length === 0) {
+        fbLogs.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📝</div><div>No feedbacks found</div></div>';
+        return;
+    }
+    
+    fbLogs.innerHTML = filtered.reverse().map((fb, index) => `
+        <div class="fb-item" onclick="viewSingleFeedback(${index})">
+            <div>
+                <div style="font-weight:600; font-size:12px; color:var(--secondary);">${fb.user} (${fb.id})</div>
+                <div style="font-size:11px; opacity:0.8; margin-top:3px;">${fb.msg.substring(0, 60)}${fb.msg.length > 60 ? '...' : ''}</div>
+                <div style="font-size:9px; opacity:0.6; margin-top:3px;">${fb.time}</div>
+            </div>
+            ${!fb.read ? '<span style="background:var(--primary); color:white; font-size:9px; padding:2px 6px; border-radius:10px;">NEW</span>' : ''}
+        </div>
+    `).join('');
+}
+
+function viewSingleFeedback(index) {
+    const data = dataCache;
+    if (!data.feedbacks || !data.feedbacks[index]) return;
+    
+    const fb = data.feedbacks[index];
+    document.getElementById('viewFbTitle').textContent = `Feedback from ${fb.user}`;
+    document.getElementById('viewFbContent').innerHTML = `
+        <div style="margin-bottom:15px;">
+            <div style="font-size:12px; opacity:0.8; margin-bottom:5px;">User Information</div>
+            <div style="background:rgba(255,255,255,0.03); padding:10px; border-radius:8px;">
+                <div><strong>Username:</strong> ${fb.user}</div>
+                <div><strong>UserID:</strong> ${fb.id}</div>
+                <div><strong>Submitted:</strong> ${fb.time}</div>
+            </div>
+        </div>
+        <div>
+            <div style="font-size:12px; opacity:0.8; margin-bottom:5px;">Feedback Message</div>
+            <div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:8px; white-space:pre-wrap; font-size:13px; line-height:1.5;">${fb.msg}</div>
+        </div>
+    `;
+    
+    document.getElementById('adminFeedbackListView').classList.add('hidden');
+    document.getElementById('adminViewFeedbackUI').classList.remove('hidden');
+    
+    if (!fb.read) {
+        data.feedbacks[index].read = true;
+        batchUpdate({ feedbacks: data.feedbacks });
+    }
+}
+
+function closeSingleFeedback() {
+    document.getElementById('adminViewFeedbackUI').classList.add('hidden');
+    document.getElementById('adminFeedbackListView').classList.remove('hidden');
+}
+
+function openAdminFeedbacks() {
+    document.getElementById('adminDefaultView').classList.add('hidden');
+    document.getElementById('adminFeedbackListView').classList.remove('hidden');
+    renderAdminFeedbacks();
+}
+
+function returnToAdminPanel() {
+    document.getElementById('adminFeedbackListView').classList.add('hidden');
+    document.getElementById('adminViewFeedbackUI').classList.add('hidden');
+    document.getElementById('adminDefaultView').classList.remove('hidden');
+}
+
+// ========== ADMIN FUNCTIONS ==========
+async function renderAdminKeys() {
+    const log = document.getElementById('keyLogs');
+    const data = await api('GET');
+    
+    const keyCount = data.keys ? Object.keys(data.keys).length : 0;
+    document.getElementById('keyCount').textContent = `${keyCount} key${keyCount !== 1 ? 's' : ''}`;
+    
+    if(!data.keys || Object.keys(data.keys).length === 0) {
+        log.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">No active keys found.</div>';
+        return;
+    }
+
+    log.innerHTML = Object.keys(data.keys).map(k => {
+        const keyObj = data.keys[k];
+        const isInf = keyObj.exp === "INF";
+        const timeLeft = isInf ? "Never" : new Date(keyObj.exp * 1000).toLocaleString();
+        
+        return `
+        <div class="fb-item">
+            <div>
+                <div style="font-family:monospace; color:var(--secondary); font-weight:bold; font-size:12px;">${k}</div>
+                <div style="font-size:10px; opacity:0.6; margin-top:2px;">👤 Owner: ${keyObj.user}</div>
+                <div style="font-size:10px; opacity:0.6;">🎮 Roblox: ${keyObj.rbx}</div>
+                <div style="font-size:10px; opacity:0.6;">⏰ Expires: ${timeLeft}</div>
+            </div>
+            <div style="display:flex; gap:5px;">
+                <button class="mini danger" onclick="keyAction('${k}', 'delete')" title="Delete key">🗑️</button>
+                <button class="mini warning" onclick="keyAction('${k}', 'renew')" title="Renew for 24h">🔄</button>
+                <button class="mini success" onclick="keyAction('${k}', 'inf')" title="Make infinite">∞</button>
+            </div>
+        </div>`;
+    }).reverse().join('');
+}
+
+async function keyAction(key, type) {
+    const data = await api('GET');
+    if(!data.keys[key]) return;
+
+    data.notifications ||= {};
+    const targetUser = data.keys[key].user;
+
+    const updates = {};
+    
+    if(type === 'delete') {
+        if (!confirm(`Delete key "${key}"?`)) return;
+        data.notifications[targetUser] = { type: "DELETED", key: key, time: now() };
+        delete data.keys[key];
+        updates.keys = data.keys;
+        updates.notifications = data.notifications;
+        showToast(`Key ${key} deleted`, 'warning', 2000);
+    } else if (type === 'renew') {
+        data.keys[key].exp = now() + 86400;
+        data.notifications[targetUser] = { type: "RENEWED", key: key, time: now() };
+        updates.keys = data.keys;
+        updates.notifications = data.notifications;
+        showToast(`Key ${key} renewed`, 'success', 2000);
+    } else if (type === 'inf') {
+        data.keys[key].exp = "INF";
+        data.notifications[targetUser] = { type: "INFINITE", key: key, time: now() };
+        updates.keys = data.keys;
+        updates.notifications = data.notifications;
+        showToast(`Key ${key} set to infinite`, 'success', 2000);
+    }
+
+    await batchUpdate(updates);
+    renderAdminKeys();
+}
+
+async function renderBanLogs() {
+    const log = document.getElementById('banLogs');
+    const data = await api('GET');
+    
+    const banCount = data.bans ? Object.keys(data.bans).length : 0;
+    document.getElementById('banCount').textContent = `${banCount} banned`;
+    
+    if(!data.bans || Object.keys(data.bans).length === 0) {
+        log.innerHTML = '<div style="text-align:center; padding:40px; opacity:0.5;">No users are banned.</div>';
+        return;
+    }
+
+    log.innerHTML = Object.keys(data.bans).map(u => `
+        <div class="fb-item">
+            <div>
+                <div style="font-weight:600; font-size:12px; color:var(--danger);">${u}</div>
+                <div style="font-size:10px; opacity:0.6; margin-top:2px;">🆔 ID: ${data.bans[u].id}</div>
+                <div style="font-size:10px; opacity:0.6;">📝 Reason: ${data.bans[u].reason}</div>
+                <div style="font-size:10px; opacity:0.6;">📅 Date: ${data.bans[u].date}</div>
+            </div>
+            <button class="mini danger" onclick="removeBan('${u}')" title="Unban user">🔓</button>
+        </div>
+    `).join('');
+}
+
+async function removeBan(user) {
+    if (!confirm(`Unban ${user}?`)) return;
+    
+    const data = await api('GET');
+    delete data.bans[user];
+    await batchUpdate({ bans: data.bans });
+    renderBanLogs();
+    showToast(`${user} unbanned`, 'success', 2000);
+}
+
+function toggleBanNowView(show) {
+    if(show) {
+        document.getElementById('adminDefaultView').classList.add('hidden');
+        document.getElementById('banNowView').classList.remove('hidden');
+    } else {
+        document.getElementById('banNowView').classList.add('hidden');
+        document.getElementById('adminDefaultView').classList.remove('hidden');
+    }
+}
+
+async function executeFocusBan() {
+    const id = document.getElementById('focusBanId').value.trim();
+    const user = document.getElementById('focusBanUser').value.trim();
+    const reason = document.getElementById('focusBanReason').value.trim();
+
+    if(!id || !user || !reason) {
+        showToast('Please fill all fields', 'warning', 2000);
+        return;
+    }
+
+    const data = await api('GET');
+    data.bans ||= {};
+    data.bans[user] = { id: id, reason: reason, date: new Date().toLocaleString() };
+
+    await batchUpdate({ bans: data.bans });
+    
+    showToast(`${user} has been restricted`, 'error', 3000);
+    
+    document.getElementById('focusBanId').value = "";
+    document.getElementById('focusBanUser').value = "";
+    document.getElementById('focusBanReason').value = "";
+    
+    toggleBanNowView(false);
+    renderBanLogs();
+}
+
+async function sendGlobalMsg(isPin) {
+    const msg = document.getElementById('globalMsgInput').value.trim();
+    if(!msg) {
+        showToast('Enter message text', 'warning', 2000);
+        return;
+    }
+    
+    const data = await api('GET');
+    if(isPin) {
+        data.pinned = { text: msg, active: true };
+        showToast('Message pinned globally', 'success', 2000);
+    } else {
+        data.chat ||= [];
+        data.chat.push({ user: "SYSTEM", txt: `[GLOBAL ANNOUNCEMENT]: ${msg}`, timestamp: Date.now() });
+        showToast('Announcement sent', 'success', 2000);
+    }
+    
+    await batchUpdate(isPin ? { pinned: data.pinned } : { chat: data.chat });
+    updateChat();
+}
+
+async function clearGlobals() {
+    if (!confirm("Clear all pinned messages?")) return;
+    
+    const data = await api('GET');
+    data.pinned = { text: "", active: false };
+    await batchUpdate({ pinned: data.pinned });
+    updateChat();
+    showToast('Pinned messages cleared', 'warning', 2000);
+}
+
+async function clearAllChat() {
+    if(!confirm("Wipe all chat messages?\nThis cannot be undone!")) return;
+    const data = await api('GET');
+    data.chat = [];
+    await batchUpdate({ chat: data.chat });
+    updateChat();
+    showToast('Chat cleared', 'warning', 2000);
+}
+
+async function banAllKeyHolders() {
+    if(!confirm("WARNING: This will ban ALL users who have active keys!\n\nAre you absolutely sure?")) return;
+    
+    showLoading('Banning all key holders...');
+    
+    try {
+        const data = await api('GET');
+        data.bans ||= {};
+        
+        const keys = data.keys || {};
+        let count = 0;
+        
+        for (const key in keys) {
+            const keyData = keys[key];
+            if (!data.bans[keyData.user]) {
+                data.bans[keyData.user] = {
+                    id: keyData.rbx,
+                    reason: "Mass ban - All key holders",
+                    date: new Date().toLocaleString()
+                };
+                count++;
+            }
+        }
+        
+        await batchUpdate({ bans: data.bans });
+        
+        hideLoading();
+        showToast(`Banned ${count} key holders`, 'warning', 3000);
+        renderBanLogs();
+        
+    } catch (error) {
+        hideLoading();
+        showToast('Error banning key holders', 'error');
+    }
+}
+
+async function unbanEveryone() {
+    if(!confirm("Unban ALL users?\nThis cannot be undone.")) return;
+    
+    showLoading('Unbanning all users...');
+    
+    try {
+        const data = await api('GET');
+        const count = Object.keys(data.bans || {}).length;
+        data.bans = {};
+        
+        await batchUpdate({ bans: data.bans });
+        
+        hideLoading();
+        showToast(`Unbanned ${count} users`, 'success', 3000);
+        renderBanLogs();
+        
+    } catch (error) {
+        hideLoading();
+        showToast('Error unbanning users', 'error');
+    }
+}
+
+async function masterReset() {
+    const target = document.getElementById('resetTarget').value;
+    if(!confirm(`⚠️ CRITICAL WARNING:\nThis will PERMANENTLY wipe [${target.toUpperCase()}].\n\nThis action cannot be undone!`)) return;
+    
+    showLoading('Performing system reset...');
+    
+    try {
+        const data = await api('GET');
+        
+        if(target === 'chat' || target === 'all') data.chat = [];
+        if(target === 'bans' || target === 'all') data.bans = {};
+        if(target === 'users' || target === 'all') {
+            data.users = {
+                [SUPER_ADMIN]: { pass: OWNER_PASS, warns: 0, lastWarn: 0, timeoutUntil: 0 }
+            };
+        }
+        if(target === 'all') {
+            data.keys = {};
+            data.feedbacks = [];
+            data.notifications = {};
+            data.pinned = { text: "", active: false };
+            data.games = [];
+        }
+        
+        await batchUpdate(data);
+        
+        hideLoading();
+        showToast(`System ${target} reset complete`, 'success', 3000);
+        setTimeout(() => location.reload(), 1000);
+        
+    } catch (error) {
+        hideLoading();
+        showToast('Error performing reset', 'error');
+    }
+}
+
+// ========== ADMIN PANEL LOAD ==========
+document.getElementById('adminBtn').onclick = function() {
+    if (isAdminAuthenticated) {
+        document.getElementById('adminPanel').classList.remove('hidden');
+        showToast('Admin panel opened', 'warning');
+        
+        loadGamesDashboard();
+        renderAdminKeys();
+        renderBanLogs();
+    } else {
+        document.getElementById('adminInput').classList.toggle('hidden');
+    }
+};
+
+document.getElementById('adminInput').onchange = function() {
+    if (this.value === MASTER_KEY) {
+        isAdminAuthenticated = true;
+        this.classList.add('hidden');
+        document.getElementById('adminPanel').classList.remove('hidden');
+        showToast('Admin authentication successful', 'success');
+        
+        loadGamesDashboard();
+        renderAdminKeys();
+        renderBanLogs();
+    } else {
+        showToast('Invalid master key', 'error');
+        this.value = '';
+    }
+};
+
+function closeAdmin() {
+    document.getElementById('adminPanel').classList.add('hidden');
+    showToast('Admin panel closed', 'info', 1500);
+}
+
+// ========== LOGOUT ==========
+function logout() {
+    if (chatPollingInterval) clearInterval(chatPollingInterval);
+    if (statsPollingInterval) clearInterval(statsPollingInterval);
+    
+    localStorage.removeItem('rsq_session');
+    showToast('Logged out successfully', 'info');
+    
+    setTimeout(() => location.reload(), 500);
+}
 </script>
 </body>
 </html>
