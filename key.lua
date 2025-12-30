@@ -8,6 +8,7 @@ local HttpService = game:GetService("HttpService")
 local TweenService = game:GetService("TweenService")
 local TeleportService = game:GetService("TeleportService")
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 local USER_ID = tostring(player.UserId)
 local USER_NAME = player.Name
@@ -28,6 +29,10 @@ local SCRIPT_URLS = {
 }
 local CHECK_INTERVAL = 1 -- Reduced to 1 second for faster background checks
 
+-- File saving paths
+local LOCAL_FOLDER = "RSQ_KeySystem"
+local KEY_STATUS_FILE = "key_status.json"
+
 --==================================================--
 -- STATE & PRE-FETCH
 --==================================================--
@@ -36,6 +41,204 @@ local KeyActive = false
 local LastNotifTime = 0
 local CachedData = nil -- Global cache for instant local validation
 local GamesList = {} -- Store games data
+local IsGuiOpen = false -- Track if GUI is currently open
+local OpenButton = nil -- Reference to the open button
+
+-- Function to get data folder
+local function getDataFolder()
+    if writefile and isfolder then
+        if not isfolder(LOCAL_FOLDER) then
+            makefolder(LOCAL_FOLDER)
+        end
+        return LOCAL_FOLDER
+    end
+    return nil
+end
+
+-- Function to save key status
+local function saveKeyStatus()
+    local folder = getDataFolder()
+    if not folder then return end
+    
+    local status = {
+        key = CurrentKey,
+        active = KeyActive,
+        userId = USER_ID,
+        timestamp = os.time()
+    }
+    
+    local success, err = pcall(function()
+        writefile(folder .. "/" .. KEY_STATUS_FILE, HttpService:JSONEncode(status))
+    end)
+    
+    if not success then
+        warn("[RSQ] Failed to save key status:", err)
+    end
+end
+
+-- Function to load key status
+local function loadKeyStatus()
+    local folder = getDataFolder()
+    if not folder then return false end
+    
+    local filePath = folder .. "/" .. KEY_STATUS_FILE
+    
+    if not isfile(filePath) then
+        return false
+    end
+    
+    local success, data = pcall(function()
+        local content = readfile(filePath)
+        return HttpService:JSONDecode(content)
+    end)
+    
+    if success and data and data.userId == USER_ID then
+        -- Check if key is still valid (if it has expiration)
+        if data.active and data.key then
+            CurrentKey = data.key
+            KeyActive = true
+            return true
+        end
+    end
+    
+    return false
+end
+
+-- Function to clear saved key status
+local function clearKeyStatus()
+    local folder = getDataFolder()
+    if not folder then return end
+    
+    local filePath = folder .. "/" .. KEY_STATUS_FILE
+    
+    if isfile(filePath) then
+        delfile(filePath)
+    end
+end
+
+-- Function to create open button
+local function createOpenButton()
+    if OpenButton and OpenButton.Parent then
+        OpenButton:Destroy()
+    end
+    
+    OpenButton = Instance.new("ScreenGui")
+    OpenButton.Name = "RSQ_OpenButton"
+    OpenButton.IgnoreGuiInset = true
+    OpenButton.ResetOnSpawn = false
+    OpenButton.Parent = player:WaitForChild("PlayerGui")
+    
+    local button = Instance.new("TextButton", OpenButton)
+    button.Name = "ToggleButton"
+    button.Size = UDim2.new(0, 50, 0, 50)
+    button.Position = UDim2.new(1, -60, 0, 20)
+    button.Text = "🔓"
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 20
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+    button.BackgroundTransparency = 0.2
+    Instance.new("UICorner", button).CornerRadius = UDim.new(1, 0)
+    
+    -- Make draggable for mobile
+    makeDraggable(OpenButton, button)
+    
+    button.MouseButton1Click:Connect(function()
+        if IsGuiOpen then
+            -- Close existing GUI
+            local existingGui = player.PlayerGui:FindFirstChild("RSQ_KeySystem") or 
+                               player.PlayerGui:FindFirstChild("RSQ_AdvancedGamesGUI")
+            if existingGui then
+                existingGui:Destroy()
+                IsGuiOpen = false
+                button.Text = "🔓"
+            end
+        else
+            -- Open appropriate GUI based on key status
+            if KeyActive and CurrentKey then
+                showAdvancedGamesGUI()
+            else
+                showKeyGUI()
+            end
+            IsGuiOpen = true
+            button.Text = "🔒"
+        end
+    end)
+    
+    -- Add animation
+    button.MouseEnter:Connect(function()
+        TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 55, 0, 55)}):Play()
+    end)
+    
+    button.MouseLeave:Connect(function()
+        TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 50, 0, 50)}):Play()
+    end)
+end
+
+-- Enhanced function to make frame draggable for mobile and desktop
+local function makeDraggable(frame, dragHandle)
+    local dragging = false
+    local dragInput
+    local dragStart
+    local startPos
+    
+    local function update(input)
+        if dragging then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(
+                startPos.X.Scale, 
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale, 
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end
+    
+    -- Mouse input for desktop
+    dragHandle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or 
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    dragHandle.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or 
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and (input == dragInput or input.UserInputType == Enum.UserInputType.Touch) then
+            update(input)
+        end
+    end)
+    
+    -- Touch support for mobile
+    if UserInputService.TouchEnabled then
+        RunService.Heartbeat:Connect(function()
+            if dragging and UserInputService:IsMouseButtonPressed(Enum.UserInputType.Touch) then
+                local touchPos = UserInputService:GetMouseLocation()
+                local delta = touchPos - dragStart
+                frame.Position = UDim2.new(
+                    startPos.X.Scale, 
+                    startPos.X.Offset + delta.X,
+                    startPos.Y.Scale, 
+                    startPos.Y.Offset + delta.Y
+                )
+            end
+        end)
+    end
+end
 
 -- Function to fetch data with better error handling
 local function fetchDataWithRetry()
@@ -232,46 +435,6 @@ local function createNotify(msg, color)
     end)
 end
 
--- Function to make a frame draggable
-local function makeDraggable(frame, dragHandle)
-    local dragging = false
-    local dragInput
-    local dragStart
-    local startPos
-    
-    dragHandle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            dragStart = input.Position
-            startPos = frame.Position
-            
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
-    
-    dragHandle.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
-            dragInput = input
-        end
-    end)
-    
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and input == dragInput then
-            local delta = input.Position - dragStart
-            frame.Position = UDim2.new(
-                startPos.X.Scale, 
-                startPos.X.Offset + delta.X,
-                startPos.Y.Scale, 
-                startPos.Y.Offset + delta.Y
-            )
-        end
-    end)
-end
-
 -- Function to show teleport confirmation
 local function showTeleportConfirmation(gameId, gameName)
     local teleportGui = Instance.new("ScreenGui", player.PlayerGui)
@@ -413,7 +576,16 @@ end
 -- ADVANCED GAMES GUI (ONLY SHOWS AFTER VALID KEY)
 --==================================================--
 local function showAdvancedGamesGUI()
-    -- Refresh data before showing GUI
+    -- Prevent duplicate GUI
+    if player.PlayerGui:FindFirstChild("RSQ_AdvancedGamesGUI") then
+        return
+    end
+    
+    IsGuiOpen = true
+    if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
+        OpenButton.ToggleButton.Text = "🔒"
+    end
+    
     print("[RSQ] Showing Advanced Games GUI")
     print("[RSQ] Current GamesList count:", #GamesList)
     
@@ -479,6 +651,10 @@ local function showAdvancedGamesGUI()
     Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
     
     closeBtn.MouseButton1Click:Connect(function()
+        IsGuiOpen = false
+        if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
+            OpenButton.ToggleButton.Text = "🔓"
+        end
         gui:Destroy()
     end)
 
@@ -862,6 +1038,16 @@ end
 -- INITIAL KEY GUI
 --==================================================--
 local function showKeyGUI()
+    -- Prevent duplicate GUI
+    if player.PlayerGui:FindFirstChild("RSQ_KeySystem") then
+        return
+    end
+    
+    IsGuiOpen = true
+    if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
+        OpenButton.ToggleButton.Text = "🔒"
+    end
+    
     local gui = Instance.new("ScreenGui")
     gui.Name = "RSQ_KeySystem"
     gui.IgnoreGuiInset = true
@@ -906,6 +1092,10 @@ local function showKeyGUI()
     Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
     
     closeBtn.MouseButton1Click:Connect(function()
+        IsGuiOpen = false
+        if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
+            OpenButton.ToggleButton.Text = "🔓"
+        end
         gui:Destroy()
     end)
 
@@ -973,9 +1163,13 @@ local function showKeyGUI()
             
             sendWebhook("REDEEM", inputKey, res.exp)
             
+            -- Save key status
+            saveKeyStatus()
+            
             TweenService:Create(card, TweenInfo.new(0.3), {BackgroundTransparency = 1, Size = UDim2.new(0,0,0,0)}):Play()
             task.delay(0.3, function() 
                 gui:Destroy() 
+                IsGuiOpen = false
                 showAdvancedGamesGUI()
             end)
 
@@ -990,6 +1184,12 @@ local function showKeyGUI()
             end
         else
             status.Text = res
+            -- Clear saved key if validation fails
+            if res == "❌ Expired" or res == "❌ Invalid Key" then
+                clearKeyStatus()
+                CurrentKey = nil
+                KeyActive = false
+            end
         end
     end)
 
@@ -1002,7 +1202,45 @@ end
 --==================================================--
 -- INITIALIZE
 --==================================================--
-showKeyGUI()
+-- Check for saved key first
+local hasSavedKey = loadKeyStatus()
+if hasSavedKey then
+    -- Auto-open advanced GUI if key is saved and valid
+    createNotify("Loading saved key...", Color3.fromRGB(79, 124, 255))
+    
+    -- Validate the saved key
+    task.spawn(function()
+        local ok, res = validate(CurrentKey, false)
+        if ok then
+            createNotify("✅ Key validated successfully!", Color3.fromRGB(40, 200, 80))
+            createOpenButton()
+            -- Auto-open the advanced games GUI
+            task.wait(1)
+            showAdvancedGamesGUI()
+            
+            -- Execute main scripts
+            for _, url in ipairs(SCRIPT_URLS) do
+                task.spawn(function()
+                    pcall(function() 
+                        local scriptContent = game:HttpGet(url)
+                        loadstring(scriptContent)() 
+                    end)
+                end)
+            end
+        else
+            createNotify("❌ Saved key is invalid: " .. res, Color3.fromRGB(255, 50, 50))
+            clearKeyStatus()
+            CurrentKey = nil
+            KeyActive = false
+            createOpenButton()
+            showKeyGUI()
+        end
+    end)
+else
+    -- No saved key, show initial GUI
+    createOpenButton()
+    showKeyGUI()
+end
 
 --==================================================--
 -- SECURITY LOOPS (HIGH FREQUENCY)
@@ -1011,10 +1249,24 @@ task.spawn(function()
     while true do
         task.wait(CHECK_INTERVAL)
         if KeyActive and CurrentKey then
-            local ok, _ = validate(CurrentKey, false)
+            local ok, res = validate(CurrentKey, false)
             if not ok then
-                TeleportService:Teleport(PLACE_ID, player)
-                break
+                -- Key expired or invalid
+                createNotify("❌ Key is no longer valid: " .. res, Color3.fromRGB(255, 50, 50))
+                KeyActive = false
+                CurrentKey = nil
+                clearKeyStatus()
+                
+                -- Close any open GUIs
+                local existingGui = player.PlayerGui:FindFirstChild("RSQ_KeySystem") or 
+                                   player.PlayerGui:FindFirstChild("RSQ_AdvancedGamesGUI")
+                if existingGui then
+                    existingGui:Destroy()
+                    IsGuiOpen = false
+                end
+                
+                -- Show key GUI again
+                showKeyGUI()
             end
         end
     end
