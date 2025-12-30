@@ -638,6 +638,7 @@ local function showAdvancedGamesGUI()
     end
     
     -- Function to show scripts for a specific game
+        -- Function to show scripts for a specific game
     local function showGameScripts(gameData)
         print("[RSQ] showGameScripts called for:", gameData.name)
         
@@ -650,7 +651,59 @@ local function showAdvancedGamesGUI()
             oldScripts:Destroy()
         end
         
-        -- Create NEW scripts scrolling frame
+        -- Get scripts from game data
+        local scripts = gameData.scripts or {}
+        print("[RSQ] Number of scripts found:", #scripts)
+        
+        if #scripts == 0 then
+            -- Create empty state message
+            local emptyFrame = Instance.new("Frame", contentFrame)
+            emptyFrame.Name = "RSQ_EmptyScripts"
+            emptyFrame.Size = UDim2.new(1, 0, 1, 0)
+            emptyFrame.BackgroundTransparency = 1
+            emptyFrame.Position = UDim2.new(0, 0, 0, 0)
+            
+            local emptyLabel = Instance.new("TextLabel", emptyFrame)
+            emptyLabel.Size = UDim2.new(1, 0, 0, 150)
+            emptyLabel.Position = UDim2.new(0, 0, 0.5, -75)
+            emptyLabel.Text = "📭 No scripts available for this game.\n\nCheck back later or ask an admin to add scripts."
+            emptyLabel.Font = Enum.Font.Gotham
+            emptyLabel.TextSize = 14
+            emptyLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+            emptyLabel.BackgroundTransparency = 1
+            emptyLabel.TextWrapped = true
+            
+            -- Update title bar
+            title.Text = "📜 Scripts - " .. gameData.name
+            
+            -- Add back button
+            local backBtn = titleBar:FindFirstChild("RSQ_BackBtn")
+            if backBtn then
+                backBtn:Destroy()
+            end
+            
+            backBtn = Instance.new("TextButton", titleBar)
+            backBtn.Name = "RSQ_BackBtn"
+            backBtn.Size = UDim2.new(0, 100, 0, 30)
+            backBtn.Position = UDim2.new(0, 10, 0.5, -15)
+            backBtn.Text = "← Back to Games"
+            backBtn.Font = Enum.Font.GothamBold
+            backBtn.TextSize = 12
+            backBtn.TextColor3 = Color3.new(1, 1, 1)
+            backBtn.BackgroundColor3 = Color3.fromRGB(60, 65, 80)
+            Instance.new("UICorner", backBtn).CornerRadius = UDim.new(0, 6)
+            
+            backBtn.MouseButton1Click:Connect(function()
+                -- Return to games list
+                emptyFrame:Destroy()
+                scrollFrame.Visible = true
+                title.Text = "🎮 RSQ GAMES LIBRARY"
+            end)
+            
+            return  -- Exit the function since there are no scripts
+        end
+        
+        -- Create NEW scripts scrolling frame (only if there ARE scripts)
         local scriptsScroll = Instance.new("ScrollingFrame", contentFrame)
         scriptsScroll.Name = "RSQ_ScriptsScroll"
         scriptsScroll.Size = UDim2.new(1, 0, 1, 0)
@@ -693,124 +746,109 @@ local function showAdvancedGamesGUI()
             title.Text = "🎮 RSQ GAMES LIBRARY"
         end)
         
-        -- Add scripts
-        local scripts = gameData.scripts or {}
-        print("[RSQ] Showing " .. #scripts .. " scripts")
-        
-        if #scripts == 0 then
-            local emptyLabel = Instance.new("TextLabel", scriptsScroll)
-            emptyLabel.Size = UDim2.new(1, 0, 0, 100)
-            emptyLabel.Text = "No scripts available for this game."
-            emptyLabel.Font = Enum.Font.Gotham
-            emptyLabel.TextSize = 14
-            emptyLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
-            emptyLabel.BackgroundTransparency = 1
-            emptyLabel.TextWrapped = true
-            emptyLabel.LayoutOrder = 1
-        else
-            for index, scriptData in ipairs(scripts) do
-                if scriptData and scriptData.name and scriptData.url then
-                    print("[RSQ] Adding script:", scriptData.name)
-                    
-                    -- Script card
-                    local scriptCard = Instance.new("Frame", scriptsScroll)
-                    scriptCard.Size = UDim2.new(1, 0, 0, 100)
-                    scriptCard.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
-                    scriptCard.BackgroundTransparency = 0.3
-                    Instance.new("UICorner", scriptCard).CornerRadius = UDim.new(0, 8)
-                    scriptCard.LayoutOrder = index
-                    
-                    -- Script icon
-                    local scriptIcon = Instance.new("Frame", scriptCard)
-                    scriptIcon.Size = UDim2.new(0, 80, 0, 80)
-                    scriptIcon.Position = UDim2.new(0, 10, 0.5, -40)
-                    scriptIcon.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-                    Instance.new("UICorner", scriptIcon).CornerRadius = UDim.new(0, 6)
-                    
-                    local iconLabel = Instance.new("TextLabel", scriptIcon)
-                    iconLabel.Size = UDim2.new(1, 0, 1, 0)
-                    iconLabel.Text = "📜"
-                    iconLabel.Font = Enum.Font.GothamBold
-                    iconLabel.TextSize = 24
-                    iconLabel.TextColor3 = Color3.new(1, 1, 1)
-                    iconLabel.BackgroundTransparency = 1
-                    
-                    -- Script info
-                    local scriptInfo = Instance.new("Frame", scriptCard)
-                    scriptInfo.Size = UDim2.new(0.6, 0, 1, 0)
-                    scriptInfo.Position = UDim2.new(0, 100, 0, 0)
-                    scriptInfo.BackgroundTransparency = 1
-                    
-                    local scriptName = Instance.new("TextLabel", scriptInfo)
-                    scriptName.Size = UDim2.new(1, -10, 0, 30)
-                    scriptName.Position = UDim2.new(0, 10, 0, 10)
-                    scriptName.Text = scriptData.name
-                    scriptName.Font = Enum.Font.GothamBold
-                    scriptName.TextSize = 16
-                    scriptName.TextColor3 = Color3.new(1, 1, 1)
-                    scriptName.TextXAlignment = Enum.TextXAlignment.Left
-                    scriptName.BackgroundTransparency = 1
-                    
-                    local urlPreview = Instance.new("TextLabel", scriptInfo)
-                    urlPreview.Size = UDim2.new(1, -10, 0, 20)
-                    urlPreview.Position = UDim2.new(0, 10, 0, 40)
-                    urlPreview.Text = "URL: " .. string.sub(scriptData.url, 1, 30) .. "..."
-                    urlPreview.Font = Enum.Font.Gotham
-                    urlPreview.TextSize = 12
-                    urlPreview.TextColor3 = Color3.fromRGB(150, 150, 150)
-                    urlPreview.TextXAlignment = Enum.TextXAlignment.Left
-                    urlPreview.BackgroundTransparency = 1
-                    
-                    local addedByInfo = Instance.new("TextLabel", scriptInfo)
-                    addedByInfo.Size = UDim2.new(1, -10, 0, 20)
-                    addedByInfo.Position = UDim2.new(0, 10, 0, 60)
-                    addedByInfo.Text = "Added by: " .. (scriptData.addedBy or "Unknown")
-                    addedByInfo.Font = Enum.Font.Gotham
-                    addedByInfo.TextSize = 12
-                    addedByInfo.TextColor3 = Color3.fromRGB(0, 200, 255)
-                    addedByInfo.TextXAlignment = Enum.TextXAlignment.Left
-                    addedByInfo.BackgroundTransparency = 1
-                    
-                    -- Execute button
-                    local executeBtn = Instance.new("TextButton", scriptCard)
-                    executeBtn.Size = UDim2.new(0, 120, 0, 30)
-                    executeBtn.Position = UDim2.new(1, -140, 0.5, -15)
-                    executeBtn.Text = "⚡ Execute"
-                    executeBtn.Font = Enum.Font.GothamBold
-                    executeBtn.TextSize = 12
-                    executeBtn.TextColor3 = Color3.new(1, 1, 1)
-                    executeBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
-                    executeBtn.BackgroundTransparency = 0.2
-                    Instance.new("UICorner", executeBtn).CornerRadius = UDim.new(0, 6)
-                    
-                    executeBtn.MouseButton1Click:Connect(function()
-                        -- Check if player is in the right game
-                        if tostring(gameData.id) == tostring(PLACE_ID) then
-                            createNotify("Executing script: " .. scriptData.name, Color3.fromRGB(40, 200, 80))
-                            
-                            -- Execute the script
-                            task.spawn(function()
-                                local success, errorMsg = pcall(function()
-                                    local scriptContent = game:HttpGet(scriptData.url)
-                                    loadstring(scriptContent)()
-                                end)
-                                
-                                if not success then
-                                    createNotify("❌ Script failed: " .. errorMsg, Color3.fromRGB(255, 50, 50))
-                                end
+        -- Add scripts (only if there are scripts)
+        for index, scriptData in ipairs(scripts) do
+            if scriptData and scriptData.name and scriptData.url then
+                print("[RSQ] Adding script:", scriptData.name)
+                
+                -- Script card
+                local scriptCard = Instance.new("Frame", scriptsScroll)
+                scriptCard.Size = UDim2.new(1, 0, 0, 100)
+                scriptCard.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+                scriptCard.BackgroundTransparency = 0.3
+                Instance.new("UICorner", scriptCard).CornerRadius = UDim.new(0, 8)
+                scriptCard.LayoutOrder = index
+                
+                -- Script icon
+                local scriptIcon = Instance.new("Frame", scriptCard)
+                scriptIcon.Size = UDim2.new(0, 80, 0, 80)
+                scriptIcon.Position = UDim2.new(0, 10, 0.5, -40)
+                scriptIcon.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+                Instance.new("UICorner", scriptIcon).CornerRadius = UDim.new(0, 6)
+                
+                local iconLabel = Instance.new("TextLabel", scriptIcon)
+                iconLabel.Size = UDim2.new(1, 0, 1, 0)
+                iconLabel.Text = "📜"
+                iconLabel.Font = Enum.Font.GothamBold
+                iconLabel.TextSize = 24
+                iconLabel.TextColor3 = Color3.new(1, 1, 1)
+                iconLabel.BackgroundTransparency = 1
+                
+                -- Script info
+                local scriptInfo = Instance.new("Frame", scriptCard)
+                scriptInfo.Size = UDim2.new(0.6, 0, 1, 0)
+                scriptInfo.Position = UDim2.new(0, 100, 0, 0)
+                scriptInfo.BackgroundTransparency = 1
+                
+                local scriptName = Instance.new("TextLabel", scriptInfo)
+                scriptName.Size = UDim2.new(1, -10, 0, 30)
+                scriptName.Position = UDim2.new(0, 10, 0, 10)
+                scriptName.Text = scriptData.name
+                scriptName.Font = Enum.Font.GothamBold
+                scriptName.TextSize = 16
+                scriptName.TextColor3 = Color3.new(1, 1, 1)
+                scriptName.TextXAlignment = Enum.TextXAlignment.Left
+                scriptName.BackgroundTransparency = 1
+                
+                local urlPreview = Instance.new("TextLabel", scriptInfo)
+                urlPreview.Size = UDim2.new(1, -10, 0, 20)
+                urlPreview.Position = UDim2.new(0, 10, 0, 40)
+                urlPreview.Text = "URL: " .. string.sub(scriptData.url, 1, 30) .. "..."
+                urlPreview.Font = Enum.Font.Gotham
+                urlPreview.TextSize = 12
+                urlPreview.TextColor3 = Color3.fromRGB(150, 150, 150)
+                urlPreview.TextXAlignment = Enum.TextXAlignment.Left
+                urlPreview.BackgroundTransparency = 1
+                
+                local addedByInfo = Instance.new("TextLabel", scriptInfo)
+                addedByInfo.Size = UDim2.new(1, -10, 0, 20)
+                addedByInfo.Position = UDim2.new(0, 10, 0, 60)
+                addedByInfo.Text = "Added by: " .. (scriptData.addedBy or "Unknown")
+                addedByInfo.Font = Enum.Font.Gotham
+                addedByInfo.TextSize = 12
+                addedByInfo.TextColor3 = Color3.fromRGB(0, 200, 255)
+                addedByInfo.TextXAlignment = Enum.TextXAlignment.Left
+                addedByInfo.BackgroundTransparency = 1
+                
+                -- Execute button
+                local executeBtn = Instance.new("TextButton", scriptCard)
+                executeBtn.Size = UDim2.new(0, 120, 0, 30)
+                executeBtn.Position = UDim2.new(1, -140, 0.5, -15)
+                executeBtn.Text = "⚡ Execute"
+                executeBtn.Font = Enum.Font.GothamBold
+                executeBtn.TextSize = 12
+                executeBtn.TextColor3 = Color3.new(1, 1, 1)
+                executeBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+                executeBtn.BackgroundTransparency = 0.2
+                Instance.new("UICorner", executeBtn).CornerRadius = UDim.new(0, 6)
+                
+                executeBtn.MouseButton1Click:Connect(function()
+                    -- Check if player is in the right game
+                    if tostring(gameData.id) == tostring(PLACE_ID) then
+                        createNotify("Executing script: " .. scriptData.name, Color3.fromRGB(40, 200, 80))
+                        
+                        -- Execute the script
+                        task.spawn(function()
+                            local success, errorMsg = pcall(function()
+                                local scriptContent = game:HttpGet(scriptData.url)
+                                loadstring(scriptContent)()
                             end)
-                        else
-                            -- Not in the right game, show notification and teleport confirmation
-                            createNotify("❌ Cannot run script - Wrong Game ID", Color3.fromRGB(255, 140, 0))
                             
-                            -- Wait 1 second then show teleport confirmation
-                            task.wait(1)
-                            showTeleportConfirmation(gameData.id, scriptData.name)
-                        end
-                    end)
-                else
-                    print("[RSQ] Invalid script data:", scriptData)
-                end
+                            if not success then
+                                createNotify("❌ Script failed: " .. errorMsg, Color3.fromRGB(255, 50, 50))
+                            end
+                        end)
+                    else
+                        -- Not in the right game, show notification and teleport confirmation
+                        createNotify("❌ Cannot run script - Wrong Game ID", Color3.fromRGB(255, 140, 0))
+                        
+                        -- Wait 1 second then show teleport confirmation
+                        task.wait(1)
+                        showTeleportConfirmation(gameData.id, scriptData.name)
+                    end
+                end)
+            else
+                print("[RSQ] Invalid script data:", scriptData)
             end
         end
         
