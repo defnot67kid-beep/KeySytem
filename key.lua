@@ -9,6 +9,7 @@ local TweenService = game:GetService("TweenService")
 local TeleportService = game:GetService("TeleportService")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
 local player = Players.LocalPlayer
 local USER_ID = tostring(player.UserId)
 local USER_NAME = player.Name
@@ -43,6 +44,7 @@ local CachedData = nil -- Global cache for instant local validation
 local GamesList = {} -- Store games data
 local IsGuiOpen = false -- Track if GUI is currently open
 local OpenButton = nil -- Reference to the open button
+local CurrentGUI = nil -- Reference to current GUI
 
 -- Function to get data folder
 local function getDataFolder()
@@ -118,41 +120,111 @@ end
 
 -- Function to create open button
 local function createOpenButton()
+    -- Remove existing open button if it exists
     if OpenButton and OpenButton.Parent then
         OpenButton:Destroy()
+        OpenButton = nil
     end
     
     OpenButton = Instance.new("ScreenGui")
     OpenButton.Name = "RSQ_OpenButton"
     OpenButton.IgnoreGuiInset = true
     OpenButton.ResetOnSpawn = false
-    OpenButton.Parent = player:WaitForChild("PlayerGui")
+    OpenButton.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    OpenButton.Parent = CoreGui
     
     local button = Instance.new("TextButton", OpenButton)
     button.Name = "ToggleButton"
-    button.Size = UDim2.new(0, 50, 0, 50)
-    button.Position = UDim2.new(1, -60, 0, 20)
+    button.Size = UDim2.new(0, 60, 0, 60)
+    button.Position = UDim2.new(1, -70, 0, 20)
     button.Text = "🔓"
     button.Font = Enum.Font.GothamBold
-    button.TextSize = 20
+    button.TextSize = 24
     button.TextColor3 = Color3.new(1, 1, 1)
     button.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
     button.BackgroundTransparency = 0.2
+    button.BorderSizePixel = 0
     Instance.new("UICorner", button).CornerRadius = UDim.new(1, 0)
     
-    -- Make draggable for mobile
-    makeDraggable(OpenButton, button)
+    -- Add shadow
+    local shadow = Instance.new("UIStroke", button)
+    shadow.Color = Color3.fromRGB(0, 0, 0)
+    shadow.Transparency = 0.5
+    shadow.Thickness = 2
+    
+    -- Make draggable
+    local dragging = false
+    local dragInput
+    local dragStart
+    local startPos
+    
+    local function update(input)
+        if dragging then
+            local delta = input.Position - dragStart
+            button.Position = UDim2.new(
+                startPos.X.Scale, 
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale, 
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end
+    
+    button.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or 
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = button.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    button.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or 
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and (input == dragInput or input.UserInputType == Enum.UserInputType.Touch) then
+            update(input)
+        end
+    end)
     
     button.MouseButton1Click:Connect(function()
         if IsGuiOpen then
-            -- Close existing GUI
-            local existingGui = player.PlayerGui:FindFirstChild("RSQ_KeySystem") or 
-                               player.PlayerGui:FindFirstChild("RSQ_AdvancedGamesGUI")
-            if existingGui then
-                existingGui:Destroy()
-                IsGuiOpen = false
-                button.Text = "🔓"
+            -- Close all RSQ GUIs
+            local existingGuis = {}
+            
+            -- Check in CoreGui
+            for _, gui in pairs(CoreGui:GetChildren()) do
+                if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
+                    gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications")) then
+                    gui:Destroy()
+                end
             end
+            
+            -- Check in PlayerGui
+            if player.PlayerGui then
+                for _, gui in pairs(player.PlayerGui:GetChildren()) do
+                    if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
+                        gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications")) then
+                        gui:Destroy()
+                    end
+                end
+            end
+            
+            IsGuiOpen = false
+            CurrentGUI = nil
+            button.Text = "🔓"
+            button.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
         else
             -- Open appropriate GUI based on key status
             if KeyActive and CurrentKey then
@@ -162,17 +234,30 @@ local function createOpenButton()
             end
             IsGuiOpen = true
             button.Text = "🔒"
+            button.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
         end
     end)
     
-    -- Add animation
+    -- Add hover effects
     button.MouseEnter:Connect(function()
-        TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 55, 0, 55)}):Play()
+        if not dragging then
+            TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 65, 0, 65)}):Play()
+        end
     end)
     
     button.MouseLeave:Connect(function()
-        TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 50, 0, 50)}):Play()
+        if not dragging then
+            TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 60, 0, 60)}):Play()
+        end
     end)
+    
+    -- Animation on creation
+    button.Position = UDim2.new(1, 100, 0, 20)
+    TweenService:Create(button, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Position = UDim2.new(1, -70, 0, 20)
+    }):Play()
+    
+    return OpenButton
 end
 
 -- Enhanced function to make frame draggable for mobile and desktop
@@ -401,18 +486,21 @@ local function kickBanned(reason)
 end
 
 local function createNotify(msg, color)
-    local notifyGui = Instance.new("ScreenGui", player.PlayerGui)
+    local notifyGui = Instance.new("ScreenGui", CoreGui)
     notifyGui.Name = "RSQ_Notifications_" .. tostring(math.random(1, 1000))
+    notifyGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     
     local frame = Instance.new("Frame", notifyGui)
     frame.Size = UDim2.new(0, 300, 0, 60)
     frame.Position = UDim2.new(1, 10, 0.8, 0)
     frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    frame.BorderSizePixel = 0
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
     
     local accent = Instance.new("Frame", frame)
     accent.Size = UDim2.new(0, 5, 1, 0)
     accent.BackgroundColor3 = color
+    accent.BorderSizePixel = 0
     Instance.new("UICorner", accent).CornerRadius = UDim.new(0, 2)
 
     local label = Instance.new("TextLabel", frame)
@@ -437,18 +525,21 @@ end
 
 -- Function to show teleport confirmation
 local function showTeleportConfirmation(gameId, gameName)
-    local teleportGui = Instance.new("ScreenGui", player.PlayerGui)
+    local teleportGui = Instance.new("ScreenGui", CoreGui)
     teleportGui.Name = "RSQ_TeleportConfirm"
+    teleportGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     
     local overlay = Instance.new("Frame", teleportGui)
     overlay.Size = UDim2.new(1, 0, 1, 0)
     overlay.BackgroundColor3 = Color3.new(0, 0, 0)
     overlay.BackgroundTransparency = 0.7
+    overlay.BorderSizePixel = 0
     
     local confirmFrame = Instance.new("Frame", teleportGui)
     confirmFrame.Size = UDim2.new(0, 350, 0, 200)
     confirmFrame.Position = UDim2.new(0.5, -175, 0.5, -100)
     confirmFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
+    confirmFrame.BorderSizePixel = 0
     Instance.new("UICorner", confirmFrame).CornerRadius = UDim.new(0, 12)
     
     -- Make draggable
@@ -459,6 +550,7 @@ local function showTeleportConfirmation(gameId, gameName)
     titleBar.Size = UDim2.new(1, 0, 0, 30)
     titleBar.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
     titleBar.BackgroundTransparency = 0.3
+    titleBar.BorderSizePixel = 0
     Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
     
     local title = Instance.new("TextLabel", titleBar)
@@ -480,6 +572,7 @@ local function showTeleportConfirmation(gameId, gameName)
     closeBtn.TextSize = 14
     closeBtn.TextColor3 = Color3.new(1, 1, 1)
     closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    closeBtn.BorderSizePixel = 0
     Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
     
     closeBtn.MouseButton1Click:Connect(function()
@@ -506,6 +599,7 @@ local function showTeleportConfirmation(gameId, gameName)
     yesBtn.TextSize = 14
     yesBtn.TextColor3 = Color3.new(1, 1, 1)
     yesBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+    yesBtn.BorderSizePixel = 0
     Instance.new("UICorner", yesBtn).CornerRadius = UDim.new(0, 8)
     
     -- No button
@@ -517,6 +611,7 @@ local function showTeleportConfirmation(gameId, gameName)
     noBtn.TextSize = 14
     noBtn.TextColor3 = Color3.new(1, 1, 1)
     noBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    noBtn.BorderSizePixel = 0
     Instance.new("UICorner", noBtn).CornerRadius = UDim.new(0, 8)
     
     -- Button events
@@ -577,13 +672,14 @@ end
 --==================================================--
 local function showAdvancedGamesGUI()
     -- Prevent duplicate GUI
-    if player.PlayerGui:FindFirstChild("RSQ_AdvancedGamesGUI") then
-        return
+    if CurrentGUI and CurrentGUI.Parent then
+        CurrentGUI:Destroy()
     end
     
     IsGuiOpen = true
     if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
         OpenButton.ToggleButton.Text = "🔒"
+        OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
     end
     
     print("[RSQ] Showing Advanced Games GUI")
@@ -596,7 +692,9 @@ local function showAdvancedGamesGUI()
     gui.Name = "RSQ_AdvancedGamesGUI"
     gui.IgnoreGuiInset = true
     gui.ResetOnSpawn = false
-    gui.Parent = player:WaitForChild("PlayerGui")
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    gui.Parent = CoreGui
+    CurrentGUI = gui
 
     -- Main container (smaller size)
     local mainFrame = Instance.new("Frame", gui)
@@ -648,14 +746,17 @@ local function showAdvancedGamesGUI()
     closeBtn.TextSize = 14
     closeBtn.TextColor3 = Color3.new(1, 1, 1)
     closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    closeBtn.BorderSizePixel = 0
     Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
     
     closeBtn.MouseButton1Click:Connect(function()
         IsGuiOpen = false
         if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
             OpenButton.ToggleButton.Text = "🔓"
+            OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
         end
         gui:Destroy()
+        CurrentGUI = nil
     end)
 
     -- Content area
@@ -743,6 +844,7 @@ local function showAdvancedGamesGUI()
                     scriptCard.Size = UDim2.new(1, 0, 0, 70) -- Smaller card
                     scriptCard.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
                     scriptCard.BackgroundTransparency = 0.3
+                    scriptCard.BorderSizePixel = 0
                     Instance.new("UICorner", scriptCard).CornerRadius = UDim.new(0, 8)
                     scriptCard.LayoutOrder = index
                     
@@ -795,6 +897,7 @@ local function showAdvancedGamesGUI()
                     executeBtn.TextColor3 = Color3.new(1, 1, 1)
                     executeBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
                     executeBtn.BackgroundTransparency = 0.2
+                    executeBtn.BorderSizePixel = 0
                     Instance.new("UICorner", executeBtn).CornerRadius = UDim.new(0, 6)
                     
                     -- Capture script data for the closure
@@ -896,6 +999,7 @@ local function showAdvancedGamesGUI()
                 gameCard.Size = UDim2.new(1, 0, 0, 70) -- Smaller card
                 gameCard.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
                 gameCard.BackgroundTransparency = 0.3
+                gameCard.BorderSizePixel = 0
                 Instance.new("UICorner", gameCard).CornerRadius = UDim.new(0, 8)
                 
                 -- Game info (compact layout)
@@ -948,6 +1052,7 @@ local function showAdvancedGamesGUI()
                 scriptsBtn.TextColor3 = Color3.new(1, 1, 1)
                 scriptsBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
                 scriptsBtn.BackgroundTransparency = 0.2
+                scriptsBtn.BorderSizePixel = 0
                 Instance.new("UICorner", scriptsBtn).CornerRadius = UDim.new(0, 6)
                 
                 -- Capture game data in a local variable for the closure
@@ -991,6 +1096,7 @@ local function showAdvancedGamesGUI()
     backBtn.TextColor3 = Color3.new(1, 1, 1)
     backBtn.BackgroundColor3 = Color3.fromRGB(60, 65, 80)
     backBtn.Visible = false
+    backBtn.BorderSizePixel = 0
     Instance.new("UICorner", backBtn).CornerRadius = UDim.new(0, 6)
     
     backBtn.MouseButton1Click:Connect(function()
@@ -1015,6 +1121,7 @@ local function showAdvancedGamesGUI()
     refreshBtn.TextColor3 = Color3.new(1, 1, 1)
     refreshBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
     refreshBtn.BackgroundTransparency = 0.2
+    refreshBtn.BorderSizePixel = 0
     Instance.new("UICorner", refreshBtn).CornerRadius = UDim.new(0, 6)
     
     refreshBtn.MouseButton1Click:Connect(function()
@@ -1039,26 +1146,30 @@ end
 --==================================================--
 local function showKeyGUI()
     -- Prevent duplicate GUI
-    if player.PlayerGui:FindFirstChild("RSQ_KeySystem") then
-        return
+    if CurrentGUI and CurrentGUI.Parent then
+        CurrentGUI:Destroy()
     end
     
     IsGuiOpen = true
     if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
         OpenButton.ToggleButton.Text = "🔒"
+        OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
     end
     
     local gui = Instance.new("ScreenGui")
     gui.Name = "RSQ_KeySystem"
     gui.IgnoreGuiInset = true
     gui.ResetOnSpawn = false
-    gui.Parent = player:WaitForChild("PlayerGui")
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    gui.Parent = CoreGui
+    CurrentGUI = gui
 
     local card = Instance.new("Frame", gui)
     card.Size = UDim2.new(0, 350, 0, 250) -- Smaller
     card.Position = UDim2.new(0.5, -175, 0.5, -125)
     card.BackgroundColor3 = Color3.fromRGB(20, 24, 36)
     card.BackgroundTransparency = 1
+    card.BorderSizePixel = 0
     Instance.new("UICorner", card).CornerRadius = UDim.new(0, 12)
     
     -- Make draggable
@@ -1069,6 +1180,7 @@ local function showKeyGUI()
     titleBar.Size = UDim2.new(1, 0, 0, 35)
     titleBar.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
     titleBar.BackgroundTransparency = 0.3
+    titleBar.BorderSizePixel = 0
     Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
     
     local title = Instance.new("TextLabel", titleBar)
@@ -1089,14 +1201,17 @@ local function showKeyGUI()
     closeBtn.TextSize = 12
     closeBtn.TextColor3 = Color3.new(1, 1, 1)
     closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    closeBtn.BorderSizePixel = 0
     Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
     
     closeBtn.MouseButton1Click:Connect(function()
         IsGuiOpen = false
         if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
             OpenButton.ToggleButton.Text = "🔓"
+            OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
         end
         gui:Destroy()
+        CurrentGUI = nil
     end)
 
     local input = Instance.new("TextBox", card)
@@ -1107,6 +1222,7 @@ local function showKeyGUI()
     input.TextSize = 13
     input.TextColor3 = Color3.new(1,1,1)
     input.BackgroundColor3 = Color3.fromRGB(14,18,30)
+    input.BorderSizePixel = 0
     Instance.new("UICorner", input).CornerRadius = UDim.new(0,8)
 
     local unlock = Instance.new("TextButton", card)
@@ -1117,6 +1233,7 @@ local function showKeyGUI()
     unlock.TextSize = 13
     unlock.TextColor3 = Color3.new(1,1,1)
     unlock.BackgroundColor3 = Color3.fromRGB(0,140,255)
+    unlock.BorderSizePixel = 0
     Instance.new("UICorner", unlock).CornerRadius = UDim.new(0,8)
 
     local getKey = Instance.new("TextButton", card)
@@ -1127,6 +1244,7 @@ local function showKeyGUI()
     getKey.TextSize = 12
     getKey.TextColor3 = Color3.new(1,1,1)
     getKey.BackgroundColor3 = Color3.fromRGB(255,140,0)
+    getKey.BorderSizePixel = 0
     Instance.new("UICorner", getKey).CornerRadius = UDim.new(0,8)
 
     local status = Instance.new("TextLabel", card)
@@ -1169,6 +1287,7 @@ local function showKeyGUI()
             TweenService:Create(card, TweenInfo.new(0.3), {BackgroundTransparency = 1, Size = UDim2.new(0,0,0,0)}):Play()
             task.delay(0.3, function() 
                 gui:Destroy() 
+                CurrentGUI = nil
                 IsGuiOpen = false
                 showAdvancedGamesGUI()
             end)
@@ -1203,13 +1322,13 @@ end
 -- INITIALIZE
 --==================================================--
 -- Check for saved key first
-local hasSavedKey = loadKeyStatus()
-if hasSavedKey then
-    -- Auto-open advanced GUI if key is saved and valid
-    createNotify("Loading saved key...", Color3.fromRGB(79, 124, 255))
-    
-    -- Validate the saved key
-    task.spawn(function()
+task.spawn(function()
+    local hasSavedKey = loadKeyStatus()
+    if hasSavedKey then
+        -- Auto-open advanced GUI if key is saved and valid
+        createNotify("Loading saved key...", Color3.fromRGB(79, 124, 255))
+        
+        -- Validate the saved key
         local ok, res = validate(CurrentKey, false)
         if ok then
             createNotify("✅ Key validated successfully!", Color3.fromRGB(40, 200, 80))
@@ -1235,12 +1354,12 @@ if hasSavedKey then
             createOpenButton()
             showKeyGUI()
         end
-    end)
-else
-    -- No saved key, show initial GUI
-    createOpenButton()
-    showKeyGUI()
-end
+    else
+        -- No saved key, show initial GUI
+        createOpenButton()
+        showKeyGUI()
+    end
+end)
 
 --==================================================--
 -- SECURITY LOOPS (HIGH FREQUENCY)
@@ -1258,11 +1377,15 @@ task.spawn(function()
                 clearKeyStatus()
                 
                 -- Close any open GUIs
-                local existingGui = player.PlayerGui:FindFirstChild("RSQ_KeySystem") or 
-                                   player.PlayerGui:FindFirstChild("RSQ_AdvancedGamesGUI")
-                if existingGui then
-                    existingGui:Destroy()
-                    IsGuiOpen = false
+                if CurrentGUI and CurrentGUI.Parent then
+                    CurrentGUI:Destroy()
+                    CurrentGUI = nil
+                end
+                
+                IsGuiOpen = false
+                if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
+                    OpenButton.ToggleButton.Text = "🔓"
+                    OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
                 end
                 
                 -- Show key GUI again
