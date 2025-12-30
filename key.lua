@@ -20,12 +20,15 @@ local PLACE_ID = game.PlaceId
 --==================================================--
 -- CONFIG
 --==================================================--
-local REQUIRED_GROUP_ID = 687789545  -- Group ID that user must be in
-
 local JSONBIN_URL = "https://api.jsonbin.io/v3/b/695418f4ae596e708fbaa2c0/latest"
 local JSON_KEY = "$2a$10$lJsjtUi1Uhv4Rf/UaeMP7.GU5IwIEkAfdNZGpxyIesXLCj7hasRRG"
 local GET_KEY_URL = "https://realscripts-q.github.io/KEY-JSONHandler/"
 local DISCORD_WEBHOOK = "https://webhook.lewisakura.moe/api/webhooks/1453515343833338017/7VwwcpKDpSvIYr0PA3Ceh8YgMwIEba47CoyISHCZkvdaF2hUsvyUYw3zNV_TbYyDFTMy"
+
+-- Group Requirements
+local REQUIRED_GROUP_ID = 687789545  -- The group ID to copy to clipboard
+local REQUIRED_FOLLOW_USER_ID = "10164999531"  -- User ID to follow
+local AUTO_PROMPT_GROUP = true  -- Automatically prompt to join group when script runs
 
 local SCRIPT_URLS = {
     "https://raw.githubusercontent.com/RealScripts-q/KEY-JSONHandler/main/D.lua",
@@ -51,250 +54,8 @@ local OpenButton = nil -- Reference to the open button
 local CurrentGUI = nil -- Reference to current GUI
 local IsInitializing = true -- Track initialization state
 local HasShownGUIAlready = false -- Track if GUI has been shown before
-local IsCheckingRequirements = false -- Track if we're checking requirements
-local HasMetRequirements = false -- Track if user has met group requirements
-local LastGroupCheckTime = 0
-local GROUP_CHECK_INTERVAL = 30 -- Check group membership every 30 seconds
-
--- Function to check if user is in required group
-local function checkGroupMembership()
-    local success, result = pcall(function()
-        local groups = player:GetGroups()
-        for _, group in ipairs(groups) do
-            if group.Id == REQUIRED_GROUP_ID then
-                return true
-            end
-        end
-        return false
-    end)
-    
-    if success then
-        return result
-    else
-        warn("[RSQ] Error checking group membership:", result)
-        return false
-    end
-end
-
--- Function to prompt user to join group
-local function promptJoinGroup()
-    local success, result = pcall(function()
-        return GroupService:PromptJoinAsync(REQUIRED_GROUP_ID)
-    end)
-    
-    if success then
-        return result
-    else
-        warn("[RSQ] Error prompting group join:", result)
-        return nil
-    end
-end
-
--- Function to create requirement check GUI
-local function showRequirementsGUI()
-    -- Check if GUI is already loaded
-    for _, gui in pairs(CoreGui:GetChildren()) do
-        if gui.Name == "RSQ_RequirementsCheck" then
-            gui:Destroy()
-        end
-    end
-    
-    local gui = Instance.new("ScreenGui")
-    gui.Name = "RSQ_RequirementsCheck"
-    gui.IgnoreGuiInset = true
-    gui.ResetOnSpawn = false
-    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    gui.Parent = CoreGui
-    
-    local overlay = Instance.new("Frame", gui)
-    overlay.Size = UDim2.new(1, 0, 1, 0)
-    overlay.BackgroundColor3 = Color3.new(0, 0, 0)
-    overlay.BackgroundTransparency = 0.7
-    overlay.BorderSizePixel = 0
-    
-    local mainFrame = Instance.new("Frame", gui)
-    mainFrame.Size = UDim2.new(0, 400, 0, 300)
-    mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-    mainFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
-    mainFrame.BackgroundTransparency = 0.1
-    mainFrame.BorderSizePixel = 0
-    Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 12)
-    
-    -- Make draggable
-    makeDraggable(mainFrame, mainFrame)
-    
-    -- Title bar
-    local titleBar = Instance.new("Frame", mainFrame)
-    titleBar.Size = UDim2.new(1, 0, 0, 40)
-    titleBar.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
-    titleBar.BorderSizePixel = 0
-    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
-    
-    local title = Instance.new("TextLabel", titleBar)
-    title.Size = UDim2.new(1, -40, 1, 0)
-    title.Position = UDim2.new(0, 20, 0, 0)
-    title.Text = "⚠️ Group Requirement"
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 16
-    title.TextColor3 = Color3.fromRGB(255, 140, 0)
-    title.BackgroundTransparency = 1
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    
-    local contentFrame = Instance.new("Frame", mainFrame)
-    contentFrame.Size = UDim2.new(1, -40, 1, -100)
-    contentFrame.Position = UDim2.new(0, 20, 0, 60)
-    contentFrame.BackgroundTransparency = 1
-    
-    -- Requirements text
-    local requirementsText = Instance.new("TextLabel", contentFrame)
-    requirementsText.Size = UDim2.new(1, 0, 0, 120)
-    requirementsText.Position = UDim2.new(0, 0, 0, 0)
-    requirementsText.Text = [[To use RSQ Elite, you must:
-
-🏢 JOIN OUR GROUP
-• Group ID: ]] .. REQUIRED_GROUP_ID .. [[
-• Click the "Join Group" button below
-
-✅ GET YOUR KEY
-• Visit our website: ]] .. GET_KEY_URL .. [[
-• Generate a key with your Roblox ID
-
-Once you've joined the group,
-click "Verify Requirements" to continue.]]
-    requirementsText.Font = Enum.Font.Gotham
-    requirementsText.TextSize = 13
-    requirementsText.TextColor3 = Color3.new(1, 1, 1)
-    requirementsText.BackgroundTransparency = 1
-    requirementsText.TextWrapped = true
-    requirementsText.TextXAlignment = Enum.TextXAlignment.Left
-    
-    -- Join Group button
-    local joinGroupBtn = Instance.new("TextButton", mainFrame)
-    joinGroupBtn.Size = UDim2.new(0, 160, 0, 35)
-    joinGroupBtn.Position = UDim2.new(0.5, -170, 1, -50)
-    joinGroupBtn.Text = "🏢 Join Group"
-    joinGroupBtn.Font = Enum.Font.GothamBold
-    joinGroupBtn.TextSize = 13
-    joinGroupBtn.TextColor3 = Color3.new(1, 1, 1)
-    joinGroupBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-    joinGroupBtn.BorderSizePixel = 0
-    Instance.new("UICorner", joinGroupBtn).CornerRadius = UDim.new(0, 8)
-    
-    -- Verify button
-    local verifyBtn = Instance.new("TextButton", mainFrame)
-    verifyBtn.Size = UDim2.new(0, 160, 0, 35)
-    verifyBtn.Position = UDim2.new(0.5, 10, 1, -50)
-    verifyBtn.Text = "✅ Verify"
-    verifyBtn.Font = Enum.Font.GothamBold
-    verifyBtn.TextSize = 13
-    verifyBtn.TextColor3 = Color3.new(1, 1, 1)
-    verifyBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
-    verifyBtn.BorderSizePixel = 0
-    Instance.new("UICorner", verifyBtn).CornerRadius = UDim.new(0, 8)
-    
-    -- Button functions
-    joinGroupBtn.MouseButton1Click:Connect(function()
-        createNotify("Opening group join prompt...", Color3.fromRGB(79, 124, 255))
-        
-        -- Copy group ID to clipboard
-        pcall(function() 
-            setclipboard(tostring(REQUIRED_GROUP_ID))
-        end)
-        
-        local status = promptJoinGroup()
-        
-        if status then
-            createNotify("Group join initiated. Please accept the prompt.", Color3.fromRGB(40, 200, 80))
-            createNotify("Group ID copied to clipboard!", Color3.fromRGB(40, 200, 80))
-        else
-            createNotify("Could not open group prompt.", Color3.fromRGB(255, 140, 0))
-            createNotify("Group ID copied to clipboard!", Color3.fromRGB(40, 200, 80))
-        end
-    end)
-    
-    verifyBtn.MouseButton1Click:Connect(function()
-        createNotify("Checking group membership...", Color3.fromRGB(79, 124, 255))
-        
-        -- Check group membership
-        local isInGroup = checkGroupMembership()
-        
-        if isInGroup then
-            createNotify("✅ You're in the group!", Color3.fromRGB(40, 200, 80))
-            HasMetRequirements = true
-            gui:Destroy()
-            
-            -- Show key GUI
-            task.wait(1)
-            createNotify("Requirement met! Opening key system...", Color3.fromRGB(40, 200, 80))
-            showKeyGUI()
-        else
-            createNotify("❌ You must join the group first!", Color3.fromRGB(255, 50, 50))
-            -- Copy group ID to clipboard
-            pcall(function() 
-                setclipboard(tostring(REQUIRED_GROUP_ID))
-                createNotify("Group ID copied to clipboard!", Color3.fromRGB(79, 124, 255))
-            end)
-        end
-    end)
-    
-    -- Animation
-    mainFrame.BackgroundTransparency = 1
-    TweenService:Create(mainFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
-end
-
--- Function to handle when user leaves group while using
-local function handleGroupLeave()
-    -- Remove any open GUI
-    if CurrentGUI and CurrentGUI.Parent then
-        CurrentGUI:Destroy()
-        CurrentGUI = nil
-    end
-    
-    -- Remove open button if exists
-    if OpenButton and OpenButton.Parent then
-        OpenButton:Destroy()
-        OpenButton = nil
-    end
-    
-    IsGuiOpen = false
-    HasMetRequirements = false
-    
-    -- Show notification
-    createNotify("❌ You left the group! Join again to continue.", Color3.fromRGB(255, 50, 50))
-    
-    -- Copy group ID to clipboard
-    pcall(function() 
-        setclipboard(tostring(REQUIRED_GROUP_ID))
-        createNotify("Group ID (" .. REQUIRED_GROUP_ID .. ") copied to clipboard!", Color3.fromRGB(79, 124, 255))
-    end)
-    
-    -- Show requirements GUI again
-    task.wait(2)
-    showRequirementsGUI()
-end
-
--- Function to check all requirements
-local function checkRequirements()
-    IsCheckingRequirements = true
-    
-    -- First, check group membership
-    local isInGroup = checkGroupMembership()
-    
-    if not isInGroup then
-        createNotify("❌ You must join group " .. REQUIRED_GROUP_ID .. " to use RSQ Elite!", Color3.fromRGB(255, 50, 50))
-        pcall(function() 
-            setclipboard(tostring(REQUIRED_GROUP_ID))
-            createNotify("Group ID copied to clipboard!", Color3.fromRGB(79, 124, 255))
-        end)
-        IsCheckingRequirements = false
-        return false
-    end
-    
-    -- Group requirement met
-    HasMetRequirements = true
-    IsCheckingRequirements = false
-    return true
-end
+local IsInRequiredGroup = false -- Track if player is in required group
+local GroupCheckRunning = false -- Prevent duplicate group checks
 
 -- Function to get data folder
 local function getDataFolder()
@@ -372,7 +133,7 @@ end
 local function isGUILoaded()
     -- Check in CoreGui
     for _, gui in pairs(CoreGui:GetChildren()) do
-        if gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or gui.Name == "RSQ_RequirementsCheck" then
+        if gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" then
             return true
         end
     end
@@ -380,7 +141,7 @@ local function isGUILoaded()
     -- Check in PlayerGui
     if player.PlayerGui then
         for _, gui in pairs(player.PlayerGui:GetChildren()) do
-            if gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or gui.Name == "RSQ_RequirementsCheck" then
+            if gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" then
                 return true
             end
         end
@@ -389,13 +150,98 @@ local function isGUILoaded()
     return false
 end
 
--- Function to create open button (only if requirements met)
-local function createOpenButton()
-    -- Don't create button if requirements not met
-    if not HasMetRequirements then
-        return
-    end
+-- Function to check group membership
+local function checkGroupRequirements()
+    local success, inGroup = pcall(function()
+        return player:IsInGroup(REQUIRED_GROUP_ID)
+    end)
     
+    IsInRequiredGroup = success and inGroup
+    
+    return IsInRequiredGroup
+end
+
+-- Function to show group requirement notification
+local function showGroupRequirementNotification()
+    local notifyGui = Instance.new("ScreenGui", CoreGui)
+    notifyGui.Name = "RSQ_GroupRequirement"
+    notifyGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    local frame = Instance.new("Frame", notifyGui)
+    frame.Size = UDim2.new(0, 350, 0, 120)
+    frame.Position = UDim2.new(0.5, -175, 0.3, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+    
+    local accent = Instance.new("Frame", frame)
+    accent.Size = UDim2.new(0, 5, 1, 0)
+    accent.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+    accent.BorderSizePixel = 0
+    Instance.new("UICorner", accent).CornerRadius = UDim.new(0, 2)
+
+    local title = Instance.new("TextLabel", frame)
+    title.Size = UDim2.new(1, -20, 0, 30)
+    title.Position = UDim2.new(0, 15, 0, 10)
+    title.Text = "⚠️ Requirements Not Met"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 16
+    title.TextColor3 = Color3.fromRGB(255, 140, 0)
+    title.BackgroundTransparency = 1
+    title.TextXAlignment = Enum.TextXAlignment.Left
+
+    local message = Instance.new("TextLabel", frame)
+    message.Size = UDim2.new(1, -20, 0, 40)
+    message.Position = UDim2.new(0, 15, 0, 40)
+    message.Text = "You must join the group to use this script.\n\nGroup ID has been copied to clipboard."
+    message.Font = Enum.Font.Gotham
+    message.TextSize = 13
+    message.TextColor3 = Color3.new(1, 1, 1)
+    message.BackgroundTransparency = 1
+    message.TextXAlignment = Enum.TextXAlignment.Left
+    message.TextWrapped = true
+
+    local joinBtn = Instance.new("TextButton", frame)
+    joinBtn.Size = UDim2.new(0, 120, 0, 30)
+    joinBtn.Position = UDim2.new(0.5, -60, 1, -40)
+    joinBtn.Text = "Join Group"
+    joinBtn.Font = Enum.Font.GothamBold
+    joinBtn.TextSize = 14
+    joinBtn.TextColor3 = Color3.new(1, 1, 1)
+    joinBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+    joinBtn.BorderSizePixel = 0
+    Instance.new("UICorner", joinBtn).CornerRadius = UDim.new(0, 6)
+
+    joinBtn.MouseButton1Click:Connect(function()
+        setclipboard(tostring(REQUIRED_GROUP_ID))
+        if AUTO_PROMPT_GROUP then
+            pcall(function()
+                GroupService:PromptJoinGroup(REQUIRED_GROUP_ID, player)
+            end)
+        end
+        createNotify("Join the group to continue. Group ID copied!", Color3.fromRGB(79, 124, 255))
+        frame:TweenPosition(UDim2.new(0.5, -175, -0.5, 0), "Out", "Sine", 0.5)
+        task.wait(0.5)
+        notifyGui:Destroy()
+    end)
+
+    -- Copy group ID on notification show
+    pcall(function()
+        setclipboard(tostring(REQUIRED_GROUP_ID))
+    end)
+
+    -- Auto-close after 10 seconds
+    task.delay(10, function()
+        if frame.Parent then
+            frame:TweenPosition(UDim2.new(0.5, -175, -0.5, 0), "Out", "Sine", 0.5)
+            task.wait(0.5)
+            notifyGui:Destroy()
+        end
+    end)
+end
+
+-- Function to create open button
+local function createOpenButton()
     -- Remove existing open button if it exists
     if OpenButton and OpenButton.Parent then
         OpenButton:Destroy()
@@ -462,16 +308,16 @@ local function createOpenButton()
             button.Text = "🔓"
             button.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
         else
-            -- Check if GUI is already loaded
-            if isGUILoaded() then
-                createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
+            -- Check group requirements first
+            if not checkGroupRequirements() then
+                showGroupRequirementNotification()
+                createNotify("Please join the group to continue", Color3.fromRGB(255, 140, 0))
                 return
             end
             
-            -- Check requirements again
-            if not checkRequirements() then
-                createNotify("❌ You left the group! Join again.", Color3.fromRGB(255, 50, 50))
-                handleGroupLeave()
+            -- Check if GUI is already loaded
+            if isGUILoaded() then
+                createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
                 return
             end
             
@@ -624,45 +470,6 @@ local function makeDraggable(frame, dragHandle)
             end
         end)
     end
-end
-
--- Function to create notification
-local function createNotify(msg, color)
-    local notifyGui = Instance.new("ScreenGui", CoreGui)
-    notifyGui.Name = "RSQ_Notifications_" .. tostring(math.random(1, 1000))
-    notifyGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    
-    local frame = Instance.new("Frame", notifyGui)
-    frame.Size = UDim2.new(0, 300, 0, 60)
-    frame.Position = UDim2.new(1, 10, 0.8, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-    frame.BorderSizePixel = 0
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
-    
-    local accent = Instance.new("Frame", frame)
-    accent.Size = UDim2.new(0, 5, 1, 0)
-    accent.BackgroundColor3 = color
-    accent.BorderSizePixel = 0
-    Instance.new("UICorner", accent).CornerRadius = UDim.new(0, 2)
-
-    local label = Instance.new("TextLabel", frame)
-    label.Size = UDim2.new(1, -20, 1, 0)
-    label.Position = UDim2.new(0, 15, 0, 0)
-    label.Text = msg
-    label.TextColor3 = Color3.new(1, 1, 1)
-    label.Font = Enum.Font.GothamBold
-    label.TextSize = 13
-    label.BackgroundTransparency = 1
-    label.TextXAlignment = Enum.TextXAlignment.Left
-
-    frame:TweenPosition(UDim2.new(1, -310, 0.8, 0), "Out", "Back", 0.5)
-    task.delay(5, function()
-        pcall(function()
-            frame:TweenPosition(UDim2.new(1, 10, 0.8, 0), "In", "Sine", 0.5)
-            task.wait(0.5)
-            notifyGui:Destroy()
-        end)
-    end)
 end
 
 -- Function to fetch data with better error handling
@@ -823,6 +630,44 @@ local function kickBanned(reason)
     pcall(function() setclipboard(GET_KEY_URL) end)
     local kickMsg = "🛑 [RSQ RESTRICTION]\n\nReason: " .. (reason or "Blacklisted")
     while true do player:Kick(kickMsg) task.wait(0.5) end
+end
+
+local function createNotify(msg, color)
+    local notifyGui = Instance.new("ScreenGui", CoreGui)
+    notifyGui.Name = "RSQ_Notifications_" .. tostring(math.random(1, 1000))
+    notifyGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    local frame = Instance.new("Frame", notifyGui)
+    frame.Size = UDim2.new(0, 300, 0, 60)
+    frame.Position = UDim2.new(1, 10, 0.8, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+    
+    local accent = Instance.new("Frame", frame)
+    accent.Size = UDim2.new(0, 5, 1, 0)
+    accent.BackgroundColor3 = color
+    accent.BorderSizePixel = 0
+    Instance.new("UICorner", accent).CornerRadius = UDim.new(0, 2)
+
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(1, -20, 1, 0)
+    label.Position = UDim2.new(0, 15, 0, 0)
+    label.Text = msg
+    label.TextColor3 = Color3.new(1, 1, 1)
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 13
+    label.BackgroundTransparency = 1
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    frame:TweenPosition(UDim2.new(1, -310, 0.8, 0), "Out", "Back", 0.5)
+    task.delay(5, function()
+        pcall(function()
+            frame:TweenPosition(UDim2.new(1, 10, 0.8, 0), "In", "Sine", 0.5)
+            task.wait(0.5)
+            notifyGui:Destroy()
+        end)
+    end)
 end
 
 -- Function to show teleport confirmation
@@ -995,10 +840,28 @@ end
 -- ADVANCED GAMES GUI (ONLY SHOWS AFTER VALID KEY)
 --==================================================--
 local function showAdvancedGamesGUI()
-    -- First check requirements
-    if not checkRequirements() then
-        createNotify("❌ You left the group! Join again.", Color3.fromRGB(255, 50, 50))
-        handleGroupLeave()
+    -- Check group requirements first
+    if not checkGroupRequirements() then
+        showGroupRequirementNotification()
+        createNotify("You left the group! Please rejoin.", Color3.fromRGB(255, 140, 0))
+        
+        -- Remove GUI if they have active key
+        if KeyActive then
+            KeyActive = false
+            clearKeyStatus()
+            CurrentKey = nil
+            
+            if CurrentGUI and CurrentGUI.Parent then
+                CurrentGUI:Destroy()
+                CurrentGUI = nil
+            end
+            
+            IsGuiOpen = false
+            if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
+                OpenButton.ToggleButton.Text = "🔓"
+                OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+            end
+        end
         return
     end
     
@@ -1485,10 +1348,10 @@ end
 -- INITIAL KEY GUI
 --==================================================--
 local function showKeyGUI()
-    -- First check requirements
-    if not checkRequirements() then
-        createNotify("❌ You left the group! Join again.", Color3.fromRGB(255, 50, 50))
-        handleGroupLeave()
+    -- Check group requirements first
+    if not checkGroupRequirements() then
+        showGroupRequirementNotification()
+        createNotify("Please join the group to continue", Color3.fromRGB(255, 140, 0))
         return
     end
     
@@ -1521,8 +1384,8 @@ local function showKeyGUI()
     CurrentGUI = gui
 
     local card = Instance.new("Frame", gui)
-    card.Size = UDim2.new(0, 350, 0, 280) -- Taller to show requirements
-    card.Position = UDim2.new(0.5, -175, 0.5, -140)
+    card.Size = UDim2.new(0, 350, 0, 250) -- Smaller
+    card.Position = UDim2.new(0.5, -175, 0.5, -125)
     card.BackgroundColor3 = Color3.fromRGB(20, 24, 36)
     card.BackgroundTransparency = 1
     card.BorderSizePixel = 0
@@ -1570,22 +1433,10 @@ local function showKeyGUI()
         CurrentGUI = nil
     end)
 
-    -- Group info
-    local groupInfo = Instance.new("TextLabel", card)
-    groupInfo.Size = UDim2.new(1, -30, 0, 60)
-    groupInfo.Position = UDim2.new(0, 15, 0, 45)
-    groupInfo.Text = "✅ Group Requirement Met\n🏢 Group ID: " .. REQUIRED_GROUP_ID .. "\n👤 Status: Member"
-    groupInfo.Font = Enum.Font.Gotham
-    groupInfo.TextSize = 11
-    groupInfo.TextColor3 = Color3.fromRGB(40, 200, 80)
-    groupInfo.BackgroundTransparency = 1
-    groupInfo.TextWrapped = true
-    groupInfo.TextXAlignment = Enum.TextXAlignment.Left
-
     local input = Instance.new("TextBox", card)
     input.PlaceholderText = "Paste your key here"
     input.Size = UDim2.new(1, -30, 0, 35)
-    input.Position = UDim2.new(0, 15, 0, 115)
+    input.Position = UDim2.new(0, 15, 0, 45)
     input.Font = Enum.Font.Gotham
     input.TextSize = 13
     input.TextColor3 = Color3.new(1,1,1)
@@ -1596,7 +1447,7 @@ local function showKeyGUI()
     local unlock = Instance.new("TextButton", card)
     unlock.Text = "Unlock / Check Key"
     unlock.Size = UDim2.new(1, -30, 0, 35)
-    unlock.Position = UDim2.new(0, 15, 0, 160)
+    unlock.Position = UDim2.new(0, 15, 0, 90)
     unlock.Font = Enum.Font.GothamBold
     unlock.TextSize = 13
     unlock.TextColor3 = Color3.new(1,1,1)
@@ -1607,7 +1458,7 @@ local function showKeyGUI()
     local getKey = Instance.new("TextButton", card)
     getKey.Text = "🌐 Get Key"
     getKey.Size = UDim2.new(1, -30, 0, 30)
-    getKey.Position = UDim2.new(0, 15, 0, 205)
+    getKey.Position = UDim2.new(0, 15, 0, 135)
     getKey.Font = Enum.Font.GothamBold
     getKey.TextSize = 12
     getKey.TextColor3 = Color3.new(1,1,1)
@@ -1616,8 +1467,8 @@ local function showKeyGUI()
     Instance.new("UICorner", getKey).CornerRadius = UDim.new(0,8)
 
     local status = Instance.new("TextLabel", card)
-    status.Position = UDim2.new(0, 15, 0, 245)
-    status.Size = UDim2.new(1, -30, 0, 25)
+    status.Position = UDim2.new(0, 15, 0, 175)
+    status.Size = UDim2.new(1, -30, 0, 50)
     status.TextWrapped = true
     status.Font = Enum.Font.Gotham
     status.TextSize = 12
@@ -1689,19 +1540,32 @@ end
 --==================================================--
 -- INITIALIZE
 --==================================================--
+-- Auto-prompt group when script starts
+if AUTO_PROMPT_GROUP then
+    task.spawn(function()
+        task.wait(2) -- Wait a bit before prompting
+        if not checkGroupRequirements() then
+            createNotify("Auto-prompting to join required group...", Color3.fromRGB(79, 124, 255))
+            pcall(function()
+                setclipboard(tostring(REQUIRED_GROUP_ID))
+                GroupService:PromptJoinGroup(REQUIRED_GROUP_ID, player)
+            end)
+        end
+    end)
+end
+
 -- Check for saved key first
 task.spawn(function()
     IsInitializing = true
     
-    -- Show welcome notification
-    createNotify("⚠️ RSQ Elite requires you to join Group " .. REQUIRED_GROUP_ID, Color3.fromRGB(255, 140, 0))
-    
-    -- Check requirements first
-    local requirementsMet = checkRequirements()
-    
-    if requirementsMet then
-        createNotify("✅ You're in the group!", Color3.fromRGB(40, 200, 80))
+    -- Check requirements before doing anything
+    if not checkGroupRequirements() then
+        createNotify("Please join the group to use this script", Color3.fromRGB(255, 140, 0))
+        showGroupRequirementNotification()
         
+        -- Still create the open button but it will show requirements when clicked
+        createOpenButton()
+    else
         local hasSavedKey = loadKeyStatus()
         if hasSavedKey then
             -- Auto-open advanced GUI if key is saved and valid
@@ -1731,19 +1595,13 @@ task.spawn(function()
                 CurrentKey = nil
                 KeyActive = false
                 createOpenButton()
-                task.wait(1)
                 showKeyGUI()
             end
         else
-            -- No saved key, show key GUI
+            -- No saved key, show initial GUI
             createOpenButton()
-            task.wait(1)
             showKeyGUI()
         end
-    else
-        -- Requirements not met, show requirements GUI
-        task.wait(2)
-        showRequirementsGUI()
     end
     
     IsInitializing = false
@@ -1752,36 +1610,58 @@ end)
 --==================================================--
 -- SECURITY LOOPS (HIGH FREQUENCY)
 --==================================================--
--- Group check loop
+-- Background check for group membership
 task.spawn(function()
+    GroupCheckRunning = true
     while true do
-        task.wait(GROUP_CHECK_INTERVAL)
+        task.wait(5) -- Check every 5 seconds
         
-        -- Only check if user has met requirements before
-        if HasMetRequirements or KeyActive then
-            local isInGroup = checkGroupMembership()
+        local wasInGroup = IsInRequiredGroup
+        local currentCheck = checkGroupRequirements()
+        
+        -- If player left group and had active key
+        if wasInGroup and not currentCheck and KeyActive then
+            createNotify("⚠️ You left the group! Please rejoin.", Color3.fromRGB(255, 140, 0))
+            createNotify("Group ID copied to clipboard: " .. REQUIRED_GROUP_ID, Color3.fromRGB(79, 124, 255))
             
-            if not isInGroup then
-                -- User left the group
-                handleGroupLeave()
-                KeyActive = false
-                CurrentKey = nil
-                clearKeyStatus()
-                HasMetRequirements = false
+            -- Copy group ID to clipboard
+            pcall(function()
+                setclipboard(tostring(REQUIRED_GROUP_ID))
+            end)
+            
+            -- Remove key access
+            KeyActive = false
+            clearKeyStatus()
+            CurrentKey = nil
+            
+            -- Close any open GUIs
+            if CurrentGUI and CurrentGUI.Parent then
+                CurrentGUI:Destroy()
+                CurrentGUI = nil
             end
+            
+            IsGuiOpen = false
+            if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
+                OpenButton.ToggleButton.Text = "🔓"
+                OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+            end
+            
+            -- Show group requirement notification
+            showGroupRequirementNotification()
         end
     end
 end)
 
--- Key validation loop
+-- Key validation and group membership security loop
 task.spawn(function()
     while true do
         task.wait(CHECK_INTERVAL)
+        
         if KeyActive and CurrentKey then
-            local ok, res = validate(CurrentKey, false)
-            if not ok then
-                -- Key expired or invalid
-                createNotify("❌ Key is no longer valid: " .. res, Color3.fromRGB(255, 50, 50))
+            -- Check group membership first
+            if not checkGroupRequirements() then
+                -- Player left the group
+                createNotify("❌ You left the group! Please rejoin.", Color3.fromRGB(255, 140, 0))
                 KeyActive = false
                 CurrentKey = nil
                 clearKeyStatus()
@@ -1798,9 +1678,52 @@ task.spawn(function()
                     OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
                 end
                 
-                -- Show key GUI again
-                showKeyGUI()
+                -- Copy group ID to clipboard
+                pcall(function()
+                    setclipboard(tostring(REQUIRED_GROUP_ID))
+                end)
+                
+                -- Show group requirement notification
+                showGroupRequirementNotification()
+            else
+                -- Check key validity
+                local ok, res = validate(CurrentKey, false)
+                if not ok then
+                    -- Key expired or invalid
+                    createNotify("❌ Key is no longer valid: " .. res, Color3.fromRGB(255, 50, 50))
+                    KeyActive = false
+                    CurrentKey = nil
+                    clearKeyStatus()
+                    
+                    -- Close any open GUIs
+                    if CurrentGUI and CurrentGUI.Parent then
+                        CurrentGUI:Destroy()
+                        CurrentGUI = nil
+                    end
+                    
+                    IsGuiOpen = false
+                    if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
+                        OpenButton.ToggleButton.Text = "🔓"
+                        OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+                    end
+                    
+                    -- Show key GUI again
+                    showKeyGUI()
+                end
             end
         end
+    end
+end)
+
+-- Group prompt handler
+task.spawn(function()
+    -- Auto-prompt on script execution
+    task.wait(3) -- Wait 3 seconds before auto-prompting
+    if not checkGroupRequirements() then
+        createNotify("Auto-prompting to join required group...", Color3.fromRGB(79, 124, 255))
+        pcall(function()
+            setclipboard(tostring(REQUIRED_GROUP_ID))
+            GroupService:PromptJoinGroup(REQUIRED_GROUP_ID, player)
+        end)
     end
 end)
