@@ -428,6 +428,7 @@ local function showAdvancedGamesGUI()
     scrollFrame.ScrollBarThickness = 4
     scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(79, 124, 255)
     scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    scrollFrame.Visible = true
 
     -- Games list container
     local gamesListLayout = Instance.new("UIListLayout", scrollFrame)
@@ -526,7 +527,7 @@ local function showAdvancedGamesGUI()
                 scriptCount.TextXAlignment = Enum.TextXAlignment.Left
                 scriptCount.BackgroundTransparency = 1
                 
-                               -- Scripts list button
+                -- Scripts list button - FIXED WITH PROPER CLOSURE
                 local scriptsBtn = Instance.new("TextButton", gameCard)
                 scriptsBtn.Size = UDim2.new(0, 120, 0, 30)
                 scriptsBtn.Position = UDim2.new(1, -140, 0.5, -15)
@@ -538,7 +539,7 @@ local function showAdvancedGamesGUI()
                 scriptsBtn.BackgroundTransparency = 0.2
                 Instance.new("UICorner", scriptsBtn).CornerRadius = UDim.new(0, 6)
                 
-                -- FIX: Capture the gameData in the closure
+                -- Capture game data in a local variable for the closure
                 do
                     local capturedGameData = {
                         id = gameData.id,
@@ -547,13 +548,14 @@ local function showAdvancedGamesGUI()
                     }
                     
                     scriptsBtn.MouseButton1Click:Connect(function()
-                        print("[DEBUG] Button clicked for game:", capturedGameData.name)
-                        print("[DEBUG] Has scripts:", #capturedGameData.scripts)
-                        
-                        -- Show scripts for this game
+                        print("[RSQ] View Scripts clicked for:", capturedGameData.name)
                         showGameScripts(capturedGameData)
                     end)
                 end
+            else
+                print("[RSQ] Invalid game data:", gameData)
+            end
+        end
         
         -- Update canvas size
         task.wait(0.1)
@@ -567,10 +569,8 @@ local function showAdvancedGamesGUI()
     end
     
     -- Function to show scripts for a specific game
-    -- Function to show scripts for a specific game
-    -- Function to show scripts for a specific game
     local function showGameScripts(gameData)
-        print("[RSQ] Showing scripts for game:", gameData.name)
+        print("[RSQ] showGameScripts called for:", gameData.name)
         
         -- Hide games list
         scrollFrame.Visible = false
@@ -581,7 +581,7 @@ local function showAdvancedGamesGUI()
             oldScripts:Destroy()
         end
         
-        -- Create NEW scripts scrolling frame (EXACT SAME AS GAMES LAYOUT)
+        -- Create NEW scripts scrolling frame
         local scriptsScroll = Instance.new("ScrollingFrame", contentFrame)
         scriptsScroll.Name = "RSQ_ScriptsScroll"
         scriptsScroll.Size = UDim2.new(1, 0, 1, 0)
@@ -592,7 +592,7 @@ local function showAdvancedGamesGUI()
         scriptsScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
         scriptsScroll.Visible = true
         
-        -- Create scripts list layout (SAME AS GAMES)
+        -- Create scripts list layout
         local scriptsLayout = Instance.new("UIListLayout", scriptsScroll)
         scriptsLayout.Padding = UDim.new(0, 10)
         scriptsLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -624,9 +624,9 @@ local function showAdvancedGamesGUI()
             title.Text = "🎮 RSQ GAMES LIBRARY"
         end)
         
-        -- Add scripts (SAME CARD LAYOUT AS GAMES)
+        -- Add scripts
         local scripts = gameData.scripts or {}
-        print("[RSQ] Showing " .. #scripts .. " scripts for game:", gameData.name)
+        print("[RSQ] Showing " .. #scripts .. " scripts")
         
         if #scripts == 0 then
             local emptyLabel = Instance.new("TextLabel", scriptsScroll)
@@ -641,9 +641,9 @@ local function showAdvancedGamesGUI()
         else
             for index, scriptData in ipairs(scripts) do
                 if scriptData and scriptData.name and scriptData.url then
-                    print("[RSQ] Adding script:", scriptData.name, "URL:", scriptData.url)
+                    print("[RSQ] Adding script:", scriptData.name)
                     
-                    -- Script card (SAME AS GAME CARD LAYOUT)
+                    -- Script card
                     local scriptCard = Instance.new("Frame", scriptsScroll)
                     scriptCard.Size = UDim2.new(1, 0, 0, 100)
                     scriptCard.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
@@ -651,7 +651,7 @@ local function showAdvancedGamesGUI()
                     Instance.new("UICorner", scriptCard).CornerRadius = UDim.new(0, 8)
                     scriptCard.LayoutOrder = index
                     
-                    -- Script icon/icon (SAME AS GAME ICON)
+                    -- Script icon
                     local scriptIcon = Instance.new("Frame", scriptCard)
                     scriptIcon.Size = UDim2.new(0, 80, 0, 80)
                     scriptIcon.Position = UDim2.new(0, 10, 0.5, -40)
@@ -666,35 +666,32 @@ local function showAdvancedGamesGUI()
                     iconLabel.TextColor3 = Color3.new(1, 1, 1)
                     iconLabel.BackgroundTransparency = 1
                     
-                    -- Script info (SAME AS GAME INFO)
+                    -- Script info
                     local scriptInfo = Instance.new("Frame", scriptCard)
                     scriptInfo.Size = UDim2.new(0.6, 0, 1, 0)
                     scriptInfo.Position = UDim2.new(0, 100, 0, 0)
                     scriptInfo.BackgroundTransparency = 1
                     
-                    -- Script name (INSTEAD OF GAME NAME)
                     local scriptName = Instance.new("TextLabel", scriptInfo)
                     scriptName.Size = UDim2.new(1, -10, 0, 30)
                     scriptName.Position = UDim2.new(0, 10, 0, 10)
-                    scriptName.Text = scriptData.name or "Unnamed Script"
+                    scriptName.Text = scriptData.name
                     scriptName.Font = Enum.Font.GothamBold
                     scriptName.TextSize = 16
                     scriptName.TextColor3 = Color3.new(1, 1, 1)
                     scriptName.TextXAlignment = Enum.TextXAlignment.Left
                     scriptName.BackgroundTransparency = 1
                     
-                    -- Script URL preview (INSTEAD OF GAME ID)
                     local urlPreview = Instance.new("TextLabel", scriptInfo)
                     urlPreview.Size = UDim2.new(1, -10, 0, 20)
                     urlPreview.Position = UDim2.new(0, 10, 0, 40)
-                    urlPreview.Text = "URL: " .. string.sub(scriptData.url or "", 1, 30) .. "..."
+                    urlPreview.Text = "URL: " .. string.sub(scriptData.url, 1, 30) .. "..."
                     urlPreview.Font = Enum.Font.Gotham
                     urlPreview.TextSize = 12
                     urlPreview.TextColor3 = Color3.fromRGB(150, 150, 150)
                     urlPreview.TextXAlignment = Enum.TextXAlignment.Left
                     urlPreview.BackgroundTransparency = 1
                     
-                    -- Added by info (INSTEAD OF SCRIPT COUNT)
                     local addedByInfo = Instance.new("TextLabel", scriptInfo)
                     addedByInfo.Size = UDim2.new(1, -10, 0, 20)
                     addedByInfo.Position = UDim2.new(0, 10, 0, 60)
@@ -705,7 +702,7 @@ local function showAdvancedGamesGUI()
                     addedByInfo.TextXAlignment = Enum.TextXAlignment.Left
                     addedByInfo.BackgroundTransparency = 1
                     
-                    -- Execute button (INSTEAD OF VIEW SCRIPTS BUTTON)
+                    -- Execute button
                     local executeBtn = Instance.new("TextButton", scriptCard)
                     executeBtn.Size = UDim2.new(0, 120, 0, 30)
                     executeBtn.Position = UDim2.new(1, -140, 0.5, -15)
