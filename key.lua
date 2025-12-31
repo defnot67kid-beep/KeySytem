@@ -215,6 +215,272 @@ local function isGUILoaded()
     return false
 end
 
+-- Function to show keybox for scripts
+local function showKeyboxForScript(scriptIndex, gameId)
+    -- Fetch fresh data from JSONBin
+    local data = fetchData()
+    if not data or not data.games then
+        createNotify("❌ Failed to fetch game data", COLOR_PALETTE.danger)
+        return
+    end
+    
+    -- Find the game
+    local game = nil
+    for _, g in ipairs(data.games) do
+        if tostring(g.id) == tostring(gameId) then
+            game = g
+            break
+        end
+    end
+    
+    if not game or not game.scripts or not game.scripts[scriptIndex] then
+        createNotify("❌ Script not found", COLOR_PALETTE.danger)
+        return
+    end
+    
+    local scriptData = game.scripts[scriptIndex]
+    
+    -- Check if script has keys
+    if not scriptData.keys or #scriptData.keys == 0 then
+        createNotify("❌ No keys available for this script", COLOR_PALETTE.warning)
+        
+        -- Copy script URL to clipboard instead
+        if scriptData.url then
+            setclipboard(scriptData.url)
+            createNotify("📋 Script URL copied to clipboard", COLOR_PALETTE.accent)
+        end
+        return
+    end
+    
+    -- Create keybox GUI
+    local keyboxGui = Instance.new("ScreenGui", CoreGui)
+    keyboxGui.Name = "RSQ_Keybox_" .. tostring(math.random(1, 1000))
+    keyboxGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    -- Overlay
+    local overlay = Instance.new("Frame", keyboxGui)
+    overlay.Size = UDim2.new(1, 0, 1, 0)
+    overlay.BackgroundColor3 = Color3.new(0, 0, 0)
+    overlay.BackgroundTransparency = 0.7
+    overlay.BorderSizePixel = 0
+    
+    -- Main container
+    local mainContainer = Instance.new("Frame", keyboxGui)
+    mainContainer.Size = UDim2.new(0, 450, 0, 350)
+    mainContainer.Position = UDim2.new(0.5, -225, 0.5, -175)
+    mainContainer.BackgroundColor3 = COLOR_PALETTE.dark.bg2
+    mainContainer.BackgroundTransparency = 0.1
+    mainContainer.BorderSizePixel = 0
+    local mainCorner = Instance.new("UICorner", mainContainer)
+    mainCorner.CornerRadius = UDim.new(0, 20)
+    
+    -- Title bar
+    local titleBar = Instance.new("Frame", mainContainer)
+    titleBar.Size = UDim2.new(1, 0, 0, 40)
+    titleBar.BackgroundColor3 = COLOR_PALETTE.dark.bg4
+    titleBar.BackgroundTransparency = 0.3
+    titleBar.BorderSizePixel = 0
+    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 20, 0, 0)
+    
+    local title = Instance.new("TextLabel", titleBar)
+    title.Size = UDim2.new(1, -40, 1, 0)
+    title.Position = UDim2.new(0, 15, 0, 0)
+    title.Text = "🔑 Available Keys - " .. scriptData.name
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 16
+    title.TextColor3 = COLOR_PALETTE.warning
+    title.BackgroundTransparency = 1
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Close button
+    local closeBtn = Instance.new("TextButton", titleBar)
+    closeBtn.Size = UDim2.new(0, 30, 0, 30)
+    closeBtn.Position = UDim2.new(1, -35, 0.5, -15)
+    closeBtn.Text = "✕"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 14
+    closeBtn.TextColor3 = COLOR_PALETTE.light.text
+    closeBtn.BackgroundColor3 = COLOR_PALETTE.danger
+    closeBtn.BackgroundTransparency = 0.2
+    closeBtn.BorderSizePixel = 0
+    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 8)
+    
+    closeBtn.MouseButton1Click:Connect(function()
+        TweenService:Create(mainContainer, TweenInfo.new(ANIMATION_SETTINGS.exitDuration), {
+            Position = UDim2.new(0.5, -225, -0.5, 0),
+            BackgroundTransparency = 1
+        }):Play()
+        task.delay(ANIMATION_SETTINGS.exitDuration, function()
+            keyboxGui:Destroy()
+        end)
+    end)
+    
+    -- Content area
+    local contentFrame = Instance.new("ScrollingFrame", mainContainer)
+    contentFrame.Size = UDim2.new(1, -20, 1, -60)
+    contentFrame.Position = UDim2.new(0, 10, 0, 50)
+    contentFrame.BackgroundTransparency = 1
+    contentFrame.ScrollBarThickness = 4
+    contentFrame.ScrollBarImageColor3 = COLOR_PALETTE.primary
+    contentFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    
+    -- Layout for keys
+    local keysLayout = Instance.new("UIListLayout", contentFrame)
+    keysLayout.Padding = UDim.new(0, 10)
+    keysLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    
+    -- Add each key
+    local totalHeight = 0
+    for keyIndex, keyData in ipairs(scriptData.keys) do
+        if keyData and keyData.name and keyData.value then
+            -- Key item container
+            local keyItem = Instance.new("Frame", contentFrame)
+            keyItem.Size = UDim2.new(1, 0, 0, 80)
+            keyItem.BackgroundColor3 = COLOR_PALETTE.dark.bg4
+            keyItem.BackgroundTransparency = 0.2
+            keyItem.BorderSizePixel = 0
+            keyItem.LayoutOrder = keyIndex
+            Instance.new("UICorner", keyItem).CornerRadius = UDim.new(0, 10)
+            
+            -- Key name
+            local keyName = Instance.new("TextLabel", keyItem)
+            keyName.Size = UDim2.new(1, -20, 0, 25)
+            keyName.Position = UDim2.new(0, 10, 0, 5)
+            keyName.Text = keyData.name
+            keyName.Font = Enum.Font.GothamBold
+            keyName.TextSize = 13
+            keyName.TextColor3 = COLOR_PALETTE.warning
+            keyName.BackgroundTransparency = 1
+            keyName.TextXAlignment = Enum.TextXAlignment.Left
+            
+            -- Key value (hidden by default)
+            local keyValue = Instance.new("TextBox", keyItem)
+            keyValue.Size = UDim2.new(0.7, -40, 0, 30)
+            keyValue.Position = UDim2.new(0, 10, 0, 35)
+            keyValue.Text = "••••••••••••••••"
+            keyValue.Font = Enum.Font.Gotham
+            keyValue.TextSize = 12
+            keyValue.TextColor3 = COLOR_PALETTE.light.subtext
+            keyValue.BackgroundColor3 = COLOR_PALETTE.dark.bg3
+            keyValue.BackgroundTransparency = 0.1
+            keyValue.BorderSizePixel = 0
+            keyValue.ClearTextOnFocus = false
+            Instance.new("UICorner", keyValue).CornerRadius = UDim.new(0, 6)
+            
+            -- Show/Hide toggle button
+            local toggleBtn = Instance.new("TextButton", keyItem)
+            toggleBtn.Size = UDim2.new(0, 60, 0, 30)
+            toggleBtn.Position = UDim2.new(0.7, -20, 0, 35)
+            toggleBtn.Text = "👁️ Show"
+            toggleBtn.Font = Enum.Font.GothamBold
+            toggleBtn.TextSize = 11
+            toggleBtn.TextColor3 = COLOR_PALETTE.light.text
+            toggleBtn.BackgroundColor3 = COLOR_PALETTE.primary
+            toggleBtn.BackgroundTransparency = 0.2
+            toggleBtn.BorderSizePixel = 0
+            Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0, 6)
+            
+            local isHidden = true
+            toggleBtn.MouseButton1Click:Connect(function()
+                if isHidden then
+                    keyValue.Text = keyData.value
+                    toggleBtn.Text = "🔒 Hide"
+                    toggleBtn.BackgroundColor3 = COLOR_PALETTE.success
+                else
+                    keyValue.Text = "••••••••••••••••"
+                    toggleBtn.Text = "👁️ Show"
+                    toggleBtn.BackgroundColor3 = COLOR_PALETTE.primary
+                end
+                isHidden = not isHidden
+            end)
+            
+            -- Copy button
+            local copyBtn = Instance.new("TextButton", keyItem)
+            copyBtn.Size = UDim2.new(0, 70, 0, 30)
+            copyBtn.Position = UDim2.new(1, -80, 0, 35)
+            copyBtn.Text = "📋 Copy"
+            copyBtn.Font = Enum.Font.GothamBold
+            copyBtn.TextSize = 11
+            copyBtn.TextColor3 = COLOR_PALETTE.light.text
+            copyBtn.BackgroundColor3 = COLOR_PALETTE.success
+            copyBtn.BackgroundTransparency = 0.2
+            copyBtn.BorderSizePixel = 0
+            Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 6)
+            
+            copyBtn.MouseButton1Click:Connect(function()
+                setclipboard(keyData.value)
+                
+                -- Show copied notification
+                local copiedLabel = Instance.new("TextLabel", keyItem)
+                copiedLabel.Size = UDim2.new(0, 60, 0, 20)
+                copiedLabel.Position = UDim2.new(0.5, -30, 0, -25)
+                copiedLabel.Text = "Copied!"
+                copiedLabel.Font = Enum.Font.GothamBold
+                copiedLabel.TextSize = 10
+                copiedLabel.TextColor3 = COLOR_PALETTE.success
+                copiedLabel.BackgroundColor3 = COLOR_PALETTE.dark.bg3
+                copiedLabel.BackgroundTransparency = 0.1
+                copiedLabel.BorderSizePixel = 0
+                Instance.new("UICorner", copiedLabel).CornerRadius = UDim.new(0, 4)
+                
+                task.delay(1, function()
+                    if copiedLabel and copiedLabel.Parent then
+                        copiedLabel:Destroy()
+                    end
+                end)
+                
+                createNotify("✅ Key copied to clipboard", COLOR_PALETTE.success)
+            end)
+            
+            totalHeight = totalHeight + 90
+        end
+    end
+    
+    -- If no keys found
+    if totalHeight == 0 then
+        local emptyLabel = Instance.new("TextLabel", contentFrame)
+        emptyLabel.Size = UDim2.new(1, 0, 0, 100)
+        emptyLabel.Text = "🔍 No keys available for this script\n\nYou can copy the script URL instead by clicking Execute."
+        emptyLabel.Font = Enum.Font.Gotham
+        emptyLabel.TextSize = 13
+        emptyLabel.TextColor3 = COLOR_PALETTE.light.subtext
+        emptyLabel.BackgroundTransparency = 1
+        emptyLabel.TextWrapped = true
+        emptyLabel.LayoutOrder = 1
+        totalHeight = 100
+    end
+    
+    -- Set canvas size
+    contentFrame.CanvasSize = UDim2.new(0, 0, 0, totalHeight + 20)
+    
+    -- Copy script URL button (if available)
+    if scriptData.url then
+        local copyUrlBtn = Instance.new("TextButton", mainContainer)
+        copyUrlBtn.Size = UDim2.new(1, -20, 0, 35)
+        copyUrlBtn.Position = UDim2.new(0, 10, 1, -45)
+        copyUrlBtn.Text = "📋 Copy Script URL"
+        copyUrlBtn.Font = Enum.Font.GothamBold
+        copyUrlBtn.TextSize = 13
+        copyUrlBtn.TextColor3 = COLOR_PALETTE.light.text
+        copyUrlBtn.BackgroundColor3 = COLOR_PALETTE.accent
+        copyUrlBtn.BackgroundTransparency = 0.2
+        copyUrlBtn.BorderSizePixel = 0
+        Instance.new("UICorner", copyUrlBtn).CornerRadius = UDim.new(0, 8)
+        
+        copyUrlBtn.MouseButton1Click:Connect(function()
+            setclipboard(scriptData.url)
+            createNotify("📋 Script URL copied to clipboard", COLOR_PALETTE.accent)
+        end)
+    end
+    
+    -- Entry animation
+    mainContainer.Position = UDim2.new(0.5, -225, -0.5, 0)
+    TweenService:Create(mainContainer, TweenInfo.new(ANIMATION_SETTINGS.entryDuration, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Position = UDim2.new(0.5, -225, 0.5, -175),
+        BackgroundTransparency = 0.1
+    }):Play()
+end
+
 -- Function to show SythicsMerch purchase prompt
 local function showSythicsMerchPrompt()
     -- Don't show if already shown
@@ -1237,51 +1503,28 @@ local function showAdvancedGamesGUI()
                     urlPreview.TextXAlignment = Enum.TextXAlignment.Left
                     urlPreview.BackgroundTransparency = 1
                     
-                    -- Execute button
-                    local executeBtn = Instance.new("TextButton", scriptCard)
-                    executeBtn.Size = UDim2.new(0, 80, 0, 25)
-                    executeBtn.Position = UDim2.new(1, -85, 0.5, -12.5)
-                    executeBtn.Text = "⚡ Execute"
-                    executeBtn.Font = Enum.Font.GothamBold
-                    executeBtn.TextSize = 11
-                    executeBtn.TextColor3 = COLOR_PALETTE.light.text
-                    executeBtn.BackgroundColor3 = COLOR_PALETTE.success
-                    executeBtn.BackgroundTransparency = 0.2
-                    executeBtn.BorderSizePixel = 0
-                    Instance.new("UICorner", executeBtn).CornerRadius = UDim.new(0, 6)
+                    -- KEYBOX button instead of Execute
+                    local keyboxBtn = Instance.new("TextButton", scriptCard)
+                    keyboxBtn.Size = UDim2.new(0, 80, 0, 25)
+                    keyboxBtn.Position = UDim2.new(1, -85, 0.5, -12.5)
+                    keyboxBtn.Text = "🔑 Keybox"
+                    keyboxBtn.Font = Enum.Font.GothamBold
+                    keyboxBtn.TextSize = 11
+                    keyboxBtn.TextColor3 = COLOR_PALETTE.light.text
+                    keyboxBtn.BackgroundColor3 = COLOR_PALETTE.warning
+                    keyboxBtn.BackgroundTransparency = 0.2
+                    keyboxBtn.BorderSizePixel = 0
+                    Instance.new("UICorner", keyboxBtn).CornerRadius = UDim.new(0, 6)
                     
                     -- Capture script data for the closure
                     do
-                        local capturedScriptData = {
-                            name = scriptData.name,
-                            url = scriptData.url
-                        }
+                        local capturedScriptData = scriptData
                         local capturedGameId = gameData.id
+                        local capturedScriptIndex = index
                         
-                        executeBtn.MouseButton1Click:Connect(function()
-                            -- Check if player is in the right game
-                            if tostring(capturedGameId) == tostring(PLACE_ID) then
-                                createNotify("Executing script: " .. capturedScriptData.name, COLOR_PALETTE.success)
-                                
-                                -- Execute the script
-                                task.spawn(function()
-                                    local success, errorMsg = pcall(function()
-                                        local scriptContent = game:HttpGet(capturedScriptData.url)
-                                        loadstring(scriptContent)()
-                                    end)
-                                    
-                                    if not success then
-                                        createNotify("❌ Script failed: " .. errorMsg, COLOR_PALETTE.danger)
-                                    end
-                                end)
-                            else
-                                -- Not in the right game, show notification and teleport confirmation
-                                createNotify("❌ Cannot run script - Wrong Game ID", COLOR_PALETTE.warning)
-                                
-                                -- Wait 1 second then show teleport confirmation
-                                task.wait(1)
-                                showTeleportConfirmation(capturedGameId, capturedScriptData.name)
-                            end
+                        keyboxBtn.MouseButton1Click:Connect(function()
+                            -- Show the keybox instead of executing
+                            showKeyboxForScript(capturedScriptIndex, capturedGameId)
                         end)
                     end
                 end
