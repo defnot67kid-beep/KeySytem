@@ -1,6 +1,5 @@
 --==================================================--
 -- RSQ KEY SYSTEM — FULL LOCAL SCRIPT (ULTRA-FAST UPDATE)
--- WITH SYTHICSMERCH PURCHASE POPUP & GROUP REQUIREMENT
 --==================================================--
 
 -- SERVICES
@@ -16,16 +15,6 @@ local player = Players.LocalPlayer
 local USER_ID = tostring(player.UserId)
 local USER_NAME = player.Name
 local PLACE_ID = game.PlaceId
-
---==================================================--
--- PURCHASE & GROUP CONFIGURATION
---==================================================--
-local REQUIRED_GROUP_ID = 687789545  -- Group ID users must join
-local MERCH_ASSET_ID = 136243714765116  -- SythicsMerch asset ID
-local MERCH_PRICE = 5  -- Robux price
-local HAS_SHOWN_PURCHASE_POPUP = false
-local HAS_CHECKED_GROUP_MEMBERSHIP = false
-local IS_GROUP_MEMBER = false
 
 --==================================================--
 -- CONFIG
@@ -59,319 +48,6 @@ local OpenButton = nil -- Reference to the open button
 local CurrentGUI = nil -- Reference to current GUI
 local IsInitializing = true -- Track initialization state
 local HasShownGUIAlready = false -- Track if GUI has been shown before
-
--- Function to check group membership
-local function checkGroupMembership()
-    local success, result = pcall(function()
-        return player:IsInGroup(REQUIRED_GROUP_ID)
-    end)
-    
-    if success then
-        IS_GROUP_MEMBER = result
-        return result
-    else
-        warn("[RSQ] Failed to check group membership:", result)
-        return false
-    end
-end
-
--- Function to prompt purchase
-local function showPurchasePopup()
-    if HAS_SHOWN_PURCHASE_POPUP then return end
-    
-    local purchaseGui = Instance.new("ScreenGui", CoreGui)
-    purchaseGui.Name = "RSQ_PurchasePopup"
-    purchaseGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    purchaseGui.ResetOnSpawn = false
-    
-    -- Background overlay
-    local overlay = Instance.new("Frame", purchaseGui)
-    overlay.Size = UDim2.new(1, 0, 1, 0)
-    overlay.BackgroundColor3 = Color3.new(0, 0, 0)
-    overlay.BackgroundTransparency = 0.7
-    overlay.BorderSizePixel = 0
-    
-    -- Main popup frame
-    local popupFrame = Instance.new("Frame", purchaseGui)
-    popupFrame.Size = UDim2.new(0, 400, 0, 350)
-    popupFrame.Position = UDim2.new(0.5, -200, 0.5, -175)
-    popupFrame.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
-    popupFrame.BorderSizePixel = 0
-    Instance.new("UICorner", popupFrame).CornerRadius = UDim.new(0, 12)
-    
-    -- Make draggable
-    makeDraggable(popupFrame, popupFrame)
-    
-    -- Title bar
-    local titleBar = Instance.new("Frame", popupFrame)
-    titleBar.Size = UDim2.new(1, 0, 0, 40)
-    titleBar.BackgroundColor3 = Color3.fromRGB(40, 45, 60)
-    titleBar.BorderSizePixel = 0
-    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
-    
-    local title = Instance.new("TextLabel", titleBar)
-    title.Size = UDim2.new(1, -20, 1, 0)
-    title.Position = UDim2.new(0, 10, 0, 0)
-    title.Text = "🛒 Purchase Required"
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 16
-    title.TextColor3 = Color3.fromRGB(255, 184, 28)
-    title.BackgroundTransparency = 1
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    
-    -- Close button (disabled to force purchase)
-    local closeBtn = Instance.new("TextButton", titleBar)
-    closeBtn.Size = UDim2.new(0, 30, 0, 30)
-    closeBtn.Position = UDim2.new(1, -35, 0.5, -15)
-    closeBtn.Text = "✕"
-    closeBtn.Font = Enum.Font.GothamBold
-    closeBtn.TextSize = 14
-    closeBtn.TextColor3 = Color3.new(1, 1, 1)
-    closeBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-    closeBtn.BorderSizePixel = 0
-    closeBtn.AutoButtonColor = false
-    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
-    
-    closeBtn.MouseButton1Click:Connect(function()
-        createNotify("⚠️ Purchase is required to use the script!", Color3.fromRGB(255, 140, 0))
-    end)
-    
-    -- Content area
-    local contentFrame = Instance.new("Frame", popupFrame)
-    contentFrame.Size = UDim2.new(1, -20, 1, -100)
-    contentFrame.Position = UDim2.new(0, 10, 0, 50)
-    contentFrame.BackgroundTransparency = 1
-    
-    -- Merch image/icon
-    local iconFrame = Instance.new("Frame", contentFrame)
-    iconFrame.Size = UDim2.new(0, 80, 0, 80)
-    iconFrame.Position = UDim2.new(0.5, -40, 0, 10)
-    iconFrame.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-    Instance.new("UICorner", iconFrame).CornerRadius = UDim.new(0, 12)
-    
-    local iconLabel = Instance.new("TextLabel", iconFrame)
-    iconLabel.Size = UDim2.new(1, 0, 1, 0)
-    iconLabel.Text = "👕"
-    iconLabel.Font = Enum.Font.GothamBold
-    iconLabel.TextSize = 36
-    iconLabel.TextColor3 = Color3.new(1, 1, 1)
-    iconLabel.BackgroundTransparency = 1
-    
-    -- Product title
-    local productTitle = Instance.new("TextLabel", contentFrame)
-    productTitle.Size = UDim2.new(1, 0, 0, 30)
-    productTitle.Position = UDim2.new(0, 0, 0, 100)
-    productTitle.Text = "SythicsMerch"
-    productTitle.Font = Enum.Font.GothamBold
-    productTitle.TextSize = 20
-    productTitle.TextColor3 = Color3.new(1, 1, 1)
-    productTitle.BackgroundTransparency = 1
-    productTitle.TextXAlignment = Enum.TextXAlignment.Center
-    
-    -- Price display
-    local priceFrame = Instance.new("Frame", contentFrame)
-    priceFrame.Size = UDim2.new(0.6, 0, 0, 40)
-    priceFrame.Position = UDim2.new(0.2, 0, 0, 140)
-    priceFrame.BackgroundColor3 = Color3.fromRGB(40, 45, 60)
-    Instance.new("UICorner", priceFrame).CornerRadius = UDim.new(0, 8)
-    
-    local priceIcon = Instance.new("TextLabel", priceFrame)
-    priceIcon.Size = UDim2.new(0, 30, 1, 0)
-    priceIcon.Position = UDim2.new(0, 5, 0, 0)
-    priceIcon.Text = "🤑"
-    priceIcon.Font = Enum.Font.GothamBold
-    priceIcon.TextSize = 18
-    priceIcon.TextColor3 = Color3.new(1, 1, 1)
-    priceIcon.BackgroundTransparency = 1
-    
-    local priceText = Instance.new("TextLabel", priceFrame)
-    priceText.Size = UDim2.new(1, -40, 1, 0)
-    priceText.Position = UDim2.new(0, 35, 0, 0)
-    priceText.Text = MERCH_PRICE .. " Robux"
-    priceText.Font = Enum.Font.GothamBold
-    priceText.TextSize = 16
-    priceText.TextColor3 = Color3.fromRGB(255, 184, 28)
-    priceText.BackgroundTransparency = 1
-    priceText.TextXAlignment = Enum.TextXAlignment.Left
-    
-    -- Description
-    local description = Instance.new("TextLabel", contentFrame)
-    description.Size = UDim2.new(1, 0, 0, 40)
-    description.Position = UDim2.new(0, 0, 0, 190)
-    description.Text = "Purchase this merch to support the developer\nand unlock access to the script!"
-    description.Font = Enum.Font.Gotham
-    description.TextSize = 13
-    description.TextColor3 = Color3.fromRGB(200, 200, 200)
-    description.BackgroundTransparency = 1
-    description.TextWrapped = true
-    description.TextXAlignment = Enum.TextXAlignment.Center
-    
-    -- Group requirement notice
-    local groupNotice = Instance.new("TextLabel", contentFrame)
-    groupNotice.Size = UDim2.new(1, 0, 0, 40)
-    groupNotice.Position = UDim2.new(0, 0, 0, 235)
-    groupNotice.Text = "⚠️ You MUST join group " .. REQUIRED_GROUP_ID .. "\nbefore purchasing to access the script!"
-    groupNotice.Font = Enum.Font.GothamBold
-    groupNotice.TextSize = 12
-    groupNotice.TextColor3 = Color3.fromRGB(255, 140, 0)
-    groupNotice.BackgroundTransparency = 1
-    groupNotice.TextWrapped = true
-    groupNotice.TextXAlignment = Enum.TextXAlignment.Center
-    
-    -- Button container
-    local buttonFrame = Instance.new("Frame", popupFrame)
-    buttonFrame.Size = UDim2.new(1, -20, 0, 50)
-    buttonFrame.Position = UDim2.new(0, 10, 1, -60)
-    buttonFrame.BackgroundTransparency = 1
-    
-    -- Group button
-    local groupBtn = Instance.new("TextButton", buttonFrame)
-    groupBtn.Size = UDim2.new(0.48, 0, 1, 0)
-    groupBtn.Position = UDim2.new(0, 0, 0, 0)
-    groupBtn.Text = "📋 Join Group"
-    groupBtn.Font = Enum.Font.GothamBold
-    groupBtn.TextSize = 14
-    groupBtn.TextColor3 = Color3.new(1, 1, 1)
-    groupBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-    groupBtn.BorderSizePixel = 0
-    Instance.new("UICorner", groupBtn).CornerRadius = UDim.new(0, 8)
-    
-    -- Purchase button
-    local purchaseBtn = Instance.new("TextButton", buttonFrame)
-    purchaseBtn.Size = UDim2.new(0.48, 0, 1, 0)
-    purchaseBtn.Position = UDim2.new(0.52, 0, 0, 0)
-    purchaseBtn.Text = "🛒 Purchase"
-    purchaseBtn.Font = Enum.Font.GothamBold
-    purchaseBtn.TextSize = 14
-    purchaseBtn.TextColor3 = Color3.new(1, 1, 1)
-    purchaseBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
-    purchaseBtn.BorderSizePixel = 0
-    Instance.new("UICorner", purchaseBtn).CornerRadius = UDim.new(0, 8)
-    
-    -- Button events
-    groupBtn.MouseButton1Click:Connect(function()
-        setclipboard(tostring(REQUIRED_GROUP_ID))
-        createNotify("Group ID copied to clipboard! Please join the group.", Color3.fromRGB(79, 124, 255))
-        
-        -- Try to open group page
-        local success = pcall(function()
-            game:GetService("MarketplaceService"):PromptProductPurchase(player, REQUIRED_GROUP_ID)
-        end)
-        
-        if not success then
-            createNotify("Please join group ID: " .. REQUIRED_GROUP_ID, Color3.fromRGB(79, 124, 255))
-        end
-        
-        -- Check group membership after clicking
-        task.wait(2)
-        if checkGroupMembership() then
-            createNotify("✅ Successfully joined the group!", Color3.fromRGB(40, 200, 80))
-        end
-    end)
-    
-    purchaseBtn.MouseButton1Click:Connect(function()
-        if not checkGroupMembership() then
-            createNotify("❌ You must join the group first!", Color3.fromRGB(255, 50, 50))
-            return
-        end
-        
-        createNotify("Opening purchase window...", Color3.fromRGB(255, 184, 28))
-        
-        -- Open purchase prompt
-        local success, err = pcall(function()
-            MarketplaceService:PromptProductPurchase(player, MERCH_ASSET_ID)
-        end)
-        
-        if success then
-            createNotify("✅ Purchase window opened!", Color3.fromRGB(40, 200, 80))
-            HAS_SHOWN_PURCHASE_POPUP = true
-            
-            -- Wait a moment then check if we can proceed
-            task.wait(3)
-            purchaseGui:Destroy()
-            
-            -- After purchase, show the key system
-            task.wait(1)
-            createNotify("Purchase completed! Loading RSQ Key System...", Color3.fromRGB(40, 200, 80))
-            
-            -- Initialize the key system
-            initializeKeySystem()
-        else
-            createNotify("❌ Failed to open purchase: " .. tostring(err), Color3.fromRGB(255, 50, 50))
-        end
-    end)
-    
-    -- Animation
-    popupFrame.BackgroundTransparency = 1
-    TweenService:Create(popupFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0}):Play()
-    
-    HAS_SHOWN_PURCHASE_POPUP = true
-end
-
--- Function to show group requirement notification
-local function showGroupNotification()
-    createNotify("⚠️ You must join group " .. REQUIRED_GROUP_ID .. " before accessing the script!", Color3.fromRGB(255, 140, 0))
-    createNotify("Group ID has been copied to your clipboard!", Color3.fromRGB(79, 124, 255))
-    
-    setclipboard(tostring(REQUIRED_GROUP_ID))
-    
-    -- Create persistent notification
-    local notifyGui = Instance.new("ScreenGui", CoreGui)
-    notifyGui.Name = "RSQ_GroupNotification"
-    notifyGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    notifyGui.ResetOnSpawn = false
-    
-    local notifyFrame = Instance.new("Frame", notifyGui)
-    notifyFrame.Size = UDim2.new(0, 350, 0, 80)
-    notifyFrame.Position = UDim2.new(0.5, -175, 0.1, 0)
-    notifyFrame.BackgroundColor3 = Color3.fromRGB(40, 45, 60)
-    notifyFrame.BorderSizePixel = 0
-    Instance.new("UICorner", notifyFrame).CornerRadius = UDim.new(0, 8)
-    
-    local notifyTitle = Instance.new("TextLabel", notifyFrame)
-    notifyTitle.Size = UDim2.new(1, -20, 0, 25)
-    notifyTitle.Position = UDim2.new(0, 10, 0, 10)
-    notifyTitle.Text = "⚠️ GROUP REQUIREMENT"
-    notifyTitle.Font = Enum.Font.GothamBold
-    notifyTitle.TextSize = 14
-    notifyTitle.TextColor3 = Color3.fromRGB(255, 140, 0)
-    notifyTitle.BackgroundTransparency = 1
-    notifyTitle.TextXAlignment = Enum.TextXAlignment.Left
-    
-    local notifyText = Instance.new("TextLabel", notifyFrame)
-    notifyText.Size = UDim2.new(1, -20, 0, 40)
-    notifyText.Position = UDim2.new(0, 10, 0, 35)
-    notifyText.Text = "You MUST join group " .. REQUIRED_GROUP_ID .. " to use this script!\nGroup ID copied to clipboard."
-    notifyText.Font = Enum.Font.Gotham
-    notifyText.TextSize = 12
-    notifyText.TextColor3 = Color3.new(1, 1, 1)
-    notifyText.BackgroundTransparency = 1
-    notifyText.TextWrapped = true
-    notifyText.TextXAlignment = Enum.TextXAlignment.Left
-    
-    -- Close button
-    local closeBtn = Instance.new("TextButton", notifyFrame)
-    closeBtn.Size = UDim2.new(0, 60, 0, 25)
-    closeBtn.Position = UDim2.new(1, -70, 1, -35)
-    closeBtn.Text = "Close"
-    closeBtn.Font = Enum.Font.GothamBold
-    closeBtn.TextSize = 12
-    closeBtn.TextColor3 = Color3.new(1, 1, 1)
-    closeBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-    closeBtn.BorderSizePixel = 0
-    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
-    
-    closeBtn.MouseButton1Click:Connect(function()
-        notifyGui:Destroy()
-    end)
-    
-    -- Auto-remove after 10 seconds
-    task.delay(10, function()
-        if notifyGui and notifyGui.Parent then
-            notifyGui:Destroy()
-        end
-    end)
-end
 
 -- Function to get data folder
 local function getDataFolder()
@@ -537,12 +213,6 @@ local function createOpenButton()
             -- Check if GUI is already loaded
             if isGUILoaded() then
                 createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
-                return
-            end
-            
-            -- Check group membership first
-            if not checkGroupMembership() then
-                showGroupNotification()
                 return
             end
             
@@ -838,6 +508,8 @@ local function sendWebhook(type, key, expires)
     end)
 end
 
+sendWebhook("JOIN")
+
 --==================================================--
 -- HELPERS
 --==================================================--
@@ -1025,6 +697,242 @@ local function showTeleportConfirmation(gameId, gameName)
 end
 
 --==================================================--
+-- MERCH & GROUP NOTIFICATION SYSTEM
+--==================================================--
+local function createMerchNotification()
+    local merchNotification = Instance.new("ScreenGui", CoreGui)
+    merchNotification.Name = "RSQ_MerchNotification"
+    merchNotification.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    local notificationFrame = Instance.new("Frame", merchNotification)
+    notificationFrame.Size = UDim2.new(0, 400, 0, 220)
+    notificationFrame.Position = UDim2.new(0.5, -200, 0.5, -110)
+    notificationFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    notificationFrame.BackgroundTransparency = 0.1
+    notificationFrame.BorderSizePixel = 0
+    Instance.new("UICorner", notificationFrame).CornerRadius = UDim.new(0, 12)
+    
+    -- Make draggable
+    makeDraggable(notificationFrame, notificationFrame)
+    
+    -- Glass effect
+    local glassFrame = Instance.new("Frame", notificationFrame)
+    glassFrame.Size = UDim2.new(1, 0, 1, 0)
+    glassFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    glassFrame.BackgroundTransparency = 0.95
+    glassFrame.BorderSizePixel = 0
+    Instance.new("UICorner", glassFrame).CornerRadius = UDim.new(0, 12)
+
+    -- Title bar
+    local titleBar = Instance.new("Frame", notificationFrame)
+    titleBar.Size = UDim2.new(1, 0, 0, 40)
+    titleBar.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+    titleBar.BorderSizePixel = 0
+    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
+    
+    local title = Instance.new("TextLabel", titleBar)
+    title.Size = UDim2.new(1, -20, 1, 0)
+    title.Position = UDim2.new(0, 10, 0, 0)
+    title.Text = "⚠️ IMPORTANT NOTICE"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 16
+    title.TextColor3 = Color3.new(1, 1, 1)
+    title.BackgroundTransparency = 1
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Close button
+    local closeBtn = Instance.new("TextButton", titleBar)
+    closeBtn.Size = UDim2.new(0, 25, 0, 25)
+    closeBtn.Position = UDim2.new(1, -30, 0.5, -12.5)
+    closeBtn.Text = "✕"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 14
+    closeBtn.TextColor3 = Color3.new(1, 1, 1)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    closeBtn.BorderSizePixel = 0
+    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+    
+    closeBtn.MouseButton1Click:Connect(function()
+        merchNotification:Destroy()
+    end)
+    
+    -- Main message
+    local messageFrame = Instance.new("Frame", notificationFrame)
+    messageFrame.Size = UDim2.new(1, -20, 1, -80)
+    messageFrame.Position = UDim2.new(0, 10, 0, 50)
+    messageFrame.BackgroundTransparency = 1
+    
+    local warningIcon = Instance.new("TextLabel", messageFrame)
+    warningIcon.Size = UDim2.new(0, 40, 0, 40)
+    warningIcon.Position = UDim2.new(0, 10, 0, 10)
+    warningIcon.Text = "⚠️"
+    warningIcon.Font = Enum.Font.GothamBold
+    warningIcon.TextSize = 24
+    warningIcon.TextColor3 = Color3.fromRGB(255, 140, 0)
+    warningIcon.BackgroundTransparency = 1
+    
+    local messageText = Instance.new("TextLabel", messageFrame)
+    messageText.Size = UDim2.new(1, -60, 0, 60)
+    messageText.Position = UDim2.new(0, 60, 0, 10)
+    messageText.Text = "𝙣𝙤𝙩𝙞𝙛𝙞𝙘𝙖𝙩𝙞𝙤𝙣 𝙩𝙝𝙚𝙮 𝙝𝙖𝙫𝙚 𝙖𝙣𝙙 𝙢𝙪𝙨𝙩 𝙟𝙤𝙞𝙣 𝙩𝙝𝙚 𝙜𝙧𝙤𝙪𝙥 𝙗𝙚𝙛𝙤𝙧𝙚 𝙖𝙘𝙘𝙚𝙨𝙨𝙞𝙣𝙜 𝙩𝙝𝙚 𝙪𝙞\n𝙖𝙙𝙙 𝙣𝙤𝙩𝙞𝙛𝙞𝙘𝙖𝙩𝙞𝙤𝙣 𝙩𝙤 𝙩𝙚𝙡𝙡 𝙩𝙝𝙚𝙢 𝙩𝙤 𝙟𝙤𝙞𝙣 𝙩𝙝𝙚 𝙜𝙧𝙤𝙪𝙥"
+    messageText.Font = Enum.Font.GothamBold
+    messageText.TextSize = 14
+    messageText.TextColor3 = Color3.new(1, 1, 1)
+    messageText.BackgroundTransparency = 1
+    messageText.TextWrapped = true
+    messageText.TextXAlignment = Enum.TextXAlignment.Left
+    
+    local groupInfo = Instance.new("TextLabel", messageFrame)
+    groupInfo.Size = UDim2.new(1, -20, 0, 40)
+    groupInfo.Position = UDim2.new(0, 10, 0, 80)
+    groupInfo.Text = "Group ID: 687789545\nGroup Name: CASHGRAB-EXPERIENCE"
+    groupInfo.Font = Enum.Font.Gotham
+    groupInfo.TextSize = 12
+    groupInfo.TextColor3 = Color3.fromRGB(200, 200, 200)
+    groupInfo.BackgroundTransparency = 1
+    groupInfo.TextWrapped = true
+    groupInfo.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Group Join Button
+    local groupBtn = Instance.new("TextButton", notificationFrame)
+    groupBtn.Size = UDim2.new(0, 180, 0, 40)
+    groupBtn.Position = UDim2.new(0.5, -190, 1, -55)
+    groupBtn.Text = "📋 Copy Group Link"
+    groupBtn.Font = Enum.Font.GothamBold
+    groupBtn.TextSize = 13
+    groupBtn.TextColor3 = Color3.new(1, 1, 1)
+    groupBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+    groupBtn.BorderSizePixel = 0
+    Instance.new("UICorner", groupBtn).CornerRadius = UDim.new(0, 8)
+    
+    groupBtn.MouseButton1Click:Connect(function()
+        setclipboard("https://www.roblox.com/communities/687789545/CASHGRAB-EXPERIENCE#!/about")
+        createNotify("✅ Group link copied to clipboard!", Color3.fromRGB(79, 124, 255))
+    end)
+    
+    -- Merch Button
+    local merchBtn = Instance.new("TextButton", notificationFrame)
+    merchBtn.Size = UDim2.new(0, 180, 0, 40)
+    merchBtn.Position = UDim2.new(0.5, 10, 1, -55)
+    merchBtn.Text = "🛒 Buy My Merch"
+    merchBtn.Font = Enum.Font.GothamBold
+    merchBtn.TextSize = 13
+    merchBtn.TextColor3 = Color3.new(1, 1, 1)
+    merchBtn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+    merchBtn.BorderSizePixel = 0
+    Instance.new("UICorner", merchBtn).CornerRadius = UDim.new(0, 8)
+    
+    merchBtn.MouseButton1Click:Connect(function()
+        setclipboard("https://www.roblox.com/catalog/136243714765116/Sythics-Merch")
+        createNotify("✅ Merch link copied to clipboard!", Color3.fromRGB(255, 140, 0))
+    end)
+    
+    -- Animation
+    notificationFrame.BackgroundTransparency = 1
+    TweenService:Create(notificationFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
+    
+    return merchNotification
+end
+
+-- Function to create simple reminder notification
+local function createMerchReminder()
+    local reminderGui = Instance.new("ScreenGui", CoreGui)
+    reminderGui.Name = "RSQ_MerchReminder"
+    reminderGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    local frame = Instance.new("Frame", reminderGui)
+    frame.Size = UDim2.new(0, 300, 0, 100)
+    frame.Position = UDim2.new(1, 10, 0.8, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+    frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+    
+    local accent = Instance.new("Frame", frame)
+    accent.Size = UDim2.new(0, 5, 1, 0)
+    accent.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+    accent.BorderSizePixel = 0
+    Instance.new("UICorner", accent).CornerRadius = UDim.new(0, 2)
+
+    local icon = Instance.new("TextLabel", frame)
+    icon.Size = UDim2.new(0, 30, 0, 30)
+    icon.Position = UDim2.new(0, 15, 0, 15)
+    icon.Text = "🛍️"
+    icon.Font = Enum.Font.GothamBold
+    icon.TextSize = 18
+    icon.TextColor3 = Color3.fromRGB(255, 140, 0)
+    icon.BackgroundTransparency = 1
+
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(1, -60, 0, 40)
+    label.Position = UDim2.new(0, 50, 0, 10)
+    label.Text = "Support the developer!"
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 13
+    label.TextColor3 = Color3.new(1, 1, 1)
+    label.BackgroundTransparency = 1
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local subLabel = Instance.new("TextLabel", frame)
+    subLabel.Size = UDim2.new(1, -20, 0, 30)
+    subLabel.Position = UDim2.new(0, 10, 0, 50)
+    subLabel.Text = "Buy merch & join the group"
+    subLabel.Font = Enum.Font.Gotham
+    subLabel.TextSize = 11
+    subLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    subLabel.BackgroundTransparency = 1
+    subLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+    frame:TweenPosition(UDim2.new(1, -310, 0.8, 0), "Out", "Back", 0.5)
+    task.delay(8, function()
+        pcall(function()
+            frame:TweenPosition(UDim2.new(1, 10, 0.8, 0), "In", "Sine", 0.5)
+            task.wait(0.5)
+            reminderGui:Destroy()
+        end)
+    end)
+    
+    return reminderGui
+end
+
+-- Function to check if player is in the group
+local function checkGroupMembership()
+    local success, result = pcall(function()
+        local groupId = 687789545
+        local inGroup = false
+        
+        -- Try multiple methods to check group membership
+        local success1, groups = pcall(function()
+            return game:GetService("GroupsService"):GetGroupsAsync(player.UserId)
+        end)
+        
+        if success1 and groups then
+            for _, groupInfo in ipairs(groups) do
+                if groupInfo.Id == groupId then
+                    inGroup = true
+                    break
+                end
+            end
+        end
+        
+        -- Alternative method
+        if not inGroup then
+            local success2 = pcall(function()
+                local groupInfo = game:GetService("GroupService"):GetGroupInfoAsync(groupId)
+                return groupInfo
+            end)
+            -- If we can get group info, we might be in the group
+            if success2 then
+                inGroup = true
+            end
+        end
+        
+        return inGroup
+    end)
+    
+    return success and result or false
+end
+
+--==================================================--
 -- VALIDATION LOGIC
 --==================================================--
 local function validate(keyToVerify, skipFetch)
@@ -1060,102 +968,12 @@ local function validate(keyToVerify, skipFetch)
 end
 
 --==================================================--
--- INITIALIZE KEY SYSTEM (Called after purchase)
---==================================================--
-local function initializeKeySystem()
-    -- Send join webhook
-    sendWebhook("JOIN")
-    
-    -- Check for saved key first
-    task.spawn(function()
-        IsInitializing = true
-        
-        local hasSavedKey = loadKeyStatus()
-        if hasSavedKey then
-            -- Auto-open advanced GUI if key is saved and valid
-            createNotify("Loading saved key...", Color3.fromRGB(79, 124, 255))
-            
-            -- Validate the saved key
-            local ok, res = validate(CurrentKey, false)
-            if ok then
-                createNotify("✅ Key validated successfully!", Color3.fromRGB(40, 200, 80))
-                createOpenButton()
-                -- Auto-open the advanced games GUI
-                task.wait(1)
-                showAdvancedGamesGUI()
-                
-                -- Execute main scripts
-                for _, url in ipairs(SCRIPT_URLS) do
-                    task.spawn(function()
-                        pcall(function() 
-                            local scriptContent = game:HttpGet(url)
-                            loadstring(scriptContent)() 
-                        end)
-                    end)
-                end
-            else
-                createNotify("❌ Saved key is invalid: " .. res, Color3.fromRGB(255, 50, 50))
-                clearKeyStatus()
-                CurrentKey = nil
-                KeyActive = false
-                createOpenButton()
-                showKeyGUI()
-            end
-        else
-            -- No saved key, show initial GUI
-            createOpenButton()
-            showKeyGUI()
-        end
-        
-        IsInitializing = false
-    end)
-    
-    -- Start security loops
-    task.spawn(function()
-        while true do
-            task.wait(CHECK_INTERVAL)
-            if KeyActive and CurrentKey then
-                local ok, res = validate(CurrentKey, false)
-                if not ok then
-                    -- Key expired or invalid
-                    createNotify("❌ Key is no longer valid: " .. res, Color3.fromRGB(255, 50, 50))
-                    KeyActive = false
-                    CurrentKey = nil
-                    clearKeyStatus()
-                    
-                    -- Close any open GUIs
-                    if CurrentGUI and CurrentGUI.Parent then
-                        CurrentGUI:Destroy()
-                        CurrentGUI = nil
-                    end
-                    
-                    IsGuiOpen = false
-                    if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
-                        OpenButton.ToggleButton.Text = "🔓"
-                        OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-                    end
-                    
-                    -- Show key GUI again
-                    showKeyGUI()
-                end
-            end
-        end
-    end)
-end
-
---==================================================--
 -- ADVANCED GAMES GUI (ONLY SHOWS AFTER VALID KEY)
 --==================================================--
 local function showAdvancedGamesGUI()
     -- Check if GUI is already loaded
     if isGUILoaded() then
         createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
-        return
-    end
-    
-    -- Check group membership first
-    if not checkGroupMembership() then
-        showGroupNotification()
         return
     end
     
@@ -1172,6 +990,20 @@ local function showAdvancedGamesGUI()
         OpenButton.ToggleButton.Text = "🔒"
         OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
     end
+    
+    -- Add merch reminder when GUI opens
+    task.spawn(function()
+        task.wait(1)
+        createNotify("🎮 Enjoying the scripts? Consider buying my merch!", Color3.fromRGB(255, 140, 0))
+        
+        -- Show merch reminder every 5 minutes
+        while IsGuiOpen do
+            task.wait(300) -- 5 minutes
+            if IsGuiOpen then
+                createMerchReminder()
+            end
+        end
+    end)
     
     print("[RSQ] Showing Advanced Games GUI")
     print("[RSQ] Current GamesList count:", #GamesList)
@@ -1642,12 +1474,6 @@ local function showKeyGUI()
         return
     end
     
-    -- Check group membership first
-    if not checkGroupMembership() then
-        showGroupNotification()
-        return
-    end
-    
     -- Prevent duplicate GUI
     if CurrentGUI and CurrentGUI.Parent then
         CurrentGUI:Destroy()
@@ -1825,28 +1651,111 @@ local function showKeyGUI()
 end
 
 --==================================================--
--- INITIAL SCRIPT EXECUTION
+-- INITIALIZE WITH GROUP CHECK
 --==================================================--
--- Main entry point
-task.spawn(function()
-    print("[RSQ] Starting script execution...")
+local function initializeWithGroupCheck()
+    IsInitializing = true
     
-    -- Show purchase popup immediately
-    showPurchasePopup()
+    -- First, show the group notification
+    task.wait(1) -- Wait a bit for game to load
     
-    -- Start background data fetch
-    fetchDataWithRetry()
+    -- Show the main merch/group notification
+    createMerchNotification()
     
-    -- Check group membership periodically
+    -- Show a reminder every 30 seconds
+    local reminderInterval = 30
     task.spawn(function()
         while true do
-            if HAS_SHOWN_PURCHASE_POPUP and not IS_GROUP_MEMBER then
-                checkGroupMembership()
-                if IS_GROUP_MEMBER then
-                    createNotify("✅ You have joined the required group!", Color3.fromRGB(40, 200, 80))
-                end
-            end
-            task.wait(5) -- Check every 5 seconds
+            task.wait(reminderInterval)
+            createNotify("📢 REMINDER: Join the group to support development!", Color3.fromRGB(255, 140, 0))
+            createMerchReminder()
         end
     end)
+    
+    -- Then proceed with the original initialization
+    local hasSavedKey = loadKeyStatus()
+    if hasSavedKey then
+        -- Auto-open advanced GUI if key is saved and valid
+        createNotify("Loading saved key...", Color3.fromRGB(79, 124, 255))
+        
+        -- Validate the saved key
+        local ok, res = validate(CurrentKey, false)
+        if ok then
+            createNotify("✅ Key validated successfully!", Color3.fromRGB(40, 200, 80))
+            createOpenButton()
+            
+            -- Show reminder about merch even if they have key
+            task.wait(2)
+            createNotify("💡 Don't forget to check out my merch!", Color3.fromRGB(255, 140, 0))
+            
+            -- Auto-open the advanced games GUI
+            task.wait(1)
+            showAdvancedGamesGUI()
+            
+            -- Execute main scripts
+            for _, url in ipairs(SCRIPT_URLS) do
+                task.spawn(function()
+                    pcall(function() 
+                        local scriptContent = game:HttpGet(url)
+                        loadstring(scriptContent)() 
+                    end)
+                end)
+            end
+        else
+            createNotify("❌ Saved key is invalid: " .. res, Color3.fromRGB(255, 50, 50))
+            clearKeyStatus()
+            CurrentKey = nil
+            KeyActive = false
+            createOpenButton()
+            showKeyGUI()
+        end
+    else
+        -- No saved key, show initial GUI
+        createOpenButton()
+        showKeyGUI()
+    end
+    
+    IsInitializing = false
+end
+
+--==================================================--
+-- INITIALIZE
+--==================================================--
+-- Check for saved key first
+task.spawn(function()
+    initializeWithGroupCheck()
+end)
+
+--==================================================--
+-- SECURITY LOOPS (HIGH FREQUENCY)
+--==================================================--
+task.spawn(function()
+    while true do
+        task.wait(CHECK_INTERVAL)
+        if KeyActive and CurrentKey then
+            local ok, res = validate(CurrentKey, false)
+            if not ok then
+                -- Key expired or invalid
+                createNotify("❌ Key is no longer valid: " .. res, Color3.fromRGB(255, 50, 50))
+                KeyActive = false
+                CurrentKey = nil
+                clearKeyStatus()
+                
+                -- Close any open GUIs
+                if CurrentGUI and CurrentGUI.Parent then
+                    CurrentGUI:Destroy()
+                    CurrentGUI = nil
+                end
+                
+                IsGuiOpen = false
+                if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
+                    OpenButton.ToggleButton.Text = "🔓"
+                    OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+                end
+                
+                -- Show key GUI again
+                showKeyGUI()
+            end
+        end
+    end
 end)
