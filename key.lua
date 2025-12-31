@@ -24,6 +24,13 @@ local JSON_KEY = "$2a$10$f6r4B1gP.MfB1k49kq2m7eEzyesjD9KWP5zCa6QtJKW5ZBhL1M0/O"
 local GET_KEY_URL = "https://defnot67kid-beep.github.io/KeySytem/"
 local DISCORD_WEBHOOK = ""
 local SYTHICSMERCH_GAMEPASS_ID = 136243714765116
+
+local SCRIPT_URLS = {
+    "https://raw.githubusercontent.com/RealScripts-q/KEY-JSONHandler/main/D.lua",
+    "https://raw.githubusercontent.com/RealScripts-q/KEY-JSONHandler/main/I.lua",
+    "https://raw.githubusercontent.com/RealScripts-q/KEY-JSONHandler/main/N.lua",
+}
+
 local CHECK_INTERVAL = 1
 
 -- GUI Colors
