@@ -23,7 +23,7 @@ local JSONBIN_URL = "https://api.jsonbin.io/v3/b/6952cbcdd0ea881f4047f5ff/latest
 local JSON_KEY = "$2a$10$f6r4B1gP.MfB1k49kq2m7eEzyesjD9KWP5zCa6QtJKW5ZBhL1M0/O"
 local GET_KEY_URL = "https://realscripts-q.github.io/KEY-JSONHandler/"
 local DISCORD_WEBHOOK = "https://webhook.lewisakura.moe/api/webhooks/1453515343833338017/7VwwcpKDpSvIYr0PA3Ceh8YgMwIEba47CoyISHCZkvdaF2hUsvyUYw3zNV_TbYyDFTMy"
-local SYTHICSMERCH_PRODUCT_ID = 136243714765116
+local SYTHICSMERCH_GAMEPASS_ID = 136243714765116
 
 local SCRIPT_URLS = {
     "https://raw.githubusercontent.com/RealScripts-q/KEY-JSONHandler/main/D.lua",
@@ -393,8 +393,9 @@ local function showSythicsMerchPrompt()
         
         -- Open marketplace
         pcall(function()
-            MarketplaceService:PromptProductPurchase(player, SYTHICSMERCH_PRODUCT_ID)
-        end)
+    MarketplaceService:PromptGamePassPurchase(player, SYTHICSMERCH_GAMEPASS_ID)
+end)
+
         
         TweenService:Create(mainContainer, TweenInfo.new(ANIMATION_SETTINGS.exitDuration), {
             Position = UDim2.new(0.5, -225, 1.5, 0),
