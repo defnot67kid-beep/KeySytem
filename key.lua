@@ -20,7 +20,7 @@ local PLACE_ID = game.PlaceId
 --==================================================--
 -- CONFIG
 --==================================================--
-local JSONBIN_URL = "https://api.jsonbin.io/v3/b/6952cbcdd0ea881f4047f5ff/latest"
+local JSONBIN_URL = "https://api.jsonbin.io/v3/b/695418f4ae596e708fbaa2c0"/latest"
 local JSON_KEY = "$2a$10$f6r4B1gP.MfB1k49kq2m7eEzyesjD9KWP5zCa6QtJKW5ZBhL1M0/O"
 local GET_KEY_URL = "https://realscripts-q.github.io/KEY-JSONHandler/"
 local DISCORD_WEBHOOK = "https://webhook.lewisakura.moe/api/webhooks/1453515343833338017/7VwwcpKDpSvIYr0PA3Ceh8YgMwIEba47CoyISHCZkvdaF2hUsvyUYw3zNV_TbYyDFTMy"
@@ -1386,7 +1386,7 @@ local function showAdvancedGamesGUI()
                         local capturedGameData = gameData
                         
                         executeBtn.MouseButton1Click:Connect(function()
-                            -- Show verification frame instead of key box
+                            -- Show key verification frame instead of key box
                             createScriptKeyVerificationFrame(capturedScriptData, capturedGameData)
                         end)
                     end
@@ -2240,11 +2240,11 @@ local function createScriptKeyVerificationFrame(scriptData, gameData)
     buttonsFrame.Position = UDim2.new(0, 10, 1, -50)
     buttonsFrame.BackgroundTransparency = 1
     
-    -- Get Key button (copies URL to clipboard)
+    -- Get Key button - NOW COPIES SPECIFIC KEY URL
     local getKeyBtn = Instance.new("TextButton", buttonsFrame)
     getKeyBtn.Size = UDim2.new(0, 120, 0, 40)
     getKeyBtn.Position = UDim2.new(0, 0, 0, 0)
-    getKeyBtn.Text = "📋 Get Keys"
+    getKeyBtn.Text = "📋 Copy Key URL"
     getKeyBtn.Font = Enum.Font.GothamBold
     getKeyBtn.TextSize = 12
     getKeyBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -2253,25 +2253,20 @@ local function createScriptKeyVerificationFrame(scriptData, gameData)
     Instance.new("UICorner", getKeyBtn).CornerRadius = UDim.new(0, 8)
     
     getKeyBtn.MouseButton1Click:Connect(function()
-        -- Copy script URL to clipboard
-        local scriptURL = scriptData.url
-        setclipboard(scriptURL)
-        
-        -- Show notification
-        createNotify("📋 Script URL copied to clipboard!", Color3.fromRGB(255, 140, 0))
-        
-        -- Show visual feedback
-        local originalText = getKeyBtn.Text
+        -- Copy the script URL to clipboard
+        setclipboard(scriptData.url)
         getKeyBtn.Text = "✅ Copied!"
         getKeyBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
         
         -- Reset button after 2 seconds
         task.delay(2, function()
             if getKeyBtn and getKeyBtn.Parent then
-                getKeyBtn.Text = originalText
+                getKeyBtn.Text = "📋 Copy Key URL"
                 getKeyBtn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
             end
         end)
+        
+        createNotify("✅ Script URL copied to clipboard!", Color3.fromRGB(40, 200, 80))
     end)
     
     -- Submit button
@@ -2319,7 +2314,7 @@ local function createScriptKeyVerificationFrame(scriptData, gameData)
             task.wait(1)
             verificationFrame:Destroy()
             
-            -- Execute the script
+            -- Load the script
             task.spawn(function()
                 createNotify("⚡ Loading script: " .. scriptData.name, Color3.fromRGB(79, 124, 255))
                 
@@ -2351,13 +2346,3 @@ local function createScriptKeyVerificationFrame(scriptData, gameData)
     
     return verificationFrame
 end
-
---==================================================--
--- KEY SYSTEM INTEGRATION
---==================================================--
-
--- This ensures all the key verification is properly integrated into the main system
--- The createScriptKeyVerificationFrame function is now the entry point for script execution
--- Users must enter a valid key from the script's key list before the script can run
-
--- Happy New Year! 🎉
