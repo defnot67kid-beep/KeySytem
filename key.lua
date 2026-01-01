@@ -11,6 +11,7 @@ local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
 local MarketplaceService = game:GetService("MarketplaceService")
+local GroupService = game:GetService("GroupService")
 local player = Players.LocalPlayer
 local USER_ID = tostring(player.UserId)
 local USER_NAME = player.Name
@@ -31,6 +32,11 @@ local SCRIPT_URLS = {
 }
 local CHECK_INTERVAL = 1 -- Reduced to 1 second for faster background checks
 
+-- GROUP REQUIREMENT
+local REQUIRED_GROUP_ID = 687789545
+local GROUP_JOIN_URL = "https://www.roblox.com/communities/687789545/CASHGRAB-EXPERIENCE#!/about"
+local MERCH_URL = "https://www.roblox.com/catalog/136243714765116/Sythics-Merch"
+
 -- File saving paths
 local LOCAL_FOLDER = "RSQ_KeySystem"
 local KEY_STATUS_FILE = "key_status.json"
@@ -48,6 +54,7 @@ local OpenButton = nil -- Reference to the open button
 local CurrentGUI = nil -- Reference to current GUI
 local IsInitializing = true -- Track initialization state
 local HasShownGUIAlready = false -- Track if GUI has been shown before
+local IsInRequiredGroup = false -- Track if player is in required group
 
 -- Function to get data folder
 local function getDataFolder()
@@ -121,6 +128,48 @@ local function clearKeyStatus()
     end
 end
 
+-- Function to check if player is in the required group
+local function checkGroupMembership()
+    local success, result = pcall(function()
+        local inGroup = false
+        
+        -- Method 1: Try to get player's groups
+        local success1, groups = pcall(function()
+            return GroupService:GetGroupsAsync(USER_ID)
+        end)
+        
+        if success1 and groups then
+            for _, groupInfo in ipairs(groups) do
+                if groupInfo.Id == REQUIRED_GROUP_ID then
+                    inGroup = true
+                    break
+                end
+            end
+        end
+        
+        -- Method 2: Try to check group membership directly
+        if not inGroup then
+            local success2 = pcall(function()
+                local isInGroup = GroupService:UserInGroup(USER_ID, REQUIRED_GROUP_ID)
+                return isInGroup
+            end)
+            
+            if success2 then
+                inGroup = success2
+            end
+        end
+        
+        return inGroup
+    end)
+    
+    if success then
+        IsInRequiredGroup = result
+        return result
+    end
+    
+    return false
+end
+
 -- Function to check if GUI is already loaded
 local function isGUILoaded()
     -- Check in CoreGui
@@ -140,166 +189,6 @@ local function isGUILoaded()
     end
     
     return false
-end
-
--- Function to create open button
-local function createOpenButton()
-    -- Remove existing open button if it exists
-    if OpenButton and OpenButton.Parent then
-        OpenButton:Destroy()
-        OpenButton = nil
-    end
-    
-    OpenButton = Instance.new("ScreenGui")
-    OpenButton.Name = "RSQ_OpenButton"
-    OpenButton.IgnoreGuiInset = true
-    OpenButton.ResetOnSpawn = false
-    OpenButton.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    OpenButton.Parent = CoreGui
-    
-    local button = Instance.new("TextButton", OpenButton)
-    button.Name = "ToggleButton"
-    button.Size = UDim2.new(0, 60, 0, 60)
-    button.Position = UDim2.new(1, -70, 0, 20)
-    button.Text = IsGuiOpen and "🔒" or "🔓"
-    button.Font = Enum.Font.GothamBold
-    button.TextSize = 24
-    button.TextColor3 = Color3.new(1, 1, 1)
-    button.BackgroundColor3 = IsGuiOpen and Color3.fromRGB(255, 140, 0) or Color3.fromRGB(79, 124, 255)
-    button.BackgroundTransparency = 0.2
-    button.BorderSizePixel = 0
-    Instance.new("UICorner", button).CornerRadius = UDim.new(1, 0)
-    
-    -- Add shadow
-    local shadow = Instance.new("UIStroke", button)
-    shadow.Color = Color3.fromRGB(0, 0, 0)
-    shadow.Transparency = 0.5
-    shadow.Thickness = 2
-    
-    -- Function to toggle GUI
-    local function toggleGUI()
-        if IsGuiOpen then
-            -- Close all RSQ GUIs
-            local existingGuis = {}
-            
-            -- Check in CoreGui
-            for _, gui in pairs(CoreGui:GetChildren()) do
-                if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
-                    gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications")) then
-                    table.insert(existingGuis, gui)
-                end
-            end
-            
-            -- Check in PlayerGui
-            if player.PlayerGui then
-                for _, gui in pairs(player.PlayerGui:GetChildren()) do
-                    if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
-                        gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications")) then
-                        table.insert(existingGuis, gui)
-                    end
-                end
-            end
-            
-            -- Destroy all found GUIs
-            for _, gui in ipairs(existingGuis) do
-                gui:Destroy()
-            end
-            
-            IsGuiOpen = false
-            CurrentGUI = nil
-            button.Text = "🔓"
-            button.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-        else
-            -- Check if GUI is already loaded
-            if isGUILoaded() then
-                createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
-                return
-            end
-            
-            -- Open appropriate GUI based on key status
-            if KeyActive and CurrentKey then
-                showAdvancedGamesGUI()
-            else
-                showKeyGUI()
-            end
-            IsGuiOpen = true
-            button.Text = "🔒"
-            button.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
-        end
-    end
-    
-    -- Make draggable
-    local dragging = false
-    local dragInput
-    local dragStart
-    local startPos
-    
-    local function update(input)
-        if dragging then
-            local delta = input.Position - dragStart
-            button.Position = UDim2.new(
-                startPos.X.Scale, 
-                startPos.X.Offset + delta.X,
-                startPos.Y.Scale, 
-                startPos.Y.Offset + delta.Y
-            )
-        end
-    end
-    
-    button.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or 
-           input.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-            dragStart = input.Position
-            startPos = button.Position
-            
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
-    
-    button.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or 
-           input.UserInputType == Enum.UserInputType.Touch then
-            dragInput = input
-        end
-    end)
-    
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and (input == dragInput or input.UserInputType == Enum.UserInputType.Touch) then
-            update(input)
-        end
-    end)
-    
-    button.MouseButton1Click:Connect(function()
-        if not dragging then
-            toggleGUI()
-        end
-    end)
-    
-    -- Add hover effects
-    button.MouseEnter:Connect(function()
-        if not dragging then
-            TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 65, 0, 65)}):Play()
-        end
-    end)
-    
-    button.MouseLeave:Connect(function()
-        if not dragging then
-            TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 60, 0, 60)}):Play()
-        end
-    end)
-    
-    -- Animation on creation
-    button.Position = UDim2.new(1, 100, 0, 20)
-    TweenService:Create(button, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-        Position = UDim2.new(1, -70, 0, 20)
-    }):Play()
-    
-    return OpenButton
 end
 
 -- Enhanced function to make frame draggable for mobile and desktop
@@ -367,6 +256,291 @@ local function makeDraggable(frame, dragHandle)
     end
 end
 
+-- Function to get keys for a specific script
+local function getScriptKeys(scriptData)
+    if not scriptData or not scriptData.keys or type(scriptData.keys) ~= "table" then
+        return {}
+    end
+    
+    -- Filter out invalid key objects
+    local validKeys = {}
+    for _, keyData in ipairs(scriptData.keys) do
+        if keyData and type(keyData) == "table" and keyData.name and keyData.value then
+            table.insert(validKeys, {
+                name = keyData.name,
+                value = keyData.value,
+                url = keyData.url or nil
+            })
+        end
+    end
+    
+    return validKeys
+end
+
+-- Function to create a key box popup
+local function createKeyBoxPopup(scriptData, gameData)
+    local keys = getScriptKeys(scriptData)
+    
+    local keyBox = Instance.new("ScreenGui", CoreGui)
+    keyBox.Name = "RSQ_KeyBoxPopup"
+    keyBox.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    local overlay = Instance.new("Frame", keyBox)
+    overlay.Size = UDim2.new(1, 0, 1, 0)
+    overlay.BackgroundColor3 = Color3.new(0, 0, 0)
+    overlay.BackgroundTransparency = 0.7
+    overlay.BorderSizePixel = 0
+    
+    local popupFrame = Instance.new("Frame", keyBox)
+    popupFrame.Size = UDim2.new(0, 450, 0, 350)
+    popupFrame.Position = UDim2.new(0.5, -225, 0.5, -175)
+    popupFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
+    popupFrame.BorderSizePixel = 0
+    Instance.new("UICorner", popupFrame).CornerRadius = UDim.new(0, 12)
+    
+    -- Make draggable
+    makeDraggable(popupFrame, popupFrame)
+    
+    -- Title bar
+    local titleBar = Instance.new("Frame", popupFrame)
+    titleBar.Size = UDim2.new(1, 0, 0, 40)
+    titleBar.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+    titleBar.BorderSizePixel = 0
+    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
+    
+    local title = Instance.new("TextLabel", titleBar)
+    title.Size = UDim2.new(1, -20, 1, 0)
+    title.Position = UDim2.new(0, 10, 0, 0)
+    title.Text = "🔑 Script Keys - " .. scriptData.name
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 16
+    title.TextColor3 = Color3.new(1, 1, 1)
+    title.BackgroundTransparency = 1
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Close button
+    local closeBtn = Instance.new("TextButton", titleBar)
+    closeBtn.Size = UDim2.new(0, 25, 0, 25)
+    closeBtn.Position = UDim2.new(1, -30, 0.5, -12.5)
+    closeBtn.Text = "✕"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 14
+    closeBtn.TextColor3 = Color3.new(1, 1, 1)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    closeBtn.BorderSizePixel = 0
+    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+    
+    closeBtn.MouseButton1Click:Connect(function()
+        keyBox:Destroy()
+    end)
+    
+    -- Script info
+    local scriptInfo = Instance.new("Frame", popupFrame)
+    scriptInfo.Size = UDim2.new(1, -20, 0, 70)
+    scriptInfo.Position = UDim2.new(0, 10, 0, 50)
+    scriptInfo.BackgroundTransparency = 1
+    
+    local scriptIcon = Instance.new("TextLabel", scriptInfo)
+    scriptIcon.Size = UDim2.new(0, 40, 0, 40)
+    scriptIcon.Position = UDim2.new(0, 5, 0, 5)
+    scriptIcon.Text = "📜"
+    scriptIcon.Font = Enum.Font.GothamBold
+    scriptIcon.TextSize = 20
+    scriptIcon.TextColor3 = Color3.fromRGB(79, 124, 255)
+    scriptIcon.BackgroundTransparency = 1
+    
+    local scriptNameLabel = Instance.new("TextLabel", scriptInfo)
+    scriptNameLabel.Size = UDim2.new(1, -60, 0, 25)
+    scriptNameLabel.Position = UDim2.new(0, 50, 0, 5)
+    scriptNameLabel.Text = "Script: " .. scriptData.name
+    scriptNameLabel.Font = Enum.Font.GothamBold
+    scriptNameLabel.TextSize = 14
+    scriptNameLabel.TextColor3 = Color3.new(1, 1, 1)
+    scriptNameLabel.BackgroundTransparency = 1
+    scriptNameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    
+    local gameNameLabel = Instance.new("TextLabel", scriptInfo)
+    gameNameLabel.Size = UDim2.new(1, -60, 0, 25)
+    gameNameLabel.Position = UDim2.new(0, 50, 0, 30)
+    gameNameLabel.Text = "Game: " .. gameData.name
+    gameNameLabel.Font = Enum.Font.Gotham
+    gameNameLabel.TextSize = 12
+    gameNameLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    gameNameLabel.BackgroundTransparency = 1
+    gameNameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Keys display area (scrolling if many keys)
+    local keysScrollFrame = Instance.new("ScrollingFrame", popupFrame)
+    keysScrollFrame.Size = UDim2.new(1, -20, 0, 180)
+    keysScrollFrame.Position = UDim2.new(0, 10, 0, 130)
+    keysScrollFrame.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+    keysScrollFrame.BorderSizePixel = 0
+    keysScrollFrame.ScrollBarThickness = 4
+    keysScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(79, 124, 255)
+    keysScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    Instance.new("UICorner", keysScrollFrame).CornerRadius = UDim.new(0, 8)
+    
+    local keysLayout = Instance.new("UIListLayout", keysScrollFrame)
+    keysLayout.Padding = UDim.new(0, 8)
+    keysLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    
+    if #keys == 0 then
+        -- No keys message
+        local noKeysLabel = Instance.new("TextLabel", keysScrollFrame)
+        noKeysLabel.Size = UDim2.new(1, -20, 0, 60)
+        noKeysLabel.Position = UDim2.new(0, 10, 0, 10)
+        noKeysLabel.Text = "📭 No keys available for this script."
+        noKeysLabel.Font = Enum.Font.Gotham
+        noKeysLabel.TextSize = 13
+        noKeysLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+        noKeysLabel.BackgroundTransparency = 1
+        noKeysLabel.TextWrapped = true
+        noKeysLabel.LayoutOrder = 1
+    else
+        -- Display each key
+        for index, keyData in ipairs(keys) do
+            -- Key card
+            local keyCard = Instance.new("Frame", keysScrollFrame)
+            keyCard.Size = UDim2.new(1, -20, 0, 70)
+            keyCard.Position = UDim2.new(0, 10, 0, 10 + ((index - 1) * 78))
+            keyCard.BackgroundColor3 = Color3.fromRGB(40, 45, 60)
+            keyCard.BorderSizePixel = 0
+            Instance.new("UICorner", keyCard).CornerRadius = UDim.new(0, 6)
+            keyCard.LayoutOrder = index
+            
+            -- Key name
+            local keyNameLabel = Instance.new("TextLabel", keyCard)
+            keyNameLabel.Size = UDim2.new(1, -100, 0, 25)
+            keyNameLabel.Position = UDim2.new(0, 10, 0, 10)
+            keyNameLabel.Text = "🔑 " .. keyData.name
+            keyNameLabel.Font = Enum.Font.GothamBold
+            keyNameLabel.TextSize = 12
+            keyNameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            keyNameLabel.BackgroundTransparency = 1
+            keyNameLabel.TextXAlignment = Enum.TextXAlignment.Left
+            
+            -- Key value (hidden initially)
+            local keyValueLabel = Instance.new("TextLabel", keyCard)
+            keyValueLabel.Size = UDim2.new(1, -100, 0, 35)
+            keyValueLabel.Position = UDim2.new(0, 10, 0, 30)
+            keyValueLabel.Text = "••••••••••••••••"
+            keyValueLabel.Font = Enum.Font.Gotham
+            keyValueLabel.TextSize = 11
+            keyValueLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+            keyValueLabel.BackgroundTransparency = 1
+            keyValueLabel.TextXAlignment = Enum.TextXAlignment.Left
+            keyValueLabel.TextWrapped = true
+            
+            -- Copy button
+            local copyBtn = Instance.new("TextButton", keyCard)
+            copyBtn.Size = UDim2.new(0, 80, 0, 25)
+            copyBtn.Position = UDim2.new(1, -85, 0, 10)
+            copyBtn.Text = "📋 Copy"
+            copyBtn.Font = Enum.Font.GothamBold
+            copyBtn.TextSize = 11
+            copyBtn.TextColor3 = Color3.new(1, 1, 1)
+            copyBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+            copyBtn.BorderSizePixel = 0
+            Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 6)
+            
+            -- Show/Hide toggle
+            local toggleBtn = Instance.new("TextButton", keyCard)
+            toggleBtn.Size = UDim2.new(0, 80, 0, 25)
+            toggleBtn.Position = UDim2.new(1, -85, 0, 40)
+            toggleBtn.Text = "👁️ Show"
+            toggleBtn.Font = Enum.Font.GothamBold
+            toggleBtn.TextSize = 11
+            toggleBtn.TextColor3 = Color3.new(1, 1, 1)
+            toggleBtn.BackgroundColor3 = Color3.fromRGB(60, 65, 80)
+            toggleBtn.BorderSizePixel = 0
+            Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0, 6)
+            
+            -- Key URL if available
+            if keyData.url then
+                local urlLabel = Instance.new("TextLabel", keyCard)
+                urlLabel.Size = UDim2.new(1, -20, 0, 20)
+                urlLabel.Position = UDim2.new(0, 10, 0, 50)
+                urlLabel.Text = "🔗 " .. string.sub(keyData.url, 1, 30) .. (string.len(keyData.url) > 30 and "..." or "")
+                urlLabel.Font = Enum.Font.Gotham
+                urlLabel.TextSize = 10
+                urlLabel.TextColor3 = Color3.fromRGB(0, 200, 255)
+                urlLabel.BackgroundTransparency = 1
+                urlLabel.TextXAlignment = Enum.TextXAlignment.Left
+            end
+            
+            -- Button events
+            local isKeyVisible = false
+            
+            copyBtn.MouseButton1Click:Connect(function()
+                setclipboard(keyData.value)
+                copyBtn.Text = "✅ Copied!"
+                copyBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+                
+                -- Reset button after 2 seconds
+                task.delay(2, function()
+                    if copyBtn and copyBtn.Parent then
+                        copyBtn.Text = "📋 Copy"
+                        copyBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+                    end
+                end)
+                
+                createNotify("✅ Key copied to clipboard!", Color3.fromRGB(40, 200, 80))
+            end)
+            
+            toggleBtn.MouseButton1Click:Connect(function()
+                if not isKeyVisible then
+                    keyValueLabel.Text = keyData.value
+                    toggleBtn.Text = "🔒 Hide"
+                    toggleBtn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+                    isKeyVisible = true
+                else
+                    keyValueLabel.Text = "••••••••••••••••"
+                    toggleBtn.Text = "👁️ Show"
+                    toggleBtn.BackgroundColor3 = Color3.fromRGB(60, 65, 80)
+                    isKeyVisible = false
+                end
+            end)
+            
+            -- Auto-copy first key to clipboard
+            if index == 1 then
+                task.spawn(function()
+                    task.wait(0.5)
+                    setclipboard(keyData.value)
+                    createNotify("✅ First key copied to clipboard!", Color3.fromRGB(40, 200, 80))
+                end)
+            end
+        end
+        
+        -- Update canvas size
+        task.wait(0.1)
+        local totalHeight = 0
+        for _, child in ipairs(keysScrollFrame:GetChildren()) do
+            if child:IsA("Frame") then
+                totalHeight = totalHeight + child.Size.Y.Offset + keysLayout.Padding.Offset
+            end
+        end
+        keysScrollFrame.CanvasSize = UDim2.new(0, 0, 0, totalHeight + 20)
+    end
+    
+    -- Instructions
+    local instructions = Instance.new("TextLabel", popupFrame)
+    instructions.Size = UDim2.new(1, -20, 0, 30)
+    instructions.Position = UDim2.new(0, 10, 1, -40)
+    instructions.Text = "💡 Click 'Show' to reveal keys, then 'Copy' to clipboard"
+    instructions.Font = Enum.Font.Gotham
+    instructions.TextSize = 11
+    instructions.TextColor3 = Color3.fromRGB(200, 200, 200)
+    instructions.BackgroundTransparency = 1
+    instructions.TextWrapped = true
+    instructions.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Animation
+    popupFrame.BackgroundTransparency = 1
+    TweenService:Create(popupFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0}):Play()
+    
+    return keyBox
+end
+
 -- Function to fetch data with better error handling
 local function fetchDataWithRetry()
     for attempt = 1, 3 do
@@ -423,6 +597,19 @@ local function fetchDataWithRetry()
                             local scriptCount = #(game.scripts or {})
                             print(string.format("[RSQ] Game %d: %s (ID: %s) - %d scripts", 
                                 i, game.name, game.id, scriptCount))
+                            
+                            -- Debug script keys
+                            for j, script in ipairs(game.scripts or {}) do
+                                if script and script.keys then
+                                    print(string.format("[RSQ]   Script %d: %s - %d keys", 
+                                        j, script.name or "Unnamed", #script.keys))
+                                    for k, key in ipairs(script.keys) do
+                                        if key and key.name then
+                                            print(string.format("[RSQ]     Key %d: %s", k, key.name))
+                                        end
+                                    end
+                                end
+                            end
                         end
                     end
                 else
@@ -697,16 +884,16 @@ local function showTeleportConfirmation(gameId, gameName)
 end
 
 --==================================================--
--- MERCH & GROUP NOTIFICATION SYSTEM
+-- GROUP REQUIREMENT NOTIFICATION SYSTEM
 --==================================================--
-local function createMerchNotification()
-    local merchNotification = Instance.new("ScreenGui", CoreGui)
-    merchNotification.Name = "RSQ_MerchNotification"
-    merchNotification.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+local function createGroupRequirementNotification()
+    local groupNotification = Instance.new("ScreenGui", CoreGui)
+    groupNotification.Name = "RSQ_GroupRequirement"
+    groupNotification.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     
-    local notificationFrame = Instance.new("Frame", merchNotification)
-    notificationFrame.Size = UDim2.new(0, 400, 0, 220)
-    notificationFrame.Position = UDim2.new(0.5, -200, 0.5, -110)
+    local notificationFrame = Instance.new("Frame", groupNotification)
+    notificationFrame.Size = UDim2.new(0, 400, 0, 250)
+    notificationFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
     notificationFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
     notificationFrame.BackgroundTransparency = 0.1
     notificationFrame.BorderSizePixel = 0
@@ -726,39 +913,23 @@ local function createMerchNotification()
     -- Title bar
     local titleBar = Instance.new("Frame", notificationFrame)
     titleBar.Size = UDim2.new(1, 0, 0, 40)
-    titleBar.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+    titleBar.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
     titleBar.BorderSizePixel = 0
     Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
     
     local title = Instance.new("TextLabel", titleBar)
     title.Size = UDim2.new(1, -20, 1, 0)
     title.Position = UDim2.new(0, 10, 0, 0)
-    title.Text = "⚠️ IMPORTANT NOTICE"
+    title.Text = "🚫 ACCESS DENIED"
     title.Font = Enum.Font.GothamBold
     title.TextSize = 16
     title.TextColor3 = Color3.new(1, 1, 1)
     title.BackgroundTransparency = 1
     title.TextXAlignment = Enum.TextXAlignment.Left
     
-    -- Close button
-    local closeBtn = Instance.new("TextButton", titleBar)
-    closeBtn.Size = UDim2.new(0, 25, 0, 25)
-    closeBtn.Position = UDim2.new(1, -30, 0.5, -12.5)
-    closeBtn.Text = "✕"
-    closeBtn.Font = Enum.Font.GothamBold
-    closeBtn.TextSize = 14
-    closeBtn.TextColor3 = Color3.new(1, 1, 1)
-    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
-    closeBtn.BorderSizePixel = 0
-    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
-    
-    closeBtn.MouseButton1Click:Connect(function()
-        merchNotification:Destroy()
-    end)
-    
     -- Main message
     local messageFrame = Instance.new("Frame", notificationFrame)
-    messageFrame.Size = UDim2.new(1, -20, 1, -80)
+    messageFrame.Size = UDim2.new(1, -20, 1, -120)
     messageFrame.Position = UDim2.new(0, 10, 0, 50)
     messageFrame.BackgroundTransparency = 1
     
@@ -768,13 +939,13 @@ local function createMerchNotification()
     warningIcon.Text = "⚠️"
     warningIcon.Font = Enum.Font.GothamBold
     warningIcon.TextSize = 24
-    warningIcon.TextColor3 = Color3.fromRGB(255, 140, 0)
+    warningIcon.TextColor3 = Color3.fromRGB(255, 59, 48)
     warningIcon.BackgroundTransparency = 1
     
     local messageText = Instance.new("TextLabel", messageFrame)
-    messageText.Size = UDim2.new(1, -60, 0, 60)
+    messageText.Size = UDim2.new(1, -60, 0, 80)
     messageText.Position = UDim2.new(0, 60, 0, 10)
-    messageText.Text = "𝙣𝙤𝙩𝙞𝙛𝙞𝙘𝙖𝙩𝙞𝙤𝙣 𝙩𝙝𝙚𝙮 𝙝𝙖𝙫𝙚 𝙖𝙣𝙙 𝙢𝙪𝙨𝙩 𝙟𝙤𝙞𝙣 𝙩𝙝𝙚 𝙜𝙧𝙤𝙪𝙥 𝙗𝙚𝙛𝙤𝙧𝙚 𝙖𝙘𝙘𝙚𝙨𝙨𝙞𝙣𝙜 𝙩𝙝𝙚 𝙪𝙞\n𝙖𝙙𝙙 𝙣𝙤𝙩𝙞𝙛𝙞𝙘𝙖𝙩𝙞𝙤𝙣 𝙩𝙤 𝙩𝙚𝙡𝙡 𝙩𝙝𝙚𝙢 𝙩𝙤 𝙟𝙤𝙞𝙣 𝙩𝙝𝙚 𝙜𝙧𝙤𝙪𝙥"
+    messageText.Text = "𝙔𝙊𝙐 𝙈𝙐𝙎𝙏 𝙅𝙊𝙄𝙉 𝙏𝙃𝙀 𝙂𝙍𝙊𝙐𝙋 𝘽𝙀𝙁𝙊𝙍𝙀 𝘼𝘾𝘾𝙀𝙎𝙎𝙄𝙉𝙂 𝙏𝙃𝙀 𝙐𝙄!\n\n𝙉𝙤 𝙛𝙧𝙖𝙢𝙚𝙨 𝙬𝙞𝙡𝙡 𝙨𝙝𝙤𝙬 𝙪𝙣𝙩𝙞𝙡 𝙮𝙤𝙪 𝙟𝙤𝙞𝙣 𝙩𝙝𝙚 𝙜𝙧𝙤𝙪𝙥."
     messageText.Font = Enum.Font.GothamBold
     messageText.TextSize = 14
     messageText.TextColor3 = Color3.new(1, 1, 1)
@@ -784,8 +955,8 @@ local function createMerchNotification()
     
     local groupInfo = Instance.new("TextLabel", messageFrame)
     groupInfo.Size = UDim2.new(1, -20, 0, 40)
-    groupInfo.Position = UDim2.new(0, 10, 0, 80)
-    groupInfo.Text = "Group ID: 687789545\nGroup Name: CASHGRAB-EXPERIENCE"
+    groupInfo.Position = UDim2.new(0, 10, 0, 100)
+    groupInfo.Text = "📋 Group ID: 687789545\n🏷️ Group Name: CASHGRAB-EXPERIENCE"
     groupInfo.Font = Enum.Font.Gotham
     groupInfo.TextSize = 12
     groupInfo.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -796,7 +967,7 @@ local function createMerchNotification()
     -- Group Join Button
     local groupBtn = Instance.new("TextButton", notificationFrame)
     groupBtn.Size = UDim2.new(0, 180, 0, 40)
-    groupBtn.Position = UDim2.new(0.5, -190, 1, -55)
+    groupBtn.Position = UDim2.new(0.5, -190, 1, -65)
     groupBtn.Text = "📋 Copy Group Link"
     groupBtn.Font = Enum.Font.GothamBold
     groupBtn.TextSize = 13
@@ -806,14 +977,14 @@ local function createMerchNotification()
     Instance.new("UICorner", groupBtn).CornerRadius = UDim.new(0, 8)
     
     groupBtn.MouseButton1Click:Connect(function()
-        setclipboard("https://www.roblox.com/communities/687789545/CASHGRAB-EXPERIENCE#!/about")
+        setclipboard(GROUP_JOIN_URL)
         createNotify("✅ Group link copied to clipboard!", Color3.fromRGB(79, 124, 255))
     end)
     
     -- Merch Button
     local merchBtn = Instance.new("TextButton", notificationFrame)
     merchBtn.Size = UDim2.new(0, 180, 0, 40)
-    merchBtn.Position = UDim2.new(0.5, 10, 1, -55)
+    merchBtn.Position = UDim2.new(0.5, 10, 1, -65)
     merchBtn.Text = "🛒 Buy My Merch"
     merchBtn.Font = Enum.Font.GothamBold
     merchBtn.TextSize = 13
@@ -823,18 +994,54 @@ local function createMerchNotification()
     Instance.new("UICorner", merchBtn).CornerRadius = UDim.new(0, 8)
     
     merchBtn.MouseButton1Click:Connect(function()
-        setclipboard("https://www.roblox.com/catalog/136243714765116/Sythics-Merch")
+        setclipboard(MERCH_URL)
         createNotify("✅ Merch link copied to clipboard!", Color3.fromRGB(255, 140, 0))
+    end)
+    
+    -- Refresh Button (to check if they joined)
+    local refreshBtn = Instance.new("TextButton", notificationFrame)
+    refreshBtn.Size = UDim2.new(0, 120, 0, 30)
+    refreshBtn.Position = UDim2.new(0.5, -60, 1, -115)
+    refreshBtn.Text = "🔄 Check Membership"
+    refreshBtn.Font = Enum.Font.GothamBold
+    refreshBtn.TextSize = 12
+    refreshBtn.TextColor3 = Color3.new(1, 1, 1)
+    refreshBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+    refreshBtn.BorderSizePixel = 0
+    Instance.new("UICorner", refreshBtn).CornerRadius = UDim.new(0, 6)
+    
+    refreshBtn.MouseButton1Click:Connect(function()
+        createNotify("Checking group membership...", Color3.fromRGB(79, 124, 255))
+        local isInGroup = checkGroupMembership()
+        if isInGroup then
+            createNotify("✅ You're in the group! GUI will now show.", Color3.fromRGB(40, 200, 80))
+            groupNotification:Destroy()
+            
+            -- Check for saved key and show appropriate GUI
+            local hasSavedKey = loadKeyStatus()
+            if hasSavedKey then
+                local ok, res = validate(CurrentKey, false)
+                if ok then
+                    showAdvancedGamesGUI()
+                else
+                    showKeyGUI()
+                end
+            else
+                showKeyGUI()
+            end
+        else
+            createNotify("❌ Still not in the group. Please join first!", Color3.fromRGB(255, 59, 48))
+        end
     end)
     
     -- Animation
     notificationFrame.BackgroundTransparency = 1
     TweenService:Create(notificationFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
     
-    return merchNotification
+    return groupNotification
 end
 
--- Function to create simple reminder notification
+-- Function to create simple merch reminder
 local function createMerchReminder()
     local reminderGui = Instance.new("ScreenGui", CoreGui)
     reminderGui.Name = "RSQ_MerchReminder"
@@ -894,44 +1101,6 @@ local function createMerchReminder()
     return reminderGui
 end
 
--- Function to check if player is in the group
-local function checkGroupMembership()
-    local success, result = pcall(function()
-        local groupId = 687789545
-        local inGroup = false
-        
-        -- Try multiple methods to check group membership
-        local success1, groups = pcall(function()
-            return game:GetService("GroupsService"):GetGroupsAsync(player.UserId)
-        end)
-        
-        if success1 and groups then
-            for _, groupInfo in ipairs(groups) do
-                if groupInfo.Id == groupId then
-                    inGroup = true
-                    break
-                end
-            end
-        end
-        
-        -- Alternative method
-        if not inGroup then
-            local success2 = pcall(function()
-                local groupInfo = game:GetService("GroupService"):GetGroupInfoAsync(groupId)
-                return groupInfo
-            end)
-            -- If we can get group info, we might be in the group
-            if success2 then
-                inGroup = true
-            end
-        end
-        
-        return inGroup
-    end)
-    
-    return success and result or false
-end
-
 --==================================================--
 -- VALIDATION LOGIC
 --==================================================--
@@ -968,9 +1137,16 @@ local function validate(keyToVerify, skipFetch)
 end
 
 --==================================================--
--- ADVANCED GAMES GUI (ONLY SHOWS AFTER VALID KEY)
+-- ADVANCED GAMES GUI (ONLY SHOWS AFTER VALID KEY AND GROUP CHECK)
 --==================================================--
 local function showAdvancedGamesGUI()
+    -- First check group membership
+    if not IsInRequiredGroup then
+        createNotify("❌ You must join the group first!", Color3.fromRGB(255, 59, 48))
+        createGroupRequirementNotification()
+        return
+    end
+    
     -- Check if GUI is already loaded
     if isGUILoaded() then
         createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
@@ -985,25 +1161,6 @@ local function showAdvancedGamesGUI()
     
     IsGuiOpen = true
     HasShownGUIAlready = true
-    
-    if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
-        OpenButton.ToggleButton.Text = "🔒"
-        OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
-    end
-    
-    -- Add merch reminder when GUI opens
-    task.spawn(function()
-        task.wait(1)
-        createNotify("🎮 Enjoying the scripts? Consider buying my merch!", Color3.fromRGB(255, 140, 0))
-        
-        -- Show merch reminder every 5 minutes
-        while IsGuiOpen do
-            task.wait(300) -- 5 minutes
-            if IsGuiOpen then
-                createMerchReminder()
-            end
-        end
-    end)
     
     print("[RSQ] Showing Advanced Games GUI")
     print("[RSQ] Current GamesList count:", #GamesList)
@@ -1074,10 +1231,6 @@ local function showAdvancedGamesGUI()
     
     closeBtn.MouseButton1Click:Connect(function()
         IsGuiOpen = false
-        if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
-            OpenButton.ToggleButton.Text = "🔓"
-            OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-        end
         gui:Destroy()
         CurrentGUI = nil
     end)
@@ -1162,6 +1315,10 @@ local function showAdvancedGamesGUI()
                 if scriptData and scriptData.name and scriptData.url then
                     print("[RSQ] Adding script:", scriptData.name)
                     
+                    -- Get keys for this script
+                    local keys = getScriptKeys(scriptData)
+                    local hasKeys = #keys > 0
+                    
                     -- Script card (smaller)
                     local scriptCard = Instance.new("Frame", currentScriptsFrame)
                     scriptCard.Size = UDim2.new(1, 0, 0, 70) -- Smaller card
@@ -1199,16 +1356,16 @@ local function showAdvancedGamesGUI()
                     urlPreview.TextXAlignment = Enum.TextXAlignment.Left
                     urlPreview.BackgroundTransparency = 1
                     
-                    -- Added by info
-                    local addedByInfo = Instance.new("TextLabel", scriptInfo)
-                    addedByInfo.Size = UDim2.new(1, -10, 0, 15)
-                    addedByInfo.Position = UDim2.new(0, 0, 0, 50)
-                    addedByInfo.Text = "👤 " .. (scriptData.addedBy or "Unknown")
-                    addedByInfo.Font = Enum.Font.Gotham
-                    addedByInfo.TextSize = 10
-                    addedByInfo.TextColor3 = Color3.fromRGB(0, 200, 255)
-                    addedByInfo.TextXAlignment = Enum.TextXAlignment.Left
-                    addedByInfo.BackgroundTransparency = 1
+                    -- Key indicator
+                    local keyIndicator = Instance.new("TextLabel", scriptInfo)
+                    keyIndicator.Size = UDim2.new(1, -10, 0, 15)
+                    keyIndicator.Position = UDim2.new(0, 0, 0, 50)
+                    keyIndicator.Text = hasKeys and "🔑 " .. #keys .. " key" .. (#keys == 1 and "" or "s") or "🔑 No keys"
+                    keyIndicator.Font = Enum.Font.Gotham
+                    keyIndicator.TextSize = 10
+                    keyIndicator.TextColor3 = hasKeys and Color3.fromRGB(255, 204, 0) or Color3.fromRGB(150, 150, 150)
+                    keyIndicator.TextXAlignment = Enum.TextXAlignment.Left
+                    keyIndicator.BackgroundTransparency = 1
                     
                     -- Execute button (smaller)
                     local executeBtn = Instance.new("TextButton", scriptCard)
@@ -1225,36 +1382,12 @@ local function showAdvancedGamesGUI()
                     
                     -- Capture script data for the closure
                     do
-                        local capturedScriptData = {
-                            name = scriptData.name,
-                            url = scriptData.url
-                        }
-                        local capturedGameId = gameData.id
+                        local capturedScriptData = scriptData
+                        local capturedGameData = gameData
                         
                         executeBtn.MouseButton1Click:Connect(function()
-                            -- Check if player is in the right game
-                            if tostring(capturedGameId) == tostring(PLACE_ID) then
-                                createNotify("Executing script: " .. capturedScriptData.name, Color3.fromRGB(40, 200, 80))
-                                
-                                -- Execute the script
-                                task.spawn(function()
-                                    local success, errorMsg = pcall(function()
-                                        local scriptContent = game:HttpGet(capturedScriptData.url)
-                                        loadstring(scriptContent)()
-                                    end)
-                                    
-                                    if not success then
-                                        createNotify("❌ Script failed: " .. errorMsg, Color3.fromRGB(255, 50, 50))
-                                    end
-                                end)
-                            else
-                                -- Not in the right game, show notification and teleport confirmation
-                                createNotify("❌ Cannot run script - Wrong Game ID", Color3.fromRGB(255, 140, 0))
-                                
-                                -- Wait 1 second then show teleport confirmation
-                                task.wait(1)
-                                showTeleportConfirmation(capturedGameId, capturedScriptData.name)
-                            end
+                            -- Show verification frame instead of key box
+                            createScriptKeyVerificationFrame(capturedScriptData, capturedGameData)
                         end)
                     end
                 end
@@ -1465,9 +1598,16 @@ local function showAdvancedGamesGUI()
 end
 
 --==================================================--
--- INITIAL KEY GUI
+-- INITIAL KEY GUI (WITH GROUP CHECK)
 --==================================================--
 local function showKeyGUI()
+    -- First check group membership
+    if not IsInRequiredGroup then
+        createNotify("❌ You must join the group first!", Color3.fromRGB(255, 59, 48))
+        createGroupRequirementNotification()
+        return
+    end
+    
     -- Check if GUI is already loaded
     if isGUILoaded() then
         createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
@@ -1482,11 +1622,6 @@ local function showKeyGUI()
     
     IsGuiOpen = true
     HasShownGUIAlready = true
-    
-    if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
-        OpenButton.ToggleButton.Text = "🔒"
-        OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
-    end
     
     local gui = Instance.new("ScreenGui")
     gui.Name = "RSQ_KeySystem"
@@ -1538,10 +1673,6 @@ local function showKeyGUI()
     
     closeBtn.MouseButton1Click:Connect(function()
         IsGuiOpen = false
-        if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
-            OpenButton.ToggleButton.Text = "🔓"
-            OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-        end
         gui:Destroy()
         CurrentGUI = nil
     end)
@@ -1656,23 +1787,40 @@ end
 local function initializeWithGroupCheck()
     IsInitializing = true
     
-    -- First, show the group notification
+    -- First, show the group requirement notification
     task.wait(1) -- Wait a bit for game to load
     
-    -- Show the main merch/group notification
-    createMerchNotification()
+    -- Check group membership
+    local isInGroup = checkGroupMembership()
     
-    -- Show a reminder every 30 seconds
-    local reminderInterval = 30
-    task.spawn(function()
-        while true do
-            task.wait(reminderInterval)
-            createNotify("📢 REMINDER: Join the group to support development!", Color3.fromRGB(255, 140, 0))
-            createMerchReminder()
-        end
-    end)
+    if not isInGroup then
+        -- Show group requirement notification
+        createGroupRequirementNotification()
+        
+        -- Show merch reminder every 30 seconds
+        local reminderInterval = 30
+        task.spawn(function()
+            while not IsInRequiredGroup do
+                task.wait(reminderInterval)
+                createNotify("📢 REMINDER: Join the group to access the UI!", Color3.fromRGB(255, 140, 0))
+                createMerchReminder()
+                
+                -- Re-check group membership
+                checkGroupMembership()
+            end
+        end)
+        
+        -- Don't proceed further until user is in group
+        repeat
+            task.wait(5)
+            checkGroupMembership()
+        until IsInRequiredGroup
+        
+        -- Show success message when they join
+        createNotify("✅ You're now in the group! Loading UI...", Color3.fromRGB(40, 200, 80))
+    end
     
-    -- Then proceed with the original initialization
+    -- User is in group, proceed with initialization
     local hasSavedKey = loadKeyStatus()
     if hasSavedKey then
         -- Auto-open advanced GUI if key is saved and valid
@@ -1682,11 +1830,6 @@ local function initializeWithGroupCheck()
         local ok, res = validate(CurrentKey, false)
         if ok then
             createNotify("✅ Key validated successfully!", Color3.fromRGB(40, 200, 80))
-            createOpenButton()
-            
-            -- Show reminder about merch even if they have key
-            task.wait(2)
-            createNotify("💡 Don't forget to check out my merch!", Color3.fromRGB(255, 140, 0))
             
             -- Auto-open the advanced games GUI
             task.wait(1)
@@ -1706,12 +1849,10 @@ local function initializeWithGroupCheck()
             clearKeyStatus()
             CurrentKey = nil
             KeyActive = false
-            createOpenButton()
             showKeyGUI()
         end
     else
         -- No saved key, show initial GUI
-        createOpenButton()
         showKeyGUI()
     end
     
@@ -1721,7 +1862,7 @@ end
 --==================================================--
 -- INITIALIZE
 --==================================================--
--- Check for saved key first
+-- Start initialization
 task.spawn(function()
     initializeWithGroupCheck()
 end)
@@ -1732,6 +1873,12 @@ end)
 task.spawn(function()
     while true do
         task.wait(CHECK_INTERVAL)
+        
+        -- Periodically check group membership
+        if IsInRequiredGroup then
+            checkGroupMembership()
+        end
+        
         if KeyActive and CurrentKey then
             local ok, res = validate(CurrentKey, false)
             if not ok then
@@ -1748,14 +1895,469 @@ task.spawn(function()
                 end
                 
                 IsGuiOpen = false
-                if OpenButton and OpenButton:FindFirstChild("ToggleButton") then
-                    OpenButton.ToggleButton.Text = "🔓"
-                    OpenButton.ToggleButton.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-                end
                 
-                -- Show key GUI again
-                showKeyGUI()
+                -- Show key GUI again (if in group)
+                if IsInRequiredGroup then
+                    showKeyGUI()
+                else
+                    createGroupRequirementNotification()
+                end
             end
         end
     end
 end)
+
+-- Function to create open button (only created when in group)
+local function createOpenButton()
+    -- Only create if in group
+    if not IsInRequiredGroup then
+        return
+    end
+    
+    -- Remove existing open button if it exists
+    if OpenButton and OpenButton.Parent then
+        OpenButton:Destroy()
+        OpenButton = nil
+    end
+    
+    OpenButton = Instance.new("ScreenGui")
+    OpenButton.Name = "RSQ_OpenButton"
+    OpenButton.IgnoreGuiInset = true
+    OpenButton.ResetOnSpawn = false
+    OpenButton.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    OpenButton.Parent = CoreGui
+    
+    local button = Instance.new("TextButton", OpenButton)
+    button.Name = "ToggleButton"
+    button.Size = UDim2.new(0, 60, 0, 60)
+    button.Position = UDim2.new(1, -70, 0, 20)
+    button.Text = IsGuiOpen and "🔒" or "🔓"
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 24
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.BackgroundColor3 = IsGuiOpen and Color3.fromRGB(255, 140, 0) or Color3.fromRGB(79, 124, 255)
+    button.BackgroundTransparency = 0.2
+    button.BorderSizePixel = 0
+    Instance.new("UICorner", button).CornerRadius = UDim.new(1, 0)
+    
+    -- Add shadow
+    local shadow = Instance.new("UIStroke", button)
+    shadow.Color = Color3.fromRGB(0, 0, 0)
+    shadow.Transparency = 0.5
+    shadow.Thickness = 2
+    
+    -- Function to toggle GUI
+    local function toggleGUI()
+        if IsGuiOpen then
+            -- Close all RSQ GUIs
+            local existingGuis = {}
+            
+            -- Check in CoreGui
+            for _, gui in pairs(CoreGui:GetChildren()) do
+                if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
+                    gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications")) then
+                    table.insert(existingGuis, gui)
+                end
+            end
+            
+            -- Check in PlayerGui
+            if player.PlayerGui then
+                for _, gui in pairs(player.PlayerGui:GetChildren()) do
+                    if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
+                        gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications")) then
+                        table.insert(existingGuis, gui)
+                    end
+                end
+            end
+            
+            -- Destroy all found GUIs
+            for _, gui in ipairs(existingGuis) do
+                gui:Destroy()
+            end
+            
+            IsGuiOpen = false
+            CurrentGUI = nil
+            button.Text = "🔓"
+            button.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+        else
+            -- Check if GUI is already loaded
+            if isGUILoaded() then
+                createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
+                return
+            end
+            
+            -- Open appropriate GUI based on key status
+            if KeyActive and CurrentKey then
+                showAdvancedGamesGUI()
+            else
+                showKeyGUI()
+            end
+            IsGuiOpen = true
+            button.Text = "🔒"
+            button.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+        end
+    end
+    
+    -- Make draggable
+    local dragging = false
+    local dragInput
+    local dragStart
+    local startPos
+    
+    local function update(input)
+        if dragging then
+            local delta = input.Position - dragStart
+            button.Position = UDim2.new(
+                startPos.X.Scale, 
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale, 
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end
+    
+    button.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or 
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = button.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    button.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or 
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and (input == dragInput or input.UserInputType == Enum.UserInputType.Touch) then
+            update(input)
+        end
+    end)
+    
+    button.MouseButton1Click:Connect(function()
+        if not dragging then
+            toggleGUI()
+        end
+    end)
+    
+    -- Add hover effects
+    button.MouseEnter:Connect(function()
+        if not dragging then
+            TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 65, 0, 65)}):Play()
+        end
+    end)
+    
+    button.MouseLeave:Connect(function()
+        if not dragging then
+            TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 60, 0, 60)}):Play()
+        end
+    end)
+    
+    -- Animation on creation
+    button.Position = UDim2.new(1, 100, 0, 20)
+    TweenService:Create(button, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Position = UDim2.new(1, -70, 0, 20)
+    }):Play()
+    
+    return OpenButton
+end
+
+-- Create open button when user joins group
+task.spawn(function()
+    -- Wait until user is in group
+    repeat
+        task.wait(5)
+        checkGroupMembership()
+    until IsInRequiredGroup
+    
+    -- Create open button when in group
+    createOpenButton()
+    
+    -- Add merch reminders to Advanced Games GUI
+    local function addMerchRemindersToGUI()
+        if IsGuiOpen then
+            -- Show merch reminder every 5 minutes
+            while IsGuiOpen do
+                task.wait(300) -- 5 minutes
+                if IsGuiOpen then
+                    createMerchReminder()
+                end
+            end
+        end
+    end
+    
+    -- Hook into GUI opening
+    local originalShowAdvancedGamesGUI = showAdvancedGamesGUI
+    showAdvancedGamesGUI = function(...)
+        local result = originalShowAdvancedGamesGUI(...)
+        task.spawn(addMerchRemindersToGUI)
+        return result
+    end
+end)
+
+--==================================================--
+-- SCRIPT KEY VERIFICATION FRAME
+--==================================================--
+local function createScriptKeyVerificationFrame(scriptData, gameData)
+    local verificationFrame = Instance.new("ScreenGui", CoreGui)
+    verificationFrame.Name = "RSQ_ScriptKeyVerification"
+    verificationFrame.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    local overlay = Instance.new("Frame", verificationFrame)
+    overlay.Size = UDim2.new(1, 0, 1, 0)
+    overlay.BackgroundColor3 = Color3.new(0, 0, 0)
+    overlay.BackgroundTransparency = 0.7
+    overlay.BorderSizePixel = 0
+    
+    local mainFrame = Instance.new("Frame", verificationFrame)
+    mainFrame.Size = UDim2.new(0, 400, 0, 320)
+    mainFrame.Position = UDim2.new(0.5, -200, 0.5, -160)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
+    mainFrame.BorderSizePixel = 0
+    Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 12)
+    
+    -- Make draggable
+    makeDraggable(mainFrame, mainFrame)
+    
+    -- Title bar
+    local titleBar = Instance.new("Frame", mainFrame)
+    titleBar.Size = UDim2.new(1, 0, 0, 40)
+    titleBar.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+    titleBar.BorderSizePixel = 0
+    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
+    
+    local title = Instance.new("TextLabel", titleBar)
+    title.Size = UDim2.new(1, -20, 1, 0)
+    title.Position = UDim2.new(0, 10, 0, 0)
+    title.Text = "🔑 Script Access Required"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 16
+    title.TextColor3 = Color3.new(1, 1, 1)
+    title.BackgroundTransparency = 1
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Close button
+    local closeBtn = Instance.new("TextButton", titleBar)
+    closeBtn.Size = UDim2.new(0, 25, 0, 25)
+    closeBtn.Position = UDim2.new(1, -30, 0.5, -12.5)
+    closeBtn.Text = "✕"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 14
+    closeBtn.TextColor3 = Color3.new(1, 1, 1)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    closeBtn.BorderSizePixel = 0
+    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+    
+    closeBtn.MouseButton1Click:Connect(function()
+        verificationFrame:Destroy()
+    end)
+    
+    -- Script info
+    local scriptInfo = Instance.new("Frame", mainFrame)
+    scriptInfo.Size = UDim2.new(1, -20, 0, 70)
+    scriptInfo.Position = UDim2.new(0, 10, 0, 50)
+    scriptInfo.BackgroundTransparency = 1
+    
+    local scriptIcon = Instance.new("TextLabel", scriptInfo)
+    scriptIcon.Size = UDim2.new(0, 40, 0, 40)
+    scriptIcon.Position = UDim2.new(0, 5, 0, 5)
+    scriptIcon.Text = "📜"
+    scriptIcon.Font = Enum.Font.GothamBold
+    scriptIcon.TextSize = 20
+    scriptIcon.TextColor3 = Color3.fromRGB(79, 124, 255)
+    scriptIcon.BackgroundTransparency = 1
+    
+    local scriptNameLabel = Instance.new("TextLabel", scriptInfo)
+    scriptNameLabel.Size = UDim2.new(1, -60, 0, 25)
+    scriptNameLabel.Position = UDim2.new(0, 50, 0, 5)
+    scriptNameLabel.Text = scriptData.name
+    scriptNameLabel.Font = Enum.Font.GothamBold
+    scriptNameLabel.TextSize = 14
+    scriptNameLabel.TextColor3 = Color3.new(1, 1, 1)
+    scriptNameLabel.BackgroundTransparency = 1
+    scriptNameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    
+    local gameNameLabel = Instance.new("TextLabel", scriptInfo)
+    gameNameLabel.Size = UDim2.new(1, -60, 0, 25)
+    gameNameLabel.Position = UDim2.new(0, 50, 0, 30)
+    gameNameLabel.Text = "Game: " .. gameData.name
+    gameNameLabel.Font = Enum.Font.Gotham
+    gameNameLabel.TextSize = 12
+    gameNameLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    gameNameLabel.BackgroundTransparency = 1
+    gameNameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Key input
+    local keyInputFrame = Instance.new("Frame", mainFrame)
+    keyInputFrame.Size = UDim2.new(1, -20, 0, 120)
+    keyInputFrame.Position = UDim2.new(0, 10, 0, 130)
+    keyInputFrame.BackgroundTransparency = 1
+    
+    local keyInputLabel = Instance.new("TextLabel", keyInputFrame)
+    keyInputLabel.Size = UDim2.new(1, 0, 0, 25)
+    keyInputLabel.Position = UDim2.new(0, 0, 0, 0)
+    keyInputLabel.Text = "Enter Script Key:"
+    keyInputLabel.Font = Enum.Font.GothamBold
+    keyInputLabel.TextSize = 13
+    keyInputLabel.TextColor3 = Color3.new(1, 1, 1)
+    keyInputLabel.BackgroundTransparency = 1
+    keyInputLabel.TextXAlignment = Enum.TextXAlignment.Left
+    
+    local keyInput = Instance.new("TextBox", keyInputFrame)
+    keyInput.Size = UDim2.new(1, 0, 0, 40)
+    keyInput.Position = UDim2.new(0, 0, 0, 30)
+    keyInput.PlaceholderText = "Paste script key here..."
+    keyInput.Font = Enum.Font.Gotham
+    keyInput.TextSize = 13
+    keyInput.TextColor3 = Color3.new(1, 1, 1)
+    keyInput.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+    keyInput.BorderSizePixel = 0
+    Instance.new("UICorner", keyInput).CornerRadius = UDim.new(0, 8)
+    
+    local statusLabel = Instance.new("TextLabel", keyInputFrame)
+    statusLabel.Size = UDim2.new(1, 0, 0, 25)
+    statusLabel.Position = UDim2.new(0, 0, 0, 80)
+    statusLabel.Text = "Enter a valid key to access the script"
+    statusLabel.Font = Enum.Font.Gotham
+    statusLabel.TextSize = 12
+    statusLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    statusLabel.BackgroundTransparency = 1
+    statusLabel.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Buttons
+    local buttonsFrame = Instance.new("Frame", mainFrame)
+    buttonsFrame.Size = UDim2.new(1, -20, 0, 40)
+    buttonsFrame.Position = UDim2.new(0, 10, 1, -50)
+    buttonsFrame.BackgroundTransparency = 1
+    
+    -- Get Key button (copies URL to clipboard)
+    local getKeyBtn = Instance.new("TextButton", buttonsFrame)
+    getKeyBtn.Size = UDim2.new(0, 120, 0, 40)
+    getKeyBtn.Position = UDim2.new(0, 0, 0, 0)
+    getKeyBtn.Text = "📋 Get Keys"
+    getKeyBtn.Font = Enum.Font.GothamBold
+    getKeyBtn.TextSize = 12
+    getKeyBtn.TextColor3 = Color3.new(1, 1, 1)
+    getKeyBtn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+    getKeyBtn.BorderSizePixel = 0
+    Instance.new("UICorner", getKeyBtn).CornerRadius = UDim.new(0, 8)
+    
+    getKeyBtn.MouseButton1Click:Connect(function()
+        -- Copy script URL to clipboard
+        local scriptURL = scriptData.url
+        setclipboard(scriptURL)
+        
+        -- Show notification
+        createNotify("📋 Script URL copied to clipboard!", Color3.fromRGB(255, 140, 0))
+        
+        -- Show visual feedback
+        local originalText = getKeyBtn.Text
+        getKeyBtn.Text = "✅ Copied!"
+        getKeyBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+        
+        -- Reset button after 2 seconds
+        task.delay(2, function()
+            if getKeyBtn and getKeyBtn.Parent then
+                getKeyBtn.Text = originalText
+                getKeyBtn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+            end
+        end)
+    end)
+    
+    -- Submit button
+    local submitBtn = Instance.new("TextButton", buttonsFrame)
+    submitBtn.Size = UDim2.new(0, 120, 0, 40)
+    submitBtn.Position = UDim2.new(1, -120, 0, 0)
+    submitBtn.Text = "✅ Submit Key"
+    submitBtn.Font = Enum.Font.GothamBold
+    submitBtn.TextSize = 12
+    submitBtn.TextColor3 = Color3.new(1, 1, 1)
+    submitBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+    submitBtn.BorderSizePixel = 0
+    Instance.new("UICorner", submitBtn).CornerRadius = UDim.new(0, 8)
+    
+    -- Function to check if key is valid
+    local function checkScriptKey(key)
+        local keys = getScriptKeys(scriptData)
+        for _, keyData in ipairs(keys) do
+            if keyData.value == key then
+                return true, keyData.name
+            end
+        end
+        return false, nil
+    end
+    
+    submitBtn.MouseButton1Click:Connect(function()
+        local enteredKey = string_trim(keyInput.Text)
+        if enteredKey == "" then
+            statusLabel.Text = "❌ Please enter a key"
+            statusLabel.TextColor3 = Color3.fromRGB(255, 59, 48)
+            return
+        end
+        
+        -- Validate the key
+        local isValid, keyName = checkScriptKey(enteredKey)
+        
+        if isValid then
+            statusLabel.Text = "✅ Key accepted! Loading script..."
+            statusLabel.TextColor3 = Color3.fromRGB(40, 200, 80)
+            
+            -- Success notification
+            createNotify("✅ Key verified! Script loading...", Color3.fromRGB(40, 200, 80))
+            
+            -- Close the verification frame
+            task.wait(1)
+            verificationFrame:Destroy()
+            
+            -- Execute the script
+            task.spawn(function()
+                createNotify("⚡ Loading script: " .. scriptData.name, Color3.fromRGB(79, 124, 255))
+                
+                -- Try to load the script
+                local success, err = pcall(function()
+                    local scriptContent = game:HttpGet(scriptData.url)
+                    loadstring(scriptContent)()
+                end)
+                
+                if success then
+                    createNotify("✅ Script loaded successfully!", Color3.fromRGB(40, 200, 80))
+                else
+                    createNotify("❌ Failed to load script: " .. tostring(err), Color3.fromRGB(255, 59, 48))
+                end
+            end)
+        else
+            statusLabel.Text = "❌ Invalid key"
+            statusLabel.TextColor3 = Color3.fromRGB(255, 59, 48)
+            createNotify("❌ Invalid key. Please try again.", Color3.fromRGB(255, 59, 48))
+        end
+    end)
+    
+    -- Auto-focus the input
+    keyInput:CaptureFocus()
+    
+    -- Animation
+    mainFrame.BackgroundTransparency = 1
+    TweenService:Create(mainFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0}):Play()
+    
+    return verificationFrame
+end
+
+--==================================================--
+-- KEY SYSTEM INTEGRATION
+--==================================================--
+
+-- This ensures all the key verification is properly integrated into the main system
+-- The createScriptKeyVerificationFrame function is now the entry point for script execution
+-- Users must enter a valid key from the script's key list before the script can run
+
+-- Happy New Year! 🎉
