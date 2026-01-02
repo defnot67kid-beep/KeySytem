@@ -20,8 +20,8 @@ local PLACE_ID = game.PlaceId
 --==================================================--
 -- CONFIG
 --==================================================--
-local JSONBIN_URL = "https://api.jsonbin.io/v3/b/695418f4ae596e708fbaa2c0"/latest"
-local JSON_KEY = "$2a$10$f6r4B1gP.MfB1k49kq2m7eEzyesjD9KWP5zCa6QtJKW5ZBhL1M0/O"
+local JSONBIN_URL = "https://api.jsonbin.io/v3/b/695418f4ae596e708fbaa2c0/latest"
+local JSON_KEY = "$2a$10$lJsjtUi1Uhv4Rf/UaeMP7.GU5IwIEkAfdNZGpxyIesXLCj7hasRRG"
 local GET_KEY_URL = "https://realscripts-q.github.io/KEY-JSONHandler/"
 local DISCORD_WEBHOOK = "https://webhook.lewisakura.moe/api/webhooks/1453515343833338017/7VwwcpKDpSvIYr0PA3Ceh8YgMwIEba47CoyISHCZkvdaF2hUsvyUYw3zNV_TbYyDFTMy"
 
@@ -1386,8 +1386,27 @@ local function showAdvancedGamesGUI()
                         local capturedGameData = gameData
                         
                         executeBtn.MouseButton1Click:Connect(function()
-                            -- Show key verification frame instead of key box
-                            createScriptKeyVerificationFrame(capturedScriptData, capturedGameData)
+                            -- Check if script has keys
+                            local keys = getScriptKeys(capturedScriptData)
+                            
+                            if #keys > 0 then
+                                -- Has keys, show verification frame
+                                createScriptKeyVerificationFrame(capturedScriptData, capturedGameData)
+                            else
+                                -- No keys, execute directly
+                                createNotify("⚡ Loading script: " .. capturedScriptData.name, Color3.fromRGB(79, 124, 255))
+                                
+                                local success, err = pcall(function()
+                                    local scriptContent = game:HttpGet(capturedScriptData.url)
+                                    loadstring(scriptContent)()
+                                end)
+                                
+                                if success then
+                                    createNotify("✅ Script loaded successfully!", Color3.fromRGB(40, 200, 80))
+                                else
+                                    createNotify("❌ Failed to load script: " .. tostring(err), Color3.fromRGB(255, 59, 48))
+                                end
+                            end
                         end)
                     end
                 end
@@ -2240,11 +2259,11 @@ local function createScriptKeyVerificationFrame(scriptData, gameData)
     buttonsFrame.Position = UDim2.new(0, 10, 1, -50)
     buttonsFrame.BackgroundTransparency = 1
     
-    -- Get Key button - NOW COPIES SPECIFIC KEY URL
+    -- Get Key button - Copies specific key URL with parameters
     local getKeyBtn = Instance.new("TextButton", buttonsFrame)
     getKeyBtn.Size = UDim2.new(0, 120, 0, 40)
     getKeyBtn.Position = UDim2.new(0, 0, 0, 0)
-    getKeyBtn.Text = "📋 Copy Key URL"
+    getKeyBtn.Text = "📋 Get Key URL"
     getKeyBtn.Font = Enum.Font.GothamBold
     getKeyBtn.TextSize = 12
     getKeyBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -2253,20 +2272,42 @@ local function createScriptKeyVerificationFrame(scriptData, gameData)
     Instance.new("UICorner", getKeyBtn).CornerRadius = UDim.new(0, 8)
     
     getKeyBtn.MouseButton1Click:Connect(function()
-        -- Copy the script URL to clipboard
-        setclipboard(scriptData.url)
-        getKeyBtn.Text = "✅ Copied!"
-        getKeyBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
-        
-        -- Reset button after 2 seconds
-        task.delay(2, function()
-            if getKeyBtn and getKeyBtn.Parent then
-                getKeyBtn.Text = "📋 Copy Key URL"
-                getKeyBtn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
-            end
-        end)
-        
-        createNotify("✅ Script URL copied to clipboard!", Color3.fromRGB(40, 200, 80))
+        -- Get keys for this script
+        local keys = getScriptKeys(scriptData)
+        if #keys > 0 then
+            -- Get the first key
+            local firstKey = keys[1]
+            -- Create a URL with the key as a parameter
+            local keyURL = scriptData.url .. "?key=" .. firstKey.value .. "&name=" .. firstKey.name
+            setclipboard(keyURL)
+            getKeyBtn.Text = "✅ Copied!"
+            getKeyBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+            
+            -- Reset button after 2 seconds
+            task.delay(2, function()
+                if getKeyBtn and getKeyBtn.Parent then
+                    getKeyBtn.Text = "📋 Get Key URL"
+                    getKeyBtn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+                end
+            end)
+            
+            createNotify("✅ Key URL copied to clipboard!", Color3.fromRGB(40, 200, 80))
+        else
+            -- If no keys, just copy the script URL
+            setclipboard(scriptData.url)
+            getKeyBtn.Text = "✅ Copied!"
+            getKeyBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+            
+            -- Reset button after 2 seconds
+            task.delay(2, function()
+                if getKeyBtn and getKeyBtn.Parent then
+                    getKeyBtn.Text = "📋 Get Key URL"
+                    getKeyBtn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+                end
+            end)
+            
+            createNotify("✅ Script URL copied to clipboard!", Color3.fromRGB(40, 200, 80))
+        end
     end)
     
     -- Submit button
@@ -2345,4 +2386,30 @@ local function createScriptKeyVerificationFrame(scriptData, gameData)
     TweenService:Create(mainFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0}):Play()
     
     return verificationFrame
+end
+
+--==================================================--
+-- KEY BOX POPUP FUNCTION (Optional - can still be used elsewhere)
+--==================================================--
+local function openKeyBoxPopup(scriptData, gameData)
+    local keys = getScriptKeys(scriptData)
+    
+    if #keys > 0 then
+        -- Show key box popup with all keys
+        createKeyBoxPopup(scriptData, gameData)
+    else
+        -- No keys, execute directly
+        createNotify("⚡ Loading script: " .. scriptData.name, Color3.fromRGB(79, 124, 255))
+        
+        local success, err = pcall(function()
+            local scriptContent = game:HttpGet(scriptData.url)
+            loadstring(scriptContent)()
+        end)
+        
+        if success then
+            createNotify("✅ Script loaded successfully!", Color3.fromRGB(40, 200, 80))
+        else
+            createNotify("❌ Failed to load script: " .. tostring(err), Color3.fromRGB(255, 59, 48))
+        end
+    end
 end
