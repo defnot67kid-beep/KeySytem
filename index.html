@@ -1985,19 +1985,15 @@ button.mini {
     </div>
 </div>
 
+<!-- Updated JavaScript section (replace the entire script from line 3310 onward) -->
 <script>
 // ==================================================
-// PASTEBIN API CONFIGURATION
+// JSONBIN API CONFIGURATION
 // ==================================================
-const PASTEBIN_API_KEY = "SJWH8ifyZxDYYZ3IAA-OrXDtqLk-o02_";
-const PASTEBIN_API_URL = "https://pastebin.com/api/api_post.php";
-const PASTEBIN_RAW_URL = "https://pastebin.com/raw/sRi0k7x0";
-const DATABASE_NAME = "RSQ_System_DB";
-const DATABASE_EXPIRE = "N"; // Never expire
-
-// Local storage keys
-const PASTE_KEY_STORAGE = "RSQ_PASTE_KEY";
-const USER_ID_KEY = "RSQ_USER_ID";
+const JSONBIN_BIN_ID = "6952cbcdd0ea881f4047f5ff";
+const JSONBIN_API_KEY = "$2a$10$f6r4B1gP.MfB1k49kq2m7eEzyesjD9KWP5zCa6QtJKW5ZBhL1M0/O";
+const JSONBIN_API_URL = "https://api.jsonbin.io/v3/b";
+const JSONBIN_MASTER_KEY = JSONBIN_API_KEY; // Since it's a master key
 
 // Data cache
 let dataCache = null;
@@ -2027,111 +2023,65 @@ let currentScriptForKey = null;
 let selectedGame = null;
 
 // ==================================================
-// PASTEBIN API HELPER FUNCTIONS
+// JSONBIN API HELPER FUNCTIONS
 // ==================================================
-function urlEncode(str) {
-    if (!str) return '';
-    return encodeURIComponent(str).replace(/%20/g, '+');
-}
-
-async function makePastebinRequest(params) {
-    const formData = new URLSearchParams();
-    for (const [key, value] of Object.entries(params)) {
-        formData.append(key, value);
-    }
+async function makeJsonBinRequest(method = 'GET', data = null, version = 'latest') {
+    const url = `${JSONBIN_API_URL}/${JSONBIN_BIN_ID}/${version}`;
     
     try {
-        const response = await fetch(PASTEBIN_API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: formData.toString()
-        });
+        const headers = {
+            'X-Master-Key': JSONBIN_MASTER_KEY,
+            'Content-Type': 'application/json',
+            'X-Bin-Versioning': 'false'
+        };
+        
+        const options = {
+            method: method,
+            headers: headers
+        };
+        
+        if (data && (method === 'PUT' || method === 'POST')) {
+            options.body = JSON.stringify(data);
+        }
+        
+        const response = await fetch(url, options);
         
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
-        return await response.text();
+        return await response.json();
     } catch (error) {
-        console.error('Pastebin API error:', error);
+        console.error('JSONBin API error:', error);
         throw error;
     }
 }
 
-async function createNewPaste(content, pasteName = DATABASE_NAME) {
-    const params = {
-        api_dev_key: PASTEBIN_API_KEY,
-        api_option: 'paste',
-        api_paste_code: content,
-        api_paste_name: pasteName,
-        api_paste_format: 'json',
-        api_paste_private: '1',
-        api_paste_expire_date: DATABASE_EXPIRE
-    };
-    
-    const response = await makePastebinRequest(params);
-    
-    if (response.includes('Bad API request')) {
-        throw new Error('Failed to create paste: ' + response);
-    }
-    
-    // Extract paste key from response (format: https://pastebin.com/KEY)
-    const match = response.match(/pastebin\.com\/([\w]+)$/);
-    if (match && match[1]) {
-        return match[1];
-    }
-    
-    throw new Error('Could not extract paste key from response');
-}
-
-async function updatePaste(pasteKey, content) {
-    const params = {
-        api_dev_key: PASTEBIN_API_KEY,
-        api_option: 'paste',
-        api_paste_code: content,
-        api_paste_name: DATABASE_NAME,
-        api_paste_format: 'json',
-        api_paste_private: '1',
-        api_paste_expire_date: DATABASE_EXPIRE,
-        api_paste_key: pasteKey
-    };
-    
-    const response = await makePastebinRequest(params);
-    
-    if (response.includes('Bad API request')) {
-        throw new Error('Failed to update paste: ' + response);
-    }
-    
-    return true;
-}
-
-async function getPasteRaw(pasteKey) {
-    try {
-        const response = await fetch(`${PASTEBIN_RAW_URL}${pasteKey}`);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+async function createInitialBin() {
+    const initialData = {
+        keys: {},
+        games: [],
+        bans: {},
+        feedbacks: [],
+        chats: [],
+        pinned: null,
+        admins: {},
+        settings: {
+            version: "2.0",
+            created: Date.now(),
+            last_updated: Date.now()
         }
-        
-        return await response.text();
-    } catch (error) {
-        console.error('Failed to fetch paste:', error);
-        throw error;
-    }
-}
-
-async function deletePaste(pasteKey) {
-    const params = {
-        api_dev_key: PASTEBIN_API_KEY,
-        api_option: 'delete',
-        api_paste_key: pasteKey
     };
     
-    const response = await makePastebinRequest(params);
-    
-    return response === 'Paste Removed';
+    try {
+        const result = await makeJsonBinRequest('PUT', initialData);
+        showToast('✅ New database created with JSONBin', 'success');
+        return true;
+    } catch (error) {
+        console.error('Failed to create initial bin:', error);
+        showToast('❌ Failed to initialize database', 'error');
+        return false;
+    }
 }
 
 // ==================================================
@@ -2141,34 +2091,19 @@ async function initializeDatabase() {
     showLoading('Initializing database...');
     
     try {
-        // Check if we have a saved paste key
-        let pasteKey = localStorage.getItem(PASTE_KEY_STORAGE);
+        // Try to fetch existing data
+        const response = await makeJsonBinRequest('GET');
         
-        if (!pasteKey || pasteKey === '') {
-            // Create initial database
-            const initialData = {
-                keys: {},
-                games: [],
-                bans: {},
-                feedbacks: [],
-                chats: [],
-                pinned: null,
-                admins: {},
-                settings: {
-                    version: "2.0",
-                    created: Date.now(),
-                    last_updated: Date.now()
-                }
-            };
-            
-            pasteKey = await createNewPaste(JSON.stringify(initialData, null, 2));
-            localStorage.setItem(PASTE_KEY_STORAGE, pasteKey);
-            
-            showToast('✅ New database created with Pastebin', 'success');
+        if (response.record) {
+            dataCache = response.record;
+        } else {
+            // Create initial database if it doesn't exist
+            if (!await createInitialBin()) {
+                throw new Error('Failed to create initial database');
+            }
+            const newResponse = await makeJsonBinRequest('GET');
+            dataCache = newResponse.record;
         }
-        
-        // Load initial data
-        await fetchData(true);
         
         // Start background sync
         setInterval(() => {
@@ -2179,70 +2114,66 @@ async function initializeDatabase() {
         return true;
     } catch (error) {
         console.error('Database initialization failed:', error);
-        showToast('❌ Failed to initialize database', 'error');
+        // Try to create new database
+        if (!await createInitialBin()) {
+            hideLoading();
+            return false;
+        }
+        
         hideLoading();
-        return false;
+        return true;
     }
 }
 
 // ==================================================
-// API FUNCTIONS (REPLACES JSONBIN API)
+// API FUNCTIONS
 // ==================================================
 async function api(endpoint, method = 'GET', data = null) {
     showLoading();
     
     try {
-        // Load paste key from localStorage
-        let pasteKey = localStorage.getItem(PASTE_KEY_STORAGE);
-        
-        if (!pasteKey || pasteKey === '') {
-            if (!await initializeDatabase()) {
-                throw new Error('Failed to initialize database');
-            }
-            pasteKey = localStorage.getItem(PASTE_KEY_STORAGE);
-        }
-        
-        // Handle different operations
         if (method === 'GET') {
-            const content = await getPasteRaw(pasteKey);
-            const parsedData = JSON.parse(content);
+            const response = await makeJsonBinRequest('GET');
+            const fullData = response.record;
             
             // If specific endpoint requested, return that part
             if (endpoint === 'games') {
-                return { record: { games: parsedData.games || [] } };
+                return { record: { games: fullData.games || [] } };
             } else if (endpoint === 'keys') {
-                return { record: { keys: parsedData.keys || {} } };
+                return { record: { keys: fullData.keys || {} } };
             } else if (endpoint === 'bans') {
-                return { record: { bans: parsedData.bans || {} } };
+                return { record: { bans: fullData.bans || {} } };
             } else if (endpoint === 'feedbacks') {
-                return { record: { feedbacks: parsedData.feedbacks || [] } };
+                return { record: { feedbacks: fullData.feedbacks || [] } };
             } else if (endpoint === 'chat') {
-                return { record: { chat: parsedData.chats || [] } };
+                return { record: { chat: fullData.chats || [] } };
             }
             
-            return { record: parsedData };
+            return { record: fullData };
         }
         
         if (method === 'PUT') {
-            // Update operation - get current data first
-            const content = await getPasteRaw(pasteKey);
-            const currentData = JSON.parse(content);
+            // Get current data first
+            const currentResponse = await makeJsonBinRequest('GET');
+            let currentData = currentResponse.record;
             
             // Merge new data
-            Object.assign(currentData, data);
-            currentData.settings = currentData.settings || {};
-            currentData.settings.last_updated = Date.now();
+            if (data) {
+                Object.assign(currentData, data);
+                currentData.settings = currentData.settings || {};
+                currentData.settings.last_updated = Date.now();
+            }
             
-            await updatePaste(pasteKey, JSON.stringify(currentData, null, 2));
+            const updateResponse = await makeJsonBinRequest('PUT', currentData);
             
             // Update cache
-            dataCache = currentData;
+            dataCache = updateResponse.record;
             lastFetchTime = Date.now();
             
             // Update connection status
             updateConnectionStatus(true);
             
-            return { record: currentData };
+            return { record: updateResponse.record };
         }
         
         throw new Error(`Unsupported method: ${method}`);
@@ -2266,11 +2197,9 @@ async function batchUpdate(updates) {
     showLoading();
     
     try {
-        const pasteKey = localStorage.getItem(PASTE_KEY_STORAGE);
-        if (!pasteKey) throw new Error('No paste key found');
-        
-        const content = await getPasteRaw(pasteKey);
-        const currentData = JSON.parse(content);
+        // Get current data
+        const currentResponse = await makeJsonBinRequest('GET');
+        let currentData = currentResponse.record;
         
         // Apply all updates
         for (const update of updates) {
@@ -2280,15 +2209,15 @@ async function batchUpdate(updates) {
         currentData.settings = currentData.settings || {};
         currentData.settings.last_updated = Date.now();
         
-        await updatePaste(pasteKey, JSON.stringify(currentData, null, 2));
+        const updateResponse = await makeJsonBinRequest('PUT', currentData);
         
         // Update cache
-        dataCache = currentData;
+        dataCache = updateResponse.record;
         lastFetchTime = Date.now();
         apiFailureCount = 0;
         
         updateConnectionStatus(true);
-        return { success: true };
+        return { success: true, record: updateResponse.record };
     } catch (error) {
         console.error('Batch update failed:', error);
         updateConnectionStatus(false);
@@ -2339,7 +2268,7 @@ function updateConnectionStatus(connected) {
 }
 
 // ==================================================
-// UTILITY FUNCTIONS
+// UTILITY FUNCTIONS (Keep these the same)
 // ==================================================
 function showLoading(text = 'Loading...') {
     const overlay = document.getElementById('loadingOverlay');
@@ -2388,10 +2317,10 @@ function moderate(text) {
 }
 
 function getUserIdentifier() {
-    let userId = localStorage.getItem(USER_ID_KEY);
+    let userId = localStorage.getItem('RSQ_USER_ID');
     if (!userId) {
         userId = 'user_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        localStorage.setItem(USER_ID_KEY, userId);
+        localStorage.setItem('RSQ_USER_ID', userId);
     }
     return userId;
 }
@@ -2439,7 +2368,7 @@ function trackViewAndActivity() {
 }
 
 // ==================================================
-// CHAT FUNCTIONS
+// CHAT FUNCTIONS (Keep all chat functions the same)
 // ==================================================
 function updateChat() {
     if (!dataCache || !dataCache.chats) return;
@@ -2593,7 +2522,7 @@ function updateUnreadBadge() {
 }
 
 // ==================================================
-// MESSAGE ACTIONS
+// MESSAGE ACTIONS (Keep all message functions the same)
 // ==================================================
 function showMessageActions(index) {
     const actions = document.getElementById(`msg-actions-${index}`);
@@ -2795,7 +2724,7 @@ function handleTyping() {
 }
 
 // ==================================================
-// KEY MANAGEMENT FUNCTIONS
+// KEY MANAGEMENT FUNCTIONS (Keep all key functions the same)
 // ==================================================
 async function generateKey() {
     const userIdInput = document.getElementById('userid');
@@ -2857,7 +2786,7 @@ async function generateKey() {
 }
 
 // ==================================================
-// GAME MANAGEMENT FUNCTIONS
+// GAME MANAGEMENT FUNCTIONS (Keep all game functions the same)
 // ==================================================
 function openKeyCreationModal(scriptIndex) {
     currentScriptIndexForKey = scriptIndex;
@@ -3023,7 +2952,7 @@ async function createNewKey() {
 }
 
 // ==================================================
-// KEY DISPLAY AND COPY FUNCTIONS
+// KEY DISPLAY AND COPY FUNCTIONS (Keep these the same)
 // ==================================================
 function toggleKeyDisplay(keyId) {
     const display = document.getElementById(`key-display-${keyId}`);
@@ -3069,7 +2998,7 @@ async function copyKeyToClipboard(keyValue) {
 }
 
 // ==================================================
-// SCRIPT KEY MANAGEMENT
+// SCRIPT KEY MANAGEMENT (Keep these the same)
 // ==================================================
 function toggleScriptKeys(scriptIndex) {
     const section = document.getElementById(`keys-section-${scriptIndex}`);
@@ -3310,7 +3239,7 @@ async function editScriptKey(scriptIndex, keyIndex) {
 }
 
 // ==================================================
-// GAME MANAGEMENT VIEW FUNCTIONS
+// GAME MANAGEMENT VIEW FUNCTIONS (Keep these the same)
 // ==================================================
 function showGameCreateView() {
     document.getElementById('adminDefaultView').classList.add('hidden');
@@ -3736,7 +3665,7 @@ async function deleteScript(scriptIndex) {
 }
 
 // ==================================================
-// IMAGE UPLOAD HANDLING
+// IMAGE UPLOAD HANDLING (Keep this the same)
 // ==================================================
 document.getElementById('gameImageInput')?.addEventListener('change', function(e) {
     const file = e.target.files[0];
@@ -3769,7 +3698,7 @@ document.getElementById('gameImageInput')?.addEventListener('change', function(e
 });
 
 // ==================================================
-// ADMIN FUNCTIONS
+// ADMIN FUNCTIONS (Keep these the same)
 // ==================================================
 function toggleAdmin() {
     const adminInput = document.getElementById('adminInput');
@@ -3864,7 +3793,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         adminBtn.addEventListener('click', toggleAdmin);
     }
     
-    showToast('System initialized with Pastebin', 'success');
+    showToast('System initialized with JSONBin', 'success');
 });
 
 // ==================================================
@@ -3884,7 +3813,7 @@ function toggleChat(show) {
 }
 
 // ==================================================
-// FEEDBACK FUNCTIONS
+// FEEDBACK FUNCTIONS (Keep these the same)
 // ==================================================
 function toggleFeedbackUI(show) {
     const feedbackUI = document.getElementById('userFeedbackUI');
@@ -3971,7 +3900,7 @@ async function submitFeedback() {
 }
 
 // ==================================================
-// ADMIN FEEDBACK MANAGEMENT
+// ADMIN FEEDBACK MANAGEMENT (Keep these the same)
 // ==================================================
 function openAdminFeedbacks() {
     if (!isAdminAuthenticated) {
@@ -4090,7 +4019,7 @@ async function deleteFeedback(index) {
 }
 
 // ==================================================
-// ADMIN KEY MANAGEMENT
+// ADMIN KEY MANAGEMENT (Keep these the same)
 // ==================================================
 async function renderAdminKeys() {
     try {
@@ -4158,7 +4087,7 @@ async function deleteAdminKey(key) {
 }
 
 // ==================================================
-// ADMIN BAN MANAGEMENT
+// ADMIN BAN MANAGEMENT (Keep these the same)
 // ==================================================
 async function renderAdminBans() {
     try {
@@ -4286,7 +4215,7 @@ async function unbanUser(userId) {
 }
 
 // ==================================================
-// ADMIN BROADCAST FUNCTIONS
+// ADMIN BROADCAST FUNCTIONS (Keep these the same)
 // ==================================================
 async function sendGlobalMsg(pin = false) {
     const input = document.getElementById('globalMsgInput');
@@ -4399,7 +4328,7 @@ async function clearAllChat() {
 }
 
 // ==================================================
-// ADMIN BAN NOW FUNCTIONALITY
+// ADMIN BAN NOW FUNCTIONALITY (Keep these the same)
 // ==================================================
 function toggleBanNowView(show) {
     const banNowView = document.getElementById('banNowView');
@@ -4483,7 +4412,7 @@ async function executeFocusBan() {
 }
 
 // ==================================================
-// SYSTEM RESET FUNCTIONS
+// SYSTEM RESET FUNCTIONS (Keep these the same)
 // ==================================================
 async function masterReset() {
     const target = document.getElementById('resetTarget')?.value;
@@ -4549,11 +4478,7 @@ async function masterReset() {
                     }
                 };
                 
-                const pasteKey = localStorage.getItem(PASTE_KEY_STORAGE);
-                if (pasteKey) {
-                    await updatePaste(pasteKey, JSON.stringify(initialData, null, 2));
-                }
-                
+                await makeJsonBinRequest('PUT', initialData);
                 dataCache = initialData;
                 lastFetchTime = Date.now();
                 
@@ -4584,7 +4509,7 @@ async function masterReset() {
 }
 
 // ==================================================
-// AUTHENTICATION FUNCTIONS (Placeholder)
+// AUTHENTICATION FUNCTIONS (Keep these the same)
 // ==================================================
 function toggleAuth(isSignup) {
     const loginView = document.getElementById('loginView');
