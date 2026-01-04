@@ -3714,7 +3714,8 @@ function toggleAdmin() {
         adminInput.value = '';
         adminInput.classList.add('hidden');
         
-        if (input === 'ADMIN_MASTER_KEY_123') { // Change this to your actual master key
+        // This is the admin master key - change it to whatever you want
+        if (input === 'roblox') { 
             isAdminAuthenticated = true;
             adminBtn.textContent = '👑 Admin Panel';
             showToast('Admin access granted', 'success');
