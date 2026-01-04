@@ -69,6 +69,7 @@ local IsInRequiredGroup = false -- Track if player is in required group
 local HasRequiredBadge = false -- Track if player has the required game badge
 local HasBeenAwardedReward = false -- Track if we've already awarded the reward badge
 local BadgeCheckInProgress = false -- Prevent multiple badge checks at once
+local RequirementsButton = nil -- Floating button for requirements
 
 -- Function to get data folder
 local function getDataFolder()
@@ -847,26 +848,165 @@ local function showGameIdCheckConfirmation(scriptData, gameData)
 end
 
 --==================================================--
--- GROUP AND BADGE REQUIREMENT NOTIFICATION SYSTEM
+-- FLOATING REQUIREMENTS BUTTON (ALWAYS SHOWS)
 --==================================================--
-local function createGroupAndBadgeRequirementNotification()
-    local requirementNotification = Instance.new("ScreenGui", CoreGui)
-    requirementNotification.Name = "RSQ_GroupBadgeRequirement"
-    requirementNotification.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+local function createRequirementsButton()
+    -- Remove existing requirements button if it exists
+    if RequirementsButton and RequirementsButton.Parent then
+        RequirementsButton:Destroy()
+        RequirementsButton = nil
+    end
     
-    local notificationFrame = Instance.new("Frame", requirementNotification)
-    notificationFrame.Size = UDim2.new(0, 450, 0, 320) -- Larger for both requirements
-    notificationFrame.Position = UDim2.new(0.5, -225, 0.5, -160)
-    notificationFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-    notificationFrame.BackgroundTransparency = 0.1
-    notificationFrame.BorderSizePixel = 0
-    Instance.new("UICorner", notificationFrame).CornerRadius = UDim.new(0, 12)
+    RequirementsButton = Instance.new("ScreenGui")
+    RequirementsButton.Name = "RSQ_RequirementsButton"
+    RequirementsButton.IgnoreGuiInset = true
+    RequirementsButton.ResetOnSpawn = false
+    RequirementsButton.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    RequirementsButton.Parent = CoreGui
+    
+    local button = Instance.new("TextButton", RequirementsButton)
+    button.Name = "RequirementsToggle"
+    button.Size = UDim2.new(0, 70, 0, 70)
+    button.Position = UDim2.new(0, 20, 0, 20)
+    
+    -- Set button appearance based on requirements status
+    if IsInRequiredGroup and HasRequiredBadge then
+        -- All requirements met - green button
+        button.Text = "✅"
+        button.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+    else
+        -- Requirements missing - red button with warning
+        button.Text = "⚠️"
+        button.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    end
+    
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 28
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.BackgroundTransparency = 0.2
+    button.BorderSizePixel = 0
+    Instance.new("UICorner", button).CornerRadius = UDim.new(1, 0)
+    
+    -- Add shadow
+    local shadow = Instance.new("UIStroke", button)
+    shadow.Color = Color3.fromRGB(0, 0, 0)
+    shadow.Transparency = 0.5
+    shadow.Thickness = 2
+    
+    -- Status indicator text
+    local statusText = Instance.new("TextLabel", button)
+    statusText.Size = UDim2.new(1, 0, 0, 15)
+    statusText.Position = UDim2.new(0, 0, 1, 5)
+    statusText.Text = IsInRequiredGroup and HasRequiredBadge and "Ready!" or "Required"
+    statusText.Font = Enum.Font.GothamBold
+    statusText.TextSize = 10
+    statusText.TextColor3 = Color3.new(1, 1, 1)
+    statusText.BackgroundTransparency = 1
+    statusText.TextXAlignment = Enum.TextXAlignment.Center
     
     -- Make draggable
-    makeDraggable(notificationFrame, notificationFrame)
+    local dragging = false
+    local dragInput
+    local dragStart
+    local startPos
+    
+    local function update(input)
+        if dragging then
+            local delta = input.Position - dragStart
+            button.Position = UDim2.new(
+                startPos.X.Scale, 
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale, 
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end
+    
+    button.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or 
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = button.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    button.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or 
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and (input == dragInput or input.UserInputType == Enum.UserInputType.Touch) then
+            update(input)
+        end
+    end)
+    
+    -- Button click function
+    button.MouseButton1Click:Connect(function()
+        if not dragging then
+            -- Show requirements panel
+            showRequirementsPanel()
+        end
+    end)
+    
+    -- Add hover effects
+    button.MouseEnter:Connect(function()
+        if not dragging then
+            TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 75, 0, 75)}):Play()
+        end
+    end)
+    
+    button.MouseLeave:Connect(function()
+        if not dragging then
+            TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 70, 0, 70)}):Play()
+        end
+    end)
+    
+    -- Animation on creation
+    button.Position = UDim2.new(0, -100, 0, 20)
+    TweenService:Create(button, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Position = UDim2.new(0, 20, 0, 20)
+    }):Play()
+    
+    return RequirementsButton
+end
+
+-- Function to show requirements panel
+local function showRequirementsPanel()
+    -- Close existing requirements panel if open
+    local existingPanel = CoreGui:FindFirstChild("RSQ_RequirementsPanel")
+    if existingPanel then
+        existingPanel:Destroy()
+        return
+    end
+    
+    -- Create requirements panel
+    local panelGui = Instance.new("ScreenGui", CoreGui)
+    panelGui.Name = "RSQ_RequirementsPanel"
+    panelGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    local panelFrame = Instance.new("Frame", panelGui)
+    panelFrame.Size = UDim2.new(0, 400, 0, 300)
+    panelFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+    panelFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
+    panelFrame.BackgroundTransparency = 0.1
+    panelFrame.BorderSizePixel = 0
+    Instance.new("UICorner", panelFrame).CornerRadius = UDim.new(0, 12)
+    
+    -- Make draggable
+    makeDraggable(panelFrame, panelFrame)
     
     -- Glass effect
-    local glassFrame = Instance.new("Frame", notificationFrame)
+    local glassFrame = Instance.new("Frame", panelFrame)
     glassFrame.Size = UDim2.new(1, 0, 1, 0)
     glassFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     glassFrame.BackgroundTransparency = 0.95
@@ -874,177 +1014,192 @@ local function createGroupAndBadgeRequirementNotification()
     Instance.new("UICorner", glassFrame).CornerRadius = UDim.new(0, 12)
 
     -- Title bar
-    local titleBar = Instance.new("Frame", notificationFrame)
+    local titleBar = Instance.new("Frame", panelFrame)
     titleBar.Size = UDim2.new(1, 0, 0, 40)
-    titleBar.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    titleBar.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
     titleBar.BorderSizePixel = 0
     Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
     
     local title = Instance.new("TextLabel", titleBar)
     title.Size = UDim2.new(1, -20, 1, 0)
     title.Position = UDim2.new(0, 10, 0, 0)
-    title.Text = "🚫 ACCESS REQUIREMENTS"
+    title.Text = "📋 RSQ ACCESS REQUIREMENTS"
     title.Font = Enum.Font.GothamBold
     title.TextSize = 16
     title.TextColor3 = Color3.new(1, 1, 1)
     title.BackgroundTransparency = 1
     title.TextXAlignment = Enum.TextXAlignment.Left
     
-    -- Main message
-    local messageFrame = Instance.new("Frame", notificationFrame)
-    messageFrame.Size = UDim2.new(1, -20, 1, -180)
-    messageFrame.Position = UDim2.new(0, 10, 0, 50)
-    messageFrame.BackgroundTransparency = 1
+    -- Close button
+    local closeBtn = Instance.new("TextButton", titleBar)
+    closeBtn.Size = UDim2.new(0, 25, 0, 25)
+    closeBtn.Position = UDim2.new(1, -30, 0.5, -12.5)
+    closeBtn.Text = "✕"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 14
+    closeBtn.TextColor3 = Color3.new(1, 1, 1)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    closeBtn.BorderSizePixel = 0
+    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
     
-    local warningIcon = Instance.new("TextLabel", messageFrame)
-    warningIcon.Size = UDim2.new(0, 40, 0, 40)
-    warningIcon.Position = UDim2.new(0, 10, 0, 10)
-    warningIcon.Text = "⚠️"
-    warningIcon.Font = Enum.Font.GothamBold
-    warningIcon.TextSize = 24
-    warningIcon.TextColor3 = Color3.fromRGB(255, 59, 48)
-    warningIcon.BackgroundTransparency = 1
+    closeBtn.MouseButton1Click:Connect(function()
+        panelGui:Destroy()
+    end)
     
-    local messageText = Instance.new("TextLabel", messageFrame)
-    messageText.Size = UDim2.new(1, -60, 0, 100)
-    messageText.Position = UDim2.new(0, 60, 0, 10)
-    messageText.Text = "𝙔𝙊𝙐 𝙈𝙐𝙎𝙏 𝘾𝙊𝙈𝙋𝙇𝙀𝙏𝙀 𝘼𝙇𝙇 𝙍𝙀𝙌𝙐𝙄𝙍𝙀𝙈𝙀𝙉𝙏𝙎 𝘽𝙀𝙁𝙊𝙍𝙀 𝘼𝘾𝘾𝙀𝙎𝙎𝙄𝙉𝙂 𝙏𝙃𝙀 𝙐𝙄!\n\n✅ 𝙅𝙤𝙞𝙣 𝙩𝙝𝙚 𝙧𝙚𝙦𝙪𝙞𝙧𝙚𝙙 𝙜𝙧𝙤𝙪𝙥\n✅ 𝙅𝙤𝙞𝙣 𝙩𝙝𝙚 𝙧𝙚𝙦𝙪𝙞𝙧𝙚𝙙 𝙜𝙖𝙢𝙚 (𝙖𝙪𝙩𝙤𝙢𝙖𝙩𝙞𝙘 𝙗𝙖𝙙𝙜𝙚)\n\n𝙉𝙤 𝙛𝙧𝙖𝙢𝙚𝙨 𝙬𝙞𝙡𝙡 𝙨𝙝𝙤𝙬 𝙪𝙣𝙩𝙞𝙡 𝙮𝙤𝙪 𝙘𝙤𝙢𝙥𝙡𝙚𝙩𝙚 𝙖𝙡𝙡 𝙧𝙚𝙦𝙪𝙞𝙧𝙚𝙢𝙚𝙣𝙩𝙨."
-    messageText.Font = Enum.Font.GothamBold
-    messageText.TextSize = 14
-    messageText.TextColor3 = Color3.new(1, 1, 1)
-    messageText.BackgroundTransparency = 1
-    messageText.TextWrapped = true
-    messageText.TextXAlignment = Enum.TextXAlignment.Left
+    -- Main content
+    local contentFrame = Instance.new("Frame", panelFrame)
+    contentFrame.Size = UDim2.new(1, -20, 1, -60)
+    contentFrame.Position = UDim2.new(0, 10, 0, 50)
+    contentFrame.BackgroundTransparency = 1
     
-    -- Requirements status
-    local groupStatus = Instance.new("TextLabel", messageFrame)
-    groupStatus.Size = UDim2.new(1, -20, 0, 20)
-    groupStatus.Position = UDim2.new(0, 10, 0, 120)
-    groupStatus.Text = IsInRequiredGroup and "✅ Group: Joined" or "❌ Group: Not Joined"
+    -- Requirements list
+    local requirementsText = Instance.new("TextLabel", contentFrame)
+    requirementsText.Size = UDim2.new(1, 0, 0, 80)
+    requirementsText.Position = UDim2.new(0, 0, 0, 10)
+    requirementsText.Text = "To access RSQ scripts, you must complete:\n\n1️⃣ Join the required Roblox group\n2️⃣ Join the required Roblox game\n\nComplete both to unlock the script library!"
+    requirementsText.Font = Enum.Font.GothamBold
+    requirementsText.TextSize = 14
+    requirementsText.TextColor3 = Color3.new(1, 1, 1)
+    requirementsText.BackgroundTransparency = 1
+    requirementsText.TextWrapped = true
+    requirementsText.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Current status
+    local statusFrame = Instance.new("Frame", contentFrame)
+    statusFrame.Size = UDim2.new(1, 0, 0, 60)
+    statusFrame.Position = UDim2.new(0, 0, 0, 100)
+    statusFrame.BackgroundTransparency = 1
+    
+    -- Group status
+    local groupStatus = Instance.new("TextLabel", statusFrame)
+    groupStatus.Size = UDim2.new(1, -20, 0, 25)
+    groupStatus.Position = UDim2.new(0, 10, 0, 0)
+    groupStatus.Text = "📋 Group Membership: " .. (IsInRequiredGroup and "✅ COMPLETE" or "❌ INCOMPLETE")
     groupStatus.Font = Enum.Font.Gotham
     groupStatus.TextSize = 12
     groupStatus.TextColor3 = IsInRequiredGroup and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
     groupStatus.BackgroundTransparency = 1
     groupStatus.TextXAlignment = Enum.TextXAlignment.Left
     
-    local badgeStatus = Instance.new("TextLabel", messageFrame)
-    badgeStatus.Size = UDim2.new(1, -20, 0, 20)
-    badgeStatus.Position = UDim2.new(0, 10, 0, 140)
-    badgeStatus.Text = HasRequiredBadge and "✅ Game Badge: Owned" or "❌ Game Badge: Not Owned"
+    -- Badge status
+    local badgeStatus = Instance.new("TextLabel", statusFrame)
+    badgeStatus.Size = UDim2.new(1, -20, 0, 25)
+    badgeStatus.Position = UDim2.new(0, 10, 0, 30)
+    badgeStatus.Text = "🎮 Game Badge: " .. (HasRequiredBadge and "✅ COMPLETE" or "❌ INCOMPLETE")
     badgeStatus.Font = Enum.Font.Gotham
     badgeStatus.TextSize = 12
     badgeStatus.TextColor3 = HasRequiredBadge and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
     badgeStatus.BackgroundTransparency = 1
     badgeStatus.TextXAlignment = Enum.TextXAlignment.Left
     
+    -- Action buttons
+    local buttonsFrame = Instance.new("Frame", contentFrame)
+    buttonsFrame.Size = UDim2.new(1, 0, 0, 130)
+    buttonsFrame.Position = UDim2.new(0, 0, 0, 170)
+    buttonsFrame.BackgroundTransparency = 1
+    
     -- Group Join Button
-    local groupBtn = Instance.new("TextButton", notificationFrame)
-    groupBtn.Size = UDim2.new(0, 200, 0, 40)
-    groupBtn.Position = UDim2.new(0.5, -210, 1, -125)
-    groupBtn.Text = "📋 Copy Group Link"
+    local groupBtn = Instance.new("TextButton", buttonsFrame)
+    groupBtn.Size = UDim2.new(1, -20, 0, 35)
+    groupBtn.Position = UDim2.new(0, 10, 0, 0)
+    groupBtn.Text = IsInRequiredGroup and "✅ Already in Group" or "📋 Copy Group Link"
     groupBtn.Font = Enum.Font.GothamBold
     groupBtn.TextSize = 13
     groupBtn.TextColor3 = Color3.new(1, 1, 1)
-    groupBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+    groupBtn.BackgroundColor3 = IsInRequiredGroup and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(79, 124, 255)
     groupBtn.BorderSizePixel = 0
     Instance.new("UICorner", groupBtn).CornerRadius = UDim.new(0, 8)
     
     groupBtn.MouseButton1Click:Connect(function()
-        setclipboard(GROUP_JOIN_URL)
-        createNotify("✅ Group link copied to clipboard!", Color3.fromRGB(79, 124, 255))
+        if not IsInRequiredGroup then
+            setclipboard(GROUP_JOIN_URL)
+            createNotify("✅ Group link copied to clipboard!", Color3.fromRGB(79, 124, 255))
+        else
+            createNotify("✅ You're already in the group!", Color3.fromRGB(40, 200, 80))
+        end
     end)
     
     -- Game Join Button
-    local gameBtn = Instance.new("TextButton", notificationFrame)
-    gameBtn.Size = UDim2.new(0, 200, 0, 40)
-    gameBtn.Position = UDim2.new(0.5, 10, 1, -125)
-    gameBtn.Text = "🎮 Copy Game Link"
+    local gameBtn = Instance.new("TextButton", buttonsFrame)
+    gameBtn.Size = UDim2.new(1, -20, 0, 35)
+    gameBtn.Position = UDim2.new(0, 10, 0, 45)
+    gameBtn.Text = HasRequiredBadge and "✅ Already Have Badge" or "🎮 Copy Game Link"
     gameBtn.Font = Enum.Font.GothamBold
     gameBtn.TextSize = 13
     gameBtn.TextColor3 = Color3.new(1, 1, 1)
-    gameBtn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+    gameBtn.BackgroundColor3 = HasRequiredBadge and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 140, 0)
     gameBtn.BorderSizePixel = 0
     Instance.new("UICorner", gameBtn).CornerRadius = UDim.new(0, 8)
     
     gameBtn.MouseButton1Click:Connect(function()
-        setclipboard(REQUIRED_GAME_URL)
-        createNotify("✅ Game link copied to clipboard! Join to get the required badge.", Color3.fromRGB(255, 140, 0))
-    end)
-    
-    -- Refresh Button (to check requirements)
-    local refreshBtn = Instance.new("TextButton", notificationFrame)
-    refreshBtn.Size = UDim2.new(0, 150, 0, 35)
-    refreshBtn.Position = UDim2.new(0.5, -75, 1, -70)
-    refreshBtn.Text = "🔄 Check Requirements"
-    refreshBtn.Font = Enum.Font.GothamBold
-    refreshBtn.TextSize = 13
-    refreshBtn.TextColor3 = Color3.new(1, 1, 1)
-    refreshBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
-    refreshBtn.BorderSizePixel = 0
-    Instance.new("UICorner", refreshBtn).CornerRadius = UDim.new(0, 8)
-    
-    refreshBtn.MouseButton1Click:Connect(function()
-        createNotify("Checking requirements...", Color3.fromRGB(79, 124, 255))
-        
-        -- Check group membership
-        local groupCheck = checkGroupMembership()
-        
-        -- Check badge ownership
-        local badgeCheck = checkBadgeRequirements()
-        
-        -- Update status labels
-        groupStatus.Text = groupCheck and "✅ Group: Joined" or "❌ Group: Not Joined"
-        groupStatus.TextColor3 = groupCheck and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
-        
-        badgeStatus.Text = badgeCheck and "✅ Game Badge: Owned" or "❌ Game Badge: Not Owned"
-        badgeStatus.TextColor3 = badgeCheck and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
-        
-        if groupCheck and badgeCheck then
-            createNotify("✅ All requirements met! Loading UI...", Color3.fromRGB(40, 200, 80))
-            requirementNotification:Destroy()
-            
-            -- Check for saved key and show appropriate GUI
-            local hasSavedKey = loadKeyStatus()
-            if hasSavedKey then
-                local ok, res = validate(CurrentKey, false)
-                if ok then
-                    showAdvancedGamesGUI()
-                else
-                    showKeyGUI()
-                end
-            else
-                showKeyGUI()
-            end
+        if not HasRequiredBadge then
+            setclipboard(REQUIRED_GAME_URL)
+            createNotify("✅ Game link copied to clipboard! Join to get the required badge.", Color3.fromRGB(255, 140, 0))
         else
-            local missing = {}
-            if not groupCheck then table.insert(missing, "group") end
-            if not badgeCheck then table.insert(missing, "game badge") end
-            createNotify("❌ Still missing: " .. table.concat(missing, ", "), Color3.fromRGB(255, 59, 48))
+            createNotify("✅ You already have the required badge!", Color3.fromRGB(40, 200, 80))
         end
     end)
     
-    -- Merch Button
-    local merchBtn = Instance.new("TextButton", notificationFrame)
-    merchBtn.Size = UDim2.new(0, 120, 0, 30)
-    merchBtn.Position = UDim2.new(0.5, -60, 1, -25)
-    merchBtn.Text = "🛒 Buy My Merch"
-    merchBtn.Font = Enum.Font.GothamBold
-    merchBtn.TextSize = 12
-    merchBtn.TextColor3 = Color3.new(1, 1, 1)
-    merchBtn.BackgroundColor3 = Color3.fromRGB(140, 40, 200)
-    merchBtn.BorderSizePixel = 0
-    Instance.new("UICorner", merchBtn).CornerRadius = UDim.new(0, 6)
+    -- Check Requirements Button
+    local checkBtn = Instance.new("TextButton", buttonsFrame)
+    checkBtn.Size = UDim2.new(1, -20, 0, 35)
+    checkBtn.Position = UDim2.new(0, 10, 0, 90)
+    checkBtn.Text = "🔄 Check My Status"
+    checkBtn.Font = Enum.Font.GothamBold
+    checkBtn.TextSize = 13
+    checkBtn.TextColor3 = Color3.new(1, 1, 1)
+    checkBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+    checkBtn.BorderSizePixel = 0
+    Instance.new("UICorner", checkBtn).CornerRadius = UDim.new(0, 8)
     
-    merchBtn.MouseButton1Click:Connect(function()
-        setclipboard(MERCH_URL)
-        createNotify("✅ Merch link copied to clipboard!", Color3.fromRGB(140, 40, 200))
+    checkBtn.MouseButton1Click:Connect(function()
+        createNotify("Checking your status...", Color3.fromRGB(79, 124, 255))
+        
+        -- Re-check requirements
+        checkGroupMembership()
+        checkBadgeRequirements()
+        
+        -- Update status labels
+        groupStatus.Text = "📋 Group Membership: " .. (IsInRequiredGroup and "✅ COMPLETE" or "❌ INCOMPLETE")
+        groupStatus.TextColor3 = IsInRequiredGroup and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
+        
+        badgeStatus.Text = "🎮 Game Badge: " .. (HasRequiredBadge and "✅ COMPLETE" or "❌ INCOMPLETE")
+        badgeStatus.TextColor3 = HasRequiredBadge and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
+        
+        -- Update button states
+        groupBtn.Text = IsInRequiredGroup and "✅ Already in Group" or "📋 Copy Group Link"
+        groupBtn.BackgroundColor3 = IsInRequiredGroup and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(79, 124, 255)
+        
+        gameBtn.Text = HasRequiredBadge and "✅ Already Have Badge" or "🎮 Copy Game Link"
+        gameBtn.BackgroundColor3 = HasRequiredBadge and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 140, 0)
+        
+        -- Update floating button
+        if RequirementsButton then
+            local toggleBtn = RequirementsButton:FindFirstChild("RequirementsToggle")
+            if toggleBtn then
+                if IsInRequiredGroup and HasRequiredBadge then
+                    toggleBtn.Text = "✅"
+                    toggleBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+                    toggleBtn.Parent:FindFirstChild("RequirementsToggle").Parent:FindFirstChildWhichIsA("TextLabel").Text = "Ready!"
+                else
+                    toggleBtn.Text = "⚠️"
+                    toggleBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+                    toggleBtn.Parent:FindFirstChild("RequirementsToggle").Parent:FindFirstChildWhichIsA("TextLabel").Text = "Required"
+                end
+            end
+        end
+        
+        -- Show notification
+        if IsInRequiredGroup and HasRequiredBadge then
+            createNotify("✅ All requirements met! You can now access the GUI.", Color3.fromRGB(40, 200, 80))
+        else
+            createNotify("❌ Still missing requirements. Please complete them.", Color3.fromRGB(255, 59, 48))
+        end
     end)
     
     -- Animation
-    notificationFrame.BackgroundTransparency = 1
-    TweenService:Create(notificationFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
-    
-    return requirementNotification
+    panelFrame.BackgroundTransparency = 1
+    TweenService:Create(panelFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
 end
 
 -- Function to create simple merch reminder
@@ -1149,7 +1304,8 @@ local function validateScriptExecution(scriptData, gameData)
     local requiredGameId = tostring(gameData.id)
     
     if currentGameId == requiredGameId then
-        return true -- Already in the right game
+        -- Already in the right game, proceed with execution
+        return true
     else
         -- Show confirmation dialog and get user choice
         local proceed = showGameIdCheckConfirmation(scriptData, gameData)
@@ -1164,13 +1320,13 @@ local function showAdvancedGamesGUI()
     -- First check all requirements
     if not IsInRequiredGroup then
         createNotify("❌ You must join the group first!", Color3.fromRGB(255, 59, 48))
-        createGroupAndBadgeRequirementNotification()
+        showRequirementsPanel()
         return
     end
     
     if not HasRequiredBadge then
         createNotify("❌ You must join the required game first!", Color3.fromRGB(255, 59, 48))
-        createGroupAndBadgeRequirementNotification()
+        showRequirementsPanel()
         return
     end
     
@@ -1720,13 +1876,13 @@ local function showKeyGUI()
     -- First check all requirements
     if not IsInRequiredGroup then
         createNotify("❌ You must join the group first!", Color3.fromRGB(255, 59, 48))
-        createGroupAndBadgeRequirementNotification()
+        showRequirementsPanel()
         return
     end
     
     if not HasRequiredBadge then
         createNotify("❌ You must join the required game first!", Color3.fromRGB(255, 59, 48))
-        createGroupAndBadgeRequirementNotification()
+        showRequirementsPanel()
         return
     end
     
@@ -1920,47 +2076,29 @@ end
 local function initializeWithRequirementsCheck()
     IsInitializing = true
     
-    -- First, show the requirements notification
-    task.wait(1) -- Wait a bit for game to load
+    -- Create floating requirements button immediately
+    task.wait(1)
+    createRequirementsButton()
     
-    -- Check group membership
+    -- Check requirements initially
     checkGroupMembership()
-    
-    -- Check badge requirements
     checkBadgeRequirements()
     
-    -- If requirements are not met, show notification
-    if not IsInRequiredGroup or not HasRequiredBadge then
-        createGroupAndBadgeRequirementNotification()
-        
-        -- Show merch reminder every 30 seconds
-        local reminderInterval = 30
-        task.spawn(function()
-            while not (IsInRequiredGroup and HasRequiredBadge) do
-                task.wait(reminderInterval)
-                createNotify("📢 REMINDER: Complete all requirements to access the UI!", Color3.fromRGB(255, 140, 0))
-                createMerchReminder()
-                
-                -- Re-check requirements
-                checkGroupMembership()
-                checkBadgeRequirements()
-            end
-        end)
-        
-        -- Don't proceed further until all requirements are met
-        repeat
-            task.wait(5)
-            checkGroupMembership()
-            checkBadgeRequirements()
-        until IsInRequiredGroup and HasRequiredBadge
-        
-        -- Show success message when requirements are met
-        createNotify("✅ All requirements met! Loading UI...", Color3.fromRGB(40, 200, 80))
+    -- Show welcome notification
+    if not (IsInRequiredGroup and HasRequiredBadge) then
+        createNotify("⚠️ Click the red button to complete requirements!", Color3.fromRGB(255, 140, 0))
+        task.wait(2)
+        showRequirementsPanel()
+    else
+        createNotify("✅ All requirements met! You can access the GUI.", Color3.fromRGB(40, 200, 80))
     end
+    
+    -- Wait a bit before showing main GUI (if requirements are met)
+    task.wait(2)
     
     -- Requirements are met, proceed with initialization
     local hasSavedKey = loadKeyStatus()
-    if hasSavedKey then
+    if hasSavedKey and IsInRequiredGroup and HasRequiredBadge then
         -- Auto-open advanced GUI if key is saved and valid
         createNotify("Loading saved key...", Color3.fromRGB(79, 124, 255))
         
@@ -1989,7 +2127,7 @@ local function initializeWithRequirementsCheck()
             KeyActive = false
             showKeyGUI()
         end
-    else
+    elseif IsInRequiredGroup and HasRequiredBadge then
         -- No saved key, show initial GUI
         showKeyGUI()
     end
@@ -2036,180 +2174,11 @@ task.spawn(function()
                 -- Show key GUI again (if requirements are met)
                 if IsInRequiredGroup and HasRequiredBadge then
                     showKeyGUI()
-                else
-                    createGroupAndBadgeRequirementNotification()
                 end
             end
         end
     end
 end)
-
--- Function to create open button (only created when requirements are met)
-local function createOpenButton()
-    -- Only create if all requirements are met
-    if not (IsInRequiredGroup and HasRequiredBadge) then
-        return
-    end
-    
-    -- Remove existing open button if it exists
-    if OpenButton and OpenButton.Parent then
-        OpenButton:Destroy()
-        OpenButton = nil
-    end
-    
-    OpenButton = Instance.new("ScreenGui")
-    OpenButton.Name = "RSQ_OpenButton"
-    OpenButton.IgnoreGuiInset = true
-    OpenButton.ResetOnSpawn = false
-    OpenButton.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    OpenButton.Parent = CoreGui
-    
-    local button = Instance.new("TextButton", OpenButton)
-    button.Name = "ToggleButton"
-    button.Size = UDim2.new(0, 60, 0, 60)
-    button.Position = UDim2.new(1, -70, 0, 20)
-    button.Text = IsGuiOpen and "🔒" or "🔓"
-    button.Font = Enum.Font.GothamBold
-    button.TextSize = 24
-    button.TextColor3 = Color3.new(1, 1, 1)
-    button.BackgroundColor3 = IsGuiOpen and Color3.fromRGB(255, 140, 0) or Color3.fromRGB(79, 124, 255)
-    button.BackgroundTransparency = 0.2
-    button.BorderSizePixel = 0
-    Instance.new("UICorner", button).CornerRadius = UDim.new(1, 0)
-    
-    -- Add shadow
-    local shadow = Instance.new("UIStroke", button)
-    shadow.Color = Color3.fromRGB(0, 0, 0)
-    shadow.Transparency = 0.5
-    shadow.Thickness = 2
-    
-    -- Function to toggle GUI
-    local function toggleGUI()
-        if IsGuiOpen then
-            -- Close all RSQ GUIs
-            local existingGuis = {}
-            
-            -- Check in CoreGui
-            for _, gui in pairs(CoreGui:GetChildren()) do
-                if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
-                    gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications") or
-                    gui.Name:find("RSQ_ScriptKeyVerification")) then
-                    table.insert(existingGuis, gui)
-                end
-            end
-            
-            -- Check in PlayerGui
-            if player.PlayerGui then
-                for _, gui in pairs(player.PlayerGui:GetChildren()) do
-                    if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
-                        gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications") or
-                        gui.Name:find("RSQ_ScriptKeyVerification")) then
-                        table.insert(existingGuis, gui)
-                    end
-                end
-            end
-            
-            -- Destroy all found GUIs
-            for _, gui in ipairs(existingGuis) do
-                gui:Destroy()
-            end
-            
-            IsGuiOpen = false
-            CurrentGUI = nil
-            button.Text = "🔓"
-            button.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-        else
-            -- Check if GUI is already loaded
-            if isGUILoaded() then
-                createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
-                return
-            end
-            
-            -- Open appropriate GUI based on key status
-            if KeyActive and CurrentKey then
-                showAdvancedGamesGUI()
-            else
-                showKeyGUI()
-            end
-            IsGuiOpen = true
-            button.Text = "🔒"
-            button.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
-        end
-    end
-    
-    -- Make draggable
-    local dragging = false
-    local dragInput
-    local dragStart
-    local startPos
-    
-    local function update(input)
-        if dragging then
-            local delta = input.Position - dragStart
-            button.Position = UDim2.new(
-                startPos.X.Scale, 
-                startPos.X.Offset + delta.X,
-                startPos.Y.Scale, 
-                startPos.Y.Offset + delta.Y
-            )
-        end
-    end
-    
-    button.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or 
-           input.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-            dragStart = input.Position
-            startPos = button.Position
-            
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
-    
-    button.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or 
-           input.UserInputType == Enum.UserInputType.Touch then
-            dragInput = input
-        end
-    end)
-    
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and (input == dragInput or input.UserInputType == Enum.UserInputType.Touch) then
-            update(input)
-        end
-    end)
-    
-    button.MouseButton1Click:Connect(function()
-        if not dragging then
-            toggleGUI()
-        end
-    end)
-    
-    -- Add hover effects
-    button.MouseEnter:Connect(function()
-        if not dragging then
-            TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 65, 0, 65)}):Play()
-        end
-    end)
-    
-    button.MouseLeave:Connect(function()
-        if not dragging then
-            TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 60, 0, 60)}):Play()
-        end
-    end)
-    
-    -- Animation on creation
-    button.Position = UDim2.new(1, 100, 0, 20)
-    TweenService:Create(button, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-        Position = UDim2.new(1, -70, 0, 20)
-    }):Play()
-    
-    return OpenButton
-end
 
 -- Create open button when all requirements are met
 task.spawn(function()
@@ -2220,8 +2189,159 @@ task.spawn(function()
         checkBadgeRequirements()
     until IsInRequiredGroup and HasRequiredBadge
     
-    -- Create open button
-    createOpenButton()
+    -- Create floating toggle button for main GUI
+    if not OpenButton then
+        OpenButton = Instance.new("ScreenGui")
+        OpenButton.Name = "RSQ_OpenButton"
+        OpenButton.IgnoreGuiInset = true
+        OpenButton.ResetOnSpawn = false
+        OpenButton.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        OpenButton.Parent = CoreGui
+        
+        local button = Instance.new("TextButton", OpenButton)
+        button.Name = "ToggleButton"
+        button.Size = UDim2.new(0, 60, 0, 60)
+        button.Position = UDim2.new(1, -70, 0, 100) -- Positioned below requirements button
+        button.Text = IsGuiOpen and "🔒" or "🔓"
+        button.Font = Enum.Font.GothamBold
+        button.TextSize = 24
+        button.TextColor3 = Color3.new(1, 1, 1)
+        button.BackgroundColor3 = IsGuiOpen and Color3.fromRGB(255, 140, 0) or Color3.fromRGB(79, 124, 255)
+        button.BackgroundTransparency = 0.2
+        button.BorderSizePixel = 0
+        Instance.new("UICorner", button).CornerRadius = UDim.new(1, 0)
+        
+        -- Add shadow
+        local shadow = Instance.new("UIStroke", button)
+        shadow.Color = Color3.fromRGB(0, 0, 0)
+        shadow.Transparency = 0.5
+        shadow.Thickness = 2
+        
+        -- Function to toggle GUI
+        local function toggleGUI()
+            if IsGuiOpen then
+                -- Close all RSQ GUIs except requirements ones
+                local existingGuis = {}
+                
+                -- Check in CoreGui
+                for _, gui in pairs(CoreGui:GetChildren()) do
+                    if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
+                        gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications") or
+                        gui.Name:find("RSQ_ScriptKeyVerification")) then
+                        table.insert(existingGuis, gui)
+                    end
+                end
+                
+                -- Check in PlayerGui
+                if player.PlayerGui then
+                    for _, gui in pairs(player.PlayerGui:GetChildren()) do
+                        if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
+                            gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications") or
+                            gui.Name:find("RSQ_ScriptKeyVerification")) then
+                            table.insert(existingGuis, gui)
+                        end
+                    end
+                end
+                
+                -- Destroy all found GUIs
+                for _, gui in ipairs(existingGuis) do
+                    gui:Destroy()
+                end
+                
+                IsGuiOpen = false
+                CurrentGUI = nil
+                button.Text = "🔓"
+                button.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+            else
+                -- Check if GUI is already loaded
+                if isGUILoaded() then
+                    createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
+                    return
+                end
+                
+                -- Open appropriate GUI based on key status
+                if KeyActive and CurrentKey then
+                    showAdvancedGamesGUI()
+                else
+                    showKeyGUI()
+                end
+                IsGuiOpen = true
+                button.Text = "🔒"
+                button.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+            end
+        end
+        
+        -- Make draggable
+        local dragging = false
+        local dragInput
+        local dragStart
+        local startPos
+        
+        local function update(input)
+            if dragging then
+                local delta = input.Position - dragStart
+                button.Position = UDim2.new(
+                    startPos.X.Scale, 
+                    startPos.X.Offset + delta.X,
+                    startPos.Y.Scale, 
+                    startPos.Y.Offset + delta.Y
+                )
+            end
+        end
+        
+        button.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or 
+               input.UserInputType == Enum.UserInputType.Touch then
+                dragging = true
+                dragStart = input.Position
+                startPos = button.Position
+                
+                input.Changed:Connect(function()
+                    if input.UserInputState == Enum.UserInputState.End then
+                        dragging = false
+                    end
+                end)
+            end
+        end)
+        
+        button.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement or 
+               input.UserInputType == Enum.UserInputType.Touch then
+                dragInput = input
+            end
+        end)
+        
+        UserInputService.InputChanged:Connect(function(input)
+            if dragging and (input == dragInput or input.UserInputType == Enum.UserInputType.Touch) then
+                update(input)
+            end
+        end)
+        
+        button.MouseButton1Click:Connect(function()
+            if not dragging then
+                toggleGUI()
+            end
+        end)
+        
+        -- Add hover effects
+        button.MouseEnter:Connect(function()
+            if not dragging then
+                TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 65, 0, 65)}):Play()
+            end
+        end)
+        
+        button.MouseLeave:Connect(function()
+            if not dragging then
+                TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 60, 0, 60)}):Play()
+            end
+        end)
+        
+        -- Animation on creation
+        button.Position = UDim2.new(1, 100, 0, 100)
+        TweenService:Create(button, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+            Position = UDim2.new(1, -70, 0, 100)
+        }):Play()
+    end
     
     -- Add merch reminders to Advanced Games GUI
     local function addMerchRemindersToGUI()
