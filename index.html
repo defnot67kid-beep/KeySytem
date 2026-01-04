@@ -1613,12 +1613,12 @@ button.mini {
             <div id="keyOut" style="text-align:center; margin-top:15px; color:var(--secondary); font-family:monospace; font-weight:bold; font-size:16px; padding:12px; background:rgba(0,0,0,0.3); border-radius:10px; border:1px solid rgba(79, 124, 255, 0.3); word-break: break-all;"></div>
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:25px;">
-                <button id="adminBtn" class="danger hidden">👑 Admin</button>
-                <div style="display:flex; gap:10px;">
-                    <button onclick="toggleFeedbackUI(true)" style="background:linear-gradient(135deg, #8a2be2, #4f7cff);">💬 Feedback</button>
-                    <button onclick="logout()" style="background:rgba(255,255,255,0.05); border:1px solid var(--border);">🚪 Logout</button>
-                </div>
-            </div>
+    <button id="adminBtn" class="danger" onclick="toggleAdmin()">👑 Admin</button>
+    <div style="display:flex; gap:10px;">
+        <button onclick="toggleFeedbackUI(true)" style="background:linear-gradient(135deg, #8a2be2, #4f7cff);">💬 Feedback</button>
+        <button onclick="logout()" style="background:rgba(255,255,255,0.05); border:1px solid var(--border);">🚪 Logout</button>
+    </div>
+</div>
             
             <input id="adminInput" class="hidden" type="password" placeholder="Master Key" style="margin-top:15px;">
         </div>
@@ -3701,26 +3701,40 @@ document.getElementById('gameImageInput')?.addEventListener('change', function(e
 // ADMIN FUNCTIONS (Keep these the same)
 // ==================================================
 function toggleAdmin() {
+    console.log('=== TOGGLE ADMIN CALLED ===');
+    
     const adminInput = document.getElementById('adminInput');
     const adminBtn = document.getElementById('adminBtn');
     
-    if (!adminInput || !adminBtn) return;
+    console.log('adminInput:', adminInput);
+    console.log('adminBtn:', adminBtn);
+    
+    if (!adminInput || !adminBtn) {
+        console.log('ERROR: Missing elements');
+        return;
+    }
     
     if (adminInput.classList.contains('hidden')) {
+        console.log('Showing password field');
         adminInput.classList.remove('hidden');
         adminInput.focus();
     } else {
         const input = adminInput.value.trim();
+        console.log('Password entered:', input);
+        console.log('Expected: roblox');
+        
         adminInput.value = '';
         adminInput.classList.add('hidden');
         
-        // This is the admin master key - change it to whatever you want
-        if (input === 'roblox') { 
+        // YOUR MASTER KEY IS: roblox
+        if (input === 'roblox') {
             isAdminAuthenticated = true;
+            console.log('SUCCESS: Admin authenticated!');
             adminBtn.textContent = '👑 Admin Panel';
             showToast('Admin access granted', 'success');
             openAdminPanel();
         } else {
+            console.log('FAILED: Wrong password');
             showToast('Invalid master key', 'error');
         }
     }
@@ -3787,11 +3801,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         chatToggle.addEventListener('click', () => toggleChat(true));
     }
     
-    // Set up admin button
+    // FIXED: Set up admin button PROPERLY
     const adminBtn = document.getElementById('adminBtn');
     if (adminBtn) {
-        adminBtn.classList.remove('hidden');
-        adminBtn.addEventListener('click', toggleAdmin);
+        console.log('Admin button found, setting up click listener');
+        adminBtn.addEventListener('click', function() {
+            console.log('Admin button clicked');
+            toggleAdmin();
+        });
+    } else {
+        console.log('Admin button NOT found!');
     }
     
     showToast('System initialized with JSONBin', 'success');
