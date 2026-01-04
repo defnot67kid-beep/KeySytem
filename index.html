@@ -1674,14 +1674,17 @@ button.mini {
 </div>
 
 <!-- COMPLETE ADMIN PANEL WITH GAME MANAGEMENT -->
+<!-- COMPLETE ADMIN PANEL WITH GAME MANAGEMENT -->
 <div id="adminPanel" class="adminFull hidden">
     <!-- Default Admin View -->
     <div id="adminDefaultView">
+        <!-- All the admin content should be here -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
             <div>
                 <h2 style="margin:0;" class="gradient-text">👑 OVERSEER CONTROL</h2>
                 <p style="font-size:11px; opacity:0.7; margin-top:5px;">Total Control Panel v2.1</p>
             </div>
+
             <div style="display:flex; gap:10px;">
                 <button class="success" onclick="showGameCreateView()" style="width:auto; margin:0; padding:10px 20px;">
                     🎮 Create Game
@@ -3700,24 +3703,71 @@ document.getElementById('gameImageInput')?.addEventListener('change', function(e
 // ADMIN FUNCTIONS (Keep these the same)
 // ==================================================
 function toggleAdmin() {
+    console.log('=== ADMIN AUTH START ===');
+    
     const adminInput = document.getElementById('adminInput');
     const adminBtn = document.getElementById('adminBtn');
+    const mainSystem = document.getElementById('mainSystem');
+    const adminPanel = document.getElementById('adminPanel');
     
-    if (!adminInput || !adminBtn) return;
+    console.log('Elements found:');
+    console.log('- adminInput:', !!adminInput);
+    console.log('- adminBtn:', !!adminBtn);
+    console.log('- mainSystem:', !!mainSystem);
+    console.log('- adminPanel:', !!adminPanel);
+    
+    if (!adminInput || !adminBtn) {
+        console.log('ERROR: Missing elements');
+        return;
+    }
     
     const input = adminInput.value.trim();
+    console.log('Password entered:', input);
+    console.log('Expected: roblox');
     
     if (input === 'roblox') {
         isAdminAuthenticated = true;
+        console.log('SUCCESS: Password correct');
+        
         adminBtn.textContent = '👑 Admin Panel';
-        adminInput.style.display = 'none'; // Hide the input after successful auth
-        showToast('Admin access granted', 'success');
-        openAdminPanel();
+        adminInput.style.display = 'none';
+        
+        console.log('Hiding main system...');
+        if (mainSystem) {
+            mainSystem.classList.add('hidden');
+            console.log('Main system hidden');
+        }
+        
+        console.log('Showing admin panel...');
+        if (adminPanel) {
+            adminPanel.classList.remove('hidden');
+            console.log('Admin panel shown');
+            
+            // Force show the default admin view
+            document.getElementById('adminDefaultView').classList.remove('hidden');
+            document.getElementById('gameCreateView').classList.add('hidden');
+            document.getElementById('scriptManagementView').classList.add('hidden');
+            document.getElementById('banNowView').classList.add('hidden');
+            document.getElementById('adminFeedbackListView').classList.add('hidden');
+            document.getElementById('adminViewFeedbackUI').classList.add('hidden');
+            
+            // Load data
+            loadGamesDashboard();
+            renderAdminKeys();
+            renderAdminBans();
+        } else {
+            console.log('ERROR: Admin panel element not found!');
+        }
+        
+        showToast('✅ Admin access granted', 'success');
     } else {
-        showToast('Invalid master key. Use: roblox', 'error');
+        console.log('FAILED: Wrong password');
+        showToast('❌ Invalid master key', 'error');
         adminInput.value = '';
         adminInput.focus();
     }
+    
+    console.log('=== ADMIN AUTH END ===');
 }
 
 function openAdminPanel() {
@@ -3726,11 +3776,27 @@ function openAdminPanel() {
         return;
     }
     
+    console.log('Opening admin panel...');
+    
+    // Hide the main system
     document.getElementById('mainSystem').classList.add('hidden');
-    document.getElementById('adminPanel').classList.remove('hidden');
+    
+    // Show the admin panel
+    const adminPanel = document.getElementById('adminPanel');
+    if (adminPanel) {
+        adminPanel.classList.remove('hidden');
+        console.log('Admin panel shown');
+    } else {
+        console.log('ERROR: Admin panel element not found!');
+        return;
+    }
+    
+    // Load all admin data
     loadGamesDashboard();
     renderAdminKeys();
     renderAdminBans();
+    
+    showToast('Admin panel opened', 'success');
 }
 
 function closeAdmin() {
