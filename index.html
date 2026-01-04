@@ -1619,10 +1619,9 @@ button.mini {
         <button onclick="logout()" style="background:rgba(255,255,255,0.05); border:1px solid var(--border);">🚪 Logout</button>
     </div>
 </div>
-            
-            <input id="adminInput" class="hidden" type="password" placeholder="Master Key" style="margin-top:15px;">
-        </div>
-    </div>
+
+<!-- REMOVED the hidden class from this input -->
+<input id="adminInput" type="password" placeholder="Enter Master Key: roblox" style="margin-top:15px;">
 
     <!-- Chat Toggle -->
     <div id="chat-toggle" onclick="toggleChat(true)">
@@ -3701,42 +3700,23 @@ document.getElementById('gameImageInput')?.addEventListener('change', function(e
 // ADMIN FUNCTIONS (Keep these the same)
 // ==================================================
 function toggleAdmin() {
-    console.log('=== TOGGLE ADMIN CALLED ===');
-    
     const adminInput = document.getElementById('adminInput');
     const adminBtn = document.getElementById('adminBtn');
     
-    console.log('adminInput:', adminInput);
-    console.log('adminBtn:', adminBtn);
+    if (!adminInput || !adminBtn) return;
     
-    if (!adminInput || !adminBtn) {
-        console.log('ERROR: Missing elements');
-        return;
-    }
+    const input = adminInput.value.trim();
     
-    if (adminInput.classList.contains('hidden')) {
-        console.log('Showing password field');
-        adminInput.classList.remove('hidden');
-        adminInput.focus();
+    if (input === 'roblox') {
+        isAdminAuthenticated = true;
+        adminBtn.textContent = '👑 Admin Panel';
+        adminInput.style.display = 'none'; // Hide the input after successful auth
+        showToast('Admin access granted', 'success');
+        openAdminPanel();
     } else {
-        const input = adminInput.value.trim();
-        console.log('Password entered:', input);
-        console.log('Expected: roblox');
-        
+        showToast('Invalid master key. Use: roblox', 'error');
         adminInput.value = '';
-        adminInput.classList.add('hidden');
-        
-        // YOUR MASTER KEY IS: roblox
-        if (input === 'roblox') {
-            isAdminAuthenticated = true;
-            console.log('SUCCESS: Admin authenticated!');
-            adminBtn.textContent = '👑 Admin Panel';
-            showToast('Admin access granted', 'success');
-            openAdminPanel();
-        } else {
-            console.log('FAILED: Wrong password');
-            showToast('Invalid master key', 'error');
-        }
+        adminInput.focus();
     }
 }
 
