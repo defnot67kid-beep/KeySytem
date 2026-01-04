@@ -42,7 +42,7 @@ local REQUIRED_GAME_ID = 101277131246162
 
 -- BADGE SYSTEM
 local REQUIRED_BADGE_ID = 1440579528289462  -- Badge for joining the game
-local AWARD_BADGE_ID = 3297392441057543     -- Badge to award if they don't own required badge
+local BADGE_CODE = "PasteThisInGameToGetBadge"  -- Code to copy to clipboard
 local BADGE_CHECK_COOLDOWN = 30             -- Seconds between badge checks
 
 -- File saving paths
@@ -67,7 +67,6 @@ local HasShownGUIAlready = false -- Track if GUI has been shown before
 local IsInRequiredGroup = false -- Track if player is in required group
 local HasRequiredBadge = false -- Track if player owns the required badge
 local LastBadgeCheck = 0 -- Last time we checked badges
-local HasAwardedBadge = false -- Track if we've awarded the badge
 
 -- Function to get data folder
 local function getDataFolder()
@@ -177,13 +176,12 @@ local function loadGroupStatus()
 end
 
 -- Function to save badge status
-local function saveBadgeStatus(ownsBadge, awardedBadge)
+local function saveBadgeStatus(ownsBadge)
     local folder = getDataFolder()
     if not folder then return end
     
     local status = {
         hasRequiredBadge = ownsBadge,
-        hasAwardedBadge = awardedBadge or HasAwardedBadge,
         userId = USER_ID,
         lastCheck = os.time()
     }
@@ -200,12 +198,12 @@ end
 -- Function to load badge status
 local function loadBadgeStatus()
     local folder = getDataFolder()
-    if not folder then return false, false end
+    if not folder then return false end
     
     local filePath = folder .. "/" .. BADGE_STATUS_FILE
     
     if not isfile(filePath) then
-        return false, false
+        return false
     end
     
     local success, data = pcall(function()
@@ -217,12 +215,11 @@ local function loadBadgeStatus()
         -- Check if status is recent (less than 24 hours old)
         if data.lastCheck and (os.time() - data.lastCheck) < 86400 then
             HasRequiredBadge = data.hasRequiredBadge
-            HasAwardedBadge = data.hasAwardedBadge or false
-            return HasRequiredBadge, HasAwardedBadge
+            return HasRequiredBadge
         end
     end
     
-    return false, false
+    return false
 end
 
 -- Function to clear saved key status
@@ -293,25 +290,6 @@ local function checkBadgeOwnership(badgeId)
     return false
 end
 
--- Function to award a badge to the player
-local function awardBadge(badgeId)
-    if HasAwardedBadge then
-        return false
-    end
-    
-    local success, result = pcall(function()
-        return BadgeService:AwardBadge(USER_ID, badgeId)
-    end)
-    
-    if success and result then
-        HasAwardedBadge = true
-        saveBadgeStatus(HasRequiredBadge, true)
-        return true
-    end
-    
-    return false
-end
-
 -- Function to check both group and badge requirements
 local function checkRequirements()
     -- Check group membership
@@ -323,15 +301,7 @@ local function checkRequirements()
         HasRequiredBadge = checkBadgeOwnership(REQUIRED_BADGE_ID)
         LastBadgeCheck = currentTime
         
-        -- If they don't have the required badge, award the alternative badge
-        if not HasRequiredBadge and not HasAwardedBadge then
-            local awarded = awardBadge(AWARD_BADGE_ID)
-            if awarded then
-                createNotify("🎖️ You've been awarded a badge!", Color3.fromRGB(255, 215, 0))
-            end
-        end
-        
-        saveBadgeStatus(HasRequiredBadge, HasAwardedBadge)
+        saveBadgeStatus(HasRequiredBadge)
     end
     
     return inGroup and HasRequiredBadge
@@ -926,10 +896,27 @@ local function createGroupAndGameRequirementNotification()
         createNotify("✅ Game link copied to clipboard!", Color3.fromRGB(255, 140, 0))
     end)
     
+    -- Get Badge Code Button (NEW)
+    local badgeCodeBtn = Instance.new("TextButton", notificationFrame)
+    badgeCodeBtn.Size = UDim2.new(0, 200, 0, 35)
+    badgeCodeBtn.Position = UDim2.new(0.5, -100, 1, -70)
+    badgeCodeBtn.Text = "🎖️ Copy Badge Code"
+    badgeCodeBtn.Font = Enum.Font.GothamBold
+    badgeCodeBtn.TextSize = 12
+    badgeCodeBtn.TextColor3 = Color3.new(1, 1, 1)
+    badgeCodeBtn.BackgroundColor3 = Color3.fromRGB(255, 215, 0)
+    badgeCodeBtn.BorderSizePixel = 0
+    Instance.new("UICorner", badgeCodeBtn).CornerRadius = UDim.new(0, 6)
+    
+    badgeCodeBtn.MouseButton1Click:Connect(function()
+        setclipboard(BADGE_CODE)
+        createNotify("✅ Badge code copied! Paste it in the game to get the badge.", Color3.fromRGB(255, 215, 0))
+    end)
+    
     -- Refresh Button (to check requirements)
     local refreshBtn = Instance.new("TextButton", notificationFrame)
-    refreshBtn.Size = UDim2.new(0, 150, 0, 35)
-    refreshBtn.Position = UDim2.new(0.5, -75, 1, -70)
+    refreshBtn.Size = UDim2.new(0, 150, 0, 30)
+    refreshBtn.Position = UDim2.new(0.5, -75, 1, -30)
     refreshBtn.Text = "🔄 Check Requirements"
     refreshBtn.Font = Enum.Font.GothamBold
     refreshBtn.TextSize = 12
@@ -973,22 +960,6 @@ local function createGroupAndGameRequirementNotification()
             if not HasRequiredBadge then table.insert(missingReqs, "Game Badge") end
             createNotify("❌ Still missing: " .. table.concat(missingReqs, ", "), Color3.fromRGB(255, 59, 48))
         end
-    end)
-    
-    -- Close Button
-    local closeBtn = Instance.new("TextButton", notificationFrame)
-    closeBtn.Size = UDim2.new(0, 100, 0, 30)
-    closeBtn.Position = UDim2.new(0.5, -50, 1, -30)
-    closeBtn.Text = "✕ Close"
-    closeBtn.Font = Enum.Font.GothamBold
-    closeBtn.TextSize = 12
-    closeBtn.TextColor3 = Color3.new(1, 1, 1)
-    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
-    closeBtn.BorderSizePixel = 0
-    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
-    
-    closeBtn.MouseButton1Click:Connect(function()
-        requirementNotification:Destroy()
     end)
     
     -- Animation
@@ -1827,7 +1798,7 @@ local function initializeWithRequirementsCheck()
                     createNotify("📢 REMINDER: Join the group to access the UI!", Color3.fromRGB(255, 140, 0))
                 end
                 if not HasRequiredBadge then
-                    createNotify("🎮 REMINDER: Play the required game to get the badge!", Color3.fromRGB(255, 140, 0))
+                    createNotify("🎮 REMINDER: Play the required game and use code: " .. BADGE_CODE, Color3.fromRGB(255, 140, 0))
                 end
                 
                 -- Re-check requirements
@@ -2133,23 +2104,20 @@ task.spawn(function()
 end)
 
 --==================================================--
--- AUTOMATIC BADGE AWARDING
+-- AUTOMATIC BADGE CHECKING
 --==================================================--
 task.spawn(function()
     while true do
         task.wait(60) -- Check every minute
         
         -- Check if user doesn't have the required badge
-        if not HasRequiredBadge and not HasAwardedBadge then
-            -- Award the alternative badge
-            local awarded = awardBadge(AWARD_BADGE_ID)
-            if awarded then
-                createNotify("🎖️ You've been awarded a participation badge!", Color3.fromRGB(255, 215, 0))
-            end
+        if not HasRequiredBadge then
+            -- Send reminder about badge code
+            createNotify("🎮 Need badge? Use code: " .. BADGE_CODE .. " in the game!", Color3.fromRGB(255, 215, 0))
             
             -- Re-check if they now have the required badge
             HasRequiredBadge = checkBadgeOwnership(REQUIRED_BADGE_ID)
-            saveBadgeStatus(HasRequiredBadge, HasAwardedBadge)
+            saveBadgeStatus(HasRequiredBadge)
         end
         
         -- Update last check time
@@ -2160,4 +2128,5 @@ end)
 -- Print initialization message
 print("[RSQ] RSQ Key System Initialized")
 print("[RSQ] Requirements: Group (" .. tostring(IsInRequiredGroup) .. ") | Badge (" .. tostring(HasRequiredBadge) .. ")")
+print("[RSQ] Badge Code: " .. BADGE_CODE)
 print("[RSQ] Waiting for requirements to be met...")
