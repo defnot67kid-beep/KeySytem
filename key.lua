@@ -1,12 +1,2246 @@
---[[
- .____                  ________ ___.    _____                           __                
- |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
- |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
- |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
- |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
-         \/          \/         \/    \/                \/     \/     \/                   
-          \_Welcome to LuaObfuscator.com   (Alpha 0.10.9) ~  Much Love, Ferib 
+--==================================================--
+-- RSQ KEY SYSTEM — FULL LOCAL SCRIPT (ULTRA-FAST UPDATE)
+--==================================================--
 
-]]--
+-- SERVICES
+local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
+local TweenService = game:GetService("TweenService")
+local TeleportService = game:GetService("TeleportService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+local MarketplaceService = game:GetService("MarketplaceService")
+local GroupService = game:GetService("GroupService")
+local BadgeService = game:GetService("BadgeService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local v0=string.char;local v1=string.byte;local v2=string.sub;local v3=bit32 or bit ;local v4=v3.bxor;local v5=table.concat;local v6=table.insert;local function v7(v80,v81) local v82={};for v613=1, #v80 do v6(v82,v0(v4(v1(v2(v80,v613,v613 + 1 )),v1(v2(v81,1 + (v613% #v81) ,1 + (v613% #v81) + 1 )))%256 ));end return v5(v82);end local v8=game:GetService(v7("\225\207\218\60\227\169\212","\126\177\163\187\69\134\219\167"));local v9=game:GetService(v7("\11\217\62\213\207\38\223\60\204\255\38","\156\67\173\74\165"));local v10=game:GetService(v7("\0\160\76\19\178\21\67\38\161\64\21\185","\38\84\215\41\118\220\70"));local v11=game:GetService(v7("\100\19\46\23\238\95\4\54\33\251\66\0\43\17\251","\158\48\118\66\114"));local v12=game:GetService(v7("\158\55\21\36\90\171\235\190\48\35\51\97\179\242\168\33","\155\203\68\112\86\19\197"));local v13=game:GetService(v7("\116\200\56\207\69\106\243\241\69\216","\152\38\189\86\156\32\24\133"));local v14=game:GetService(v7("\223\88\181\67\219\66\174","\38\156\55\199"));local v15=game:GetService(v7("\133\124\110\35\22\96\234\79\169\126\121\27\22\102\236\74\171\120","\35\200\29\28\72\115\20\154"));local v16=game:GetService(v7("\62\173\222\202\157\31\49\11\169\216\220\136","\84\121\223\177\191\237\76"));local v17=game:GetService(v7("\153\87\205\167\63\99\53\211\173\95\202\165","\161\219\54\169\192\90\48\80"));local v18=game:GetService(v7("\123\71\16\41\64\65\1\49\76\70\51\49\70\80\1\34\76","\69\41\34\96"));local v19=v8.LocalPlayer;local v20=tostring(v19.UserId);local v21=v19.Name;local v22=game.PlaceId;local v23=v7("\180\215\195\26\17\113\243\140\214\26\11\101\182\208\216\4\0\34\178\141\222\5\77\61\239\140\213\69\84\114\233\145\212\8\1\47\184\147\210\11\90\115\237\197\131\90\86\124\186\150\209\12\77\39\189\215\210\25\22","\75\220\163\183\106\98");local v24=v7("\70\232\138\115\136\82\254\141\97\203\86\152\218\48\233\76\151\141\21\136\9\238\210\60\200\80\183\220\50\252\24\163\142\36\211\38\227\160\0\233\87\160\168\54\143\51\174\161\28\238\87\128\169\63\245\83\151\219\120\246","\185\98\218\235\87");local v25=v7("\195\40\51\246\205\240\132\115\53\227\223\166\216\63\53\239\206\190\216\113\54\168\217\163\223\52\50\228\144\163\196\115\12\195\231\231\225\15\8\200\246\171\197\56\43\227\204\229","\202\171\92\71\134\190");local v26=v7("\33\213\56\152\58\155\99\199\62\196\46\128\38\206\39\198\37\196\59\129\58\192\39\157\59\192\98\133\38\196\99\137\57\200\99\159\44\195\36\135\38\202\63\199\120\149\121\219\124\144\121\219\125\146\116\219\122\146\127\208\121\144\123\199\126\247\59\159\42\209\7\172\57\242\58\161\16\211\124\184\8\146\15\141\33\153\21\143\4\214\5\173\43\192\120\223\10\206\53\161\26\233\15\178\34\215\40\137\15\147\36\189\58\215\53\189\16\214\127\146\7\247\19\188\43\248\53\172\15\245\1\145","\232\73\161\76");local v27={v7("\179\205\86\77\13\225\150\13\79\31\172\151\69\84\10\179\204\64\72\13\190\203\65\82\16\175\220\76\73\80\184\214\79\18\44\190\216\78\110\29\169\208\82\73\13\246\200\13\118\59\130\148\104\110\49\149\241\67\83\26\183\220\80\18\19\186\208\76\18\58\245\213\87\92","\126\219\185\34\61"),v7("\4\218\74\98\109\45\188\168\30\207\73\60\121\126\231\239\25\204\75\97\123\101\240\232\2\218\91\124\106\57\240\232\1\129\108\119\127\123\192\228\30\199\78\102\109\58\226\168\39\235\103\63\84\68\220\201\36\207\80\118\114\114\225\168\1\207\87\124\49\94\189\235\25\207","\135\108\174\62\18\30\23\147"),v7("\190\253\62\219\11\244\124\136\164\232\61\133\31\167\39\207\163\235\63\216\29\188\48\200\184\253\47\197\12\224\48\200\187\166\24\206\25\162\0\196\164\224\58\223\11\227\34\136\157\204\19\134\50\157\28\233\158\232\36\207\20\171\33\136\187\232\35\197\87\128\125\203\163\232","\167\214\137\74\171\120\206\83")};local v28=1;local v29=466972056 + 220817489 ;local v30=v7("\131\228\38\77\235\253\196\191\37\74\239\233\153\255\48\81\247\191\197\243\61\80\183\164\132\253\63\72\246\174\159\249\55\78\183\241\211\167\101\5\161\242\223\165\125\126\217\148\163\215\0\124\218\234\174\200\2\120\202\142\174\222\17\120\187\230\196\241\48\82\237\179","\199\235\144\82\61\152");local v31=v7("\15\2\173\59\20\76\246\100\16\1\174\101\21\25\187\39\8\14\247\40\8\27\246\40\6\2\184\39\8\17\246\122\84\64\235\127\84\65\232\127\80\64\236\122\86\64\246\24\30\2\177\34\4\5\244\6\2\4\186\35","\75\103\118\217");local v32=v7("\207\64\100\4\170\68\136\27\103\3\174\80\213\91\114\24\182\6\137\87\127\25\246\25\198\89\117\7\246\79\151\5\34\67\238\79\148\5\34\64\239\79\145\6\63\59\137\38\138\100\92\39\244\58\232\122\81\32\156","\126\167\52\16\116\217");local v33=101277131246162 -0 ;local v34=1440579340176439 -  -188113023 ;local v35=3297392441057543;local v36=v7("\250\29\17\191\159\28\229\251\55\51\148\177\20","\156\168\78\64\224\212\121");local v37=v7("\12\235\188\241\20\250\164\218\18\253\235\196\20\225\171","\174\103\142\197");local v38=v7("\84\41\91\63\32\97\236\68\41\92\51\107\84\235\89\38","\152\54\72\63\88\69\62");local v39=nil;local v40=false;local v41=0;local v42=nil;local v43={};local v44=false;local v45=nil;local v46=nil;local v47=true;local v48=false;local v49=false;local v50=false;local v51=false;local v52=false;local function v53() local v83=0;while true do if (v83==(0 -0)) then local v693=0 -0 ;while true do if ((0 -0)==v693) then if (writefile and isfolder) then if  not isfolder(v36) then makefolder(v36);end return v36;end return nil;end end end end end local function v54() local v84=v53();if  not v84 then return;end local v85={[v7("\223\193\247","\60\180\164\142")]=v39,[v7("\89\93\17\32\49\232","\114\56\62\101\73\71\141")]=v40,[v7("\173\250\222\214\145\237","\164\216\137\187")]=v20,[v7("\199\245\52\160\168\255\6\215","\107\178\134\81\210\198\158")]=v21,[v7("\44\7\143\195\185\44\15\143\214","\202\88\110\226\166")]=os.time()};local v86,v87=pcall(function() writefile(v84   .. "/"   .. v37 ,v9:JSONEncode(v85));end);if  not v86 then warn(v7("\248\61\177\198\247\131\41\131\254\198\198\11\194\227\197\131\28\131\225\207\131\4\135\238\138\208\27\131\227\223\208\85","\170\163\111\226\151"),v87);end end local function v55() local v88=0 -0 ;local v89;local v90;local v91;local v92;while true do if (v88==0) then v89=v53();if  not v89 then return false;end v88=820 -(599 + 220) ;end if (v88==2) then v91,v92=pcall(function() local v738=0 -0 ;local v739;while true do if (v738==0) then v739=readfile(v90);return v9:JSONDecode(v739);end end end);if (v91 and v92 and (v92.userId==v20)) then if (v92.active and v92.key) then local v875=1931 -(1813 + 118) ;local v876;while true do if (v875==(0 + 0)) then v876=0;while true do if (v876==(1217 -(841 + 376))) then v39=v92.key;v40=true;v876=1;end if (v876==(1 -0)) then return true;end end break;end end end end v88=3;end if (v88==(1 + 2)) then return false;end if (1==v88) then v90=v89   .. "/"   .. v37 ;if  not isfile(v90) then return false;end v88=2;end end end local function v56() local v93=0;local v94;local v95;while true do if (v93==1) then v95=v94   .. "/"   .. v37 ;if isfile(v95) then delfile(v95);end break;end if (v93==(0 -0)) then v94=v53();if  not v94 then return;end v93=860 -(464 + 395) ;end end end local function v57() local v96=0;local v97;local v98;local v99;local v100;local v101;while true do if (v96==(5 -3)) then v101=nil;while true do if (v97==2) then if  not v100 then warn(v7("\183\55\108\119\217\1\198\141\12\83\67\224\1\244\131\69\76\71\242\68\160\142\4\91\65\225\1\244\158\4\92\77\237\79\231\214","\128\236\101\63\38\132\33"),v101);end break;end if ((1 + 0)==v97) then local v792=837 -(467 + 370) ;while true do if (v792==(1 -0)) then v97=2 + 0 ;break;end if (v792==(0 -0)) then v99={[v7("\4\35\183\42\103\51","\73\113\80\210\88\46\87")]=v20,[v7("\148\63\200\0\233\128\33\200","\135\225\76\173\114")]=v21,[v7("\18\236\171\130\169\172\178\19\255\189\180\142\188\163\29\232","\199\122\141\216\208\204\221")]=v50,[v7("\165\220\3\209\111\247\191\217\21\244\74\243\186\220\2\244","\150\205\189\112\144\24")]=v51,[v7("\41\133\172\88\39\128\20\19\46\176\182\65\1","\112\69\228\223\44\100\232\113")]=os.time(),[v7("\214\30\3\212\179\95\142\209\28\12\240\185\105\136\192","\230\180\127\103\179\214\28")]=(BadgeCheckCount or 0) + 1 };v100,v101=pcall(function() writefile(v98   .. "/"   .. v38 ,v9:JSONEncode(v99));end);v792=1 + 0 ;end end end if ((0 -0)==v97) then v98=v53();if  not v98 then return;end v97=521 -(150 + 370) ;end end break;end if (v96==(1283 -(74 + 1208))) then v99=nil;v100=nil;v96=4 -2 ;end if (v96==(0 -0)) then v97=0 + 0 ;v98=nil;v96=391 -(14 + 376) ;end end end local function v58() local v102=0;local v103;local v104;local v105;local v106;local v107;while true do if (v102==(1 -0)) then v105=nil;v106=nil;v102=2;end if (v102==(0 + 0)) then v103=0 + 0 ;v104=nil;v102=1 + 0 ;end if (v102==(5 -3)) then v107=nil;while true do if (v103==1) then v105=v104   .. "/"   .. v38 ;if  not isfile(v105) then return false;end v103=2 + 0 ;end if (v103==(80 -(23 + 55))) then local v793=0;while true do if (v793==0) then v106,v107=pcall(function() local v1019=0 -0 ;local v1020;while true do if ((0 + 0)==v1019) then v1020=readfile(v105);return v9:JSONDecode(v1020);end end end);if (v106 and v107 and (v107.userId==v20)) then v50=v107.hasRequiredBadge or false ;v51=v107.hasAwardedReward or false ;BadgeCheckCount=v107.badgeCheckCount or 0 ;if (v107.lastCheckTime and ((os.time() -v107.lastCheckTime)>3600)) then return false;end return true;end v793=1;end if (v793==(1 + 0)) then v103=4 -1 ;break;end end end if (v103==(0 + 0)) then local v794=901 -(652 + 249) ;while true do if (v794==1) then v103=2 -1 ;break;end if (v794==(1868 -(708 + 1160))) then v104=v53();if  not v104 then return false;end v794=2 -1 ;end end end if (v103==(5 -2)) then return false;end end break;end end end local function v59() local v108=27 -(10 + 17) ;local v109;local v110;local v111;while true do if (v108==0) then v109=0 + 0 ;v110=nil;v108=1733 -(1400 + 332) ;end if (v108==(1 -0)) then v111=nil;while true do if (v109==1) then return false;end if ((1908 -(242 + 1666))==v109) then local v795=0 + 0 ;while true do if ((0 + 0)==v795) then v110,v111=pcall(function() local v1021=false;local v1022,v1023=pcall(function() return v16:GetGroupsAsync(v20);end);if (v1022 and v1023) then for v1050,v1051 in ipairs(v1023) do if (v1051.Id==v29) then v1021=true;break;end end end if  not v1021 then local v1042=pcall(function() local v1052=0;local v1053;while true do if (v1052==(0 + 0)) then v1053=v16:UserInGroup(v20,v29);return v1053;end end end);if v1042 then v1021=v1042;end end return v1021;end);if v110 then v49=v111;return v111;end v795=941 -(850 + 90) ;end if ((1 -0)==v795) then v109=1;break;end end end end break;end end end local function v60(v112) local v113=1390 -(360 + 1030) ;local v114;local v115;while true do if (v113==2) then if v114 then return v115;end return false;end if (v113==1) then v114,v115=pcall(function() local v740=0;local v741;local v742;local v743;local v744;local v745;local v746;while true do if (v740==(3 + 0)) then return false;end if (1==v740) then v743,v744=pcall(function() return v15:UserOwnsBadge(tonumber(v20),v112);end);if v743 then return v744;end v740=5 -3 ;end if (v740==(0 -0)) then v741,v742=pcall(function() return v17:UserHasBadgeAsync(tonumber(v20),v112);end);if v741 then return v742;end v740=1662 -(909 + 752) ;end if (v740==(1225 -(109 + 1114))) then v745,v746=pcall(function() local v940=string.format(v7("\164\189\5\84\165\177\128\227\171\16\64\177\238\220\226\187\30\70\186\228\215\226\170\30\73\249\253\158\227\188\2\65\164\248\128\233\186\94\70\183\239\200\169\186\94\1\165","\175\204\201\113\36\214\139"),v20,v112);local v941=game:HttpGet(v940);local v942=v9:JSONDecode(v941);return v942 and (v942.owned==true) ;end);if v745 then return v746;end v740=5 -2 ;end end end);v52=false;v113=1 + 1 ;end if (v113==(242 -(6 + 236))) then if v52 then return false;end v52=true;v113=1;end end end local function v61(v116) local v117=0 + 0 ;local v118;local v119;local v120;while true do if (1==v117) then v120=nil;while true do if (v118==(1 + 0)) then return v119;end if (v118==0) then v119,v120=pcall(function() local v877=0 -0 ;local v878;while true do if ((0 -0)==v877) then v878=v17:AwardBadge(tonumber(v20),v116);return v878;end end end);if  not v119 then v119=pcall(function() local v950=v7("\117\255\4\227\37\80\205\39\216\38\70\200\50\217","\100\39\172\85\188");local v951=v18:FindFirstChild(v950);if  not v951 then v951=Instance.new(v7("\159\125\180\143\39\168\93\175\133\61\185","\83\205\24\217\224"));v951.Name=v950;v951.Parent=v18;end v951:FireServer(v116);return true;end);end v118=1134 -(1076 + 57) ;end end break;end if ((0 + 0)==v117) then v118=689 -(579 + 110) ;v119=nil;v117=1 + 0 ;end end end local function v62() local v121=0;while true do local v614=0 + 0 ;while true do if (v614==0) then if (v121==(0 + 0)) then v50=v60(v34);if ( not v50 and  not v51) then createNotify("⚠️ You need to join the required game!",Color3.fromRGB(662 -(174 + 233) ,391 -251 ,0 -0 ));local v943=v61(v35);if v943 then local v1024=0 + 0 ;while true do if (v1024==(1174 -(663 + 511))) then createNotify("🎖️ Awarded you a special badge!",Color3.fromRGB(79,111 + 13 ,56 + 199 ));v51=true;break;end end else createNotify("❌ Could not award badge, but you can still join!",Color3.fromRGB(786 -531 ,140,0 + 0 ));end setclipboard(v32);createNotify("📋 Game link copied to clipboard! Join to get access.",Color3.fromRGB(185 -106 ,124,255));end v121=2 -1 ;end if (v121==(1 + 0)) then v57();return v50;end break;end end end end local function v63() local v122=0;while true do if (v122==(0 -0)) then for v747,v748 in pairs(v14:GetChildren()) do if ((v748.Name==v7("\212\246\252\2\205\192\212\14\255\214\217\56\235","\93\134\165\173")) or (v748.Name==v7("\140\193\240\253\27\202\164\127\176\241\196\198\29\207\191\123\173\213\244\235","\30\222\146\161\162\90\174\210")) or (v748.Name==v7("\215\125\65\53\214\77\98\3\245\90\91\15\252\120\117\24\236\72\121\9\228\90\121\5\235","\106\133\46\16"))) then return true;end end if v19.PlayerGui then for v796,v797 in pairs(v19.PlayerGui:GetChildren()) do if ((v797.Name==v7("\106\19\66\195\113\69\65\19\106\239\78\69\85","\32\56\64\19\156\58")) or (v797.Name==v7("\104\251\212\105\123\246\150\91\198\230\83\94\213\129\87\205\246\113\111\219","\224\58\168\133\54\58\146")) or (v797.Name==v7("\107\101\122\194\70\133\149\2\73\66\96\248\108\176\130\25\80\80\66\254\116\146\142\4\87","\107\57\54\43\157\21\230\231"))) then return true;end end end v122=1 + 0 ;end if (v122==1) then return false;end end end local function v64(v123,v124) local v125=false;local v126;local v127;local v128;local function v129(v615) if v125 then local v694=v615.Position-v127 ;v123.Position=UDim2.new(v128.X.Scale,v128.X.Offset + v694.X ,v128.Y.Scale,v128.Y.Offset + v694.Y );end end v124.InputBegan:Connect(function(v616) if ((v616.UserInputType==Enum.UserInputType.MouseButton1) or (v616.UserInputType==Enum.UserInputType.Touch)) then v125=true;v127=v616.Position;v128=v123.Position;v616.Changed:Connect(function() if (v616.UserInputState==Enum.UserInputState.End) then v125=false;end end);end end);v124.InputChanged:Connect(function(v617) if ((v617.UserInputType==Enum.UserInputType.MouseMovement) or (v617.UserInputType==Enum.UserInputType.Touch)) then v126=v617;end end);v12.InputChanged:Connect(function(v618) if (v125 and ((v618==v126) or (v618.UserInputType==Enum.UserInputType.Touch))) then v129(v618);end end);if v12.TouchEnabled then v13.Heartbeat:Connect(function() if (v125 and v12:IsMouseButtonPressed(Enum.UserInputType.Touch)) then local v781=0 + 0 ;local v782;local v783;local v784;while true do if (1==v781) then v784=nil;while true do if ((722 -(478 + 244))==v782) then v783=v12:GetMouseLocation();v784=v783-v127 ;v782=1;end if (v782==(518 -(440 + 77))) then v123.Position=UDim2.new(v128.X.Scale,v128.X.Offset + v784.X ,v128.Y.Scale,v128.Y.Offset + v784.Y );break;end end break;end if (v781==0) then v782=0 + 0 ;v783=nil;v781=3 -2 ;end end end end);end end local function v65() local v130=0;while true do if (0==v130) then for v749=1557 -(655 + 901) ,1 + 2  do local v750,v751=pcall(function() local v785=game:HttpGet(v23,true,{[v7("\227\198\60\244\170\200\202\201\198\58\240\160","\175\187\235\113\149\217\188")]=v24});return v9:JSONDecode(v785);end);if (v750 and v751 and v751.record) then local v798=0;while true do if (v798==(0 + 0)) then v42=v751.record;v43={};v798=1;end if (v798==1) then if v751.record.games then if (type(v751.record.games)==v7("\40\174\131\64\230","\24\92\207\225\44\131\25")) then local v1054=0 + 0 ;local v1055=false;for v1057,v1058 in pairs(v751.record.games) do if (type(v1057)==v7("\69\198\181\78\30\111","\29\43\179\216\44\123")) then v1055=true;break;end end if v1055 then for v1061,v1062 in ipairs(v751.record.games) do if ((type(v1062)==v7("\169\216\34\64\184","\44\221\185\64")) and v1062.id and v1062.name) then local v1067={};if (v1062.scripts and (type(v1062.scripts)==v7("\21\230\74\83\118","\19\97\135\40\63"))) then for v1073,v1074 in ipairs(v1062.scripts) do if (v1074 and v1074.name and v1074.url) then table.insert(v1067,{[v7("\160\93\62\62","\81\206\60\83\91\79")]=v1074.name,[v7("\91\185\220","\196\46\203\176\18\79\163\45")]=v1074.url});end end end table.insert(v43,{[v7("\177\38","\143\216\66\30\126\68\155")]=tostring(v1062.id),[v7("\164\201\0\206","\129\202\168\109\171\165\195\183")]=v1062.name,[v7("\49\91\37\209\206\0\245","\134\66\56\87\184\190\116")]=v1067,[v7("\53\60\8\188\28","\85\92\81\105\219\121\139\65")]=v1062.image or nil });v1054=v1054 + 1 ;end end else for v1063,v1064 in pairs(v751.record.games) do if ((type(v1064)==v7("\233\178\82\73\121","\191\157\211\48\37\28")) and v1064.id and v1064.name) then local v1068=0 -0 ;local v1069;while true do if (v1068==1) then table.insert(v43,{[v7("\51\18","\213\90\118\148")]=tostring(v1064.id),[v7("\85\47\185\83","\45\59\78\212\54")]=v1064.name,[v7("\3\85\145\130\150\58\190","\144\112\54\227\235\230\78\205")]=v1069,[v7("\186\37\14\251\213","\59\211\72\111\156\176")]=v1064.image or nil });v1054=v1054 + (1446 -(695 + 750)) ;break;end if (v1068==0) then v1069={};if (v1064.scripts and (type(v1064.scripts)==v7("\203\30\246\16\63","\90\191\127\148\124"))) then for v1077,v1078 in ipairs(v1064.scripts) do if (v1078 and v1078.name and v1078.url) then table.insert(v1069,{[v7("\118\134\35\18","\119\24\231\78")]=v1078.name,[v7("\151\63\169","\113\226\77\197\42\188\32")]=v1078.url});end end end v1068=1;end end end end end end end return v42;end end else local v799,v800=pcall(function() local v879=0;local v880;while true do if (v879==(0 -0)) then local v1025=0 -0 ;while true do if (v1025==(0 -0)) then local v1056=0;while true do if (v1056==0) then v880=game:HttpGet(v23);return v9:JSONDecode(v880);end end end end end end end);if (v799 and v800 and v800.record) then local v944=351 -(285 + 66) ;while true do local v953=0;while true do if (v953==(0 -0)) then if (v944==(1311 -(682 + 628))) then local v1059=0 + 0 ;while true do if (v1059==(299 -(176 + 123))) then if (v800.record.games and (type(v800.record.games)==v7("\90\134\225\33\75","\77\46\231\131"))) then local v1070=0 + 0 ;local v1071;local v1072;while true do if (v1070==1) then for v1075,v1076 in pairs(v800.record.games) do if (type(v1075)==v7("\180\65\187\66\191\70","\32\218\52\214")) then v1072=true;break;end end if v1072 then for v1079,v1080 in ipairs(v800.record.games) do if ((type(v1080)==v7("\90\22\51\164\244","\58\46\119\81\200\145\208\37")) and v1080.id and v1080.name) then local v1081={};if (v1080.scripts and (type(v1080.scripts)==v7("\63\141\50\160\172","\86\75\236\80\204\201\221"))) then for v1082,v1083 in ipairs(v1080.scripts) do if (v1083 and v1083.name and v1083.url) then table.insert(v1081,{[v7("\124\64\122\128","\235\18\33\23\229\158")]=v1083.name,[v7("\69\168\205","\219\48\218\161")]=v1083.url});end end end table.insert(v43,{[v7("\237\117","\128\132\17\28\41\187\47")]=tostring(v1080.id),[v7("\15\51\11\63","\61\97\82\102\90")]=v1080.name,[v7("\191\45\185\66\215\67\13","\105\204\78\203\43\167\55\126")]=v1081,[v7("\172\167\34\25\22","\49\197\202\67\126\115\100\167")]=v1080.image or nil });v1071=v1071 + 1 ;end end end break;end if (v1070==0) then v1071=0;v1072=false;v1070=1;end end end return v42;end end end if (v944==(0 + 0)) then v42=v800.record;v43={};v944=270 -(239 + 30) ;end break;end end end end warn(v7("\12\105\236\24\189\22\120\50\79\220\33\192\87\74\35\94\210\57\148\22","\62\87\59\191\73\224\54")   .. v749   .. v7("\167\4\251\192\235\7\254\147\167","\169\135\98\154")   .. tostring(v751) );task.wait(1 + 0 );end end return v42;end end end task.spawn(function() local v131=0 + 0 ;while true do if (v131==0) then print(v7("\240\69\23\101\192\115\251\223\118\54\64\244\61\207\139\126\42\93\233\58\201\199\55\32\85\233\50\136\205\114\48\87\245\125\134\133","\168\171\23\68\52\157\83"));v65();v131=1;end if (v131==(1 -0)) then print(v7("\207\67\198\156\24\109\174\250\120\225\164\36\33\199\242\116\225\174\45\109\132\251\124\229\161\32\57\130\186\49\210\172\40\40\148\216\120\230\185\101\46\136\225\127\225\247","\231\148\17\149\205\69\77"), #v43);break;end end end);local function v66(v132,v133,v134) if ( not v26 or (v26=="")) then return;end local v135=v7("\136\179\211\235\68\165\207\232\208\236\64\177\146\168\197\247\88\231\206\164\200\246\24\247\133\166\195\232\95\240\148\234\211\243\66\242\130\169\198\242\91\176\137\170\198\252\82\160\149\180\194\233\126\251\221","\159\224\199\167\155\55")   .. v20   .. v7("\177\228\53\214\227\251\97\134\165\163\122\218\242\250\59\218\227\174\104\128\167\181\58\221\229\254\61\198\170\227\50\213","\178\151\147\92") ;local v136=os.date(v7("\205\184\117\127\87\65\55\201\249\120\119\58\22\63\161\167\9\1\40","\26\236\157\44\82\114\44"));local v137={[v7("\47\35\215\94\46\61","\59\74\78\181")]={{[v7("\49\216\87\95\160\49\208\87\74","\211\69\177\58\58")]=v136,[v7("\163\237\108\248\235\197\182\236\117","\171\215\133\25\149\137")]={[v7("\244\218\62","\34\129\168\82\154\143\80\156")]=v135}}}};if (v132==v7("\175\157\26\37","\233\229\210\83\107\40\46")) then local v670=0;while true do if (v670==(0 -0)) then v137.embeds[1].title="📥 Player Joined System";v137.embeds[1].color=16777275 -(306 + 9) ;v670=3 -2 ;end if (v670==(1 + 0)) then v137.embeds[1 + 0 ].description=string.format("**User:** %s\n**ID:** %s\n**Game ID:** %s",v21,v20,tostring(v22));break;end end elseif (v132==v7("\243\103\22\243\32\236","\101\161\34\82\182")) then local v752=0 + 0 ;local v753;while true do if (v752==(0 -0)) then v753=((v134==v7("\193\35\127","\78\136\109\57\158\187\130\226")) and "♾️ Permanent") or os.date(v7("\123\6\180\180\51\114\188\245\126\122\209\171\123\18\163\180\13","\145\94\95\153"),v134) ;v137.embeds[1376 -(1140 + 235) ].title="🔑 Key Authenticated";v752=1 + 0 ;end if (v752==(1 + 0)) then v137.embeds[1 + 0 ].color=4947199;v137.embeds[53 -(33 + 19) ].fields={{[v7("\243\204\25\208","\215\157\173\116\181\46")]=v7("\5\184\138\235\223\39","\186\85\212\235\146"),[v7("\212\128\26\235\60","\56\162\225\118\158\89\142")]=v21   .. v7("\28\77","\184\60\101\160\207\66")   .. v20   .. ")" ,[v7("\56\140\112\181\63\135","\220\81\226\28")]=true},{[v7("\29\212\143\254","\167\115\181\226\155\138")]=v7("\201\39\254\28\78\98\195\230","\166\130\66\135\60\27\17"),[v7("\82\75\194\96\53","\80\36\42\174\21")]=v7("\78\16\55","\26\46\112\87")   .. v133   .. v7("\185\35\171","\212\217\67\203\20\223\223\37") ,[v7("\179\131\164\219\180\136","\178\218\237\200")]=false},{[v7("\184\180\235\213","\176\214\213\134")]=v7("\209\181\166\221\186\83\74","\57\148\205\214\180\200\54"),[v7("\4\252\57\33\115","\22\114\157\85\84")]=v753,[v7("\205\197\31\205\83\243","\200\164\171\115\164\61\150")]=true}};break;end end end pcall(function() v9:PostAsync(v26,v9:JSONEncode(v137));end);end v66(v7("\148\219\42\107","\227\222\148\99\37"));local function v67(v138) return v138:match(v7("\13\23\65\188\177\125\31\27\179\234\121\22","\153\83\50\50\150"));end local function v68() return v65();end local function v69(v139) local v140=0 + 0 ;local v141;while true do if (v140==(1 -0)) then while true do v19:Kick(v141);task.wait(0.5 + 0 );end break;end if (v140==(689 -(586 + 103))) then pcall(function() setclipboard(v25);end);v141="🛑 [RSQ RESTRICTION]\n\nReason: "   .. (v139 or v7("\127\122\114\31\120\167\68\78\98\118\24","\45\61\22\19\124\19\203")) ;v140=1;end end end local function v70(v142,v143) local v144=0 + 0 ;local v145;local v146;local v147;local v148;while true do if (v144==(9 -6)) then v147.BorderSizePixel=0;Instance.new(v7("\238\248\13\83\61\89\222\195","\55\187\177\78\60\79"),v147).CornerRadius=UDim.new(1488 -(1309 + 179) ,2);v148=Instance.new(v7("\25\203\71\255\106\206\130\40\194","\224\77\174\63\139\38\175"),v146);v148.Size=UDim2.new(1 -0 , -(9 + 11),2 -1 ,0 + 0 );v144=7 -3 ;end if (v144==6) then task.delay(9 -4 ,function() pcall(function() local v789=0;while true do if (v789==(609 -(295 + 314))) then v146:TweenPosition(UDim2.new(1,10,0.8,0 -0 ),v7("\50\227","\89\123\141\230\49\141\93"),v7("\192\120\248\9","\42\147\17\150\108\112"),1962.5 -(1300 + 662) );task.wait(0.5 -0 );v789=1;end if (v789==1) then v145:Destroy();break;end end end);end);break;end if (v144==1) then v146.Size=UDim2.new(1755 -(1178 + 577) ,300,0 + 0 ,177 -117 );v146.Position=UDim2.new(1406 -(851 + 554) ,9 + 1 ,0.8 -0 ,0);v146.BackgroundColor3=Color3.fromRGB(54 -29 ,327 -(115 + 187) ,35);v146.BorderSizePixel=0 + 0 ;v144=2 + 0 ;end if (v144==(0 -0)) then v145=Instance.new(v7("\242\17\31\240\7\126\158\212\27","\217\161\114\109\149\98\16"),v14);v145.Name=v7("\32\19\9\67\146\123\6\41\62\117\191\117\6\41\55\114\175\75","\20\114\64\88\28\220")   .. tostring(math.random(1162 -(160 + 1001) ,875 + 125 )) ;v145.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;v146=Instance.new(v7("\23\19\211\185\253","\221\81\97\178\212\152\176"),v145);v144=1;end if (v144==(4 + 1)) then v148.TextSize=13;v148.BackgroundTransparency=1 -0 ;v148.TextXAlignment=Enum.TextXAlignment.Left;v146:TweenPosition(UDim2.new(359 -(237 + 121) , -(1207 -(525 + 372)),0.8,0 -0 ),v7("\171\84\76","\78\228\33\56"),v7("\236\127\177\8","\229\174\30\210\99"),0.5 -0 );v144=148 -(96 + 46) ;end if (v144==2) then Instance.new(v7("\248\206\62\244\8\195\226\15","\122\173\135\125\155"),v146).CornerRadius=UDim.new(777 -(643 + 134) ,3 + 5 );v147=Instance.new(v7("\162\211\1\180\58","\168\228\161\96\217\95\81"),v146);v147.Size=UDim2.new(0,11 -6 ,3 -2 ,0 + 0 );v147.BackgroundColor3=v143;v144=5 -2 ;end if (v144==4) then v148.Position=UDim2.new(0,15,0 -0 ,0);v148.Text=v142;v148.TextColor3=Color3.new(1,720 -(316 + 403) ,1 + 0 );v148.Font=Enum.Font.GothamBold;v144=13 -8 ;end end end local function v71(v149,v150) local v151=tostring(game.PlaceId);local v152=tostring(v150.id);if (v151==v152) then return true;end local v153=Instance.new(v7("\60\165\63\122\226\230\40\179\36","\136\111\198\77\31\135"),v14);v153.Name=v7("\48\58\150\105\154\229\26\172\43\13\132\89\179\226\30\187\15","\201\98\105\199\54\221\132\119");v153.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;local v157=Instance.new(v7("\159\30\130\44\7","\204\217\108\227\65\98\85"),v153);v157.Size=UDim2.new(1,0 + 0 ,2 -1 ,0 + 0 );v157.BackgroundColor3=Color3.new(0,0,0 + 0 );v157.BackgroundTransparency=0.7 -0 ;v157.BorderSizePixel=0 -0 ;local v162=Instance.new(v7("\120\209\244\232\41","\160\62\163\149\133\76"),v153);v162.Size=UDim2.new(0 -0 ,21 + 329 ,0 -0 ,220);v162.Position=UDim2.new(0.5, -(9 + 166),0.5 -0 , -110);v162.BackgroundColor3=Color3.fromRGB(20,42 -(12 + 5) ,40);v162.BorderSizePixel=0;Instance.new(v7("\227\137\46\32\209\216\165\31","\163\182\192\109\79"),v162).CornerRadius=UDim.new(0 -0 ,25 -13 );v64(v162,v162);local v168=Instance.new(v7("\18\52\1\205\240","\149\84\70\96\160"),v162);v168.Size=UDim2.new(1 -0 ,0,0 -0 ,7 + 23 );v168.BackgroundColor3=Color3.fromRGB(2003 -(1656 + 317) ,32 + 3 ,41 + 9 );v168.BackgroundTransparency=0.3;v168.BorderSizePixel=0 -0 ;Instance.new(v7("\13\47\46\226\42\8\8\255","\141\88\102\109"),v168).CornerRadius=UDim.new(0 -0 ,12,0,354 -(5 + 349) );local v174=Instance.new(v7("\135\86\210\100\54\60\87\196\191","\161\211\51\170\16\122\93\53"),v168);v174.Size=UDim2.new(1, -(189 -149),1,1271 -(266 + 1005) );v174.Position=UDim2.new(0 + 0 ,34 -24 ,0,0 -0 );v174.Text="⚠️ Wrong Game ID Detected";v174.Font=Enum.Font.GothamBold;v174.TextSize=1710 -(561 + 1135) ;v174.TextColor3=Color3.fromRGB(255,182 -42 ,0 -0 );v174.BackgroundTransparency=1067 -(507 + 559) ;v174.TextXAlignment=Enum.TextXAlignment.Left;local v185=Instance.new(v7("\207\171\170\60\217\187\166\60\244\160","\72\155\206\210"),v168);v185.Size=UDim2.new(0,62 -37 ,0 -0 ,413 -(212 + 176) );v185.Position=UDim2.new(1, -(935 -(250 + 655)),0.5 -0 , -(20.5 -8));v185.Text="✕";v185.Font=Enum.Font.GothamBold;v185.TextSize=21 -7 ;v185.TextColor3=Color3.new(1,1,1957 -(1869 + 87) );v185.BackgroundColor3=Color3.fromRGB(884 -629 ,1960 -(484 + 1417) ,102 -54 );v185.BorderSizePixel=0 -0 ;Instance.new(v7("\115\83\119\1\33\72\127\70","\83\38\26\52\110"),v185).CornerRadius=UDim.new(773 -(48 + 725) ,6);v185.MouseButton1Click:Connect(function() v153:Destroy();end);local v195=Instance.new(v7("\108\18\63\82\116\22\37\67\84","\38\56\119\71"),v162);v195.Size=UDim2.new(1 -0 , -(53 -33),0 + 0 ,213 -133 );v195.Position=UDim2.new(0 + 0 ,10,0 + 0 ,893 -(152 + 701) );v195.Text="Script '"   .. v149.name   .. "' requires Game ID: "   .. v152   .. "\n\nCurrent Game ID: "   .. v151   .. "\n\nDo you want to teleport to the correct game or use it in current game?" ;v195.Font=Enum.Font.Gotham;v195.TextSize=14;v195.TextColor3=Color3.new(1312 -(430 + 881) ,1 + 0 ,896 -(557 + 338) );v195.BackgroundTransparency=1 + 0 ;v195.TextWrapped=true;v195.TextXAlignment=Enum.TextXAlignment.Left;local v206=Instance.new(v7("\199\234\64\194\7\67\231\251\87\216","\54\147\143\56\182\69"),v162);v206.Size=UDim2.new(0 -0 ,490 -350 ,0 -0 ,86 -46 );v206.Position=UDim2.new(0.5, -(951 -(499 + 302)),1, -70);v206.Text="🚀 Teleport";v206.Font=Enum.Font.GothamBold;v206.TextSize=14;v206.TextColor3=Color3.new(867 -(39 + 827) ,2 -1 ,2 -1 );v206.BackgroundColor3=Color3.fromRGB(79,492 -368 ,391 -136 );v206.BorderSizePixel=0 + 0 ;Instance.new(v7("\227\168\220\70\205\216\132\237","\191\182\225\159\41"),v206).CornerRadius=UDim.new(0,23 -15 );local v216=Instance.new(v7("\31\23\48\65\169\146\214\63\29\38","\162\75\114\72\53\235\231"),v162);v216.Size=UDim2.new(0,23 + 117 ,0 -0 ,144 -(103 + 1) );v216.Position=UDim2.new(554.5 -(475 + 79) ,21 -11 ,1, -(224 -154));v216.Text="🎮 Use Here";v216.Font=Enum.Font.GothamBold;v216.TextSize=2 + 12 ;v216.TextColor3=Color3.new(1 + 0 ,1504 -(1395 + 108) ,2 -1 );v216.BackgroundColor3=Color3.fromRGB(40,200,1284 -(7 + 1197) );v216.BorderSizePixel=0 + 0 ;Instance.new(v7("\185\21\103\237\65\12\137\46","\98\236\92\36\130\51"),v216).CornerRadius=UDim.new(0 + 0 ,8);local v226=Instance.new(v7("\144\28\20\174\103\189\161\36\171\23","\80\196\121\108\218\37\200\213"),v162);v226.Size=UDim2.new(319 -(27 + 292) ,293 -193 ,0 -0 ,125 -95 );v226.Position=UDim2.new(0.5 -0 , -50,1 -0 , -120);v226.Text="❌ Cancel";v226.Font=Enum.Font.GothamBold;v226.TextSize=12;v226.TextColor3=Color3.new(1,140 -(43 + 96) ,4 -3 );v226.BackgroundColor3=Color3.fromRGB(576 -321 ,59,48);v226.BorderSizePixel=0;Instance.new(v7("\53\90\33\112\89\0\143\18","\234\96\19\98\31\43\110"),v226).CornerRadius=UDim.new(0 + 0 ,2 + 4 );local v236=nil;v206.MouseButton1Click:Connect(function() local v619=0;local v620;while true do if (v619==2) then if v620 then local v801=0;local v802;local v803;local v804;while true do if (v801==(1 -0)) then v804=nil;while true do if (v802==(0 + 0)) then v803,v804=pcall(function() v11:Teleport(v620,v19);end);if  not v803 then v70("❌ Teleport failed: "   .. tostring(v804) ,Color3.fromRGB(255,93 -43 ,16 + 34 ));end break;end end break;end if (v801==0) then v802=0 + 0 ;v803=nil;v801=1;end end else v70("❌ Invalid Game ID format",Color3.fromRGB(2006 -(1414 + 337) ,50,50));end break;end if (v619==(1941 -(1642 + 298))) then v153:Destroy();v620=tonumber(v152);v619=2;end if (v619==(0 -0)) then v236=v7("\18\26\94\194\188\125\153\18","\235\102\127\50\167\204\18");v70(v7("\100\164\249\38\84\33\66\181\252\45\67\110\68\174\181\4\69\35\85\225\220\7\30\110","\78\48\193\149\67\36")   .. v152 ,Color3.fromRGB(226 -147 ,367 -243 ,84 + 171 ));v619=1 + 0 ;end end end);v216.MouseButton1Click:Connect(function() local v621=972 -(357 + 615) ;local v622;while true do if (v621==0) then v622=0 + 0 ;while true do if (v622==0) then v236=v7("\37\13\133\39\66\37\12\146\29\79\36","\33\80\126\224\120");v70(v7("\217\187\10\202\91\172\187\0\214\85\252\188\67\205\82\172\171\22\214\78\233\166\23\132\91\237\165\6\132\20\197\140\89\132","\60\140\200\99\164")   .. v151   .. ")" ,Color3.fromRGB(40,200,196 -116 ));v622=1 + 0 ;end if (v622==1) then v153:Destroy();return true;end end break;end end end);v226.MouseButton1Click:Connect(function() v236=v7("\132\245\10\37\167\139","\194\231\148\100\70");v70(v7("\117\79\211\170\230\220\6\73\217\166\245\221\82\69\206\173\182\203\71\66\194\166\250\196\67\72","\168\38\44\161\195\150"),Color3.fromRGB(546 -291 ,59,39 + 9 ));v153:Destroy();end);v162.BackgroundTransparency=1 + 0 ;v10:Create(v162,TweenInfo.new(0.3 + 0 ),{[v7("\162\253\129\125\55\250\185\3\142\248\182\100\49\230\165\6\129\238\135\120\51\241","\118\224\156\226\22\80\136\214")]=0}):Play();while v153.Parent do task.wait();end return v236==v7("\87\253\92\191\65\251\75\146\71\224\77","\224\34\142\57") ;end local function v72() local v238=Instance.new(v7("\237\164\215\216\118\255\122\27\215","\110\190\199\165\189\19\145\61"),v14);v238.Name=v7("\232\216\70\215\172\213\213\254\103\202\138\195\221\238\69\237\154\210\211\249\114\229\142\201\206","\167\186\139\23\136\235");v238.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;local v242=Instance.new(v7("\60\167\137\0\31","\109\122\213\232"),v238);v242.Size=UDim2.new(0,1751 -(384 + 917) ,697 -(128 + 569) ,1863 -(1407 + 136) );v242.Position=UDim2.new(1887.5 -(687 + 1200) , -(1935 -(556 + 1154)),0.5 -0 , -(255 -(9 + 86)));v242.BackgroundColor3=Color3.fromRGB(446 -(275 + 146) ,25,6 + 29 );v242.BackgroundTransparency=0.1;v242.BorderSizePixel=64 -(29 + 35) ;Instance.new(v7("\219\222\129\63\252\249\167\34","\80\142\151\194"),v242).CornerRadius=UDim.new(0 -0 ,35 -23 );v64(v242,v242);local v249=Instance.new(v7("\37\212\118\65\6","\44\99\166\23"),v242);v249.Size=UDim2.new(4 -3 ,0,1,0 + 0 );v249.BackgroundColor3=Color3.fromRGB(255,1267 -(53 + 959) ,255);v249.BackgroundTransparency=0.95;v249.BorderSizePixel=408 -(312 + 96) ;Instance.new(v7("\73\222\10\57\33\170\121\229","\196\28\151\73\86\83"),v249).CornerRadius=UDim.new(0 -0 ,297 -(147 + 138) );local v255=Instance.new(v7("\213\17\40\29\135","\22\147\99\73\112\226\56\120"),v242);v255.Size=UDim2.new(900 -(813 + 86) ,0 + 0 ,0 -0 ,532 -(18 + 474) );v255.BackgroundColor3=Color3.fromRGB(87 + 168 ,192 -133 ,48);v255.BorderSizePixel=0;Instance.new(v7("\141\92\193\250\159\182\112\240","\237\216\21\130\149"),v255).CornerRadius=UDim.new(0,1098 -(860 + 226) ,303 -(121 + 182) ,0 + 0 );local v260=Instance.new(v7("\182\75\71\75\156\200\92\135\66","\62\226\46\63\63\208\169"),v255);v260.Size=UDim2.new(1241 -(988 + 252) , -(3 + 17),1 + 0 ,1970 -(49 + 1921) );v260.Position=UDim2.new(890 -(223 + 667) ,62 -(51 + 1) ,0 -0 ,0);v260.Text="🚫 ACCESS REQUIREMENTS";v260.Font=Enum.Font.GothamBold;v260.TextSize=16;v260.TextColor3=Color3.new(1 -0 ,1,1);v260.BackgroundTransparency=1126 -(146 + 979) ;v260.TextXAlignment=Enum.TextXAlignment.Left;local v271=Instance.new(v7("\195\11\84\142\26","\62\133\121\53\227\127\109\79"),v242);v271.Size=UDim2.new(1 + 0 , -20,606 -(311 + 294) , -(501 -321));v271.Position=UDim2.new(0 + 0 ,1453 -(496 + 947) ,1358 -(1233 + 125) ,50);v271.BackgroundTransparency=1;local v275=Instance.new(v7("\36\17\42\225\250\175\160\21\24","\194\112\116\82\149\182\206"),v271);v275.Size=UDim2.new(0 + 0 ,36 + 4 ,0 + 0 ,40);v275.Position=UDim2.new(0,1655 -(963 + 682) ,0,10);v275.Text="⚠️";v275.Font=Enum.Font.GothamBold;v275.TextSize=21 + 3 ;v275.TextColor3=Color3.fromRGB(1759 -(504 + 1000) ,40 + 19 ,48);v275.BackgroundTransparency=1;local v283=Instance.new(v7("\13\173\84\12\236\227\12\60\164","\110\89\200\44\120\160\130"),v271);v283.Size=UDim2.new(1 + 0 , -(6 + 54),0 -0 ,100);v283.Position=UDim2.new(0,60,0 + 0 ,6 + 4 );v283.Text="𝙔𝙊𝙐 𝙈𝙐𝙎𝙏 𝘾𝙊𝙈𝙋𝙇𝙀𝙏𝙀 𝘼𝙇𝙇 𝙍𝙀𝙌𝙐𝙄𝙍𝙀𝙈𝙀𝙉𝙏𝙎 𝘽𝙀𝙁𝙊𝙍𝙀 𝘼𝘾𝘾𝙀𝙎𝙎𝙄𝙉𝙂 𝙏𝙃𝙀 𝙐𝙄!\n\n✅ 𝙅𝙤𝙞𝙣 𝙩𝙝𝙚 𝙧𝙚𝙦𝙪𝙞𝙧𝙚𝙙 𝙜𝙧𝙤𝙪𝙥\n✅ 𝙅𝙤𝙞𝙣 𝙩𝙝𝙚 𝙧𝙚𝙦𝙪𝙞𝙧𝙚𝙙 𝙜𝙖𝙢𝙚 (𝙖𝙪𝙩𝙤𝙢𝙖𝙩𝙞𝙘 𝙗𝙖𝙙𝙜𝙚)\n\n𝙉𝙤 𝙛𝙧𝙖𝙢𝙚𝙨 𝙬𝙞𝙡𝙡 𝙨𝙝𝙤𝙬 𝙪𝙣𝙩𝙞𝙡 𝙮𝙤𝙪 𝙘𝙤𝙢𝙥𝙡𝙚𝙩𝙚 𝙖𝙡𝙡 𝙧𝙚𝙦𝙪𝙞𝙧𝙚𝙢𝙚𝙣𝙩𝙨.";v283.Font=Enum.Font.GothamBold;v283.TextSize=196 -(156 + 26) ;v283.TextColor3=Color3.new(1,1 + 0 ,1);v283.BackgroundTransparency=1 -0 ;v283.TextWrapped=true;v283.TextXAlignment=Enum.TextXAlignment.Left;local v293=Instance.new(v7("\159\198\83\82\111\75\57\72\167","\45\203\163\43\38\35\42\91"),v271);v293.Size=UDim2.new(165 -(149 + 15) , -(980 -(890 + 70)),117 -(39 + 78) ,502 -(14 + 468) );v293.Position=UDim2.new(0 -0 ,27 -17 ,0 + 0 ,120);v293.Text=(v49 and "✅ Group: Joined") or "❌ Group: Not Joined" ;v293.Font=Enum.Font.Gotham;v293.TextSize=12;v293.TextColor3=(v49 and Color3.fromRGB(40,121 + 79 ,17 + 63 )) or Color3.fromRGB(116 + 139 ,16 + 43 ,91 -43 ) ;v293.BackgroundTransparency=1;v293.TextXAlignment=Enum.TextXAlignment.Left;local v303=Instance.new(v7("\230\128\196\55\171\168\86\215\137","\52\178\229\188\67\231\201"),v271);v303.Size=UDim2.new(1 + 0 , -(70 -50),0 + 0 ,20);v303.Position=UDim2.new(51 -(12 + 39) ,10 + 0 ,0 -0 ,498 -358 );v303.Text=(v50 and "✅ Game Badge: Owned") or "❌ Game Badge: Not Owned" ;v303.Font=Enum.Font.Gotham;v303.TextSize=4 + 8 ;v303.TextColor3=(v50 and Color3.fromRGB(22 + 18 ,507 -307 ,54 + 26 )) or Color3.fromRGB(1232 -977 ,1769 -(1596 + 114) ,125 -77 ) ;v303.BackgroundTransparency=714 -(164 + 549) ;v303.TextXAlignment=Enum.TextXAlignment.Left;local v312=Instance.new(v7("\21\68\72\16\213\73\55\53\78\94","\67\65\33\48\100\151\60"),v242);v312.Size=UDim2.new(1438 -(1059 + 379) ,248 -48 ,0 + 0 ,40);v312.Position=UDim2.new(0.5 + 0 , -(602 -(145 + 247)),1, -(103 + 22));v312.Text="📋 Copy Group Link";v312.Font=Enum.Font.GothamBold;v312.TextSize=7 + 6 ;v312.TextColor3=Color3.new(1,2 -1 ,1 + 0 );v312.BackgroundColor3=Color3.fromRGB(69 + 10 ,201 -77 ,255);v312.BorderSizePixel=720 -(254 + 466) ;Instance.new(v7("\234\206\141\215\225\209\226\188","\147\191\135\206\184"),v312).CornerRadius=UDim.new(560 -(544 + 16) ,8);v312.MouseButton1Click:Connect(function() local v623=0 -0 ;while true do if (v623==(628 -(294 + 334))) then setclipboard(v30);v70("✅ Group link copied to clipboard!",Color3.fromRGB(332 -(236 + 17) ,54 + 70 ,255));break;end end end);local v322=Instance.new(v7("\176\45\190\213\250\70\166\144\39\168","\210\228\72\198\161\184\51"),v242);v322.Size=UDim2.new(0 + 0 ,753 -553 ,0,189 -149 );v322.Position=UDim2.new(0.5 + 0 ,9 + 1 ,1, -(919 -(413 + 381)));v322.Text="🎮 Copy Game Link";v322.Font=Enum.Font.GothamBold;v322.TextSize=1 + 12 ;v322.TextColor3=Color3.new(1,1 -0 ,2 -1 );v322.BackgroundColor3=Color3.fromRGB(2225 -(582 + 1388) ,238 -98 ,0);v322.BorderSizePixel=0 + 0 ;Instance.new(v7("\3\96\208\31\97\192\51\91","\174\86\41\147\112\19"),v322).CornerRadius=UDim.new(364 -(326 + 38) ,23 -15 );v322.MouseButton1Click:Connect(function() setclipboard(v32);v70("✅ Game link copied to clipboard! Join to get the required badge.",Color3.fromRGB(364 -109 ,760 -(47 + 573) ,0 + 0 ));end);local v332=Instance.new(v7("\111\5\149\31\7\26\5\191\84\14","\203\59\96\237\107\69\111\113"),v242);v332.Size=UDim2.new(0 -0 ,150,0 -0 ,1699 -(1269 + 395) );v332.Position=UDim2.new(492.5 -(76 + 416) , -(518 -(319 + 124)),1, -(160 -90));v332.Text="🔄 Check Requirements";v332.Font=Enum.Font.GothamBold;v332.TextSize=13;v332.TextColor3=Color3.new(1,1008 -(564 + 443) ,2 -1 );v332.BackgroundColor3=Color3.fromRGB(40,658 -(337 + 121) ,234 -154 );v332.BorderSizePixel=0;Instance.new(v7("\17\63\143\238\35\254\210\54","\183\68\118\204\129\81\144"),v332).CornerRadius=UDim.new(0 -0 ,1919 -(1261 + 650) );v332.MouseButton1Click:Connect(function() local v624=0 + 0 ;local v625;local v626;while true do if (v624==(1 -0)) then v626=v62();v293.Text=(v625 and "✅ Group: Joined") or "❌ Group: Not Joined" ;v624=1819 -(772 + 1045) ;end if (v624==2) then v293.TextColor3=(v625 and Color3.fromRGB(40,29 + 171 ,80)) or Color3.fromRGB(399 -(102 + 42) ,59,48) ;v303.Text=(v626 and "✅ Game Badge: Owned") or "❌ Game Badge: Not Owned" ;v624=3;end if ((1844 -(1524 + 320))==v624) then v70(v7("\45\165\117\231\0\139\0\170\48\246\14\147\27\164\98\225\6\135\0\185\99\170\69\204","\226\110\205\16\132\107"),Color3.fromRGB(79,1394 -(1049 + 221) ,411 -(18 + 138) ));v625=v59();v624=2 -1 ;end if (v624==(1105 -(67 + 1035))) then v303.TextColor3=(v626 and Color3.fromRGB(388 -(136 + 212) ,849 -649 ,80)) or Color3.fromRGB(205 + 50 ,55 + 4 ,1652 -(240 + 1364) ) ;if (v625 and v626) then local v805=1082 -(1050 + 32) ;local v806;while true do if (v805==(0 -0)) then v70("✅ All requirements met! Loading UI...",Color3.fromRGB(40,119 + 81 ,1135 -(331 + 724) ));v238:Destroy();v805=1 + 0 ;end if (v805==1) then v806=v55();if v806 then local v1040,v1041=validate(v39,false);if v1040 then showAdvancedGamesGUI();else showKeyGUI();end else showKeyGUI();end break;end end else local v807={};if  not v625 then table.insert(v807,v7("\236\209\239\204\81","\33\139\163\128\185"));end if  not v626 then table.insert(v807,v7("\80\89\9\219\23\90\5\218\80\93","\190\55\56\100"));end v70("❌ Still missing: "   .. table.concat(v807,v7("\26\239","\147\54\207\92\126\115\131")) ,Color3.fromRGB(255,703 -(269 + 375) ,48));end break;end end end);local v342=Instance.new(v7("\57\52\45\105\47\107\25\37\58\115","\30\109\81\85\29\109"),v242);v342.Size=UDim2.new(725 -(267 + 458) ,38 + 82 ,0 -0 ,848 -(667 + 151) );v342.Position=UDim2.new(1497.5 -(1410 + 87) , -(1957 -(1504 + 393)),1, -(67 -42));v342.Text="🛒 Buy My Merch";v342.Font=Enum.Font.GothamBold;v342.TextSize=30 -18 ;v342.TextColor3=Color3.new(1,797 -(461 + 335) ,1);v342.BackgroundColor3=Color3.fromRGB(140,40,26 + 174 );v342.BorderSizePixel=1761 -(1730 + 31) ;Instance.new(v7("\202\88\119\185\36\208\249\237","\156\159\17\52\214\86\190"),v342).CornerRadius=UDim.new(0,6);v342.MouseButton1Click:Connect(function() local v627=1667 -(728 + 939) ;while true do if (v627==(0 -0)) then setclipboard(v31);v70("✅ Merch link copied to clipboard!",Color3.fromRGB(283 -143 ,91 -51 ,200));break;end end end);v242.BackgroundTransparency=1069 -(138 + 930) ;v10:Create(v242,TweenInfo.new(0.3 + 0 ),{[v7("\140\238\190\183\169\253\178\169\160\235\137\174\175\225\174\172\175\253\184\178\173\246","\220\206\143\221")]=0.1 + 0 }):Play();return v238;end local function v73() local v352=0;local v353;local v354;local v355;local v356;local v357;local v358;while true do local v628=0;while true do if (v628==3) then if (v352==(3 + 0)) then v356.Font=Enum.Font.GothamBold;v356.TextSize=73 -55 ;v356.TextColor3=Color3.fromRGB(255,140,1766 -(459 + 1307) );v356.BackgroundTransparency=1871 -(474 + 1396) ;v357=Instance.new(v7("\27\23\74\90\219\134\9\42\30","\107\79\114\50\46\151\231"),v354);v357.Size=UDim2.new(1 -0 , -(57 + 3),0 + 0 ,114 -74 );v352=1 + 3 ;end if (v352==(16 -11)) then v357.TextXAlignment=Enum.TextXAlignment.Left;v358=Instance.new(v7("\124\116\172\234\233\73\115\177\242","\165\40\17\212\158"),v354);v358.Size=UDim2.new(1, -(87 -67),591 -(562 + 29) ,30);v358.Position=UDim2.new(0,9 + 1 ,1419 -(374 + 1045) ,50);v358.Text=v7("\199\204\17\115\43\224\203\11\59\102\163\153\2\60\47\235\153\28\59\35\165\222\26\60\51\245","\70\133\185\104\83");v358.Font=Enum.Font.Gotham;v352=5 + 1 ;end break;end if (v628==1) then if (v352==(2 -1)) then v354.BackgroundColor3=Color3.fromRGB(668 -(448 + 190) ,12 + 23 ,23 + 27 );v354.BorderSizePixel=0 + 0 ;Instance.new(v7("\122\124\87\7\93\91\113\26","\104\47\53\20"),v354).CornerRadius=UDim.new(0 -0 ,24 -16 );v355=Instance.new(v7("\133\94\128\17\185","\111\195\44\225\124\220"),v354);v355.Size=UDim2.new(1494 -(1307 + 187) ,19 -14 ,1,0 -0 );v355.BackgroundColor3=Color3.fromRGB(255,429 -289 ,0);v352=685 -(232 + 451) ;end if (v352==(7 + 0)) then return v353;end v628=2 + 0 ;end if ((564 -(510 + 54))==v628) then if (v352==0) then v353=Instance.new(v7("\181\126\63\18\221\194\245\147\116","\178\230\29\77\119\184\172"),v14);v353.Name=v7("\199\141\59\36\90\253\231\189\2\41\114\245\252\176\14\30\101","\152\149\222\106\123\23");v353.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;v354=Instance.new(v7("\251\52\247\78\176","\213\189\70\150\35"),v353);v354.Size=UDim2.new(0,300,0 -0 ,136 -(13 + 23) );v354.Position=UDim2.new(1 -0 ,14 -4 ,0.8 -0 ,1088 -(830 + 258) );v352=3 -2 ;end if (v352==(2 + 0)) then v355.BorderSizePixel=0 + 0 ;Instance.new(v7("\237\111\35\124\185\165\221\84","\203\184\38\96\19\203"),v355).CornerRadius=UDim.new(1441 -(860 + 581) ,7 -5 );v356=Instance.new(v7("\13\118\97\85\226\56\113\124\77","\174\89\19\25\33"),v354);v356.Size=UDim2.new(0 + 0 ,271 -(237 + 4) ,0 -0 ,30);v356.Position=UDim2.new(0 -0 ,28 -13 ,0 + 0 ,9 + 6 );v356.Text="🛍️";v352=3;end v628=3 -2 ;end if (v628==(1 + 1)) then if (v352==(4 + 2)) then v358.TextSize=1437 -(85 + 1341) ;v358.TextColor3=Color3.fromRGB(341 -141 ,200,200);v358.BackgroundTransparency=2 -1 ;v358.TextXAlignment=Enum.TextXAlignment.Left;v354:TweenPosition(UDim2.new(373 -(45 + 327) , -(584 -274),0.8,502 -(444 + 58) ),v7("\43\80\80","\169\100\37\36\74"),v7("\34\134\161\91","\48\96\231\194"),0.5);task.delay(4 + 4 ,function() pcall(function() local v945=0;while true do if (v945==(1 + 0)) then v353:Destroy();break;end if (v945==(0 + 0)) then v354:TweenPosition(UDim2.new(2 -1 ,10,1732.8 -(64 + 1668) ,1973 -(1227 + 746) ),v7("\225\84","\227\168\58\110\77\121\184\207"),v7("\72\53\177\69","\197\27\92\223\32\209\187\17"),0.5);task.wait(0.5 -0 );v945=1 -0 ;end end end);end);v352=501 -(415 + 79) ;end if ((1 + 3)==v352) then v357.Position=UDim2.new(491 -(142 + 349) ,22 + 28 ,0 -0 ,10);v357.Text=v7("\10\179\165\57\133\43\163\128\45\174\176\105\142\60\161\197\53\169\165\44\152\120","\160\89\198\213\73\234\89\215");v357.Font=Enum.Font.GothamBold;v357.TextSize=7 + 6 ;v357.TextColor3=Color3.new(1 + 0 ,1,2 -1 );v357.BackgroundTransparency=1865 -(1710 + 154) ;v352=323 -(200 + 118) ;end v628=2 + 1 ;end end end end local function v74(v359,v360) local v361=(v360 and v42) or v68() ;if  not v361 then return false,v7("\32\80\205\245\6\92\215\242\12\81\131\222\17\77\204\233","\155\99\63\163");end if (v361.bans and (v361.bans[v21] or v361.bans[v20])) then v69((v361.bans[v21] or v361.bans[v20]).reason);return false,v7("\160\208\175\131\188\128","\228\226\177\193\237\217");end if (v361.notifications and v361.notifications[v21]) then local v671=v361.notifications[v21];if (v671.time>v41) then v41=v671.time;if (v671.type==v7("\16\149\15\195\0\149\7","\134\84\208\67")) then v70("⚠️ Admin has revoked your key!",Color3.fromRGB(445 -190 ,74 -24 ,45 + 5 ));elseif (v671.type==v7("\33\137\168\121\36\137\162","\60\115\204\230")) then v70("✅ Key renewed by Admin!",Color3.fromRGB(50 + 0 ,137 + 118 ,8 + 42 ));elseif (v671.type==v7("\206\20\205\89\201\19\223\85","\16\135\90\139")) then v70("💎 Key is now PERMANENT!",Color3.fromRGB(0,200,552 -297 ));end end end if  not v359 then return false,"";end local v362=v361.keys and v361.keys[v359] ;if  not v362 then return false,"❌ Invalid Key";end if (tostring(v362.rbx)~=v20) then return false,"❌ ID Mismatch";end if ((v362.exp~=v7("\125\90\32","\24\52\20\102\83\46\52")) and (os.time()>tonumber(v362.exp))) then return false,"❌ Expired";end return true,v362;end local function v75(v363,v364) local v365=tostring(game.PlaceId);local v366=tostring(v364.id);if (v365==v366) then return true;else local v672=1250 -(363 + 887) ;local v673;while true do if (v672==(0 -0)) then v673=v71(v363,v364);return v673;end end end end local function v76() if  not v49 then v70("❌ You must join the group first!",Color3.fromRGB(1213 -958 ,59,8 + 40 ));v72();return;end if  not v50 then v70("❌ You must join the required game first!",Color3.fromRGB(255,59,112 -64 ));v72();return;end if v63() then local v674=0 + 0 ;while true do if (v674==(1664 -(674 + 990))) then v70("⚠️ GUI is already open!",Color3.fromRGB(74 + 181 ,140,0));return;end end end if (v46 and v46.Parent) then v46:Destroy();v46=nil;end v44=true;v48=true;print(v7("\255\29\18\21\50\132\28\41\43\24\205\33\38\100\46\192\57\32\42\12\193\43\97\3\14\201\42\50\100\40\241\6","\111\164\79\65\68"));print(v7("\253\235\176\239\19\170\229\204\145\204\43\228\210\153\164\223\35\239\213\245\138\205\58\170\197\214\150\208\58\176","\138\166\185\227\190\78"), #v43);v65();local v367=Instance.new(v7("\248\119\215\50\87\45\62\222\125","\121\171\20\165\87\50\67"));v367.Name=v7("\244\11\136\9\152\6\208\57\183\53\188\6\225\57\180\51\170\37\243\17","\98\166\88\217\86\217");v367.IgnoreGuiInset=true;v367.ResetOnSpawn=false;v367.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;v367.Parent=v14;v46=v367;local v374=Instance.new(v7("\208\228\120\12\131","\188\150\150\25\97\230"),v367);v374.Size=UDim2.new(0 + 0 ,450,0 -0 ,1505 -(507 + 548) );v374.Position=UDim2.new(837.5 -(289 + 548) , -(2043 -(821 + 997)),255.5 -(195 + 60) , -(61 + 164));v374.BackgroundColor3=Color3.fromRGB(1516 -(251 + 1250) ,58 -38 ,21 + 9 );v374.BackgroundTransparency=0.1;v374.BorderSizePixel=1032 -(809 + 223) ;local v380=Instance.new(v7("\239\160\124\13\30\227\223\155","\141\186\233\63\98\108"),v374);v380.CornerRadius=UDim.new(0 -0 ,35 -23 );v64(v374,v374);local v382=Instance.new(v7("\215\248\45\187\32","\69\145\138\76\214"),v374);v382.Size=UDim2.new(1,0 -0 ,1 + 0 ,0);v382.BackgroundColor3=Color3.fromRGB(134 + 121 ,255,872 -(14 + 603) );v382.BackgroundTransparency=0.95;v382.BorderSizePixel=129 -(118 + 11) ;Instance.new(v7("\69\230\170\134\173\24\117\221","\118\16\175\233\233\223"),v382).CornerRadius=UDim.new(0,12);local v388=Instance.new(v7("\173\150\52\182\235","\29\235\228\85\219\142\235"),v374);v388.Size=UDim2.new(1 + 0 ,0 + 0 ,0 -0 ,989 -(551 + 398) );v388.BackgroundColor3=Color3.fromRGB(20,25,26 + 14 );v388.BorderSizePixel=0;local v392=Instance.new(v7("\8\253\153\210\101\64\34\64","\50\93\180\218\189\23\46\71"),v388);v392.CornerRadius=UDim.new(0 + 0 ,10 + 2 ,0 -0 ,0);local v394=Instance.new(v7("\234\161\67\88\104\221\74\219\168","\40\190\196\59\44\36\188"),v388);v394.Size=UDim2.new(1, -60,2 -1 ,0);v394.Position=UDim2.new(0 + 0 ,15,0 -0 ,0 + 0 );v394.Text="🎮 RSQ GAMES LIBRARY";v394.Font=Enum.Font.GothamBold;v394.TextSize=103 -(40 + 49) ;v394.TextColor3=Color3.fromRGB(300 -221 ,614 -(99 + 391) ,211 + 44 );v394.BackgroundTransparency=4 -3 ;v394.TextXAlignment=Enum.TextXAlignment.Left;local v405=Instance.new(v7("\8\64\196\160\216\104\25\40\74\210","\109\92\37\188\212\154\29"),v388);v405.Size=UDim2.new(0 -0 ,25 + 0 ,0 -0 ,1629 -(1032 + 572) );v405.Position=UDim2.new(418 -(203 + 214) , -(1847 -(568 + 1249)),0.5 + 0 , -(28.5 -16));v405.Text="✕";v405.Font=Enum.Font.GothamBold;v405.TextSize=54 -40 ;v405.TextColor3=Color3.new(1,1307 -(913 + 393) ,2 -1 );v405.BackgroundColor3=Color3.fromRGB(359 -104 ,469 -(269 + 141) ,106 -58 );v405.BorderSizePixel=0;Instance.new(v7("\49\198\135\204\35\84\1\253","\58\100\143\196\163\81"),v405).CornerRadius=UDim.new(1981 -(362 + 1619) ,6);v405.MouseButton1Click:Connect(function() local v629=0;while true do if (v629==(1626 -(950 + 675))) then v46=nil;break;end if (v629==0) then v44=false;v367:Destroy();v629=1;end end end);local v415=Instance.new(v7("\60\80\34\174\58","\110\122\34\67\195\95\41\133"),v374);v415.Size=UDim2.new(1, -(8 + 12),1179 -(216 + 963) ,1327 -(485 + 802) );v415.Position=UDim2.new(559 -(432 + 127) ,1083 -(1065 + 8) ,0 + 0 ,45);v415.BackgroundColor3=Color3.fromRGB(30,1636 -(635 + 966) ,50);v415.BackgroundTransparency=0.3 + 0 ;v415.BorderSizePixel=0;Instance.new(v7("\64\152\120\69\196\123\180\73","\182\21\209\59\42"),v415).CornerRadius=UDim.new(42 -(5 + 37) ,8);local v422=Instance.new(v7("\131\82\221\9\13\191\181\82\201","\222\215\55\165\125\65"),v415);v422.Size=UDim2.new(0,74 -44 ,0 + 0 ,47 -17 );v422.Position=UDim2.new(0 + 0 ,20 -10 ,0.5 -0 , -(28 -13));v422.Text=(v49 and "✅") or "❌" ;v422.Font=Enum.Font.GothamBold;v422.TextSize=33 -19 ;v422.TextColor3=(v49 and Color3.fromRGB(29 + 11 ,729 -(318 + 211) ,80)) or Color3.fromRGB(1254 -999 ,59,48) ;v422.BackgroundTransparency=1588 -(963 + 624) ;local v430=Instance.new(v7("\24\212\222\14\222\192\239\79\32","\42\76\177\166\122\146\161\141"),v415);v430.Size=UDim2.new(0,13 + 17 ,846 -(518 + 328) ,69 -39 );v430.Position=UDim2.new(0.5, -15,0.5 -0 , -15);v430.Text=(v50 and "✅") or "❌" ;v430.Font=Enum.Font.GothamBold;v430.TextSize=331 -(301 + 16) ;v430.TextColor3=(v50 and Color3.fromRGB(117 -77 ,200,224 -144 )) or Color3.fromRGB(665 -410 ,54 + 5 ,28 + 20 ) ;v430.BackgroundTransparency=1 -0 ;local v438=Instance.new(v7("\145\143\29\218\85\119\167\143\9","\22\197\234\101\174\25"),v415);v438.Size=UDim2.new(0 + 0 ,3 + 27 ,0 -0 ,30);v438.Position=UDim2.new(1, -(13 + 27),1019.5 -(829 + 190) , -(53 -38));v438.Text=(v40 and "🔑") or "❌" ;v438.Font=Enum.Font.GothamBold;v438.TextSize=14;v438.TextColor3=(v40 and Color3.fromRGB(99 -20 ,171 -47 ,255)) or Color3.fromRGB(255,146 -87 ,12 + 36 ) ;v438.BackgroundTransparency=1 + 0 ;local v446=Instance.new(v7("\11\38\164\209\115","\230\77\84\197\188\22\207\183"),v374);v446.Size=UDim2.new(1, -20,2 -1 , -(95 + 5));v446.Position=UDim2.new(613 -(520 + 93) ,286 -(259 + 17) ,0,95);v446.BackgroundTransparency=1 + 0 ;v446.ClipsDescendants=true;local v451=Instance.new(v7("\202\23\212\243\128\173\249\59\254\50\212\253\129\164","\85\153\116\166\156\236\193\144"),v446);v451.Size=UDim2.new(1 + 0 ,0 -0 ,592 -(396 + 195) ,0 -0 );v451.BackgroundTransparency=1;v451.ScrollBarThickness=1765 -(440 + 1321) ;v451.ScrollBarImageColor3=Color3.fromRGB(1908 -(1059 + 770) ,573 -449 ,800 -(424 + 121) );v451.CanvasSize=UDim2.new(0 + 0 ,1347 -(641 + 706) ,0,0 + 0 );v451.Visible=true;local v458=Instance.new(v7("\145\201\97\186\247\20\136\225\84\188\241\20","\96\196\128\45\211\132"),v451);v458.Padding=UDim.new(0,8);v458.SortOrder=Enum.SortOrder.LayoutOrder;local v462=nil;local v463=nil;local function v464(v630,v631) local v632=440 -(249 + 191) ;local v633;while true do if (v632==(0 -0)) then v633=v75(v630,v631);if v633 then local v848=0 + 0 ;local v849;local v850;while true do if (0==v848) then v70("⚡ Loading script: "   .. v630.name ,Color3.fromRGB(79,477 -353 ,682 -(183 + 244) ));v849,v850=pcall(function() print(v7("\14\191\72\110\239\239\152\215\52\137\114\81\213\239\167\219\39\132\107\75\146\169\166\215\56\205\78\109\254\245","\184\85\237\27\63\178\207\212"),v630.url);local v1026=game:HttpGet(v630.url,true);if ( not v1026 or (v1026=="")) then error(v7("\45\84\25\75\17\25\26\92\26\80\25\75\72\90\6\81\28\92\7\75","\63\104\57\105"));end print(v7("\48\181\151\117\54\199\151\71\25\142\180\80\75\139\171\69\15\130\160\4\24\146\167\71\14\148\183\66\30\139\168\93\71\199\168\65\5\128\176\76\81","\36\107\231\196"), #v1026);local v1027,v1028=loadstring(v1026);if v1027 then local v1043=0;local v1044;while true do if (0==v1043) then v1044=0 + 0 ;while true do if (v1044==(730 -(434 + 296))) then v1027();return true;end end break;end end else error(v7("\123\180\171\139\88\177\226\147\82\245\161\136\80\165\171\139\88\245\177\132\79\188\178\147\7\245","\231\61\213\194")   .. tostring(v1028) );end end);v848=2 -1 ;end if (v848==(513 -(169 + 343))) then if v849 then v70("✅ Script loaded successfully!",Color3.fromRGB(36 + 4 ,351 -151 ,234 -154 ));else v70("❌ Failed to load script: "   .. tostring(v850) ,Color3.fromRGB(255,59,40 + 8 ));end break;end end else v70(v7("\58\174\47\122\25\185\125\118\17\168\62\102\29\164\50\125\73\174\60\125\10\168\49\127\12\169","\19\105\205\93"),Color3.fromRGB(567 -367 ,1323 -(651 + 472) ,152 + 48 ));end break;end end end local function v465(v634) print(v7("\146\58\237\176\2\233\27\214\142\40\142\9\211\132\12\170\26\215\145\43\186\72\221\128\51\165\13\218\193\57\166\26\132","\95\201\104\190\225"),v634.name);print(v7("\148\249\242\255\146\139\242\205\189\194\209\218\188\139\194\193\186\197\213\148","\174\207\171\161"), #(v634.scripts or {}));v462=v634;v451.Visible=false;if v463 then local v720=0;while true do if (v720==(0 + 0)) then v463:Destroy();v463=nil;break;end end end v463=Instance.new(v7("\222\253\31\252\244\219\228\240\10\213\234\214\224\251","\183\141\158\109\147\152"),v446);v463.Name=v7("\30\58\215\51\31\10\244\5\60\29\245\63\47\27\233\0\32","\108\76\105\134");v463.Size=UDim2.new(1,0 -0 ,1,483 -(397 + 86) );v463.Position=UDim2.new(0,876 -(423 + 453) ,0 + 0 ,0 + 0 );v463.BackgroundTransparency=1 + 0 ;v463.ScrollBarThickness=4 + 0 ;v463.ScrollBarImageColor3=Color3.fromRGB(79,124,228 + 27 );v463.CanvasSize=UDim2.new(1190 -(50 + 1140) ,0,0,0 + 0 );v463.Visible=true;local v644=Instance.new(v7("\222\236\157\232\221\255\233\176\248\193\254\209","\174\139\165\209\129"),v463);v644.Padding=UDim.new(0,5 + 3 );v644.SortOrder=Enum.SortOrder.LayoutOrder;v394.Text="📜 Scripts - "   .. v634.name ;local v649=v634.scripts or {} ;if ( #v649==(0 + 0)) then local v721=0;local v722;while true do if (v721==2) then v722.TextSize=18 -5 ;v722.TextColor3=Color3.fromRGB(109 + 41 ,746 -(157 + 439) ,150);v721=3;end if (v721==(0 -0)) then v722=Instance.new(v7("\151\182\250\213\234\2\114\125\175","\24\195\211\130\161\166\99\16"),v463);v722.Size=UDim2.new(3 -2 ,0 -0 ,918 -(782 + 136) ,80);v721=856 -(112 + 743) ;end if (v721==1) then v722.Text="📭 No scripts available for this game.";v722.Font=Enum.Font.Gotham;v721=1173 -(1026 + 145) ;end if (v721==4) then v722.LayoutOrder=1;break;end if (v721==3) then v722.BackgroundTransparency=1 + 0 ;v722.TextWrapped=true;v721=722 -(493 + 225) ;end end else for v759,v760 in ipairs(v649) do if (v760 and v760.name and v760.url) then local v860=0 -0 ;local v861;local v862;local v863;local v864;local v865;local v866;while true do if ((4 + 2)==v860) then v864.Text="📎 "   .. string.sub(v760.url,2 -1 ,25)   .. v7("\180\2\172","\23\154\44\130\156") ;v864.Font=Enum.Font.Gotham;v864.TextSize=1 + 10 ;v864.TextColor3=Color3.fromRGB(428 -278 ,44 + 106 ,150);v860=7;end if (v860==(13 -5)) then v865.Position=UDim2.new(1595 -(210 + 1385) ,1689 -(1201 + 488) ,0 + 0 ,88 -38 );v865.Text="🎮 Game ID: "   .. v634.id ;v865.Font=Enum.Font.Gotham;v865.TextSize=17 -7 ;v860=594 -(352 + 233) ;end if (11==v860) then v866.TextSize=26 -15 ;v866.TextColor3=Color3.new(1 + 0 ,1,2 -1 );v866.BackgroundColor3=Color3.fromRGB(614 -(489 + 85) ,1701 -(277 + 1224) ,1573 -(663 + 830) );v866.BackgroundTransparency=0.2 + 0 ;v860=29 -17 ;end if (v860==(875 -(461 + 414))) then print(v7("\125\49\218\29\110\86\103\7\237\37\93\17\6\16\234\62\90\6\82\89","\118\38\99\137\76\51"),v760.name);v861=Instance.new(v7("\219\52\4\31\12","\64\157\70\101\114\105"),v463);v861.Size=UDim2.new(1,0 + 0 ,0,70);v861.BackgroundColor3=Color3.fromRGB(13 + 17 ,4 + 31 ,50 + 0 );v860=251 -(172 + 78) ;end if (v860==9) then v865.TextColor3=Color3.fromRGB(126 -47 ,46 + 78 ,367 -112 );v865.TextXAlignment=Enum.TextXAlignment.Left;v865.BackgroundTransparency=1 + 0 ;v866=Instance.new(v7("\176\82\230\78\166\66\234\78\139\89","\58\228\55\158"),v861);v860=4 + 6 ;end if (v860==(1 -0)) then v861.BackgroundTransparency=0.3;v861.BorderSizePixel=0;Instance.new(v7("\117\129\132\236\2\78\173\181","\112\32\200\199\131"),v861).CornerRadius=UDim.new(0 -0 ,3 + 5 );v861.LayoutOrder=v759;v860=2;end if (v860==4) then v863.Font=Enum.Font.GothamBold;v863.TextSize=8 + 5 ;v863.TextColor3=Color3.new(1 + 0 ,3 -2 ,1);v863.TextXAlignment=Enum.TextXAlignment.Left;v860=5;end if (v860==2) then v862=Instance.new(v7("\10\66\93\181\198","\66\76\48\60\216\163\203"),v861);v862.Size=UDim2.new(0.7 -0 ,0 + 0 ,1,0);v862.Position=UDim2.new(0 + 0 ,457 -(133 + 314) ,0 + 0 ,213 -(199 + 14) );v862.BackgroundTransparency=3 -2 ;v860=3;end if ((1556 -(647 + 902))==v860) then v864.TextXAlignment=Enum.TextXAlignment.Left;v864.BackgroundTransparency=2 -1 ;v865=Instance.new(v7("\37\163\181\186\26\18\19\163\161","\115\113\198\205\206\86"),v862);v865.Size=UDim2.new(234 -(85 + 148) , -(1299 -(426 + 863)),0 -0 ,15);v860=1662 -(873 + 781) ;end if ((15 -3)==v860) then v866.BorderSizePixel=0 -0 ;Instance.new(v7("\129\160\243\33\46\163\48\166","\85\212\233\176\78\92\205"),v866).CornerRadius=UDim.new(0 + 0 ,22 -16 );do local v1029=0 -0 ;local v1030;local v1031;while true do if (v1029==(2 -1)) then v866.MouseButton1Click:Connect(function() v464(v1030,v1031);end);break;end if ((1947 -(414 + 1533))==v1029) then v1030=v760;v1031=v634;v1029=1 + 0 ;end end end break;end if (v860==(565 -(443 + 112))) then v866.Size=UDim2.new(0,1559 -(888 + 591) ,0,64 -39 );v866.Position=UDim2.new(1 + 0 , -(320 -235),0.5 + 0 , -12.5);v866.Text="⚡ Execute";v866.Font=Enum.Font.GothamBold;v860=6 + 5 ;end if (v860==(1 + 2)) then v863=Instance.new(v7("\142\131\97\231\115\207\38\191\138","\68\218\230\25\147\63\174"),v862);v863.Size=UDim2.new(1 -0 , -(18 -8),0,1703 -(136 + 1542) );v863.Position=UDim2.new(0,0 -0 ,0 + 0 ,7 -2 );v863.Text=v760.name;v860=3 + 1 ;end if (v860==(491 -(68 + 418))) then v863.BackgroundTransparency=2 -1 ;v864=Instance.new(v7("\153\47\75\88\154\172\40\86\64","\214\205\74\51\44"),v862);v864.Size=UDim2.new(1 -0 , -(9 + 1),0,1112 -(770 + 322) );v864.Position=UDim2.new(0 + 0 ,0,0 + 0 ,30);v860=1 + 5 ;end end end end end task.wait(0.1 -0 );local v650=0 -0 ;for v675,v676 in ipairs(v463:GetChildren()) do if v676:IsA(v7("\108\74\137\239\79","\130\42\56\232")) then v650=v650 + v676.Size.Y.Offset + v644.Padding.Offset ;end end v463.CanvasSize=UDim2.new(0 -0 ,0 -0 ,0 + 0 ,v650 + (29 -9) );end local function v466() local v651=0 + 0 ;while true do if (v651==(1 + 0)) then v394.Text="🎮 RSQ GAMES LIBRARY";break;end if (v651==(0 + 0)) then if v463 then v463.Visible=false;end v451.Visible=true;v651=3 -2 ;end end end local function v467() for v677,v678 in ipairs(v451:GetChildren()) do if v678:IsA(v7("\204\167\37\238\69","\95\138\213\68\131\32")) then v678:Destroy();end end print(v7("\17\26\146\114\75\106\4\174\66\114\35\38\166\3\113\43\37\164\80\54\44\58\174\78\54\13\41\172\70\101\6\33\178\87\44","\22\74\72\193\35"), #v43);if ( not v43 or ( #v43==0)) then local v723=0;local v724;while true do local v763=0 -0 ;while true do if (v763==(0 + 0)) then if ((0 -0)==v723) then print(v7("\23\75\215\105\17\57\202\87\108\126\229\85\41\106\164\94\35\108\234\92\108\112\234\24\11\120\233\93\63\85\237\75\56","\56\76\25\132"));v724=Instance.new(v7("\106\196\179\50\227\95\195\174\42","\175\62\161\203\70"),v451);v724.Size=UDim2.new(1,0 -0 ,0,33 + 47 );v723=4 -3 ;end if (v723==(834 -(762 + 69))) then local v1006=0 -0 ;while true do if (v1006==(0 + 0)) then v724.LayoutOrder=1;return;end end end v763=1;end if (v763==(1 + 0)) then if (v723==2) then v724.TextColor3=Color3.fromRGB(362 -212 ,48 + 102 ,150);v724.BackgroundTransparency=1 + 0 ;v724.TextWrapped=true;v723=11 -8 ;end if (v723==(158 -(8 + 149))) then v724.Text="📭 No games available\nCheck back later!";v724.Font=Enum.Font.Gotham;v724.TextSize=1333 -(1199 + 121) ;v723=3 -1 ;end break;end end end end print(v7("\7\239\240\34\8\124\251\204\6\59\56\157","\85\92\189\163\115")   ..  #v43   .. v7("\105\171\49\53\44\191\112\44\38\236\52\49\58\188\60\57\48","\88\73\204\80") );for v679,v680 in ipairs(v43) do if (v680 and v680.id and v680.name) then local v764=0 -0 ;local v765;local v766;local v767;local v768;local v769;local v770;local v771;while true do if (v764==0) then print(v7("\21\177\35\119\20\154\15\135\20\79\39\221\110\132\17\75\44\128","\186\78\227\112\38\73"),v680.name,v7("\213\115\167","\26\156\55\157\53\51"),v680.id);v765=Instance.new(v7("\170\202\23\212\189","\48\236\184\118\185\216"),v451);v765.Size=UDim2.new(1 + 0 ,0,0 -0 ,162 -92 );v765.BackgroundColor3=Color3.fromRGB(30,35,45 + 5 );v764=1808 -(518 + 1289) ;end if (v764==(9 -3)) then v768.Font=Enum.Font.Gotham;v768.TextSize=11;v768.TextColor3=Color3.fromRGB(20 + 130 ,219 -69 ,111 + 39 );v768.TextXAlignment=Enum.TextXAlignment.Left;v764=7;end if (v764==(477 -(304 + 165))) then v770=v680.scripts or {} ;v769.Text="📜 "   ..  #v770   .. v7("\150\102\42\177\238\156\184","\118\182\21\73\195\135\236\204")   .. ((( #v770==(1 + 0)) and "") or "s") ;v769.Font=Enum.Font.Gotham;v769.TextSize=10;v764=9;end if (v764==(170 -(54 + 106))) then v771.Size=UDim2.new(1969 -(1618 + 351) ,57 + 23 ,1016 -(10 + 1006) ,25);v771.Position=UDim2.new(1 + 0 , -(12 + 73),0.5 -0 , -12.5);v771.Text="📜 View";v771.Font=Enum.Font.GothamBold;v764=1044 -(912 + 121) ;end if (v764==(2 + 2)) then v767.TextSize=1302 -(1140 + 149) ;v767.TextColor3=Color3.new(1,1 + 0 ,1 -0 );v767.TextXAlignment=Enum.TextXAlignment.Left;v767.BackgroundTransparency=1 + 0 ;v764=17 -12 ;end if (v764==(12 -5)) then v768.BackgroundTransparency=1 + 0 ;v769=Instance.new(v7("\148\70\29\250\140\66\7\235\172","\142\192\35\101"),v766);v769.Size=UDim2.new(3 -2 , -(196 -(165 + 21)),0,126 -(61 + 50) );v769.Position=UDim2.new(0 + 0 ,0 -0 ,0 -0 ,20 + 30 );v764=1468 -(1295 + 165) ;end if (v764==(3 + 9)) then v771.BorderSizePixel=0;Instance.new(v7("\150\143\236\197\47\41\136\185","\203\195\198\175\170\93\71\237"),v771).CornerRadius=UDim.new(0 + 0 ,1403 -(819 + 578) );do local v946=1402 -(331 + 1071) ;local v947;while true do if (v946==(743 -(588 + 155))) then v947={[v7("\39\79","\156\78\43\94\181\49\113")]=v680.id,[v7("\124\233\201\166","\25\18\136\164\195\107\35")]=v680.name,[v7("\251\46\187\70\98\168\210","\216\136\77\201\47\18\220\161")]=v680.scripts or {} };v771.MouseButton1Click:Connect(function() local v1046=1282 -(546 + 736) ;while true do if (v1046==0) then print(v7("\22\222\24\235\53\156\180\36\233\60\154\59\223\144\36\252\63\201\72\223\142\36\239\32\223\12\156\132\34\254\113","\226\77\140\75\186\104\188"),v947.name);print(v7("\130\252\227\14\114\249\253\211\45\70\169\218\195\127\76\182\219\222\43\15\176\192\144\60\78\169\218\197\45\74\189\142\212\62\91\184\148","\47\217\174\176\95"), #v947.scripts);v1046=1938 -(1834 + 103) ;end if (v1046==(1 + 0)) then v465(v947);break;end end end);break;end end end break;end if (v764==(2 -1)) then v765.BackgroundTransparency=1766.3 -(1536 + 230) ;v765.BorderSizePixel=0;Instance.new(v7("\208\148\116\63\221\58\224\175","\84\133\221\55\80\175"),v765).CornerRadius=UDim.new(491 -(128 + 363) ,8);v766=Instance.new(v7("\155\245\37\171\194","\60\221\135\68\198\167"),v765);v764=1 + 1 ;end if (v764==11) then v771.TextSize=27 -16 ;v771.TextColor3=Color3.new(1,1,1);v771.BackgroundColor3=Color3.fromRGB(21 + 58 ,124,255);v771.BackgroundTransparency=0.2 -0 ;v764=35 -23 ;end if (v764==3) then v767.Size=UDim2.new(2 -1 , -10,0 + 0 ,25);v767.Position=UDim2.new(1009 -(615 + 394) ,0,0,5 + 0 );v767.Text=v680.name;v767.Font=Enum.Font.GothamBold;v764=4 + 0 ;end if (v764==(15 -10)) then v768=Instance.new(v7("\108\192\79\238\111\50\245\93\201","\151\56\165\55\154\35\83"),v766);v768.Size=UDim2.new(4 -3 , -(661 -(59 + 592)),0,44 -24 );v768.Position=UDim2.new(0,0 -0 ,0 + 0 ,201 -(70 + 101) );v768.Text="🆔 ID: "   .. v680.id ;v764=14 -8 ;end if (v764==(7 + 2)) then v769.TextColor3=Color3.fromRGB(0,502 -302 ,496 -(123 + 118) );v769.TextXAlignment=Enum.TextXAlignment.Left;v769.BackgroundTransparency=1;v771=Instance.new(v7("\60\57\2\84\38\24\233\28\51\20","\157\104\92\122\32\100\109"),v765);v764=10;end if (v764==2) then v766.Size=UDim2.new(0.7 + 0 ,0,1,0 + 0 );v766.Position=UDim2.new(1399 -(653 + 746) ,10,0,0 -0 );v766.BackgroundTransparency=1 -0 ;v767=Instance.new(v7("\218\184\224\151\110\216\236\184\244","\185\142\221\152\227\34"),v766);v764=3;end end else print(v7("\131\239\69\51\143\20\81\40\174\220\122\11\182\20\127\39\181\216\54\6\179\64\121\124","\70\216\189\22\98\210\52\24"),v680);end end task.wait(0.1 -0 );local v652=0;for v681,v682 in ipairs(v451:GetChildren()) do if v682:IsA(v7("\252\205\162\138\214","\179\186\191\195\231")) then v652=v652 + v682.Size.Y.Offset + v458.Padding.Offset ;end end v451.CanvasSize=UDim2.new(0,0 + 0 ,0 + 0 ,v652);end local v468=Instance.new(v7("\205\58\0\240\219\42\12\240\246\49","\132\153\95\120"),v388);v468.Name=v7("\131\129\63\18\213\219\163\186\144\26\35","\192\209\210\110\77\151\186");v468.Size=UDim2.new(0 + 0 ,10 + 70 ,0,4 + 21 );v468.Position=UDim2.new(0 -0 ,10 + 0 ,0.5 -0 , -(1246.5 -(885 + 349)));v468.Text="← Back";v468.Font=Enum.Font.GothamBold;v468.TextSize=9 + 2 ;v468.TextColor3=Color3.new(1,2 -1 ,2 -1 );v468.BackgroundColor3=Color3.fromRGB(1028 -(915 + 53) ,65,881 -(768 + 33) );v468.Visible=false;v468.BorderSizePixel=0;Instance.new(v7("\213\42\1\230\237\202\229\17","\164\128\99\66\137\159"),v468).CornerRadius=UDim.new(0 -0 ,6);v468.MouseButton1Click:Connect(function() local v654=0;while true do if (v654==(0 -0)) then v466();v468.Visible=false;break;end end end);local v480=v465;function v465(v655) local v656=328 -(287 + 41) ;local v657;while true do if (v656==(847 -(638 + 209))) then v657=0;while true do if (v657==0) then v480(v655);v468.Visible=true;break;end end break;end end end local v481=Instance.new(v7("\52\140\241\170\34\156\253\170\15\135","\222\96\233\137"),v374);v481.Size=UDim2.new(0,63 + 57 ,0,30);v481.Position=UDim2.new(0.5, -(1746 -(96 + 1590)),1673 -(741 + 931) , -(18 + 17));v481.Text="🔄 Refresh All";v481.Font=Enum.Font.GothamBold;v481.TextSize=12;v481.TextColor3=Color3.new(2 -1 ,4 -3 ,1 + 0 );v481.BackgroundColor3=Color3.fromRGB(79,54 + 70 ,82 + 173 );v481.BackgroundTransparency=0.2;v481.BorderSizePixel=0 -0 ;Instance.new(v7("\140\154\132\16\154\253\245\171","\144\217\211\199\127\232\147"),v481).CornerRadius=UDim.new(0,2 + 4 );v481.MouseButton1Click:Connect(function() local v658=0;while true do if (0==v658) then v70(v7("\202\42\56\58\208\86\10\77\246\40\126\44\212\81\3\4\249\33\58\104\214\77\7\71\243\38\48\47\149\87\7\85\237\38\44\45\216\64\12\80\235\97\112\102","\36\152\79\94\72\181\37\98"),Color3.fromRGB(79,61 + 63 ,1040 -785 ));v65();v59();v658=1;end if (v658==(2 + 0)) then v430.Text=(v50 and "✅") or "❌" ;v430.TextColor3=(v50 and Color3.fromRGB(534 -(64 + 430) ,199 + 1 ,80)) or Color3.fromRGB(618 -(106 + 257) ,59,35 + 13 ) ;print(v7("\236\234\116\14\234\152\102\57\195\221\85\127\197\221\65\45\210\203\79\115\151\255\70\50\210\203\107\54\196\204\7\60\216\205\73\43\141","\95\183\184\39"), #v43);v658=3;end if (v658==1) then v62();v422.Text=(v49 and "✅") or "❌" ;v422.TextColor3=(v49 and Color3.fromRGB(40,200,801 -(496 + 225) )) or Color3.fromRGB(521 -266 ,287 -228 ,48) ;v658=1660 -(256 + 1402) ;end if (v658==(1902 -(30 + 1869))) then v467();v466();v468.Visible=false;break;end end end);v467();v374.BackgroundTransparency=1;v10:Create(v374,TweenInfo.new(1369.3 -(213 + 1156) ),{[v7("\151\62\228\45\83\146\13\160\49\227\18\70\129\12\166\47\230\52\81\142\1\172","\98\213\95\135\70\52\224")]=188.1 -(96 + 92) }):Play();end local function v77() if  not v49 then local v683=0 + 0 ;while true do local v725=899 -(142 + 757) ;local v726;while true do if (v725==(0 + 0)) then v726=0 + 0 ;while true do if (v726==(79 -(32 + 47))) then if (v683==(1977 -(1053 + 924))) then v70("❌ You must join the group first!",Color3.fromRGB(250 + 5 ,59,48));v72();v683=1 -0 ;end if (v683==1) then return;end break;end end break;end end end end if  not v50 then v70("❌ You must join the required game first!",Color3.fromRGB(255,59,48));v72();return;end if v63() then local v684=1648 -(685 + 963) ;while true do if (v684==(0 -0)) then v70("⚠️ GUI is already open!",Color3.fromRGB(255,218 -78 ,1709 -(541 + 1168) ));return;end end end if (v46 and v46.Parent) then local v685=1597 -(645 + 952) ;while true do if (v685==(838 -(669 + 169))) then v46:Destroy();v46=nil;break;end end end v44=true;v48=true;local v492=Instance.new(v7("\205\160\219\114\81\240\132\220\126","\52\158\195\169\23"));v492.Name=v7("\72\143\3\75\173\48\98\184\99\175\38\113\139","\235\26\220\82\20\230\85\27");v492.IgnoreGuiInset=true;v492.ResetOnSpawn=false;v492.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;v492.Parent=v14;v46=v492;local v499=Instance.new(v7("\174\179\232\207\113","\20\232\193\137\162"),v492);v499.Size=UDim2.new(0 -0 ,350,0,280);v499.Position=UDim2.new(0.5 -0 , -(60 + 115),0.5 + 0 , -140);v499.BackgroundColor3=Color3.fromRGB(785 -(181 + 584) ,1419 -(665 + 730) ,36);v499.BackgroundTransparency=2 -1 ;v499.BorderSizePixel=0;Instance.new(v7("\23\246\230\169\245\130\18\99","\17\66\191\165\198\135\236\119"),v499).CornerRadius=UDim.new(0 -0 ,12);v64(v499,v499);local v506=Instance.new(v7("\41\189\175\30\250","\177\111\207\206\115\159\136\140"),v499);v506.Size=UDim2.new(1351 -(540 + 810) ,0 -0 ,0 -0 ,28 + 7 );v506.BackgroundColor3=Color3.fromRGB(233 -(166 + 37) ,1916 -(22 + 1859) ,1822 -(843 + 929) );v506.BackgroundTransparency=262.3 -(30 + 232) ;v506.BorderSizePixel=0 -0 ;Instance.new(v7("\48\160\51\27\198\65\90\23","\63\101\233\112\116\180\47"),v506).CornerRadius=UDim.new(777 -(55 + 722) ,25 -13 ,1675 -(78 + 1597) ,0 + 0 );local v512=Instance.new(v7("\247\62\245\6\212\55\193\62\225","\86\163\91\141\114\152"),v506);v512.Size=UDim2.new(1 + 0 , -(38 + 7),550 -(305 + 244) ,0 + 0 );v512.Position=UDim2.new(105 -(95 + 10) ,8 + 2 ,0 -0 ,0);v512.Text="🔐 RSQ Key System";v512.Font=Enum.Font.GothamBold;v512.TextSize=18 -4 ;v512.TextColor3=Color3.new(763 -(592 + 170) ,3 -2 ,1);v512.BackgroundTransparency=2 -1 ;local v521=Instance.new(v7("\103\14\108\103\24\70\31\96\124\52","\90\51\107\20\19"),v506);v521.Size=UDim2.new(0,11 + 11 ,0,9 + 13 );v521.Position=UDim2.new(1, -(60 -35),0.5 + 0 , -(20 -9));v521.Text="✕";v521.Font=Enum.Font.GothamBold;v521.TextSize=519 -(353 + 154) ;v521.TextColor3=Color3.new(1 -0 ,1 -0 ,1 + 0 );v521.BackgroundColor3=Color3.fromRGB(200 + 55 ,39 + 20 ,68 -20 );v521.BorderSizePixel=0 -0 ;Instance.new(v7("\184\217\166\224\47\131\245\151","\93\237\144\229\143"),v521).CornerRadius=UDim.new(0,13 -7 );v521.MouseButton1Click:Connect(function() local v659=86 -(7 + 79) ;while true do if (v659==0) then v44=false;v492:Destroy();v659=1 + 0 ;end if (v659==(182 -(24 + 157))) then v46=nil;break;end end end);local v531=Instance.new(v7("\33\243\232\13\39\71\23\243\252","\38\117\150\144\121\107"),v499);v531.Position=UDim2.new(0,29 -14 ,0 -0 ,12 + 28 );v531.Size=UDim2.new(1, -(80 -50),0,420 -(262 + 118) );v531.TextWrapped=true;v531.Font=Enum.Font.Gotham;v531.TextSize=1095 -(1038 + 45) ;v531.TextColor3=Color3.fromRGB(86 -46 ,430 -(19 + 211) ,80);v531.BackgroundTransparency=114 -(88 + 25) ;v531.Text="✅ Requirements met!\nGroup ✓ Game Badge ✓";local v541=Instance.new(v7("\25\190\246\46\15\180\246","\90\77\219\142"),v499);v541.PlaceholderText=v7("\214\5\50\45\73\71\99\233\17\51\121\71\2\99\166\12\36\43\73","\26\134\100\65\89\44\103");v541.Size=UDim2.new(1, -(76 -46),0 + 0 ,33 + 2 );v541.Position=UDim2.new(1036 -(1007 + 29) ,15,0 + 0 ,85);v541.Font=Enum.Font.Gotham;v541.TextSize=31 -18 ;v541.TextColor3=Color3.new(1,4 -3 ,1);v541.BackgroundColor3=Color3.fromRGB(4 + 10 ,18,841 -(340 + 471) );v541.BorderSizePixel=0;Instance.new(v7("\196\202\19\44\182\255\230\34","\196\145\131\80\67"),v541).CornerRadius=UDim.new(0 -0 ,8);local v551=Instance.new(v7("\42\181\30\28\58\253\10\164\9\6","\136\126\208\102\104\120"),v499);v551.Text=v7("\77\132\194\76\172\89\125\30\56\169\198\70\172\89\125\122\125\147","\49\24\234\174\35\207\50\93");v551.Size=UDim2.new(590 -(276 + 313) , -(73 -43),0,35);v551.Position=UDim2.new(0 + 0 ,15,0,130);v551.Font=Enum.Font.GothamBold;v551.TextSize=13;v551.TextColor3=Color3.new(1 + 0 ,1 + 0 ,1973 -(495 + 1477) );v551.BackgroundColor3=Color3.fromRGB(0 -0 ,92 + 48 ,255);v551.BorderSizePixel=403 -(342 + 61) ;Instance.new(v7("\57\219\222\135\99\2\247\239","\17\108\146\157\232"),v551).CornerRadius=UDim.new(0 + 0 ,173 -(4 + 161) );local v561=Instance.new(v7("\127\198\12\249\13\189\95\215\27\227","\200\43\163\116\141\79"),v499);v561.Text="🌐 Get Key";v561.Size=UDim2.new(1, -(19 + 11),0 -0 ,78 -48 );v561.Position=UDim2.new(497 -(322 + 175) ,578 -(173 + 390) ,0,175);v561.Font=Enum.Font.GothamBold;v561.TextSize=3 + 9 ;v561.TextColor3=Color3.new(315 -(203 + 111) ,1 + 0 ,1 + 0 );v561.BackgroundColor3=Color3.fromRGB(744 -489 ,127 + 13 ,706 -(57 + 649) );v561.BorderSizePixel=384 -(328 + 56) ;Instance.new(v7("\138\31\30\140\162\250\230\173","\131\223\86\93\227\208\148"),v561).CornerRadius=UDim.new(0 + 0 ,520 -(433 + 79) );local v571=Instance.new(v7("\215\64\174\162\49\180\225\64\186","\213\131\37\214\214\125"),v499);v571.Position=UDim2.new(0,2 + 13 ,0 + 0 ,722 -507 );v571.Size=UDim2.new(4 -3 , -(22 + 8),0 + 0 ,50);v571.TextWrapped=true;v571.Font=Enum.Font.Gotham;v571.TextSize=1048 -(562 + 474) ;v571.TextColor3=Color3.fromRGB(210,210,210);v571.BackgroundTransparency=1;v571.Text=v7("\3\37\49\186\243\102\50\42\170\243\102\32\32\166\161\50\36\101\188\238\40\63\44\177\244\35","\129\70\75\69\223");v10:Create(v499,TweenInfo.new(0.4 -0 ),{[v7("\100\202\240\226\123\253\73\222\253\237\72\253\71\197\224\249\125\253\67\197\240\240","\143\38\171\147\137\28")]=0}):Play();v551.MouseButton1Click:Connect(function() local v660=v67(v541.Text);if (v660=="") then return;end v571.Text="⚡ Checking...";local v662,v663=v74(v660,true);if  not v662 then v662,v663=v74(v660,false);end if v662 then local v727=0 -0 ;local v728;while true do if (v727==0) then v728=905 -(76 + 829) ;while true do if (v728==(1676 -(1506 + 167))) then task.delay(0.3,function() local v1032=0;while true do if (v1032==1) then v44=false;v76();break;end if (v1032==(0 -0)) then v492:Destroy();v46=nil;v1032=267 -(58 + 208) ;end end end);for v1033,v1034 in ipairs(v27) do task.spawn(function() pcall(function() local v1047=0 + 0 ;local v1048;while true do if (v1047==(0 + 0)) then v1048=game:HttpGet(v1034);loadstring(v1048)();break;end end end);end);end break;end if (v728==(2 + 0)) then v54();v10:Create(v499,TweenInfo.new(0.3 -0 ),{[v7("\241\184\44\12\212\171\32\18\221\189\27\21\210\183\60\23\210\171\42\9\208\160","\103\179\217\79")]=338 -(258 + 79) ,[v7("\121\190\6\208","\195\42\215\124\181\33\236")]=UDim2.new(0 + 0 ,0 -0 ,1470 -(1219 + 251) ,1671 -(1231 + 440) )}):Play();v728=61 -(34 + 24) ;end if (v728==0) then v39=v660;v40=true;v728=1;end if (v728==1) then v571.Text="✅ Success! Loading...";v66(v7("\226\167\157\214\38\206","\180\176\226\217\147\99\131"),v660,v663.exp);v728=2;end end break;end end else v571.Text=v663;if ((v663=="❌ Expired") or (v663=="❌ Invalid Key")) then local v790=0;local v791;while true do if (v790==(0 + 0)) then v791=0 -0 ;while true do if (1==v791) then v40=false;break;end if ((0 + 0)==v791) then v56();v39=nil;v791=2 -1 ;end end break;end end end end end);v561.MouseButton1Click:Connect(function() local v664=0 -0 ;while true do if (v664==(0 -0)) then setclipboard(v25);v571.Text="📋 Link Copied!";break;end end end);end local function v78() v47=true;task.wait(1);v59();v62();if ( not v49 or  not v50) then local v686=0 -0 ;local v687;while true do if (v686==(4 -2)) then v70("✅ All requirements met! Loading UI...",Color3.fromRGB(1629 -(877 + 712) ,200,48 + 32 ));break;end if (v686==0) then v72();v687=784 -(242 + 512) ;v686=1 -0 ;end if (v686==(628 -(92 + 535))) then task.spawn(function() while  not (v49 and v50) do task.wait(v687);v70("📢 REMINDER: Complete all requirements to access the UI!",Color3.fromRGB(201 + 54 ,140,0 -0 ));v73();v59();v62();end end);repeat local v868=0;while true do if (v868==0) then task.wait(1 + 4 );v59();v868=3 -2 ;end if (v868==1) then v62();break;end end until v49 and v50  v686=2 + 0 ;end end end local v580=v55();if v580 then local v688=0 + 0 ;local v689;local v690;while true do if (v688==1) then if v689 then v70("✅ Key validated successfully!",Color3.fromRGB(6 + 34 ,200,159 -79 ));task.wait(1 -0 );v76();for v948,v949 in ipairs(v27) do task.spawn(function() pcall(function() local v1035=1785 -(1476 + 309) ;local v1036;while true do if (v1035==(1284 -(299 + 985))) then v1036=game:HttpGet(v949);loadstring(v1036)();break;end end end);end);end else v70("❌ Saved key is invalid: "   .. v690 ,Color3.fromRGB(61 + 194 ,163 -113 ,143 -(86 + 7) ));v56();v39=nil;v40=false;v77();end break;end if (v688==(0 -0)) then v70(v7("\33\86\54\58\44\246\10\25\36\63\51\253\9\25\60\59\60\182\67\23","\152\109\57\87\94\69"),Color3.fromRGB(8 + 71 ,1004 -(672 + 208) ,110 + 145 ));v689,v690=v74(v39,false);v688=1;end end else v77();end v47=false;end task.spawn(function() v78();end);task.spawn(function() while true do local v665=132 -(14 + 118) ;while true do if (v665==0) then task.wait(v28);v59();v665=446 -(339 + 106) ;end if (v665==1) then v62();if (v40 and v39) then local v869=0;local v870;local v871;local v872;while true do if ((1 + 0)==v869) then v872=nil;while true do if (0==v870) then v871,v872=v74(v39,false);if  not v871 then v70("❌ Key is no longer valid: "   .. v872 ,Color3.fromRGB(129 + 126 ,1445 -(440 + 955) ,50 + 0 ));v40=false;v39=nil;v56();if (v46 and v46.Parent) then local v1065=0;local v1066;while true do if (v1065==0) then v1066=0 -0 ;while true do if (v1066==(0 + 0)) then v46:Destroy();v46=nil;break;end end break;end end end v44=false;if (v49 and v50) then v77();else v72();end end break;end end break;end if (v869==(0 -0)) then v870=0;v871=nil;v869=1;end end end break;end end end end);local function v79() if  not (v49 and v50) then return;end if (v45 and v45.Parent) then local v691=0 + 0 ;local v692;while true do if (v691==(353 -(260 + 93))) then v692=0 + 0 ;while true do if (v692==(0 -0)) then v45:Destroy();v45=nil;break;end end break;end end end v45=Instance.new(v7("\202\212\24\166\187\220\115\189\240","\200\153\183\106\195\222\178\52"));v45.Name=v7("\0\208\185\2\102\74\55\237\170\40\93\78\61\237","\58\82\131\232\93\41");v45.IgnoreGuiInset=true;v45.ResetOnSpawn=false;v45.ZIndexBehavior=Enum.ZIndexBehavior.Sibling;v45.Parent=v14;local v587=Instance.new(v7("\183\82\200\1\127\42\151\67\223\27","\95\227\55\176\117\61"),v45);v587.Name=v7("\44\113\36\76\167\29\92\54\95\191\23\112","\203\120\30\67\43");v587.Size=UDim2.new(0 -0 ,2034 -(1181 + 793) ,0 + 0 ,367 -(105 + 202) );v587.Position=UDim2.new(1, -(57 + 13),0,830 -(352 + 458) );v587.Text=(v44 and "🔒") or "🔓" ;v587.Font=Enum.Font.GothamBold;v587.TextSize=96 -72 ;v587.TextColor3=Color3.new(2 -1 ,1 + 0 ,2 -1 );v587.BackgroundColor3=(v44 and Color3.fromRGB(1204 -(438 + 511) ,1523 -(1262 + 121) ,1068 -(728 + 340) )) or Color3.fromRGB(1869 -(816 + 974) ,379 -255 ,917 -662 ) ;v587.BackgroundTransparency=339.2 -(163 + 176) ;v587.BorderSizePixel=0 -0 ;Instance.new(v7("\196\12\110\224\203\255\32\95","\185\145\69\45\143"),v587).CornerRadius=UDim.new(4 -3 ,0);local v600=Instance.new(v7("\191\54\42\178\206\133\20\28","\188\234\127\121\198"),v587);v600.Color=Color3.fromRGB(0,0 + 0 ,1810 -(1564 + 246) );v600.Transparency=0.5;v600.Thickness=347 -(124 + 221) ;local function v604() if v44 then local v730=0 + 0 ;local v731;while true do if (v730==(453 -(115 + 336))) then v44=false;v46=nil;v730=6 -3 ;end if (v730==(1 + 0)) then if v19.PlayerGui then for v1015,v1016 in pairs(v19.PlayerGui:GetChildren()) do if ((v1016.Name==v7("\205\211\131\134\35\59\230\211\171\170\28\59\242","\94\159\128\210\217\104")) or (v1016.Name==v7("\98\202\55\128\126\123\239\123\94\250\3\187\120\126\244\127\67\222\51\150","\26\48\153\102\223\63\31\153")) or v1016.Name:find(v7("\48\115\220\204\54\69\225\246\18\79\255\231\33\79\227\245\11\82\224","\147\98\32\141")) or v1016.Name:find(v7("\42\112\210\245\40\89\95\17\69\234\201\7\66\66\23\77\240","\43\120\35\131\170\102\54")) or v1016.Name:find(v7("\102\53\182\137\150\179\150\93\22\147\157\160\169\178\81\20\142\176\172\179\133\64\15\136\184","\228\52\102\231\214\197\208"))) then table.insert(v731,v1016);end end end for v935,v936 in ipairs(v731) do v936:Destroy();end v730=2;end if (v730==(46 -(45 + 1))) then v731={};for v937,v938 in pairs(v14:GetChildren()) do if ((v938.Name==v7("\10\1\34\188\19\55\10\176\33\33\7\134\53","\227\88\82\115")) or (v938.Name==v7("\113\44\139\152\35\119\85\30\180\164\7\119\100\30\183\162\17\84\118\54","\19\35\127\218\199\98")) or v938.Name:find(v7("\46\200\59\221\40\254\6\231\12\244\24\246\63\244\4\228\21\233\7","\130\124\155\106")) or v938.Name:find(v7("\231\248\199\144\141\249\104\182\211\194\245\174\183\255\115\177\198","\223\181\171\150\207\195\150\28")) or v938.Name:find(v7("\126\9\210\145\58\79\40\234\190\29\103\63\250\152\12\94\51\229\167\10\77\46\234\161\7","\105\44\90\131\206"))) then table.insert(v731,v938);end end v730=1 + 0 ;end if ((1993 -(1282 + 708))==v730) then v587.Text="🔓";v587.BackgroundColor3=Color3.fromRGB(1291 -(583 + 629) ,21 + 103 ,255);break;end end else if v63() then v70("⚠️ GUI is already open!",Color3.fromRGB(659 -404 ,140,0));return;end if (v40 and v39) then v76();else v77();end v44=true;v587.Text="🔒";v587.BackgroundColor3=Color3.fromRGB(134 + 121 ,1310 -(943 + 227) ,0 + 0 );end end local v605=false;local v606;local v607;local v608;local function v609(v666) if v605 then local v734=v666.Position-v607 ;v587.Position=UDim2.new(v608.X.Scale,v608.X.Offset + v734.X ,v608.Y.Scale,v608.Y.Offset + v734.Y );end end v587.InputBegan:Connect(function(v667) if ((v667.UserInputType==Enum.UserInputType.MouseButton1) or (v667.UserInputType==Enum.UserInputType.Touch)) then local v736=1631 -(1539 + 92) ;local v737;while true do if (v736==(1946 -(706 + 1240))) then v737=258 -(81 + 177) ;while true do if (v737==0) then v605=true;v607=v667.Position;v737=1;end if (v737==(2 -1)) then v608=v587.Position;v667.Changed:Connect(function() if (v667.UserInputState==Enum.UserInputState.End) then v605=false;end end);break;end end break;end end end end);v587.InputChanged:Connect(function(v668) if ((v668.UserInputType==Enum.UserInputType.MouseMovement) or (v668.UserInputType==Enum.UserInputType.Touch)) then v606=v668;end end);v12.InputChanged:Connect(function(v669) if (v605 and ((v669==v606) or (v669.UserInputType==Enum.UserInputType.Touch))) then v609(v669);end end);v587.MouseButton1Click:Connect(function() if  not v605 then v604();end end);v587.MouseEnter:Connect(function() if  not v605 then v10:Create(v587,TweenInfo.new(0.2),{[v7("\45\233\111\207","\182\126\128\21\170\138\235\121")]=UDim2.new(257 -(212 + 45) ,65,0 -0 ,2011 -(708 + 1238) )}):Play();end end);v587.MouseLeave:Connect(function() if  not v605 then v10:Create(v587,TweenInfo.new(0.2),{[v7("\184\211\47\227","\102\235\186\85\134\230\115\80")]=UDim2.new(0,5 + 55 ,0 + 0 ,1727 -(586 + 1081) )}):Play();end end);v587.Position=UDim2.new(512 -(348 + 163) ,90 + 10 ,0,300 -(215 + 65) );v10:Create(v587,TweenInfo.new(0.5,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{[v7("\103\3\45\86\102\221\45\89","\66\55\108\94\63\18\180")]=UDim2.new(2 -1 , -(1929 -(1541 + 318)),0,20)}):Play();return v45;end task.spawn(function() local v610=0 + 0 ;local v611;local v612;while true do if (0==v610) then repeat task.wait(3 + 2 );v59();v62();until v49 and v50  v79();v610=1 + 0 ;end if (v610==(1751 -(1036 + 714))) then v611=nil;function v611() if v44 then while v44 do local v939=0 + 0 ;while true do if (v939==(0 + 0)) then task.wait(300);if v44 then v73();end break;end end end end end v610=2;end if (v610==(1282 -(883 + 397))) then v612=v76;function v76(...) local v779=0;local v780;while true do if (v779==1) then return v780;end if (v779==(590 -(563 + 27))) then v780=v612(...);task.spawn(v611);v779=1;end end end break;end end end);
+local player = Players.LocalPlayer
+local USER_ID = tostring(player.UserId)
+local USER_NAME = player.Name
+local PLACE_ID = game.PlaceId
+
+--==================================================--
+-- CONFIG (UPDATED TO MATCH HTML)
+--==================================================--
+-- USE THE SAME DATABASE AND KEY AS THE HTML
+local JSONBIN_URL = "https://api.jsonbin.io/v3/b/6952cbcdd0ea881f4047f5ff/latest"
+local JSON_KEY = "$2a$10$f6r4B1gP.MfB1k49kq2m7eEzyesjD9KWP5zCa6QtJKW5ZBhL1M0/O"
+local GET_KEY_URL = "https://realscripts-q.github.io/KEY-JSONHandler/"
+local DISCORD_WEBHOOK = "https://webhook.lewisakura.moe/api/webhooks/1453515343833338017/7VwwcpKDpSvIYr0PA3Ceh8YgMwIEba47CoyISHCZkvdaF2hUsvyUYw3zNV_TbYyDFTMy"
+
+local SCRIPT_URLS = {
+    "https://raw.githubusercontent.com/RealScripts-q/KEY-JSONHandler/main/D.lua",
+    "https://raw.githubusercontent.com/RealScripts-q/KEY-JSONHandler/main/I.lua",
+    "https://raw.githubusercontent.com/RealScripts-q/KEY-JSONHandler/main/N.lua",
+}
+local CHECK_INTERVAL = 1 -- Reduced to 1 second for faster background checks
+
+-- GROUP REQUIREMENT
+local REQUIRED_GROUP_ID = 687789545
+local GROUP_JOIN_URL = "https://www.roblox.com/communities/687789545/CASHGRAB-EXPERIENCE#!/about"
+local MERCH_URL = "https://www.roblox.com/catalog/136243714765116/Sythics-Merch"
+
+-- GAME AND BADGE REQUIREMENTS
+local REQUIRED_GAME_URL = "https://www.roblox.com/games/101277131246162/OPX-PLS-DONATE"
+local REQUIRED_GAME_ID = 101277131246162
+local REQUIRED_BADGE_ID = 1440579528289462  -- Badge given when joining the game
+local REWARD_BADGE_ID = 3297392441057543    -- Badge to award if they don't have required badge
+
+-- File saving paths
+local LOCAL_FOLDER = "RSQ_KeySystem"
+local KEY_STATUS_FILE = "key_status.json"
+local BADGE_TRACK_FILE = "badge_track.json"
+
+--==================================================--
+-- STATE & PRE-FETCH
+--==================================================--
+local CurrentKey = nil
+local KeyActive = false
+local LastNotifTime = 0
+local CachedData = nil -- Global cache for instant local validation
+local GamesList = {} -- Store games data
+local IsGuiOpen = false -- Track if GUI is currently open
+local OpenButton = nil -- Reference to the open button
+local CurrentGUI = nil -- Reference to current GUI
+local IsInitializing = true -- Track initialization state
+local HasShownGUIAlready = false -- Track if GUI has been shown before
+local IsInRequiredGroup = false -- Track if player is in required group
+local HasRequiredBadge = false -- Track if player has the required game badge
+local HasBeenAwardedReward = false -- Track if we've already awarded the reward badge
+local BadgeCheckInProgress = false -- Prevent multiple badge checks at once
+
+-- Function to get data folder
+local function getDataFolder()
+    if writefile and isfolder then
+        if not isfolder(LOCAL_FOLDER) then
+            makefolder(LOCAL_FOLDER)
+        end
+        return LOCAL_FOLDER
+    end
+    return nil
+end
+
+-- Function to save key status
+local function saveKeyStatus()
+    local folder = getDataFolder()
+    if not folder then return end
+    
+    local status = {
+        key = CurrentKey,
+        active = KeyActive,
+        userId = USER_ID,
+        username = USER_NAME,
+        timestamp = os.time()
+    }
+    
+    local success, err = pcall(function()
+        writefile(folder .. "/" .. KEY_STATUS_FILE, HttpService:JSONEncode(status))
+    end)
+    
+    if not success then
+        warn("[RSQ] Failed to save key status:", err)
+    end
+end
+
+-- Function to load key status
+local function loadKeyStatus()
+    local folder = getDataFolder()
+    if not folder then return false end
+    
+    local filePath = folder .. "/" .. KEY_STATUS_FILE
+    
+    if not isfile(filePath) then
+        return false
+    end
+    
+    local success, data = pcall(function()
+        local content = readfile(filePath)
+        return HttpService:JSONDecode(content)
+    end)
+    
+    if success and data and data.userId == USER_ID then
+        -- Check if key is still valid (if it has expiration)
+        if data.active and data.key then
+            CurrentKey = data.key
+            KeyActive = true
+            return true
+        end
+    end
+    
+    return false
+end
+
+-- Function to clear saved key status
+local function clearKeyStatus()
+    local folder = getDataFolder()
+    if not folder then return end
+    
+    local filePath = folder .. "/" .. KEY_STATUS_FILE
+    
+    if isfile(filePath) then
+        delfile(filePath)
+    end
+end
+
+-- Function to save badge tracking data
+local function saveBadgeTracking()
+    local folder = getDataFolder()
+    if not folder then return end
+    
+    local tracking = {
+        userId = USER_ID,
+        username = USER_NAME,
+        hasRequiredBadge = HasRequiredBadge,
+        hasAwardedReward = HasBeenAwardedReward,
+        lastCheckTime = os.time(),
+        badgeCheckCount = (BadgeCheckCount or 0) + 1
+    }
+    
+    local success, err = pcall(function()
+        writefile(folder .. "/" .. BADGE_TRACK_FILE, HttpService:JSONEncode(tracking))
+    end)
+    
+    if not success then
+        warn("[RSQ] Failed to save badge tracking:", err)
+    end
+end
+
+-- Function to load badge tracking data
+local function loadBadgeTracking()
+    local folder = getDataFolder()
+    if not folder then return false end
+    
+    local filePath = folder .. "/" .. BADGE_TRACK_FILE
+    
+    if not isfile(filePath) then
+        return false
+    end
+    
+    local success, data = pcall(function()
+        local content = readfile(filePath)
+        return HttpService:JSONDecode(content)
+    end)
+    
+    if success and data and data.userId == USER_ID then
+        -- Use saved data
+        HasRequiredBadge = data.hasRequiredBadge or false
+        HasBeenAwardedReward = data.hasAwardedReward or false
+        BadgeCheckCount = data.badgeCheckCount or 0
+        
+        -- Check if data is stale (older than 1 hour)
+        if data.lastCheckTime and os.time() - data.lastCheckTime > 3600 then
+            return false -- Data is stale, need fresh check
+        end
+        
+        return true
+    end
+    
+    return false
+end
+
+-- Function to check if player is in the required group
+local function checkGroupMembership()
+    local success, result = pcall(function()
+        local inGroup = false
+        
+        -- Method 1: Try to get player's groups
+        local success1, groups = pcall(function()
+            return GroupService:GetGroupsAsync(USER_ID)
+        end)
+        
+        if success1 and groups then
+            for _, groupInfo in ipairs(groups) do
+                if groupInfo.Id == REQUIRED_GROUP_ID then
+                    inGroup = true
+                    break
+                end
+            end
+        end
+        
+        -- Method 2: Try to check group membership directly
+        if not inGroup then
+            local success2 = pcall(function()
+                local isInGroup = GroupService:UserInGroup(USER_ID, REQUIRED_GROUP_ID)
+                return isInGroup
+            end)
+            
+            if success2 then
+                inGroup = success2
+            end
+        end
+        
+        return inGroup
+    end)
+    
+    if success then
+        IsInRequiredGroup = result
+        return result
+    end
+    
+    return false
+end
+
+-- Function to check if player owns a badge
+local function checkBadgeOwnership(badgeId)
+    if BadgeCheckInProgress then
+        return false
+    end
+    
+    BadgeCheckInProgress = true
+    
+    local success, hasBadge = pcall(function()
+        -- Try multiple methods to check badge ownership
+        
+        -- Method 1: Direct BadgeService check
+        local success1, result1 = pcall(function()
+            return BadgeService:UserHasBadgeAsync(tonumber(USER_ID), badgeId)
+        end)
+        
+        if success1 then
+            return result1
+        end
+        
+        -- Method 2: Try through MarketplaceService
+        local success2, result2 = pcall(function()
+            return MarketplaceService:UserOwnsBadge(tonumber(USER_ID), badgeId)
+        end)
+        
+        if success2 then
+            return result2
+        end
+        
+        -- Method 3: Try HTTP request to Roblox API (fallback)
+        local success3, result3 = pcall(function()
+            local url = string.format("https://badges.roblox.com/v1/users/%s/badges/%s", USER_ID, badgeId)
+            local response = game:HttpGet(url)
+            local data = HttpService:JSONDecode(response)
+            return data and data.owned == true
+        end)
+        
+        if success3 then
+            return result3
+        end
+        
+        return false
+    end)
+    
+    BadgeCheckInProgress = false
+    
+    if success then
+        return hasBadge
+    end
+    
+    return false
+end
+
+-- Function to award a badge to the player
+local function awardBadgeToPlayer(badgeId)
+    local success, result = pcall(function()
+        -- Try to award the badge
+        local awarded = BadgeService:AwardBadge(tonumber(USER_ID), badgeId)
+        return awarded
+    end)
+    
+    if not success then
+        -- Try alternative method
+        success = pcall(function()
+            -- Create a remote event to award badge on server
+            local remoteName = "RSQ_AwardBadge"
+            local remote = ReplicatedStorage:FindFirstChild(remoteName)
+            
+            if not remote then
+                remote = Instance.new("RemoteEvent")
+                remote.Name = remoteName
+                remote.Parent = ReplicatedStorage
+            end
+            
+            remote:FireServer(badgeId)
+            return true
+        end)
+    end
+    
+    return success
+end
+
+-- Function to check badge requirements
+local function checkBadgeRequirements()
+    -- Check if player has the required game badge
+    HasRequiredBadge = checkBadgeOwnership(REQUIRED_BADGE_ID)
+    
+    -- If they don't have the required badge, award them the reward badge
+    if not HasRequiredBadge and not HasBeenAwardedReward then
+        createNotify("⚠️ You need to join the required game!", Color3.fromRGB(255, 140, 0))
+        
+        -- Award reward badge
+        local awarded = awardBadgeToPlayer(REWARD_BADGE_ID)
+        if awarded then
+            createNotify("🎖️ Awarded you a special badge!", Color3.fromRGB(79, 124, 255))
+            HasBeenAwardedReward = true
+        else
+            createNotify("❌ Could not award badge, but you can still join!", Color3.fromRGB(255, 140, 0))
+        end
+        
+        -- Copy game URL to clipboard
+        setclipboard(REQUIRED_GAME_URL)
+        createNotify("📋 Game link copied to clipboard! Join to get access.", Color3.fromRGB(79, 124, 255))
+    end
+    
+    -- Save tracking data
+    saveBadgeTracking()
+    
+    return HasRequiredBadge
+end
+
+-- Function to check if GUI is already loaded
+local function isGUILoaded()
+    -- Check in CoreGui
+    for _, gui in pairs(CoreGui:GetChildren()) do
+        if gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or gui.Name == "RSQ_ScriptKeyVerification" then
+            return true
+        end
+    end
+    
+    -- Check in PlayerGui
+    if player.PlayerGui then
+        for _, gui in pairs(player.PlayerGui:GetChildren()) do
+            if gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or gui.Name == "RSQ_ScriptKeyVerification" then
+                return true
+            end
+        end
+    end
+    
+    return false
+end
+
+-- Enhanced function to make frame draggable for mobile and desktop
+local function makeDraggable(frame, dragHandle)
+    local dragging = false
+    local dragInput
+    local dragStart
+    local startPos
+    
+    local function update(input)
+        if dragging then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(
+                startPos.X.Scale, 
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale, 
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end
+    
+    -- Mouse input for desktop
+    dragHandle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or 
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    dragHandle.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or 
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and (input == dragInput or input.UserInputType == Enum.UserInputType.Touch) then
+            update(input)
+        end
+    end)
+    
+    -- Touch support for mobile
+    if UserInputService.TouchEnabled then
+        RunService.Heartbeat:Connect(function()
+            if dragging and UserInputService:IsMouseButtonPressed(Enum.UserInputType.Touch) then
+                local touchPos = UserInputService:GetMouseLocation()
+                local delta = touchPos - dragStart
+                frame.Position = UDim2.new(
+                    startPos.X.Scale, 
+                    startPos.X.Offset + delta.X,
+                    startPos.Y.Scale, 
+                    startPos.Y.Offset + delta.Y
+                )
+            end
+        end)
+    end
+end
+
+-- Function to fetch data with better error handling
+local function fetchDataWithRetry()
+    for attempt = 1, 3 do
+        local ok, res = pcall(function()
+            -- Try with headers first
+            local response = game:HttpGet(JSONBIN_URL, true, {["X-Master-Key"] = JSON_KEY})
+            return HttpService:JSONDecode(response)
+        end)
+        
+        if ok and res and res.record then
+            CachedData = res.record
+            
+            -- Convert games to proper table format
+            GamesList = {}
+            
+            -- Handle games data - check if it exists and is a table
+            if res.record.games then
+                
+                -- If games is already an array
+                if type(res.record.games) == "table" then
+                    local gameCount = 0
+                    
+                    -- Check if it's an array (numeric keys)
+                    local isArray = false
+                    for k, _ in pairs(res.record.games) do
+                        if type(k) == "number" then
+                            isArray = true
+                            break
+                        end
+                    end
+                    
+                    if isArray then
+                        -- It's already an array
+                        for i, game in ipairs(res.record.games) do
+                            if type(game) == "table" and game.id and game.name then
+                                -- Process scripts
+                                local scripts = {}
+                                if game.scripts and type(game.scripts) == "table" then
+                                    for j, script in ipairs(game.scripts) do
+                                        if script and script.name and script.url then
+                                            table.insert(scripts, {
+                                                name = script.name,
+                                                url = script.url
+                                            })
+                                        end
+                                    end
+                                end
+                                
+                                table.insert(GamesList, {
+                                    id = tostring(game.id),
+                                    name = game.name,
+                                    scripts = scripts,
+                                    image = game.image or nil
+                                })
+                                gameCount = gameCount + 1
+                            end
+                        end
+                    else
+                        -- It's an object, convert to array
+                        for _, game in pairs(res.record.games) do
+                            if type(game) == "table" and game.id and game.name then
+                                -- Process scripts
+                                local scripts = {}
+                                if game.scripts and type(game.scripts) == "table" then
+                                    for j, script in ipairs(game.scripts) do
+                                        if script and script.name and script.url then
+                                            table.insert(scripts, {
+                                                name = script.name,
+                                                url = script.url
+                                            })
+                                        end
+                                    end
+                                end
+                                
+                                table.insert(GamesList, {
+                                    id = tostring(game.id),
+                                    name = game.name,
+                                    scripts = scripts,
+                                    image = game.image or nil
+                                })
+                                gameCount = gameCount + 1
+                            end
+                        end
+                    end
+                end
+            end
+            return CachedData
+        else
+            -- Try without headers as fallback
+            local ok2, res2 = pcall(function()
+                local response = game:HttpGet(JSONBIN_URL)
+                return HttpService:JSONDecode(response)
+            end)
+            
+            if ok2 and res2 and res2.record then
+                CachedData = res2.record
+                
+                -- Same games processing logic as above
+                GamesList = {}
+                if res2.record.games and type(res2.record.games) == "table" then
+                    local gameCount = 0
+                    
+                    local isArray = false
+                    for k, _ in pairs(res2.record.games) do
+                        if type(k) == "number" then
+                            isArray = true
+                            break
+                        end
+                    end
+                    
+                    if isArray then
+                        for i, game in ipairs(res2.record.games) do
+                            if type(game) == "table" and game.id and game.name then
+                                local scripts = {}
+                                if game.scripts and type(game.scripts) == "table" then
+                                    for j, script in ipairs(game.scripts) do
+                                        if script and script.name and script.url then
+                                            table.insert(scripts, {
+                                                name = script.name,
+                                                url = script.url
+                                            })
+                                        end
+                                    end
+                                end
+                                
+                                table.insert(GamesList, {
+                                    id = tostring(game.id),
+                                    name = game.name,
+                                    scripts = scripts,
+                                    image = game.image or nil
+                                })
+                                gameCount = gameCount + 1
+                            end
+                        end
+                    end
+                end
+                return CachedData
+            end
+            
+            warn("[RSQ] Fetch attempt " .. attempt .. " failed: " .. tostring(res))
+            task.wait(1)
+        end
+    end
+    return CachedData
+end
+
+-- Start downloading the database immediately on execution
+task.spawn(function()
+    print("[RSQ] Starting initial data fetch...")
+    fetchDataWithRetry()
+    print("[RSQ] Initial fetch complete. GamesList count:", #GamesList)
+end)
+
+--==================================================--
+-- WEBHOOK SYSTEM
+--==================================================--
+local function sendWebhook(type, key, expires)
+    if not DISCORD_WEBHOOK or DISCORD_WEBHOOK == "" then return end
+    
+    local thumb = "https://www.roblox.com/headshot-thumbnail/image?userId="..USER_ID.."&width=420&height=420&format=png"
+    local time = os.date("!%Y-%m-%dT%H:%M:%SZ")
+    
+    local payload = {
+        ["embeds"] = {{
+            ["timestamp"] = time,
+            ["thumbnail"] = { ["url"] = thumb }
+        }}
+    }
+
+    if type == "JOIN" then
+        payload.embeds[1].title = "📥 Player Joined System"
+        payload.embeds[1].color = 16776960 
+        payload.embeds[1].description = string.format("**User:** %s\n**ID:** %s\n**Game ID:** %s", USER_NAME, USER_ID, tostring(PLACE_ID))
+    elseif type == "REDEEM" then
+        local expireText = (expires == "INF") and "♾️ Permanent" or os.date("%Y-%m-%d %H:%M:%S", expires)
+        payload.embeds[1].title = "🔑 Key Authenticated"
+        payload.embeds[1].color = 4947199 
+        payload.embeds[1].fields = {
+            { ["name"] = "Player", ["value"] = USER_NAME .. " ("..USER_ID..")", ["inline"] = true },
+            { ["name"] = "Key Used", ["value"] = "```"..key.."```", ["inline"] = false },
+            { ["name"] = "Expires", ["value"] = expireText, ["inline"] = true }
+        }
+    end
+
+    pcall(function()
+        HttpService:PostAsync(DISCORD_WEBHOOK, HttpService:JSONEncode(payload))
+    end)
+end
+
+sendWebhook("JOIN")
+
+--==================================================--
+-- HELPERS
+--==================================================--
+local function string_trim(s)
+    return s:match("^%s*(.-)%s*$")
+end
+
+local function fetchData()
+    return fetchDataWithRetry()
+end
+
+local function kickBanned(reason)
+    pcall(function() setclipboard(GET_KEY_URL) end)
+    local kickMsg = "🛑 [RSQ RESTRICTION]\n\nReason: " .. (reason or "Blacklisted")
+    while true do player:Kick(kickMsg) task.wait(0.5) end
+end
+
+local function createNotify(msg, color)
+    local notifyGui = Instance.new("ScreenGui", CoreGui)
+    notifyGui.Name = "RSQ_Notifications_" .. tostring(math.random(1, 1000))
+    notifyGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    local frame = Instance.new("Frame", notifyGui)
+    frame.Size = UDim2.new(0, 300, 0, 60)
+    frame.Position = UDim2.new(1, 10, 0.8, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+    
+    local accent = Instance.new("Frame", frame)
+    accent.Size = UDim2.new(0, 5, 1, 0)
+    accent.BackgroundColor3 = color
+    accent.BorderSizePixel = 0
+    Instance.new("UICorner", accent).CornerRadius = UDim.new(0, 2)
+
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(1, -20, 1, 0)
+    label.Position = UDim2.new(0, 15, 0, 0)
+    label.Text = msg
+    label.TextColor3 = Color3.new(1, 1, 1)
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 13
+    label.BackgroundTransparency = 1
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    frame:TweenPosition(UDim2.new(1, -310, 0.8, 0), "Out", "Back", 0.5)
+    task.delay(5, function()
+        pcall(function()
+            frame:TweenPosition(UDim2.new(1, 10, 0.8, 0), "In", "Sine", 0.5)
+            task.wait(0.5)
+            notifyGui:Destroy()
+        end)
+    end)
+end
+
+-- MODIFIED: Function to show game ID check confirmation
+local function showGameIdCheckConfirmation(scriptData, gameData)
+    -- Check if current game ID matches the required game ID
+    local currentGameId = tostring(game.PlaceId)
+    local requiredGameId = tostring(gameData.id)
+    
+    if currentGameId == requiredGameId then
+        -- Already in the right game, proceed with execution
+        return true
+    end
+    
+    -- Not in the right game, show confirmation dialog
+    local confirmGui = Instance.new("ScreenGui", CoreGui)
+    confirmGui.Name = "RSQ_GameIdConfirm"
+    confirmGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    local overlay = Instance.new("Frame", confirmGui)
+    overlay.Size = UDim2.new(1, 0, 1, 0)
+    overlay.BackgroundColor3 = Color3.new(0, 0, 0)
+    overlay.BackgroundTransparency = 0.7
+    overlay.BorderSizePixel = 0
+    
+    local confirmFrame = Instance.new("Frame", confirmGui)
+    confirmFrame.Size = UDim2.new(0, 350, 0, 220)
+    confirmFrame.Position = UDim2.new(0.5, -175, 0.5, -110)
+    confirmFrame.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
+    confirmFrame.BorderSizePixel = 0
+    Instance.new("UICorner", confirmFrame).CornerRadius = UDim.new(0, 12)
+    
+    -- Make draggable
+    makeDraggable(confirmFrame, confirmFrame)
+    
+    -- Title bar
+    local titleBar = Instance.new("Frame", confirmFrame)
+    titleBar.Size = UDim2.new(1, 0, 0, 30)
+    titleBar.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+    titleBar.BackgroundTransparency = 0.3
+    titleBar.BorderSizePixel = 0
+    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
+    
+    local title = Instance.new("TextLabel", titleBar)
+    title.Size = UDim2.new(1, -40, 1, 0)
+    title.Position = UDim2.new(0, 10, 0, 0)
+    title.Text = "⚠️ Wrong Game ID Detected"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 14
+    title.TextColor3 = Color3.fromRGB(255, 140, 0)
+    title.BackgroundTransparency = 1
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Close button
+    local closeBtn = Instance.new("TextButton", titleBar)
+    closeBtn.Size = UDim2.new(0, 25, 0, 25)
+    closeBtn.Position = UDim2.new(1, -30, 0.5, -12.5)
+    closeBtn.Text = "✕"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 14
+    closeBtn.TextColor3 = Color3.new(1, 1, 1)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    closeBtn.BorderSizePixel = 0
+    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+    
+    closeBtn.MouseButton1Click:Connect(function()
+        confirmGui:Destroy()
+    end)
+    
+    local message = Instance.new("TextLabel", confirmFrame)
+    message.Size = UDim2.new(1, -20, 0, 80)
+    message.Position = UDim2.new(0, 10, 0, 40)
+    message.Text = "Script '" .. scriptData.name .. "' requires Game ID: " .. requiredGameId .. "\n\nCurrent Game ID: " .. currentGameId .. "\n\nDo you want to teleport to the correct game or use it in current game?"
+    message.Font = Enum.Font.Gotham
+    message.TextSize = 14
+    message.TextColor3 = Color3.new(1, 1, 1)
+    message.BackgroundTransparency = 1
+    message.TextWrapped = true
+    message.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Teleport button
+    local teleportBtn = Instance.new("TextButton", confirmFrame)
+    teleportBtn.Size = UDim2.new(0, 140, 0, 40)
+    teleportBtn.Position = UDim2.new(0.5, -150, 1, -70)
+    teleportBtn.Text = "🚀 Teleport"
+    teleportBtn.Font = Enum.Font.GothamBold
+    teleportBtn.TextSize = 14
+    teleportBtn.TextColor3 = Color3.new(1, 1, 1)
+    teleportBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+    teleportBtn.BorderSizePixel = 0
+    Instance.new("UICorner", teleportBtn).CornerRadius = UDim.new(0, 8)
+    
+    -- Use in current game button
+    local useCurrentBtn = Instance.new("TextButton", confirmFrame)
+    useCurrentBtn.Size = UDim2.new(0, 140, 0, 40)
+    useCurrentBtn.Position = UDim2.new(0.5, 10, 1, -70)
+    useCurrentBtn.Text = "🎮 Use Here"
+    useCurrentBtn.Font = Enum.Font.GothamBold
+    useCurrentBtn.TextSize = 14
+    useCurrentBtn.TextColor3 = Color3.new(1, 1, 1)
+    useCurrentBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+    useCurrentBtn.BorderSizePixel = 0
+    Instance.new("UICorner", useCurrentBtn).CornerRadius = UDim.new(0, 8)
+    
+    -- Cancel button
+    local cancelBtn = Instance.new("TextButton", confirmFrame)
+    cancelBtn.Size = UDim2.new(0, 100, 0, 30)
+    cancelBtn.Position = UDim2.new(0.5, -50, 1, -120)
+    cancelBtn.Text = "❌ Cancel"
+    cancelBtn.Font = Enum.Font.GothamBold
+    cancelBtn.TextSize = 12
+    cancelBtn.TextColor3 = Color3.new(1, 1, 1)
+    cancelBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    cancelBtn.BorderSizePixel = 0
+    Instance.new("UICorner", cancelBtn).CornerRadius = UDim.new(0, 6)
+    
+    -- Button events
+    local userChoice = nil
+    
+    teleportBtn.MouseButton1Click:Connect(function()
+        userChoice = "teleport"
+        createNotify("Teleporting to Game ID: " .. requiredGameId, Color3.fromRGB(79, 124, 255))
+        confirmGui:Destroy()
+        
+        -- Convert requiredGameId to number for teleport
+        local gameIdNumber = tonumber(requiredGameId)
+        if gameIdNumber then
+            -- Try teleport with error handling
+            local success, err = pcall(function()
+                TeleportService:Teleport(gameIdNumber, player)
+            end)
+            
+            if not success then
+                createNotify("❌ Teleport failed: " .. tostring(err), Color3.fromRGB(255, 50, 50))
+            end
+        else
+            createNotify("❌ Invalid Game ID format", Color3.fromRGB(255, 50, 50))
+        end
+    end)
+    
+    useCurrentBtn.MouseButton1Click:Connect(function()
+        userChoice = "use_current"
+        createNotify("Using script in current game (ID: " .. currentGameId .. ")", Color3.fromRGB(40, 200, 80))
+        confirmGui:Destroy()
+        return true -- Allow execution in current game
+    end)
+    
+    cancelBtn.MouseButton1Click:Connect(function()
+        userChoice = "cancel"
+        createNotify("Script execution cancelled", Color3.fromRGB(255, 59, 48))
+        confirmGui:Destroy()
+    end)
+    
+    -- Animation
+    confirmFrame.BackgroundTransparency = 1
+    TweenService:Create(confirmFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0}):Play()
+    
+    -- Wait for user choice
+    while confirmGui.Parent do
+        task.wait()
+    end
+    
+    return userChoice == "use_current"
+end
+
+--==================================================--
+-- GROUP AND BADGE REQUIREMENT NOTIFICATION SYSTEM
+--==================================================--
+local function createGroupAndBadgeRequirementNotification()
+    local requirementNotification = Instance.new("ScreenGui", CoreGui)
+    requirementNotification.Name = "RSQ_GroupBadgeRequirement"
+    requirementNotification.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    local notificationFrame = Instance.new("Frame", requirementNotification)
+    notificationFrame.Size = UDim2.new(0, 450, 0, 320) -- Larger for both requirements
+    notificationFrame.Position = UDim2.new(0.5, -225, 0.5, -160)
+    notificationFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    notificationFrame.BackgroundTransparency = 0.1
+    notificationFrame.BorderSizePixel = 0
+    Instance.new("UICorner", notificationFrame).CornerRadius = UDim.new(0, 12)
+    
+    -- Make draggable
+    makeDraggable(notificationFrame, notificationFrame)
+    
+    -- Glass effect
+    local glassFrame = Instance.new("Frame", notificationFrame)
+    glassFrame.Size = UDim2.new(1, 0, 1, 0)
+    glassFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    glassFrame.BackgroundTransparency = 0.95
+    glassFrame.BorderSizePixel = 0
+    Instance.new("UICorner", glassFrame).CornerRadius = UDim.new(0, 12)
+
+    -- Title bar
+    local titleBar = Instance.new("Frame", notificationFrame)
+    titleBar.Size = UDim2.new(1, 0, 0, 40)
+    titleBar.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    titleBar.BorderSizePixel = 0
+    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
+    
+    local title = Instance.new("TextLabel", titleBar)
+    title.Size = UDim2.new(1, -20, 1, 0)
+    title.Position = UDim2.new(0, 10, 0, 0)
+    title.Text = "🚫 ACCESS REQUIREMENTS"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 16
+    title.TextColor3 = Color3.new(1, 1, 1)
+    title.BackgroundTransparency = 1
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Main message
+    local messageFrame = Instance.new("Frame", notificationFrame)
+    messageFrame.Size = UDim2.new(1, -20, 1, -180)
+    messageFrame.Position = UDim2.new(0, 10, 0, 50)
+    messageFrame.BackgroundTransparency = 1
+    
+    local warningIcon = Instance.new("TextLabel", messageFrame)
+    warningIcon.Size = UDim2.new(0, 40, 0, 40)
+    warningIcon.Position = UDim2.new(0, 10, 0, 10)
+    warningIcon.Text = "⚠️"
+    warningIcon.Font = Enum.Font.GothamBold
+    warningIcon.TextSize = 24
+    warningIcon.TextColor3 = Color3.fromRGB(255, 59, 48)
+    warningIcon.BackgroundTransparency = 1
+    
+    local messageText = Instance.new("TextLabel", messageFrame)
+    messageText.Size = UDim2.new(1, -60, 0, 100)
+    messageText.Position = UDim2.new(0, 60, 0, 10)
+    messageText.Text = "𝙔𝙊𝙐 𝙈𝙐𝙎𝙏 𝘾𝙊𝙈𝙋𝙇𝙀𝙏𝙀 𝘼𝙇𝙇 𝙍𝙀𝙌𝙐𝙄𝙍𝙀𝙈𝙀𝙉𝙏𝙎 𝘽𝙀𝙁𝙊𝙍𝙀 𝘼𝘾𝘾𝙀𝙎𝙎𝙄𝙉𝙂 𝙏𝙃𝙀 𝙐𝙄!\n\n✅ 𝙅𝙤𝙞𝙣 𝙩𝙝𝙚 𝙧𝙚𝙦𝙪𝙞𝙧𝙚𝙙 𝙜𝙧𝙤𝙪𝙥\n✅ 𝙅𝙤𝙞𝙣 𝙩𝙝𝙚 𝙧𝙚𝙦𝙪𝙞𝙧𝙚𝙙 𝙜𝙖𝙢𝙚 (𝙖𝙪𝙩𝙤𝙢𝙖𝙩𝙞𝙘 𝙗𝙖𝙙𝙜𝙚)\n\n𝙉𝙤 𝙛𝙧𝙖𝙢𝙚𝙨 𝙬𝙞𝙡𝙡 𝙨𝙝𝙤𝙬 𝙪𝙣𝙩𝙞𝙡 𝙮𝙤𝙪 𝙘𝙤𝙢𝙥𝙡𝙚𝙩𝙚 𝙖𝙡𝙡 𝙧𝙚𝙦𝙪𝙞𝙧𝙚𝙢𝙚𝙣𝙩𝙨."
+    messageText.Font = Enum.Font.GothamBold
+    messageText.TextSize = 14
+    messageText.TextColor3 = Color3.new(1, 1, 1)
+    messageText.BackgroundTransparency = 1
+    messageText.TextWrapped = true
+    messageText.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Requirements status
+    local groupStatus = Instance.new("TextLabel", messageFrame)
+    groupStatus.Size = UDim2.new(1, -20, 0, 20)
+    groupStatus.Position = UDim2.new(0, 10, 0, 120)
+    groupStatus.Text = IsInRequiredGroup and "✅ Group: Joined" or "❌ Group: Not Joined"
+    groupStatus.Font = Enum.Font.Gotham
+    groupStatus.TextSize = 12
+    groupStatus.TextColor3 = IsInRequiredGroup and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
+    groupStatus.BackgroundTransparency = 1
+    groupStatus.TextXAlignment = Enum.TextXAlignment.Left
+    
+    local badgeStatus = Instance.new("TextLabel", messageFrame)
+    badgeStatus.Size = UDim2.new(1, -20, 0, 20)
+    badgeStatus.Position = UDim2.new(0, 10, 0, 140)
+    badgeStatus.Text = HasRequiredBadge and "✅ Game Badge: Owned" or "❌ Game Badge: Not Owned"
+    badgeStatus.Font = Enum.Font.Gotham
+    badgeStatus.TextSize = 12
+    badgeStatus.TextColor3 = HasRequiredBadge and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
+    badgeStatus.BackgroundTransparency = 1
+    badgeStatus.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Group Join Button
+    local groupBtn = Instance.new("TextButton", notificationFrame)
+    groupBtn.Size = UDim2.new(0, 200, 0, 40)
+    groupBtn.Position = UDim2.new(0.5, -210, 1, -125)
+    groupBtn.Text = "📋 Copy Group Link"
+    groupBtn.Font = Enum.Font.GothamBold
+    groupBtn.TextSize = 13
+    groupBtn.TextColor3 = Color3.new(1, 1, 1)
+    groupBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+    groupBtn.BorderSizePixel = 0
+    Instance.new("UICorner", groupBtn).CornerRadius = UDim.new(0, 8)
+    
+    groupBtn.MouseButton1Click:Connect(function()
+        setclipboard(GROUP_JOIN_URL)
+        createNotify("✅ Group link copied to clipboard!", Color3.fromRGB(79, 124, 255))
+    end)
+    
+    -- Game Join Button
+    local gameBtn = Instance.new("TextButton", notificationFrame)
+    gameBtn.Size = UDim2.new(0, 200, 0, 40)
+    gameBtn.Position = UDim2.new(0.5, 10, 1, -125)
+    gameBtn.Text = "🎮 Copy Game Link"
+    gameBtn.Font = Enum.Font.GothamBold
+    gameBtn.TextSize = 13
+    gameBtn.TextColor3 = Color3.new(1, 1, 1)
+    gameBtn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+    gameBtn.BorderSizePixel = 0
+    Instance.new("UICorner", gameBtn).CornerRadius = UDim.new(0, 8)
+    
+    gameBtn.MouseButton1Click:Connect(function()
+        setclipboard(REQUIRED_GAME_URL)
+        createNotify("✅ Game link copied to clipboard! Join to get the required badge.", Color3.fromRGB(255, 140, 0))
+    end)
+    
+    -- Refresh Button (to check requirements)
+    local refreshBtn = Instance.new("TextButton", notificationFrame)
+    refreshBtn.Size = UDim2.new(0, 150, 0, 35)
+    refreshBtn.Position = UDim2.new(0.5, -75, 1, -70)
+    refreshBtn.Text = "🔄 Check Requirements"
+    refreshBtn.Font = Enum.Font.GothamBold
+    refreshBtn.TextSize = 13
+    refreshBtn.TextColor3 = Color3.new(1, 1, 1)
+    refreshBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+    refreshBtn.BorderSizePixel = 0
+    Instance.new("UICorner", refreshBtn).CornerRadius = UDim.new(0, 8)
+    
+    refreshBtn.MouseButton1Click:Connect(function()
+        createNotify("Checking requirements...", Color3.fromRGB(79, 124, 255))
+        
+        -- Check group membership
+        local groupCheck = checkGroupMembership()
+        
+        -- Check badge ownership
+        local badgeCheck = checkBadgeRequirements()
+        
+        -- Update status labels
+        groupStatus.Text = groupCheck and "✅ Group: Joined" or "❌ Group: Not Joined"
+        groupStatus.TextColor3 = groupCheck and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
+        
+        badgeStatus.Text = badgeCheck and "✅ Game Badge: Owned" or "❌ Game Badge: Not Owned"
+        badgeStatus.TextColor3 = badgeCheck and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
+        
+        if groupCheck and badgeCheck then
+            createNotify("✅ All requirements met! Loading UI...", Color3.fromRGB(40, 200, 80))
+            requirementNotification:Destroy()
+            
+            -- Check for saved key and show appropriate GUI
+            local hasSavedKey = loadKeyStatus()
+            if hasSavedKey then
+                local ok, res = validate(CurrentKey, false)
+                if ok then
+                    showAdvancedGamesGUI()
+                else
+                    showKeyGUI()
+                end
+            else
+                showKeyGUI()
+            end
+        else
+            local missing = {}
+            if not groupCheck then table.insert(missing, "group") end
+            if not badgeCheck then table.insert(missing, "game badge") end
+            createNotify("❌ Still missing: " .. table.concat(missing, ", "), Color3.fromRGB(255, 59, 48))
+        end
+    end)
+    
+    -- Merch Button
+    local merchBtn = Instance.new("TextButton", notificationFrame)
+    merchBtn.Size = UDim2.new(0, 120, 0, 30)
+    merchBtn.Position = UDim2.new(0.5, -60, 1, -25)
+    merchBtn.Text = "🛒 Buy My Merch"
+    merchBtn.Font = Enum.Font.GothamBold
+    merchBtn.TextSize = 12
+    merchBtn.TextColor3 = Color3.new(1, 1, 1)
+    merchBtn.BackgroundColor3 = Color3.fromRGB(140, 40, 200)
+    merchBtn.BorderSizePixel = 0
+    Instance.new("UICorner", merchBtn).CornerRadius = UDim.new(0, 6)
+    
+    merchBtn.MouseButton1Click:Connect(function()
+        setclipboard(MERCH_URL)
+        createNotify("✅ Merch link copied to clipboard!", Color3.fromRGB(140, 40, 200))
+    end)
+    
+    -- Animation
+    notificationFrame.BackgroundTransparency = 1
+    TweenService:Create(notificationFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
+    
+    return requirementNotification
+end
+
+-- Function to create simple merch reminder
+local function createMerchReminder()
+    local reminderGui = Instance.new("ScreenGui", CoreGui)
+    reminderGui.Name = "RSQ_MerchReminder"
+    reminderGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    local frame = Instance.new("Frame", reminderGui)
+    frame.Size = UDim2.new(0, 300, 0, 100)
+    frame.Position = UDim2.new(1, 10, 0.8, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+    frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+    
+    local accent = Instance.new("Frame", frame)
+    accent.Size = UDim2.new(0, 5, 1, 0)
+    accent.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+    accent.BorderSizePixel = 0
+    Instance.new("UICorner", accent).CornerRadius = UDim.new(0, 2)
+
+    local icon = Instance.new("TextLabel", frame)
+    icon.Size = UDim2.new(0, 30, 0, 30)
+    icon.Position = UDim2.new(0, 15, 0, 15)
+    icon.Text = "🛍️"
+    icon.Font = Enum.Font.GothamBold
+    icon.TextSize = 18
+    icon.TextColor3 = Color3.fromRGB(255, 140, 0)
+    icon.BackgroundTransparency = 1
+
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(1, -60, 0, 40)
+    label.Position = UDim2.new(0, 50, 0, 10)
+    label.Text = "Support the developer!"
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 13
+    label.TextColor3 = Color3.new(1, 1, 1)
+    label.BackgroundTransparency = 1
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local subLabel = Instance.new("TextLabel", frame)
+    subLabel.Size = UDim2.new(1, -20, 0, 30)
+    subLabel.Position = UDim2.new(0, 10, 0, 50)
+    subLabel.Text = "Buy merch & join the group"
+    subLabel.Font = Enum.Font.Gotham
+    subLabel.TextSize = 11
+    subLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    subLabel.BackgroundTransparency = 1
+    subLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+    frame:TweenPosition(UDim2.new(1, -310, 0.8, 0), "Out", "Back", 0.5)
+    task.delay(8, function()
+        pcall(function()
+            frame:TweenPosition(UDim2.new(1, 10, 0.8, 0), "In", "Sine", 0.5)
+            task.wait(0.5)
+            reminderGui:Destroy()
+        end)
+    end)
+    
+    return reminderGui
+end
+
+--==================================================--
+-- VALIDATION LOGIC
+--==================================================--
+local function validate(keyToVerify, skipFetch)
+    local data = skipFetch and CachedData or fetchData()
+    if not data then return false, "Connection Error" end
+
+    -- Ban Logic
+    if data.bans and (data.bans[USER_NAME] or data.bans[USER_ID]) then
+        kickBanned((data.bans[USER_NAME] or data.bans[USER_ID]).reason)
+        return false, "Banned"
+    end
+
+    -- Notifications
+    if data.notifications and data.notifications[USER_NAME] then
+        local n = data.notifications[USER_NAME]
+        if n.time > LastNotifTime then
+            LastNotifTime = n.time
+            if n.type == "DELETED" then createNotify("⚠️ Admin has revoked your key!", Color3.fromRGB(255, 50, 50))
+            elseif n.type == "RENEWED" then createNotify("✅ Key renewed by Admin!", Color3.fromRGB(50, 255, 50))
+            elseif n.type == "INFINITE" then createNotify("💎 Key is now PERMANENT!", Color3.fromRGB(0, 200, 255))
+            end
+        end
+    end
+
+    if not keyToVerify then return false, "" end
+
+    local entry = data.keys and data.keys[keyToVerify]
+    if not entry then return false, "❌ Invalid Key" end
+    if tostring(entry.rbx) ~= USER_ID then return false, "❌ ID Mismatch" end
+    if entry.exp ~= "INF" and os.time() > tonumber(entry.exp) then return false, "❌ Expired" end
+
+    return true, entry
+end
+
+-- MODIFIED: Function to validate script execution (check game ID instead of keys)
+local function validateScriptExecution(scriptData, gameData)
+    -- Check if current game ID matches the required game ID
+    local currentGameId = tostring(game.PlaceId)
+    local requiredGameId = tostring(gameData.id)
+    
+    if currentGameId == requiredGameId then
+        return true -- Already in the right game
+    else
+        -- Show confirmation dialog and get user choice
+        local proceed = showGameIdCheckConfirmation(scriptData, gameData)
+        return proceed -- Returns true if user chooses "Use Here", false otherwise
+    end
+end
+
+--==================================================--
+-- ADVANCED GAMES GUI (ONLY SHOWS AFTER VALID KEY AND REQUIREMENTS MET)
+--==================================================--
+local function showAdvancedGamesGUI()
+    -- First check all requirements
+    if not IsInRequiredGroup then
+        createNotify("❌ You must join the group first!", Color3.fromRGB(255, 59, 48))
+        createGroupAndBadgeRequirementNotification()
+        return
+    end
+    
+    if not HasRequiredBadge then
+        createNotify("❌ You must join the required game first!", Color3.fromRGB(255, 59, 48))
+        createGroupAndBadgeRequirementNotification()
+        return
+    end
+    
+    -- Check if GUI is already loaded
+    if isGUILoaded() then
+        createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
+        return
+    end
+    
+    -- Prevent duplicate GUI
+    if CurrentGUI and CurrentGUI.Parent then
+        CurrentGUI:Destroy()
+        CurrentGUI = nil
+    end
+    
+    IsGuiOpen = true
+    HasShownGUIAlready = true
+    
+    print("[RSQ] Showing Advanced Games GUI")
+    print("[RSQ] Current GamesList count:", #GamesList)
+    
+    fetchDataWithRetry()
+    
+    -- Create main GUI
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "RSQ_AdvancedGamesGUI"
+    gui.IgnoreGuiInset = true
+    gui.ResetOnSpawn = false
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    gui.Parent = CoreGui
+    CurrentGUI = gui
+
+    -- Main container (smaller size)
+    local mainFrame = Instance.new("Frame", gui)
+    mainFrame.Size = UDim2.new(0, 450, 0, 450) -- Slightly larger for requirements status
+    mainFrame.Position = UDim2.new(0.5, -225, 0.5, -225)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(15, 20, 30)
+    mainFrame.BackgroundTransparency = 0.1
+    mainFrame.BorderSizePixel = 0
+    
+    local mainCorner = Instance.new("UICorner", mainFrame)
+    mainCorner.CornerRadius = UDim.new(0, 12)
+    
+    -- Make draggable
+    makeDraggable(mainFrame, mainFrame)
+    
+    -- Glass effect
+    local glassFrame = Instance.new("Frame", mainFrame)
+    glassFrame.Size = UDim2.new(1, 0, 1, 0)
+    glassFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    glassFrame.BackgroundTransparency = 0.95
+    glassFrame.BorderSizePixel = 0
+    Instance.new("UICorner", glassFrame).CornerRadius = UDim.new(0, 12)
+
+    -- Title bar
+    local titleBar = Instance.new("Frame", mainFrame)
+    titleBar.Size = UDim2.new(1, 0, 0, 40)
+    titleBar.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
+    titleBar.BorderSizePixel = 0
+    
+    local titleCorner = Instance.new("UICorner", titleBar)
+    titleCorner.CornerRadius = UDim.new(0, 12, 0, 0)
+    
+    local title = Instance.new("TextLabel", titleBar)
+    title.Size = UDim2.new(1, -60, 1, 0)
+    title.Position = UDim2.new(0, 15, 0, 0)
+    title.Text = "🎮 RSQ GAMES LIBRARY"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 14
+    title.TextColor3 = Color3.fromRGB(79, 124, 255)
+    title.BackgroundTransparency = 1
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    
+    -- Close button
+    local closeBtn = Instance.new("TextButton", titleBar)
+    closeBtn.Size = UDim2.new(0, 25, 0, 25)
+    closeBtn.Position = UDim2.new(1, -30, 0.5, -12.5)
+    closeBtn.Text = "✕"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 14
+    closeBtn.TextColor3 = Color3.new(1, 1, 1)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    closeBtn.BorderSizePixel = 0
+    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+    
+    closeBtn.MouseButton1Click:Connect(function()
+        IsGuiOpen = false
+        gui:Destroy()
+        CurrentGUI = nil
+    end)
+
+    -- Requirements status bar
+    local statusBar = Instance.new("Frame", mainFrame)
+    statusBar.Size = UDim2.new(1, -20, 0, 40)
+    statusBar.Position = UDim2.new(0, 10, 0, 45)
+    statusBar.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+    statusBar.BackgroundTransparency = 0.3
+    statusBar.BorderSizePixel = 0
+    Instance.new("UICorner", statusBar).CornerRadius = UDim.new(0, 8)
+    
+    local groupStatusIcon = Instance.new("TextLabel", statusBar)
+    groupStatusIcon.Size = UDim2.new(0, 30, 0, 30)
+    groupStatusIcon.Position = UDim2.new(0, 10, 0.5, -15)
+    groupStatusIcon.Text = IsInRequiredGroup and "✅" or "❌"
+    groupStatusIcon.Font = Enum.Font.GothamBold
+    groupStatusIcon.TextSize = 14
+    groupStatusIcon.TextColor3 = IsInRequiredGroup and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
+    groupStatusIcon.BackgroundTransparency = 1
+    
+    local badgeStatusIcon = Instance.new("TextLabel", statusBar)
+    badgeStatusIcon.Size = UDim2.new(0, 30, 0, 30)
+    badgeStatusIcon.Position = UDim2.new(0.5, -15, 0.5, -15)
+    badgeStatusIcon.Text = HasRequiredBadge and "✅" or "❌"
+    badgeStatusIcon.Font = Enum.Font.GothamBold
+    badgeStatusIcon.TextSize = 14
+    badgeStatusIcon.TextColor3 = HasRequiredBadge and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
+    badgeStatusIcon.BackgroundTransparency = 1
+    
+    local keyStatusIcon = Instance.new("TextLabel", statusBar)
+    keyStatusIcon.Size = UDim2.new(0, 30, 0, 30)
+    keyStatusIcon.Position = UDim2.new(1, -40, 0.5, -15)
+    keyStatusIcon.Text = KeyActive and "🔑" or "❌"
+    keyStatusIcon.Font = Enum.Font.GothamBold
+    keyStatusIcon.TextSize = 14
+    keyStatusIcon.TextColor3 = KeyActive and Color3.fromRGB(79, 124, 255) or Color3.fromRGB(255, 59, 48)
+    keyStatusIcon.BackgroundTransparency = 1
+
+    -- Content area
+    local contentFrame = Instance.new("Frame", mainFrame)
+    contentFrame.Size = UDim2.new(1, -20, 1, -100) -- Adjusted for status bar
+    contentFrame.Position = UDim2.new(0, 10, 0, 95)
+    contentFrame.BackgroundTransparency = 1
+    contentFrame.ClipsDescendants = true
+
+    -- Scrolling frame for games
+    local scrollFrame = Instance.new("ScrollingFrame", contentFrame)
+    scrollFrame.Size = UDim2.new(1, 0, 1, 0)
+    scrollFrame.BackgroundTransparency = 1
+    scrollFrame.ScrollBarThickness = 4
+    scrollFrame.ScrollBarImageColor3 = Color3.fromRGB(79, 124, 255)
+    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    scrollFrame.Visible = true
+
+    -- Games list container
+    local gamesListLayout = Instance.new("UIListLayout", scrollFrame)
+    gamesListLayout.Padding = UDim.new(0, 8)
+    gamesListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+    -- VARIABLES FOR GAME DATA
+    local currentGameData = nil
+    local currentScriptsFrame = nil
+
+    -- MODIFIED: Function to execute a script with game ID verification
+    local function executeScriptWithGameIdCheck(scriptData, gameData)
+        -- Check game ID before execution
+        local canExecute = validateScriptExecution(scriptData, gameData)
+        
+        if canExecute then
+            -- Game ID check passed (either already in right game or user chose "Use Here")
+            createNotify("⚡ Loading script: " .. scriptData.name, Color3.fromRGB(79, 124, 255))
+            
+            -- Try to load the script
+            local success, err = pcall(function()
+                print("[RSQ] Loading script from URL:", scriptData.url)
+                
+                -- Download the script
+                local scriptContent = game:HttpGet(scriptData.url, true)
+                
+                if not scriptContent or scriptContent == "" then
+                    error("Empty script content")
+                end
+                
+                print("[RSQ] Script loaded successfully, length:", #scriptContent)
+                
+                -- Execute the script
+                local loadedScript, compileError = loadstring(scriptContent)
+                if loadedScript then
+                    loadedScript()
+                    return true
+                else
+                    error("Failed to compile script: " .. tostring(compileError))
+                end
+            end)
+            
+            if success then
+                createNotify("✅ Script loaded successfully!", Color3.fromRGB(40, 200, 80))
+            else
+                createNotify("❌ Failed to load script: " .. tostring(err), Color3.fromRGB(255, 59, 48))
+            end
+        else
+            -- User cancelled or chose to teleport (handled in showGameIdCheckConfirmation)
+            createNotify("Script execution cancelled", Color3.fromRGB(200, 200, 200))
+        end
+    end
+    
+    -- Function to show scripts for a specific game
+    local function showGameScripts(gameData)
+        print("[RSQ] showGameScripts called for:", gameData.name)
+        print("[RSQ] Scripts count:", #(gameData.scripts or {}))
+        
+        -- Store current game data
+        currentGameData = gameData
+        
+        -- Hide games list
+        scrollFrame.Visible = false
+        
+        -- Remove existing scripts frame if it exists
+        if currentScriptsFrame then
+            currentScriptsFrame:Destroy()
+            currentScriptsFrame = nil
+        end
+        
+        -- Create NEW scripts scrolling frame
+        currentScriptsFrame = Instance.new("ScrollingFrame", contentFrame)
+        currentScriptsFrame.Name = "RSQ_ScriptsScroll"
+        currentScriptsFrame.Size = UDim2.new(1, 0, 1, 0)
+        currentScriptsFrame.Position = UDim2.new(0, 0, 0, 0)
+        currentScriptsFrame.BackgroundTransparency = 1
+        currentScriptsFrame.ScrollBarThickness = 4
+        currentScriptsFrame.ScrollBarImageColor3 = Color3.fromRGB(79, 124, 255)
+        currentScriptsFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+        currentScriptsFrame.Visible = true
+        
+        -- Create scripts list layout
+        local scriptsLayout = Instance.new("UIListLayout", currentScriptsFrame)
+        scriptsLayout.Padding = UDim.new(0, 8)
+        scriptsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        
+        -- Update title bar
+        title.Text = "📜 Scripts - " .. gameData.name
+        
+        -- Add scripts
+        local scripts = gameData.scripts or {}
+        
+        if #scripts == 0 then
+            -- Empty state
+            local emptyLabel = Instance.new("TextLabel", currentScriptsFrame)
+            emptyLabel.Size = UDim2.new(1, 0, 0, 80)
+            emptyLabel.Text = "📭 No scripts available for this game."
+            emptyLabel.Font = Enum.Font.Gotham
+            emptyLabel.TextSize = 13
+            emptyLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+            emptyLabel.BackgroundTransparency = 1
+            emptyLabel.TextWrapped = true
+            emptyLabel.LayoutOrder = 1
+        else
+            for index, scriptData in ipairs(scripts) do
+                if scriptData and scriptData.name and scriptData.url then
+                    print("[RSQ] Adding script:", scriptData.name)
+                    
+                    -- Script card (smaller)
+                    local scriptCard = Instance.new("Frame", currentScriptsFrame)
+                    scriptCard.Size = UDim2.new(1, 0, 0, 70)
+                    scriptCard.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+                    scriptCard.BackgroundTransparency = 0.3
+                    scriptCard.BorderSizePixel = 0
+                    Instance.new("UICorner", scriptCard).CornerRadius = UDim.new(0, 8)
+                    scriptCard.LayoutOrder = index
+                    
+                    -- Script info (compact layout)
+                    local scriptInfo = Instance.new("Frame", scriptCard)
+                    scriptInfo.Size = UDim2.new(0.7, 0, 1, 0)
+                    scriptInfo.Position = UDim2.new(0, 10, 0, 0)
+                    scriptInfo.BackgroundTransparency = 1
+                    
+                    -- Script name
+                    local scriptName = Instance.new("TextLabel", scriptInfo)
+                    scriptName.Size = UDim2.new(1, -10, 0, 25)
+                    scriptName.Position = UDim2.new(0, 0, 0, 5)
+                    scriptName.Text = scriptData.name
+                    scriptName.Font = Enum.Font.GothamBold
+                    scriptName.TextSize = 13
+                    scriptName.TextColor3 = Color3.new(1, 1, 1)
+                    scriptName.TextXAlignment = Enum.TextXAlignment.Left
+                    scriptName.BackgroundTransparency = 1
+                    
+                    -- URL preview
+                    local urlPreview = Instance.new("TextLabel", scriptInfo)
+                    urlPreview.Size = UDim2.new(1, -10, 0, 20)
+                    urlPreview.Position = UDim2.new(0, 0, 0, 30)
+                    urlPreview.Text = "📎 " .. string.sub(scriptData.url, 1, 25) .. "..."
+                    urlPreview.Font = Enum.Font.Gotham
+                    urlPreview.TextSize = 11
+                    urlPreview.TextColor3 = Color3.fromRGB(150, 150, 150)
+                    urlPreview.TextXAlignment = Enum.TextXAlignment.Left
+                    urlPreview.BackgroundTransparency = 1
+                    
+                    -- Game ID indicator
+                    local gameIdIndicator = Instance.new("TextLabel", scriptInfo)
+                    gameIdIndicator.Size = UDim2.new(1, -10, 0, 15)
+                    gameIdIndicator.Position = UDim2.new(0, 0, 0, 50)
+                    gameIdIndicator.Text = "🎮 Game ID: " .. gameData.id
+                    gameIdIndicator.Font = Enum.Font.Gotham
+                    gameIdIndicator.TextSize = 10
+                    gameIdIndicator.TextColor3 = Color3.fromRGB(79, 124, 255)
+                    gameIdIndicator.TextXAlignment = Enum.TextXAlignment.Left
+                    gameIdIndicator.BackgroundTransparency = 1
+                    
+                    -- Execute button (smaller)
+                    local executeBtn = Instance.new("TextButton", scriptCard)
+                    executeBtn.Size = UDim2.new(0, 80, 0, 25)
+                    executeBtn.Position = UDim2.new(1, -85, 0.5, -12.5)
+                    executeBtn.Text = "⚡ Execute"
+                    executeBtn.Font = Enum.Font.GothamBold
+                    executeBtn.TextSize = 11
+                    executeBtn.TextColor3 = Color3.new(1, 1, 1)
+                    executeBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+                    executeBtn.BackgroundTransparency = 0.2
+                    executeBtn.BorderSizePixel = 0
+                    Instance.new("UICorner", executeBtn).CornerRadius = UDim.new(0, 6)
+                    
+                    -- Capture script data for the closure
+                    do
+                        local capturedScriptData = scriptData
+                        local capturedGameData = gameData
+                        
+                        executeBtn.MouseButton1Click:Connect(function()
+                            executeScriptWithGameIdCheck(capturedScriptData, capturedGameData)
+                        end)
+                    end
+                end
+            end
+        end
+        
+        -- Update canvas size
+        task.wait(0.1)
+        local totalHeight = 0
+        for _, child in ipairs(currentScriptsFrame:GetChildren()) do
+            if child:IsA("Frame") then
+                totalHeight = totalHeight + child.Size.Y.Offset + scriptsLayout.Padding.Offset
+            end
+        end
+        currentScriptsFrame.CanvasSize = UDim2.new(0, 0, 0, totalHeight + 20)
+    end
+    
+    -- Function to show games list
+    local function showGamesList()
+        -- Hide scripts frame if it exists
+        if currentScriptsFrame then
+            currentScriptsFrame.Visible = false
+        end
+        
+        -- Show games list
+        scrollFrame.Visible = true
+        title.Text = "🎮 RSQ GAMES LIBRARY"
+    end
+
+    -- Function to load and display games
+    local function loadGames()
+        -- Clear existing games
+        for _, child in ipairs(scrollFrame:GetChildren()) do
+            if child:IsA("Frame") then
+                child:Destroy()
+            end
+        end
+        
+        print("[RSQ] Loading games from GamesList:", #GamesList)
+        
+        -- Check if games exist
+        if not GamesList or #GamesList == 0 then
+            print("[RSQ] No games found in GamesList")
+            local emptyLabel = Instance.new("TextLabel", scrollFrame)
+            emptyLabel.Size = UDim2.new(1, 0, 0, 80)
+            emptyLabel.Text = "📭 No games available\nCheck back later!"
+            emptyLabel.Font = Enum.Font.Gotham
+            emptyLabel.TextSize = 13
+            emptyLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+            emptyLabel.BackgroundTransparency = 1
+            emptyLabel.TextWrapped = true
+            emptyLabel.LayoutOrder = 1
+            return
+        end
+        
+        print("[RSQ] Found " .. #GamesList .. " games to display")
+        
+        -- Add games
+        for _, gameData in ipairs(GamesList) do
+            if gameData and gameData.id and gameData.name then
+                print("[RSQ] Adding game:", gameData.name, "ID:", gameData.id)
+                
+                -- Game card (smaller)
+                local gameCard = Instance.new("Frame", scrollFrame)
+                gameCard.Size = UDim2.new(1, 0, 0, 70)
+                gameCard.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+                gameCard.BackgroundTransparency = 0.3
+                gameCard.BorderSizePixel = 0
+                Instance.new("UICorner", gameCard).CornerRadius = UDim.new(0, 8)
+                
+                -- Game info (compact layout)
+                local gameInfo = Instance.new("Frame", gameCard)
+                gameInfo.Size = UDim2.new(0.7, 0, 1, 0)
+                gameInfo.Position = UDim2.new(0, 10, 0, 0)
+                gameInfo.BackgroundTransparency = 1
+                
+                -- Game name
+                local gameName = Instance.new("TextLabel", gameInfo)
+                gameName.Size = UDim2.new(1, -10, 0, 25)
+                gameName.Position = UDim2.new(0, 0, 0, 5)
+                gameName.Text = gameData.name
+                gameName.Font = Enum.Font.GothamBold
+                gameName.TextSize = 13
+                gameName.TextColor3 = Color3.new(1, 1, 1)
+                gameName.TextXAlignment = Enum.TextXAlignment.Left
+                gameName.BackgroundTransparency = 1
+                
+                -- Game ID
+                local gameId = Instance.new("TextLabel", gameInfo)
+                gameId.Size = UDim2.new(1, -10, 0, 20)
+                gameId.Position = UDim2.new(0, 0, 0, 30)
+                gameId.Text = "🆔 ID: " .. gameData.id
+                gameId.Font = Enum.Font.Gotham
+                gameId.TextSize = 11
+                gameId.TextColor3 = Color3.fromRGB(150, 150, 150)
+                gameId.TextXAlignment = Enum.TextXAlignment.Left
+                gameId.BackgroundTransparency = 1
+                
+                -- Script count
+                local scriptCount = Instance.new("TextLabel", gameInfo)
+                scriptCount.Size = UDim2.new(1, -10, 0, 15)
+                scriptCount.Position = UDim2.new(0, 0, 0, 50)
+                local scripts = gameData.scripts or {}
+                scriptCount.Text = "📜 " .. #scripts .. " script" .. (#scripts == 1 and "" or "s")
+                scriptCount.Font = Enum.Font.Gotham
+                scriptCount.TextSize = 10
+                scriptCount.TextColor3 = Color3.fromRGB(0, 200, 255)
+                scriptCount.TextXAlignment = Enum.TextXAlignment.Left
+                scriptCount.BackgroundTransparency = 1
+                
+                -- Scripts list button (smaller)
+                local scriptsBtn = Instance.new("TextButton", gameCard)
+                scriptsBtn.Size = UDim2.new(0, 80, 0, 25)
+                scriptsBtn.Position = UDim2.new(1, -85, 0.5, -12.5)
+                scriptsBtn.Text = "📜 View"
+                scriptsBtn.Font = Enum.Font.GothamBold
+                scriptsBtn.TextSize = 11
+                scriptsBtn.TextColor3 = Color3.new(1, 1, 1)
+                scriptsBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+                scriptsBtn.BackgroundTransparency = 0.2
+                scriptsBtn.BorderSizePixel = 0
+                Instance.new("UICorner", scriptsBtn).CornerRadius = UDim.new(0, 6)
+                
+                -- Capture game data in a local variable for the closure
+                do
+                    local capturedGameData = {
+                        id = gameData.id,
+                        name = gameData.name,
+                        scripts = gameData.scripts or {}
+                    }
+                    
+                    scriptsBtn.MouseButton1Click:Connect(function()
+                        print("[RSQ] View Scripts clicked for:", capturedGameData.name)
+                        print("[RSQ] Scripts count in captured data:", #capturedGameData.scripts)
+                        showGameScripts(capturedGameData)
+                    end)
+                end
+            else
+                print("[RSQ] Invalid game data:", gameData)
+            end
+        end
+        
+        -- Update canvas size
+        task.wait(0.1)
+        local totalHeight = 0
+        for _, child in ipairs(scrollFrame:GetChildren()) do
+            if child:IsA("Frame") then
+                totalHeight = totalHeight + child.Size.Y.Offset + gamesListLayout.Padding.Offset
+            end
+        end
+        scrollFrame.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
+    end
+    
+    -- Back button for scripts view
+    local backBtn = Instance.new("TextButton", titleBar)
+    backBtn.Name = "RSQ_BackBtn"
+    backBtn.Size = UDim2.new(0, 80, 0, 25)
+    backBtn.Position = UDim2.new(0, 10, 0.5, -12.5)
+    backBtn.Text = "← Back"
+    backBtn.Font = Enum.Font.GothamBold
+    backBtn.TextSize = 11
+    backBtn.TextColor3 = Color3.new(1, 1, 1)
+    backBtn.BackgroundColor3 = Color3.fromRGB(60, 65, 80)
+    backBtn.Visible = false
+    backBtn.BorderSizePixel = 0
+    Instance.new("UICorner", backBtn).CornerRadius = UDim.new(0, 6)
+    
+    backBtn.MouseButton1Click:Connect(function()
+        showGamesList()
+        backBtn.Visible = false
+    end)
+    
+    -- Function to show scripts (updated to show back button)
+    local originalShowGameScripts = showGameScripts
+    showGameScripts = function(gameData)
+        originalShowGameScripts(gameData)
+        backBtn.Visible = true
+    end
+    
+    -- Refresh button (smaller)
+    local refreshBtn = Instance.new("TextButton", mainFrame)
+    refreshBtn.Size = UDim2.new(0, 120, 0, 30)
+    refreshBtn.Position = UDim2.new(0.5, -60, 1, -35)
+    refreshBtn.Text = "🔄 Refresh All"
+    refreshBtn.Font = Enum.Font.GothamBold
+    refreshBtn.TextSize = 12
+    refreshBtn.TextColor3 = Color3.new(1, 1, 1)
+    refreshBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+    refreshBtn.BackgroundTransparency = 0.2
+    refreshBtn.BorderSizePixel = 0
+    Instance.new("UICorner", refreshBtn).CornerRadius = UDim.new(0, 6)
+    
+    refreshBtn.MouseButton1Click:Connect(function()
+        createNotify("Refreshing data and checking requirements...", Color3.fromRGB(79, 124, 255))
+        
+        -- Refresh data
+        fetchDataWithRetry()
+        
+        -- Re-check requirements
+        checkGroupMembership()
+        checkBadgeRequirements()
+        
+        -- Update status icons
+        groupStatusIcon.Text = IsInRequiredGroup and "✅" or "❌"
+        groupStatusIcon.TextColor3 = IsInRequiredGroup and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
+        
+        badgeStatusIcon.Text = HasRequiredBadge and "✅" or "❌"
+        badgeStatusIcon.TextColor3 = HasRequiredBadge and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
+        
+        -- Reload games
+        print("[RSQ] After refresh, GamesList count:", #GamesList)
+        loadGames()
+        showGamesList()
+        backBtn.Visible = false
+    end)
+    
+    -- Load games initially
+    loadGames()
+    
+    -- Animation
+    mainFrame.BackgroundTransparency = 1
+    TweenService:Create(mainFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
+end
+
+--==================================================--
+-- INITIAL KEY GUI (WITH REQUIREMENTS CHECK)
+--==================================================--
+local function showKeyGUI()
+    -- First check all requirements
+    if not IsInRequiredGroup then
+        createNotify("❌ You must join the group first!", Color3.fromRGB(255, 59, 48))
+        createGroupAndBadgeRequirementNotification()
+        return
+    end
+    
+    if not HasRequiredBadge then
+        createNotify("❌ You must join the required game first!", Color3.fromRGB(255, 59, 48))
+        createGroupAndBadgeRequirementNotification()
+        return
+    end
+    
+    -- Check if GUI is already loaded
+    if isGUILoaded() then
+        createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
+        return
+    end
+    
+    -- Prevent duplicate GUI
+    if CurrentGUI and CurrentGUI.Parent then
+        CurrentGUI:Destroy()
+        CurrentGUI = nil
+    end
+    
+    IsGuiOpen = true
+    HasShownGUIAlready = true
+    
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "RSQ_KeySystem"
+    gui.IgnoreGuiInset = true
+    gui.ResetOnSpawn = false
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    gui.Parent = CoreGui
+    CurrentGUI = gui
+
+    local card = Instance.new("Frame", gui)
+    card.Size = UDim2.new(0, 350, 0, 280) -- Taller for requirements status
+    card.Position = UDim2.new(0.5, -175, 0.5, -140)
+    card.BackgroundColor3 = Color3.fromRGB(20, 24, 36)
+    card.BackgroundTransparency = 1
+    card.BorderSizePixel = 0
+    Instance.new("UICorner", card).CornerRadius = UDim.new(0, 12)
+    
+    -- Make draggable
+    makeDraggable(card, card)
+
+    -- Title bar
+    local titleBar = Instance.new("Frame", card)
+    titleBar.Size = UDim2.new(1, 0, 0, 35)
+    titleBar.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+    titleBar.BackgroundTransparency = 0.3
+    titleBar.BorderSizePixel = 0
+    Instance.new("UICorner", titleBar).CornerRadius = UDim.new(0, 12, 0, 0)
+    
+    local title = Instance.new("TextLabel", titleBar)
+    title.Size = UDim2.new(1, -45, 1, 0)
+    title.Position = UDim2.new(0, 10, 0, 0)
+    title.Text = "🔐 RSQ Key System"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 14
+    title.TextColor3 = Color3.new(1,1,1)
+    title.BackgroundTransparency = 1
+    
+    -- Close button
+    local closeBtn = Instance.new("TextButton", titleBar)
+    closeBtn.Size = UDim2.new(0, 22, 0, 22)
+    closeBtn.Position = UDim2.new(1, -25, 0.5, -11)
+    closeBtn.Text = "✕"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 12
+    closeBtn.TextColor3 = Color3.new(1, 1, 1)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 59, 48)
+    closeBtn.BorderSizePixel = 0
+    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+    
+    closeBtn.MouseButton1Click:Connect(function()
+        IsGuiOpen = false
+        gui:Destroy()
+        CurrentGUI = nil
+    end)
+
+    -- Requirements status
+    local reqStatus = Instance.new("TextLabel", card)
+    reqStatus.Position = UDim2.new(0, 15, 0, 40)
+    reqStatus.Size = UDim2.new(1, -30, 0, 40)
+    reqStatus.TextWrapped = true
+    reqStatus.Font = Enum.Font.Gotham
+    reqStatus.TextSize = 12
+    reqStatus.TextColor3 = Color3.fromRGB(40, 200, 80)
+    reqStatus.BackgroundTransparency = 1
+    reqStatus.Text = "✅ Requirements met!\nGroup ✓ Game Badge ✓"
+
+    local input = Instance.new("TextBox", card)
+    input.PlaceholderText = "Paste your key here"
+    input.Size = UDim2.new(1, -30, 0, 35)
+    input.Position = UDim2.new(0, 15, 0, 85)
+    input.Font = Enum.Font.Gotham
+    input.TextSize = 13
+    input.TextColor3 = Color3.new(1,1,1)
+    input.BackgroundColor3 = Color3.fromRGB(14,18,30)
+    input.BorderSizePixel = 0
+    Instance.new("UICorner", input).CornerRadius = UDim.new(0,8)
+
+    local unlock = Instance.new("TextButton", card)
+    unlock.Text = "Unlock / Check Key"
+    unlock.Size = UDim2.new(1, -30, 0, 35)
+    unlock.Position = UDim2.new(0, 15, 0, 130)
+    unlock.Font = Enum.Font.GothamBold
+    unlock.TextSize = 13
+    unlock.TextColor3 = Color3.new(1,1,1)
+    unlock.BackgroundColor3 = Color3.fromRGB(0,140,255)
+    unlock.BorderSizePixel = 0
+    Instance.new("UICorner", unlock).CornerRadius = UDim.new(0,8)
+
+    local getKey = Instance.new("TextButton", card)
+    getKey.Text = "🌐 Get Key"
+    getKey.Size = UDim2.new(1, -30, 0, 30)
+    getKey.Position = UDim2.new(0, 15, 0, 175)
+    getKey.Font = Enum.Font.GothamBold
+    getKey.TextSize = 12
+    getKey.TextColor3 = Color3.new(1,1,1)
+    getKey.BackgroundColor3 = Color3.fromRGB(255,140,0)
+    getKey.BorderSizePixel = 0
+    Instance.new("UICorner", getKey).CornerRadius = UDim.new(0,8)
+
+    local status = Instance.new("TextLabel", card)
+    status.Position = UDim2.new(0, 15, 0, 215)
+    status.Size = UDim2.new(1, -30, 0, 50)
+    status.TextWrapped = true
+    status.Font = Enum.Font.Gotham
+    status.TextSize = 12
+    status.TextColor3 = Color3.fromRGB(210,210,210)
+    status.BackgroundTransparency = 1
+    status.Text = "Enter your key to continue"
+
+    TweenService:Create(card, TweenInfo.new(0.4), {BackgroundTransparency = 0}):Play()
+
+    -- Button events
+    unlock.MouseButton1Click:Connect(function()
+        local inputKey = string_trim(input.Text)
+        if inputKey == "" then return end
+
+        status.Text = "⚡ Checking..."
+        
+        -- Try local validation first for instant response
+        local ok, res = validate(inputKey, true) 
+        
+        -- If cache was empty or invalid, try one more time with a fresh fetch
+        if not ok then
+            ok, res = validate(inputKey, false)
+        end
+
+        if ok then
+            CurrentKey = inputKey
+            KeyActive = true
+            status.Text = "✅ Success! Loading..."
+            
+            sendWebhook("REDEEM", inputKey, res.exp)
+            
+            -- Save key status
+            saveKeyStatus()
+            
+            TweenService:Create(card, TweenInfo.new(0.3), {BackgroundTransparency = 1, Size = UDim2.new(0,0,0,0)}):Play()
+            task.delay(0.3, function() 
+                gui:Destroy() 
+                CurrentGUI = nil
+                IsGuiOpen = false
+                showAdvancedGamesGUI()
+            end)
+
+            -- Execute main scripts
+            for _, url in ipairs(SCRIPT_URLS) do
+                task.spawn(function()
+                    pcall(function() 
+                        local scriptContent = game:HttpGet(url)
+                        loadstring(scriptContent)() 
+                    end)
+                end)
+            end
+        else
+            status.Text = res
+            -- Clear saved key if validation fails
+            if res == "❌ Expired" or res == "❌ Invalid Key" then
+                clearKeyStatus()
+                CurrentKey = nil
+                KeyActive = false
+            end
+        end
+    end)
+
+    getKey.MouseButton1Click:Connect(function()
+        setclipboard(GET_KEY_URL)
+        status.Text = "📋 Link Copied!"
+    end)
+end
+
+--==================================================--
+-- INITIALIZE WITH REQUIREMENTS CHECK
+--==================================================--
+local function initializeWithRequirementsCheck()
+    IsInitializing = true
+    
+    -- First, show the requirements notification
+    task.wait(1) -- Wait a bit for game to load
+    
+    -- Check group membership
+    checkGroupMembership()
+    
+    -- Check badge requirements
+    checkBadgeRequirements()
+    
+    -- If requirements are not met, show notification
+    if not IsInRequiredGroup or not HasRequiredBadge then
+        createGroupAndBadgeRequirementNotification()
+        
+        -- Show merch reminder every 30 seconds
+        local reminderInterval = 30
+        task.spawn(function()
+            while not (IsInRequiredGroup and HasRequiredBadge) do
+                task.wait(reminderInterval)
+                createNotify("📢 REMINDER: Complete all requirements to access the UI!", Color3.fromRGB(255, 140, 0))
+                createMerchReminder()
+                
+                -- Re-check requirements
+                checkGroupMembership()
+                checkBadgeRequirements()
+            end
+        end)
+        
+        -- Don't proceed further until all requirements are met
+        repeat
+            task.wait(5)
+            checkGroupMembership()
+            checkBadgeRequirements()
+        until IsInRequiredGroup and HasRequiredBadge
+        
+        -- Show success message when requirements are met
+        createNotify("✅ All requirements met! Loading UI...", Color3.fromRGB(40, 200, 80))
+    end
+    
+    -- Requirements are met, proceed with initialization
+    local hasSavedKey = loadKeyStatus()
+    if hasSavedKey then
+        -- Auto-open advanced GUI if key is saved and valid
+        createNotify("Loading saved key...", Color3.fromRGB(79, 124, 255))
+        
+        -- Validate the saved key
+        local ok, res = validate(CurrentKey, false)
+        if ok then
+            createNotify("✅ Key validated successfully!", Color3.fromRGB(40, 200, 80))
+            
+            -- Auto-open the advanced games GUI
+            task.wait(1)
+            showAdvancedGamesGUI()
+            
+            -- Execute main scripts
+            for _, url in ipairs(SCRIPT_URLS) do
+                task.spawn(function()
+                    pcall(function() 
+                        local scriptContent = game:HttpGet(url)
+                        loadstring(scriptContent)() 
+                    end)
+                end)
+            end
+        else
+            createNotify("❌ Saved key is invalid: " .. res, Color3.fromRGB(255, 50, 50))
+            clearKeyStatus()
+            CurrentKey = nil
+            KeyActive = false
+            showKeyGUI()
+        end
+    else
+        -- No saved key, show initial GUI
+        showKeyGUI()
+    end
+    
+    IsInitializing = false
+end
+
+--==================================================--
+-- INITIALIZE
+--==================================================--
+-- Start initialization
+task.spawn(function()
+    initializeWithRequirementsCheck()
+end)
+
+--==================================================--
+-- SECURITY LOOPS (HIGH FREQUENCY)
+--==================================================--
+task.spawn(function()
+    while true do
+        task.wait(CHECK_INTERVAL)
+        
+        -- Periodically check group membership and badges
+        checkGroupMembership()
+        checkBadgeRequirements()
+        
+        if KeyActive and CurrentKey then
+            local ok, res = validate(CurrentKey, false)
+            if not ok then
+                -- Key expired or invalid
+                createNotify("❌ Key is no longer valid: " .. res, Color3.fromRGB(255, 50, 50))
+                KeyActive = false
+                CurrentKey = nil
+                clearKeyStatus()
+                
+                -- Close any open GUIs
+                if CurrentGUI and CurrentGUI.Parent then
+                    CurrentGUI:Destroy()
+                    CurrentGUI = nil
+                end
+                
+                IsGuiOpen = false
+                
+                -- Show key GUI again (if requirements are met)
+                if IsInRequiredGroup and HasRequiredBadge then
+                    showKeyGUI()
+                else
+                    createGroupAndBadgeRequirementNotification()
+                end
+            end
+        end
+    end
+end)
+
+-- Function to create open button (only created when requirements are met)
+local function createOpenButton()
+    -- Only create if all requirements are met
+    if not (IsInRequiredGroup and HasRequiredBadge) then
+        return
+    end
+    
+    -- Remove existing open button if it exists
+    if OpenButton and OpenButton.Parent then
+        OpenButton:Destroy()
+        OpenButton = nil
+    end
+    
+    OpenButton = Instance.new("ScreenGui")
+    OpenButton.Name = "RSQ_OpenButton"
+    OpenButton.IgnoreGuiInset = true
+    OpenButton.ResetOnSpawn = false
+    OpenButton.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    OpenButton.Parent = CoreGui
+    
+    local button = Instance.new("TextButton", OpenButton)
+    button.Name = "ToggleButton"
+    button.Size = UDim2.new(0, 60, 0, 60)
+    button.Position = UDim2.new(1, -70, 0, 20)
+    button.Text = IsGuiOpen and "🔒" or "🔓"
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 24
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.BackgroundColor3 = IsGuiOpen and Color3.fromRGB(255, 140, 0) or Color3.fromRGB(79, 124, 255)
+    button.BackgroundTransparency = 0.2
+    button.BorderSizePixel = 0
+    Instance.new("UICorner", button).CornerRadius = UDim.new(1, 0)
+    
+    -- Add shadow
+    local shadow = Instance.new("UIStroke", button)
+    shadow.Color = Color3.fromRGB(0, 0, 0)
+    shadow.Transparency = 0.5
+    shadow.Thickness = 2
+    
+    -- Function to toggle GUI
+    local function toggleGUI()
+        if IsGuiOpen then
+            -- Close all RSQ GUIs
+            local existingGuis = {}
+            
+            -- Check in CoreGui
+            for _, gui in pairs(CoreGui:GetChildren()) do
+                if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
+                    gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications") or
+                    gui.Name:find("RSQ_ScriptKeyVerification")) then
+                    table.insert(existingGuis, gui)
+                end
+            end
+            
+            -- Check in PlayerGui
+            if player.PlayerGui then
+                for _, gui in pairs(player.PlayerGui:GetChildren()) do
+                    if (gui.Name == "RSQ_KeySystem" or gui.Name == "RSQ_AdvancedGamesGUI" or 
+                        gui.Name:find("RSQ_TeleportConfirm") or gui.Name:find("RSQ_Notifications") or
+                        gui.Name:find("RSQ_ScriptKeyVerification")) then
+                        table.insert(existingGuis, gui)
+                    end
+                end
+            end
+            
+            -- Destroy all found GUIs
+            for _, gui in ipairs(existingGuis) do
+                gui:Destroy()
+            end
+            
+            IsGuiOpen = false
+            CurrentGUI = nil
+            button.Text = "🔓"
+            button.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+        else
+            -- Check if GUI is already loaded
+            if isGUILoaded() then
+                createNotify("⚠️ GUI is already open!", Color3.fromRGB(255, 140, 0))
+                return
+            end
+            
+            -- Open appropriate GUI based on key status
+            if KeyActive and CurrentKey then
+                showAdvancedGamesGUI()
+            else
+                showKeyGUI()
+            end
+            IsGuiOpen = true
+            button.Text = "🔒"
+            button.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+        end
+    end
+    
+    -- Make draggable
+    local dragging = false
+    local dragInput
+    local dragStart
+    local startPos
+    
+    local function update(input)
+        if dragging then
+            local delta = input.Position - dragStart
+            button.Position = UDim2.new(
+                startPos.X.Scale, 
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale, 
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end
+    
+    button.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or 
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = button.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    button.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or 
+           input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and (input == dragInput or input.UserInputType == Enum.UserInputType.Touch) then
+            update(input)
+        end
+    end)
+    
+    button.MouseButton1Click:Connect(function()
+        if not dragging then
+            toggleGUI()
+        end
+    end)
+    
+    -- Add hover effects
+    button.MouseEnter:Connect(function()
+        if not dragging then
+            TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 65, 0, 65)}):Play()
+        end
+    end)
+    
+    button.MouseLeave:Connect(function()
+        if not dragging then
+            TweenService:Create(button, TweenInfo.new(0.2), {Size = UDim2.new(0, 60, 0, 60)}):Play()
+        end
+    end)
+    
+    -- Animation on creation
+    button.Position = UDim2.new(1, 100, 0, 20)
+    TweenService:Create(button, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Position = UDim2.new(1, -70, 0, 20)
+    }):Play()
+    
+    return OpenButton
+end
+
+-- Create open button when all requirements are met
+task.spawn(function()
+    -- Wait until all requirements are met
+    repeat
+        task.wait(5)
+        checkGroupMembership()
+        checkBadgeRequirements()
+    until IsInRequiredGroup and HasRequiredBadge
+    
+    -- Create open button
+    createOpenButton()
+    
+    -- Add merch reminders to Advanced Games GUI
+    local function addMerchRemindersToGUI()
+        if IsGuiOpen then
+            -- Show merch reminder every 5 minutes
+            while IsGuiOpen do
+                task.wait(300) -- 5 minutes
+                if IsGuiOpen then
+                    createMerchReminder()
+                end
+            end
+        end
+    end
+    
+    -- Hook into GUI opening
+    local originalShowAdvancedGamesGUI = showAdvancedGamesGUI
+    showAdvancedGamesGUI = function(...)
+        local result = originalShowAdvancedGamesGUI(...)
+        task.spawn(addMerchRemindersToGUI)
+        return result
+    end
+end)
