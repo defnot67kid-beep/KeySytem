@@ -42,7 +42,7 @@ local REQUIRED_GAME_ID = 101277131246162
 
 -- BADGE SYSTEM
 local REQUIRED_BADGE_ID = 1440579528289462  -- Badge for joining the game
-local BADGE_CODE = "PasteThisInGameToGetBadge"  -- Code to copy to clipboard
+local BADGE_CODE = "PasteCodeInGame"  -- Code to copy to clipboard
 local BADGE_CHECK_COOLDOWN = 30             -- Seconds between badge checks
 
 -- File saving paths
