@@ -258,6 +258,7 @@ local function makeDraggable(frame, dragHandle)
 end
 
 -- Function to get keys for a specific script
+-- Function to get keys for a specific script
 local function getScriptKeys(scriptData)
     if not scriptData or not scriptData.keys or type(scriptData.keys) ~= "table" then
         return {}
@@ -1048,10 +1049,28 @@ local function showAdvancedGamesGUI()
             createNotify("⚡ Loading script: " .. scriptData.name, Color3.fromRGB(79, 124, 255))
             
             -- Try to load the script
-            local success, err = pcall(function()
-                local scriptContent = game:HttpGet(scriptData.url)
-                loadstring(scriptContent)()
-            end)
+            -- Try to load the script
+local success, err = pcall(function()
+    print("[RSQ] Loading script from URL:", scriptData.url)
+    
+    -- Download the script
+    local scriptContent = game:HttpGet(scriptData.url, true)
+    
+    if not scriptContent or scriptContent == "" then
+        error("Empty script content")
+    end
+    
+    print("[RSQ] Script loaded successfully, length:", #scriptContent)
+    
+    -- Execute the script
+    local loadedScript, compileError = loadstring(scriptContent)
+    if loadedScript then
+        loadedScript()
+        return true
+    else
+        error("Failed to compile script: " .. tostring(compileError))
+    end
+end)
             
             if success then
                 createNotify("✅ Script loaded successfully!", Color3.fromRGB(40, 200, 80))
@@ -1287,15 +1306,15 @@ local function showAdvancedGamesGUI()
                 
                 -- Script count
                 local scriptCount = Instance.new("TextLabel", gameInfo)
-                scriptCount.Size = UDim2.new(1, -10, 0, 15)
-                scriptCount.Position = UDim2.new(0, 0, 0, 50)
-                local scripts = gameData.scripts or {}
-                scriptCount.Text = "📜 " .. #scripts .. " script" .. (#scripts == 1 and "" or "s")
-                scriptCount.Font = Enum.Font.Gotham
-                scriptCount.TextSize = 10
-                scriptCount.TextColor3 = Color3.fromRGB(0, 200, 255)
-                scriptCount.TextXAlignment = Enum.TextXAlignment.Left
-                scriptCount.BackgroundTransparency = 1
+scriptCount.Size = UDim2.new(1, -10, 0, 15)
+scriptCount.Position = UDim2.new(0, 0, 0, 50)
+local scripts = gameData.scripts or {}
+scriptCount.Text = "📜 " .. #scripts .. " script" .. (#scripts == 1 and "" or "s")
+scriptCount.Font = Enum.Font.Gotham
+scriptCount.TextSize = 10
+scriptCount.TextColor3 = Color3.fromRGB(0, 200, 255)
+scriptCount.TextXAlignment = Enum.TextXAlignment.Left
+scriptCount.BackgroundTransparency = 1
                 
                 -- Scripts list button (smaller)
                 local scriptsBtn = Instance.new("TextButton", gameCard)
