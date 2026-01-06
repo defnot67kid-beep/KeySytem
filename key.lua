@@ -1,4 +1,4 @@
---==================================================--
+bro look at the html when i press unlock key with me as the userid and the key already created from html it doesnt work pls fix full script --==================================================--
 -- RSQ KEY SYSTEM — FULL LOCAL SCRIPT (ULTRA-FAST UPDATE)
 --==================================================--
 
@@ -279,6 +279,7 @@ local function getScriptKeys(scriptData)
 end
 
 -- Function to fetch data with better error handling
+-- Enhanced function to fetch data with better error handling
 local function fetchDataWithRetry()
     for attempt = 1, 3 do
         local ok, res = pcall(function()
@@ -291,6 +292,21 @@ local function fetchDataWithRetry()
             CachedData = res.record
             -- Debug logging
             print("[RSQ] Data fetched successfully")
+            
+            -- Debug: Log keys structure
+            if res.record.keys then
+                print("[RSQ] Keys data type:", type(res.record.keys))
+                local keyCount = 0
+                for k, v in pairs(res.record.keys) do
+                    keyCount = keyCount + 1
+                    if keyCount <= 5 then -- Limit output
+                        print(string.format("[RSQ] Key %d: %s -> UserID: %s", keyCount, k, tostring(v.rbx)))
+                    end
+                end
+                print("[RSQ] Total keys:", keyCount)
+            else
+                print("[RSQ] No keys field found")
+            end
             
             -- Convert games to proper table format
             GamesList = {}
@@ -327,23 +343,6 @@ local function fetchDataWithRetry()
                     end
                     
                     print("[RSQ] Loaded " .. gameCount .. " games")
-                    
-                    -- Print each game for debugging
-                    for i, game in ipairs(GamesList) do
-                        if game and game.id and game.name then
-                            local scriptCount = #(game.scripts or {})
-                            print(string.format("[RSQ] Game %d: %s (ID: %s) - %d scripts", 
-                                i, game.name, game.id, scriptCount))
-                            
-                            -- Debug script keys
-                            for j, script in ipairs(game.scripts or {}) do
-                                if script and script.keys then
-                                    print(string.format("[RSQ]   Script %d: %s - %d keys", 
-                                        j, script.name or "Unnamed", #script.keys))
-                                end
-                            end
-                        end
-                    end
                 else
                     print("[RSQ] Games is not a table, type:", type(res.record.games))
                 end
@@ -867,6 +866,9 @@ end
 --==================================================--
 -- VALIDATION LOGIC
 --==================================================--
+--==================================================--
+-- VALIDATION LOGIC - FIXED VERSION
+--==================================================--
 local function validate(keyToVerify, skipFetch)
     local data = skipFetch and CachedData or fetchData()
     if not data then return false, "Connection Error" end
@@ -889,12 +891,46 @@ local function validate(keyToVerify, skipFetch)
         end
     end
 
-    if not keyToVerify then return false, "" end
+    if not keyToVerify or keyToVerify == "" then return false, "❌ No key provided" end
 
-    local entry = data.keys and data.keys[keyToVerify]
-    if not entry then return false, "❌ Invalid Key" end
-    if tostring(entry.rbx) ~= USER_ID then return false, "❌ ID Mismatch" end
-    if entry.exp ~= "INF" and os.time() > tonumber(entry.exp) then return false, "❌ Expired" end
+    -- FIX: Check if keys data exists and is properly formatted
+    if not data.keys then
+        return false, "❌ No keys found in database"
+    end
+    
+    -- Try to find the key in the keys object
+    local entry = nil
+    local foundKey = nil
+    
+    -- Loop through all keys to find the matching one
+    for storedKey, keyData in pairs(data.keys) do
+        if storedKey == keyToVerify then
+            entry = keyData
+            foundKey = storedKey
+            break
+        end
+    end
+    
+    if not entry then 
+        -- Debug: Show what keys are available
+        print("[RSQ] Key not found. Available keys:", tostring(data.keys))
+        print("[RSQ] Looking for key:", keyToVerify)
+        return false, "❌ Invalid Key" 
+    end
+    
+    -- Check user ID match
+    if tostring(entry.rbx) ~= USER_ID then 
+        print("[RSQ] ID Mismatch. Key's user ID:", tostring(entry.rbx), "Current user ID:", USER_ID)
+        return false, "❌ ID Mismatch" 
+    end
+    
+    -- Check expiration
+    if entry.exp ~= "INF" then
+        local expTime = tonumber(entry.exp)
+        if expTime and os.time() > expTime then 
+            return false, "❌ Expired" 
+        end
+    end
 
     return true, entry
 end
@@ -1524,21 +1560,28 @@ local function showKeyGUI()
     TweenService:Create(card, TweenInfo.new(0.4), {BackgroundTransparency = 0}):Play()
 
     -- Button events
+        -- Button events
     unlock.MouseButton1Click:Connect(function()
         local inputKey = string_trim(input.Text)
         if inputKey == "" then return end
 
         status.Text = "⚡ Checking..."
         
+        -- Debug
+        print("[RSQ] Attempting to validate key:", inputKey)
+        print("[RSQ] Current User ID:", USER_ID)
+        
         -- Try local validation first for instant response
         local ok, res = validate(inputKey, true) 
         
         -- If cache was empty or invalid, try one more time with a fresh fetch
         if not ok then
+            print("[RSQ] First validation failed, trying fresh fetch...")
             ok, res = validate(inputKey, false)
         end
 
         if ok then
+            print("[RSQ] Key validation successful!")
             CurrentKey = inputKey
             KeyActive = true
             status.Text = "✅ Success! Loading..."
@@ -1567,6 +1610,7 @@ local function showKeyGUI()
             end
         else
             status.Text = res
+            print("[RSQ] Key validation failed:", res)
             -- Clear saved key if validation fails
             if res == "❌ Expired" or res == "❌ Invalid Key" then
                 clearKeyStatus()
