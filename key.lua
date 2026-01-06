@@ -1052,9 +1052,15 @@ end
 --==================================================--
 -- FIXED VALIDATION LOGIC
 --==================================================--
+--==================================================--
+-- VALIDATION LOGIC (FIXED VERSION)
+--==================================================--
 local function validate(keyToVerify, skipFetch)
     local data = skipFetch and CachedData or fetchData()
-    if not data then return false, "Connection Error" end
+    if not data then 
+        print("[VALIDATE] Failed to fetch data")
+        return false, "Connection Error" 
+    end
 
     -- Ban Logic
     if data.bans and (data.bans[USER_NAME] or data.bans[USER_ID]) then
@@ -1062,88 +1068,65 @@ local function validate(keyToVerify, skipFetch)
         return false, "Banned"
     end
 
-    -- Notifications
-    if data.notifications and data.notifications[USER_NAME] then
-        local n = data.notifications[USER_NAME]
-        if n.time > LastNotifTime then
-            LastNotifTime = n.time
-            if n.type == "DELETED" then createNotify("⚠️ Admin has revoked your key!", Color3.fromRGB(255, 50, 50))
-            elseif n.type == "RENEWED" then createNotify("✅ Key renewed by Admin!", Color3.fromRGB(50, 255, 50))
-            elseif n.type == "INFINITE" then createNotify("💎 Key is now PERMANENT!", Color3.fromRGB(0, 200, 255))
-            end
-        end
-    end
-
     if not keyToVerify then return false, "" end
 
-    print("[RSQ] Validating key:", keyToVerify)
-    
-    -- FIXED: Check if keys exist in the data
-    if not data.keys then
-        print("[RSQ] No keys found in database")
-        return false, "❌ Invalid Key (No keys in database)"
-    end
-    
-    local entry = data.keys[keyToVerify]
+    local entry = data.keys and data.keys[keyToVerify]
     if not entry then 
-        print("[RSQ] Key not found in database")
-        debugDatabaseStructure()
-        return false, "❌ Invalid Key (Not found)" 
+        print("[VALIDATE] Key not found in database")
+        return false, "❌ Invalid Key" 
     end
     
-    -- FIXED: Better UserID comparison
-    local storedUserId = tostring(entry.rbx)
-    local currentUserId = tostring(USER_ID)
+    -- FIXED: Proper UserID comparison
+    -- Convert both to strings and clean them
+    local storedUserId = tostring(entry.rbx):gsub("%s+", ""):gsub('"', ""):gsub("'", "")
+    local currentUserId = tostring(USER_ID):gsub("%s+", ""):gsub('"', ""):gsub("'", "")
     
-    -- Remove any whitespace and ensure string comparison
-    storedUserId = storedUserId:gsub("%s+", "")
-    currentUserId = currentUserId:gsub("%s+", "")
+    print("[VALIDATE] Stored UserID:", storedUserId, "Type:", type(storedUserId))
+    print("[VALIDATE] Current UserID:", currentUserId, "Type:", type(currentUserId))
+    print("[VALIDATE] Match?", storedUserId == currentUserId)
     
-    print("[RSQ] Comparing UserIDs - Stored:", storedUserId, "Current:", currentUserId)
-    print("[RSQ] Type - Stored:", type(entry.rbx), "Current:", type(USER_ID))
-    
-    -- Try multiple comparison methods
-    local match = false
-    
-    -- Method 1: Direct string comparison
-    if storedUserId == currentUserId then
-        match = true
-        print("[RSQ] UserID match (string comparison)")
-    else
-        -- Method 2: Try numeric comparison
-        local storedNum = tonumber(storedUserId)
-        local currentNum = tonumber(currentUserId)
-        
-        if storedNum and currentNum and storedNum == currentNum then
-            match = true
-            print("[RSQ] UserID match (numeric comparison)")
-        else
-            -- Method 3: Try comparing as integers
-            if math.floor(storedNum or 0) == math.floor(currentNum or 0) then
-                match = true
-                print("[RSQ] UserID match (integer comparison)")
-            end
-        end
+    if storedUserId ~= currentUserId then 
+        print("[VALIDATE] ID MISMATCH - Stored:", storedUserId, "Current:", currentUserId)
+        return false, "❌ ID Mismatch" 
     end
     
-    if not match then 
-        print("[RSQ] ID Mismatch - Stored:", storedUserId, "vs Current:", currentUserId)
-        print("[RSQ] Stored type:", type(entry.rbx), "Value:", entry.rbx)
-        print("[RSQ] Current type:", type(USER_ID), "Value:", USER_ID)
-        return false, "❌ ID Mismatch (Expected: " .. storedUserId .. ", Got: " .. currentUserId .. ")" 
-    end
-    
-    -- Check expiration
-    if entry.exp and entry.exp ~= "INF" then
-        local expirationTime = tonumber(entry.exp)
-        if expirationTime and os.time() > expirationTime then 
-            print("[RSQ] Key expired")
-            return false, "❌ Expired" 
-        end
+    if entry.exp ~= "INF" and os.time() > tonumber(entry.exp) then 
+        return false, "❌ Expired" 
     end
 
-    print("[RSQ] Key validation successful!")
+    print("[VALIDATE] ✅ Key validation SUCCESS!")
     return true, entry
+end
+
+-- Debug function to check all keys in database
+local function debugCheckAllKeys()
+    local data = fetchData()
+    if not data or not data.keys then
+        print("[DEBUG] No data or keys found")
+        return
+    end
+    
+    print("[DEBUG] ===== KEY DATABASE DUMP =====")
+    print("[DEBUG] Total keys:", #data.keys)
+    
+    for key, entry in pairs(data.keys) do
+        print("[DEBUG] Key:", key)
+        print("[DEBUG]   UserID:", entry.rbx, "Type:", type(entry.rbx))
+        print("[DEBUG]   Generated by:", entry.generatedBy)
+        print("[DEBUG]   Expires:", entry.exp)
+        print("[DEBUG]   Created:", entry.created)
+        
+        -- Check if this matches current user
+        local storedUserId = tostring(entry.rbx):gsub("%s+", ""):gsub('"', ""):gsub("'", "")
+        local currentUserId = tostring(USER_ID):gsub("%s+", ""):gsub('"', ""):gsub("'", "")
+        local matches = storedUserId == currentUserId
+        
+        print("[DEBUG]   Clean Stored ID:", storedUserId)
+        print("[DEBUG]   Clean Current ID:", currentUserId)
+        print("[DEBUG]   Matches current user?", matches)
+        print("[DEBUG] ---")
+    end
+    print("[DEBUG] =============================")
 end
 
 -- MODIFIED: Function to validate script execution (check game ID instead of keys)
@@ -1799,16 +1782,22 @@ local function showKeyGUI()
     Instance.new("UICorner", getKey).CornerRadius = UDim.new(0,8)
 
     -- Debug button (new)
+    -- Add debug button (OPTIONAL - for testing)
     local debugBtn = Instance.new("TextButton", card)
-    debugBtn.Text = "🔧 Debug Database"
-    debugBtn.Size = UDim2.new(1, -30, 0, 25)
-    debugBtn.Position = UDim2.new(0, 15, 0, 195)
+    debugBtn.Text = "🐛 Debug"
+    debugBtn.Size = UDim2.new(0, 60, 0, 20)
+    debugBtn.Position = UDim2.new(1, -70, 1, -25)
     debugBtn.Font = Enum.Font.GothamBold
     debugBtn.TextSize = 10
     debugBtn.TextColor3 = Color3.new(1,1,1)
-    debugBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    debugBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
     debugBtn.BorderSizePixel = 0
-    Instance.new("UICorner", debugBtn).CornerRadius = UDim.new(0,6)
+    Instance.new("UICorner", debugBtn).CornerRadius = UDim.new(0,4)
+    
+    debugBtn.MouseButton1Click:Connect(function()
+        debugCheckAllKeys()
+        createNotify("Debug info printed to console!", Color3.fromRGB(255, 140, 0))
+    end)
 
     local status = Instance.new("TextLabel", card)
     status.Position = UDim2.new(0, 15, 0, 230)
@@ -1823,19 +1812,23 @@ local function showKeyGUI()
     TweenService:Create(card, TweenInfo.new(0.4), {BackgroundTransparency = 0}):Play()
 
     -- Button events
+        -- Button events (FIXED VERSION)
     unlock.MouseButton1Click:Connect(function()
         local inputKey = string_trim(input.Text)
         if inputKey == "" then return end
 
         status.Text = "⚡ Checking..."
-        print("[RSQ] Validating key:", inputKey)
         
-        -- Try local validation first for instant response
+        -- Debug info
+        print("[KEY CHECK] Testing key:", inputKey)
+        debugCheckAllKeys()  -- Show all keys in database
+        
+        -- Try local validation first
         local ok, res = validate(inputKey, true) 
         
-        -- If cache was empty or invalid, try one more time with a fresh fetch
+        -- If cache was empty or invalid, try fresh fetch
         if not ok then
-            print("[RSQ] First validation failed, trying fresh fetch...")
+            print("[KEY CHECK] Local validation failed, trying fresh fetch...")
             ok, res = validate(inputKey, false)
         end
 
@@ -1868,9 +1861,9 @@ local function showKeyGUI()
             end
         else
             status.Text = res
-            print("[RSQ] Validation failed:", res)
+            print("[KEY CHECK] Validation failed:", res)
             -- Clear saved key if validation fails
-            if res:find("❌") then
+            if res == "❌ Expired" or res == "❌ Invalid Key" then
                 clearKeyStatus()
                 CurrentKey = nil
                 KeyActive = false
@@ -1888,6 +1881,35 @@ local function showKeyGUI()
         status.Text = "🔧 Debug info printed to console"
     end)
 end
+
+-- Quick test function (add anywhere)
+local function testValidation()
+    print("[TEST] Current UserID:", USER_ID)
+    print("[TEST] Current UserName:", USER_NAME)
+    
+    -- Fetch and test
+    local data = fetchData()
+    if data and data.keys then
+        print("[TEST] Found", #data.keys, "keys in database")
+        
+        -- Test each key against current user
+        for key, entry in pairs(data.keys) do
+            local storedUserId = tostring(entry.rbx):gsub("%s+", "")
+            local currentUserId = tostring(USER_ID):gsub("%s+", "")
+            
+            print(string.format("[TEST] Key: %s -> UserID: %s (Match: %s)", 
+                key:sub(1, 8).."...", 
+                storedUserId,
+                tostring(storedUserId == currentUserId)))
+        end
+    end
+end
+
+-- Call it on startup
+task.spawn(function()
+    task.wait(3)
+    testValidation()
+end)
 
 --==================================================--
 -- FIXED INITIALIZATION WITH REQUIREMENTS CHECK
