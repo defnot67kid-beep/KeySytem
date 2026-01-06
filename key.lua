@@ -1,5 +1,5 @@
 --==================================================--
--- RSQ KEY SYSTEM — FULL LOCAL SCRIPT (ULTRA-FAST UPDATE) - FIXED VERSION
+-- RSQ KEY SYSTEM — FULL LOCAL SCRIPT (ULTRA-FAST UPDATE)
 --==================================================--
 
 -- SERVICES
@@ -12,7 +12,6 @@ local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
 local MarketplaceService = game:GetService("MarketplaceService")
 local GroupService = game:GetService("GroupService")
-local BadgeService = game:GetService("BadgeService")
 local player = Players.LocalPlayer
 local USER_ID = tostring(player.UserId)
 local USER_NAME = player.Name
@@ -37,19 +36,11 @@ local CHECK_INTERVAL = 1 -- Reduced to 1 second for faster background checks
 -- GROUP REQUIREMENT
 local REQUIRED_GROUP_ID = 687789545
 local GROUP_JOIN_URL = "https://www.roblox.com/communities/687789545/CASHGRAB-EXPERIENCE#!/about"
-local REQUIRED_GAME_URL = "https://www.roblox.com/games/101277131246162/OPX-PLS-DONATE"
-local REQUIRED_GAME_ID = 101277131246162
-
--- BADGE SYSTEM
-local REQUIRED_BADGE_ID = 1440579528289462  -- Badge for joining the game
-local BADGE_CODE = "PasteCodeInGame"  -- Code to copy to clipboard
-local BADGE_CHECK_COOLDOWN = 30             -- Seconds between badge checks
+local MERCH_URL = "https://www.roblox.com/catalog/136243714765116/Sythics-Merch"
 
 -- File saving paths
 local LOCAL_FOLDER = "RSQ_KeySystem"
 local KEY_STATUS_FILE = "key_status.json"
-local GROUP_STATUS_FILE = "group_status.json"
-local BADGE_STATUS_FILE = "badge_status.json"
 
 --==================================================--
 -- STATE & PRE-FETCH
@@ -65,8 +56,6 @@ local CurrentGUI = nil -- Reference to current GUI
 local IsInitializing = true -- Track initialization state
 local HasShownGUIAlready = false -- Track if GUI has been shown before
 local IsInRequiredGroup = false -- Track if player is in required group
-local HasRequiredBadge = false -- Track if player owns the required badge
-local LastBadgeCheck = 0 -- Last time we checked badges
 
 -- Function to get data folder
 local function getDataFolder()
@@ -128,100 +117,6 @@ local function loadKeyStatus()
     return false
 end
 
--- Function to save group status
-local function saveGroupStatus()
-    local folder = getDataFolder()
-    if not folder then return end
-    
-    local status = {
-        isInGroup = IsInRequiredGroup,
-        userId = USER_ID,
-        lastCheck = os.time()
-    }
-    
-    local success, err = pcall(function()
-        writefile(folder .. "/" .. GROUP_STATUS_FILE, HttpService:JSONEncode(status))
-    end)
-    
-    if not success then
-        warn("[RSQ] Failed to save group status:", err)
-    end
-end
-
--- Function to load group status
-local function loadGroupStatus()
-    local folder = getDataFolder()
-    if not folder then return false end
-    
-    local filePath = folder .. "/" .. GROUP_STATUS_FILE
-    
-    if not isfile(filePath) then
-        return false
-    end
-    
-    local success, data = pcall(function()
-        local content = readfile(filePath)
-        return HttpService:JSONDecode(content)
-    end)
-    
-    if success and data and data.userId == USER_ID then
-        -- Check if status is recent (less than 24 hours old)
-        if data.lastCheck and (os.time() - data.lastCheck) < 86400 then
-            IsInRequiredGroup = data.isInGroup
-            return true
-        end
-    end
-    
-    return false
-end
-
--- Function to save badge status
-local function saveBadgeStatus(ownsBadge)
-    local folder = getDataFolder()
-    if not folder then return end
-    
-    local status = {
-        hasRequiredBadge = ownsBadge,
-        userId = USER_ID,
-        lastCheck = os.time()
-    }
-    
-    local success, err = pcall(function()
-        writefile(folder .. "/" .. BADGE_STATUS_FILE, HttpService:JSONEncode(status))
-    end)
-    
-    if not success then
-        warn("[RSQ] Failed to save badge status:", err)
-    end
-end
-
--- Function to load badge status
-local function loadBadgeStatus()
-    local folder = getDataFolder()
-    if not folder then return false end
-    
-    local filePath = folder .. "/" .. BADGE_STATUS_FILE
-    
-    if not isfile(filePath) then
-        return false
-    end
-    
-    local success, data = pcall(function()
-        local content = readfile(filePath)
-        return HttpService:JSONDecode(content)
-    end)
-    
-    if success and data and data.userId == USER_ID then
-        -- Check if status is recent (less than 24 hours old)
-        if data.lastCheck and (os.time() - data.lastCheck) < 86400 then
-            HasRequiredBadge = data.hasRequiredBadge
-            return HasRequiredBadge
-        end
-    end
-    
-    return false
-end
-
 -- Function to clear saved key status
 local function clearKeyStatus()
     local folder = getDataFolder()
@@ -255,12 +150,13 @@ local function checkGroupMembership()
         
         -- Method 2: Try to check group membership directly
         if not inGroup then
-            local success2, isInGroup = pcall(function()
-                return GroupService:UserInGroup(USER_ID, REQUIRED_GROUP_ID)
+            local success2 = pcall(function()
+                local isInGroup = GroupService:UserInGroup(USER_ID, REQUIRED_GROUP_ID)
+                return isInGroup
             end)
             
             if success2 then
-                inGroup = isInGroup
+                inGroup = success2
             end
         end
         
@@ -269,41 +165,10 @@ local function checkGroupMembership()
     
     if success then
         IsInRequiredGroup = result
-        saveGroupStatus()
         return result
     end
     
     return false
-end
-
--- Function to check if player owns a specific badge
-local function checkBadgeOwnership(badgeId)
-    local success, result = pcall(function()
-        return BadgeService:UserHasBadgeAsync(USER_ID, badgeId)
-    end)
-    
-    if success then
-        return result
-    end
-    
-    return false
-end
-
--- Function to check both group and badge requirements
-local function checkRequirements()
-    -- Check group membership
-    local inGroup = checkGroupMembership()
-    
-    -- Check badge ownership (only check if cooldown has passed)
-    local currentTime = os.time()
-    if currentTime - LastBadgeCheck > BADGE_CHECK_COOLDOWN then
-        HasRequiredBadge = checkBadgeOwnership(REQUIRED_BADGE_ID)
-        LastBadgeCheck = currentTime
-        
-        saveBadgeStatus(HasRequiredBadge)
-    end
-    
-    return inGroup and HasRequiredBadge
 end
 
 -- Function to check if GUI is already loaded
@@ -358,7 +223,7 @@ local function makeDraggable(frame, dragHandle)
                 if input.UserInputState == Enum.UserInputState.End then
                     dragging = false
                 end
-            end
+            end)
         end
     end)
     
@@ -390,6 +255,27 @@ local function makeDraggable(frame, dragHandle)
             end
         end)
     end
+end
+
+-- Function to get keys for a specific script
+local function getScriptKeys(scriptData)
+    if not scriptData or not scriptData.keys or type(scriptData.keys) ~= "table" then
+        return {}
+    end
+    
+    -- Filter out invalid key objects
+    local validKeys = {}
+    for _, keyData in ipairs(scriptData.keys) do
+        if keyData and type(keyData) == "table" and keyData.name and keyData.value then
+            table.insert(validKeys, {
+                name = keyData.name,
+                value = keyData.value,
+                url = keyData.url or nil
+            })
+        end
+    end
+    
+    return validKeys
 end
 
 -- Function to fetch data with better error handling
@@ -449,11 +335,11 @@ local function fetchDataWithRetry()
                             print(string.format("[RSQ] Game %d: %s (ID: %s) - %d scripts", 
                                 i, game.name, game.id, scriptCount))
                             
-                            -- Debug script urls
+                            -- Debug script keys
                             for j, script in ipairs(game.scripts or {}) do
-                                if script and script.url then
-                                    print(string.format("[RSQ]   Script %d: %s - URL: %s", 
-                                        j, script.name or "Unnamed", script.url))
+                                if script and script.keys then
+                                    print(string.format("[RSQ]   Script %d: %s - %d keys", 
+                                        j, script.name or "Unnamed", #script.keys))
                                 end
                             end
                         end
@@ -524,8 +410,7 @@ local function sendWebhook(type, key, expires)
     if type == "JOIN" then
         payload.embeds[1].title = "📥 Player Joined System"
         payload.embeds[1].color = 16776960 
-        payload.embeds[1].description = string.format("**User:** %s\n**ID:** %s\n**Game ID:** %s\n**Has Required Badge:** %s\n**Has Group:** %s", 
-            USER_NAME, USER_ID, tostring(PLACE_ID), tostring(HasRequiredBadge), tostring(IsInRequiredGroup))
+        payload.embeds[1].description = string.format("**User:** %s\n**ID:** %s\n**Game ID:** %s", USER_NAME, USER_ID, tostring(PLACE_ID))
     elseif type == "REDEEM" then
         local expireText = (expires == "INF") and "♾️ Permanent" or os.date("%Y-%m-%d %H:%M:%S", expires)
         payload.embeds[1].title = "🔑 Key Authenticated"
@@ -533,8 +418,7 @@ local function sendWebhook(type, key, expires)
         payload.embeds[1].fields = {
             { ["name"] = "Player", ["value"] = USER_NAME .. " ("..USER_ID..")", ["inline"] = true },
             { ["name"] = "Key Used", ["value"] = "```"..key.."```", ["inline"] = false },
-            { ["name"] = "Expires", ["value"] = expireText, ["inline"] = true },
-            { ["name"] = "Requirements", ["value"] = "Badge: "..tostring(HasRequiredBadge).."\nGroup: "..tostring(IsInRequiredGroup), ["inline"] = true }
+            { ["name"] = "Expires", ["value"] = expireText, ["inline"] = true }
         }
     end
 
@@ -598,27 +482,6 @@ local function createNotify(msg, color)
             notifyGui:Destroy()
         end)
     end)
-end
-
--- Debug function to check database structure
-local function debugDatabaseStructure()
-    print("[DEBUG] ===== DATABASE STRUCTURE =====")
-    if CachedData then
-        print("[DEBUG] Keys in database:")
-        if CachedData.keys then
-            for key, entry in pairs(CachedData.keys) do
-                print(string.format("[DEBUG] Key: %s", key))
-                print(string.format("[DEBUG]   UserID: %s (Type: %s)", tostring(entry.rbx), type(entry.rbx)))
-                print(string.format("[DEBUG]   Generated By: %s", entry.generatedBy or "unknown"))
-                print(string.format("[DEBUG]   Expires: %s", entry.exp or "unknown"))
-            end
-        else
-            print("[DEBUG] No keys found in database")
-        end
-    else
-        print("[DEBUG] No cached data available")
-    end
-    print("[DEBUG] ==============================")
 end
 
 -- MODIFIED: Function to show game ID check confirmation
@@ -784,16 +647,16 @@ local function showGameIdCheckConfirmation(scriptData, gameData)
 end
 
 --==================================================--
--- GROUP & GAME REQUIREMENT NOTIFICATION SYSTEM
+-- GROUP REQUIREMENT NOTIFICATION SYSTEM
 --==================================================--
-local function createGroupAndGameRequirementNotification()
-    local requirementNotification = Instance.new("ScreenGui", CoreGui)
-    requirementNotification.Name = "RSQ_GroupGameRequirement"
-    requirementNotification.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+local function createGroupRequirementNotification()
+    local groupNotification = Instance.new("ScreenGui", CoreGui)
+    groupNotification.Name = "RSQ_GroupRequirement"
+    groupNotification.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     
-    local notificationFrame = Instance.new("Frame", requirementNotification)
-    notificationFrame.Size = UDim2.new(0, 450, 0, 320) -- Increased height for game requirement
-    notificationFrame.Position = UDim2.new(0.5, -225, 0.5, -160)
+    local notificationFrame = Instance.new("Frame", groupNotification)
+    notificationFrame.Size = UDim2.new(0, 400, 0, 250)
+    notificationFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
     notificationFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
     notificationFrame.BackgroundTransparency = 0.1
     notificationFrame.BorderSizePixel = 0
@@ -820,16 +683,16 @@ local function createGroupAndGameRequirementNotification()
     local title = Instance.new("TextLabel", titleBar)
     title.Size = UDim2.new(1, -20, 1, 0)
     title.Position = UDim2.new(0, 10, 0, 0)
-    title.Text = "🚫 ACCESS DENIED - REQUIREMENTS NOT MET"
+    title.Text = "🚫 ACCESS DENIED"
     title.Font = Enum.Font.GothamBold
-    title.TextSize = 14
+    title.TextSize = 16
     title.TextColor3 = Color3.new(1, 1, 1)
     title.BackgroundTransparency = 1
     title.TextXAlignment = Enum.TextXAlignment.Left
     
     -- Main message
     local messageFrame = Instance.new("Frame", notificationFrame)
-    messageFrame.Size = UDim2.new(1, -20, 1, -180)
+    messageFrame.Size = UDim2.new(1, -20, 1, -120)
     messageFrame.Position = UDim2.new(0, 10, 0, 50)
     messageFrame.BackgroundTransparency = 1
     
@@ -843,9 +706,9 @@ local function createGroupAndGameRequirementNotification()
     warningIcon.BackgroundTransparency = 1
     
     local messageText = Instance.new("TextLabel", messageFrame)
-    messageText.Size = UDim2.new(1, -60, 0, 100)
+    messageText.Size = UDim2.new(1, -60, 0, 80)
     messageText.Position = UDim2.new(0, 60, 0, 10)
-    messageText.Text = "𝙔𝙊𝙐 𝙈𝙐𝙎𝙏 𝙅𝙊𝙄𝙉 𝙏𝙃𝙀 𝙂𝙍𝙊𝙐𝙋 𝘼𝙉𝘿 𝙋𝙇𝘼𝙔 𝙏𝙃𝙀 𝙂𝘼𝙈𝙀!\n\n𝘼𝘾𝘾𝙀𝙎𝙎 𝙂𝙐𝙄 𝙒𝙄𝙇𝙇 𝙎𝙃𝙊𝙒 𝙊𝙉𝙇𝙔 𝙒𝙃𝙀𝙉 𝘽𝙊𝙏𝙃 𝙍𝙀𝙌𝙐𝙄𝙍𝙀𝙈𝙀𝙉𝙏𝙎 𝘼𝙍𝙀 𝙈𝙀𝙏."
+    messageText.Text = "𝙔𝙊𝙐 𝙈𝙐𝙎𝙏 𝙅𝙊𝙄𝙉 𝙏𝙃𝙀 𝙂𝙍𝙊𝙐𝙋 𝘽𝙀𝙁𝙊𝙍𝙀 𝘼𝘾𝘾𝙀𝙎𝙎𝙄𝙉𝙂 𝙏𝙃𝙀 𝙐𝙄!\n\n𝙉𝙤 𝙛𝙧𝙖𝙢𝙚𝙨 𝙬𝙞𝙡𝙡 𝙨𝙝𝙤𝙬 𝙪𝙣𝙩𝙞𝙇 𝙮𝙤𝙪 𝙟𝙤𝙞𝙣 𝙩𝙝𝙚 𝙜𝙧𝙤𝙪𝙥."
     messageText.Font = Enum.Font.GothamBold
     messageText.TextSize = 14
     messageText.TextColor3 = Color3.new(1, 1, 1)
@@ -853,39 +716,21 @@ local function createGroupAndGameRequirementNotification()
     messageText.TextWrapped = true
     messageText.TextXAlignment = Enum.TextXAlignment.Left
     
-    -- Requirements status
-    local requirementsFrame = Instance.new("Frame", notificationFrame)
-    requirementsFrame.Size = UDim2.new(1, -20, 0, 60)
-    requirementsFrame.Position = UDim2.new(0, 10, 0, 160)
-    requirementsFrame.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
-    requirementsFrame.BackgroundTransparency = 0.3
-    requirementsFrame.BorderSizePixel = 0
-    Instance.new("UICorner", requirementsFrame).CornerRadius = UDim.new(0, 8)
-    
-    local groupStatus = Instance.new("TextLabel", requirementsFrame)
-    groupStatus.Size = UDim2.new(1, -20, 0, 25)
-    groupStatus.Position = UDim2.new(0, 10, 0, 5)
-    groupStatus.Text = "📋 GROUP: " .. (IsInRequiredGroup and "✅ JOINED" or "❌ NOT JOINED")
-    groupStatus.Font = Enum.Font.GothamBold
-    groupStatus.TextSize = 12
-    groupStatus.TextColor3 = IsInRequiredGroup and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
-    groupStatus.BackgroundTransparency = 1
-    groupStatus.TextXAlignment = Enum.TextXAlignment.Left
-    
-    local badgeStatus = Instance.new("TextLabel", requirementsFrame)
-    badgeStatus.Size = UDim2.new(1, -20, 0, 25)
-    badgeStatus.Position = UDim2.new(0, 10, 0, 30)
-    badgeStatus.Text = "🎮 GAME BADGE: " .. (HasRequiredBadge and "✅ OWNED" or "❌ NOT OWNED")
-    badgeStatus.Font = Enum.Font.GothamBold
-    badgeStatus.TextSize = 12
-    badgeStatus.TextColor3 = HasRequiredBadge and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
-    badgeStatus.BackgroundTransparency = 1
-    badgeStatus.TextXAlignment = Enum.TextXAlignment.Left
+    local groupInfo = Instance.new("TextLabel", messageFrame)
+    groupInfo.Size = UDim2.new(1, -20, 0, 40)
+    groupInfo.Position = UDim2.new(0, 10, 0, 100)
+    groupInfo.Text = "📋 Group ID: 687789545\n🏷️ Group Name: CASHGRAB-EXPERIENCE"
+    groupInfo.Font = Enum.Font.Gotham
+    groupInfo.TextSize = 12
+    groupInfo.TextColor3 = Color3.fromRGB(200, 200, 200)
+    groupInfo.BackgroundTransparency = 1
+    groupInfo.TextWrapped = true
+    groupInfo.TextXAlignment = Enum.TextXAlignment.Left
     
     -- Group Join Button
     local groupBtn = Instance.new("TextButton", notificationFrame)
-    groupBtn.Size = UDim2.new(0, 200, 0, 40)
-    groupBtn.Position = UDim2.new(0.5, -210, 1, -120)
+    groupBtn.Size = UDim2.new(0, 180, 0, 40)
+    groupBtn.Position = UDim2.new(0.5, -190, 1, -65)
     groupBtn.Text = "📋 Copy Group Link"
     groupBtn.Font = Enum.Font.GothamBold
     groupBtn.TextSize = 13
@@ -899,45 +744,28 @@ local function createGroupAndGameRequirementNotification()
         createNotify("✅ Group link copied to clipboard!", Color3.fromRGB(79, 124, 255))
     end)
     
-    -- Game Join Button
-    local gameBtn = Instance.new("TextButton", notificationFrame)
-    gameBtn.Size = UDim2.new(0, 200, 0, 40)
-    gameBtn.Position = UDim2.new(0.5, 10, 1, -120)
-    gameBtn.Text = "🎮 Copy Game Link"
-    gameBtn.Font = Enum.Font.GothamBold
-    gameBtn.TextSize = 13
-    gameBtn.TextColor3 = Color3.new(1, 1, 1)
-    gameBtn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
-    gameBtn.BorderSizePixel = 0
-    Instance.new("UICorner", gameBtn).CornerRadius = UDim.new(0, 8)
+    -- Merch Button
+    local merchBtn = Instance.new("TextButton", notificationFrame)
+    merchBtn.Size = UDim2.new(0, 180, 0, 40)
+    merchBtn.Position = UDim2.new(0.5, 10, 1, -65)
+    merchBtn.Text = "🛒 Buy My Merch"
+    merchBtn.Font = Enum.Font.GothamBold
+    merchBtn.TextSize = 13
+    merchBtn.TextColor3 = Color3.new(1, 1, 1)
+    merchBtn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
+    merchBtn.BorderSizePixel = 0
+    Instance.new("UICorner", merchBtn).CornerRadius = UDim.new(0, 8)
     
-    gameBtn.MouseButton1Click:Connect(function()
-        setclipboard(REQUIRED_GAME_URL)
-        createNotify("✅ Game link copied to clipboard!", Color3.fromRGB(255, 140, 0))
+    merchBtn.MouseButton1Click:Connect(function()
+        setclipboard(MERCH_URL)
+        createNotify("✅ Merch link copied to clipboard!", Color3.fromRGB(255, 140, 0))
     end)
     
-    -- Get Badge Code Button (NEW)
-    local badgeCodeBtn = Instance.new("TextButton", notificationFrame)
-    badgeCodeBtn.Size = UDim2.new(0, 200, 0, 35)
-    badgeCodeBtn.Position = UDim2.new(0.5, -100, 1, -70)
-    badgeCodeBtn.Text = "🎖️ Copy Badge Code"
-    badgeCodeBtn.Font = Enum.Font.GothamBold
-    badgeCodeBtn.TextSize = 12
-    badgeCodeBtn.TextColor3 = Color3.new(1, 1, 1)
-    badgeCodeBtn.BackgroundColor3 = Color3.fromRGB(255, 215, 0)
-    badgeCodeBtn.BorderSizePixel = 0
-    Instance.new("UICorner", badgeCodeBtn).CornerRadius = UDim.new(0, 6)
-    
-    badgeCodeBtn.MouseButton1Click:Connect(function()
-        setclipboard(BADGE_CODE)
-        createNotify("✅ Badge code copied! Paste it in the game to get the badge.", Color3.fromRGB(255, 215, 0))
-    end)
-    
-    -- Refresh Button (to check requirements)
+    -- Refresh Button (to check if they joined)
     local refreshBtn = Instance.new("TextButton", notificationFrame)
-    refreshBtn.Size = UDim2.new(0, 150, 0, 30)
-    refreshBtn.Position = UDim2.new(0.5, -75, 1, -30)
-    refreshBtn.Text = "🔄 Check Requirements"
+    refreshBtn.Size = UDim2.new(0, 120, 0, 30)
+    refreshBtn.Position = UDim2.new(0.5, -60, 1, -115)
+    refreshBtn.Text = "🔄 Check Membership"
     refreshBtn.Font = Enum.Font.GothamBold
     refreshBtn.TextSize = 12
     refreshBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -946,21 +774,11 @@ local function createGroupAndGameRequirementNotification()
     Instance.new("UICorner", refreshBtn).CornerRadius = UDim.new(0, 6)
     
     refreshBtn.MouseButton1Click:Connect(function()
-        createNotify("Checking requirements...", Color3.fromRGB(79, 124, 255))
-        
-        -- Check both requirements
-        local allRequirementsMet = checkRequirements()
-        
-        -- Update status display
-        groupStatus.Text = "📋 GROUP: " .. (IsInRequiredGroup and "✅ JOINED" or "❌ NOT JOINED")
-        groupStatus.TextColor3 = IsInRequiredGroup and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
-        
-        badgeStatus.Text = "🎮 GAME BADGE: " .. (HasRequiredBadge and "✅ OWNED" or "❌ NOT OWNED")
-        badgeStatus.TextColor3 = HasRequiredBadge and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(255, 59, 48)
-        
-        if allRequirementsMet then
-            createNotify("✅ All requirements met! Loading UI...", Color3.fromRGB(40, 200, 80))
-            requirementNotification:Destroy()
+        createNotify("Checking group membership...", Color3.fromRGB(79, 124, 255))
+        local isInGroup = checkGroupMembership()
+        if isInGroup then
+            createNotify("✅ You're in the group! GUI will now show.", Color3.fromRGB(40, 200, 80))
+            groupNotification:Destroy()
             
             -- Check for saved key and show appropriate GUI
             local hasSavedKey = loadKeyStatus()
@@ -975,10 +793,7 @@ local function createGroupAndGameRequirementNotification()
                 showKeyGUI()
             end
         else
-            local missingReqs = {}
-            if not IsInRequiredGroup then table.insert(missingReqs, "Group") end
-            if not HasRequiredBadge then table.insert(missingReqs, "Game Badge") end
-            createNotify("❌ Still missing: " .. table.concat(missingReqs, ", "), Color3.fromRGB(255, 59, 48))
+            createNotify("❌ Still not in the group. Please join first!", Color3.fromRGB(255, 59, 48))
         end
     end)
     
@@ -986,7 +801,7 @@ local function createGroupAndGameRequirementNotification()
     notificationFrame.BackgroundTransparency = 1
     TweenService:Create(notificationFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
     
-    return requirementNotification
+    return groupNotification
 end
 
 -- Function to create simple merch reminder
@@ -1050,17 +865,11 @@ local function createMerchReminder()
 end
 
 --==================================================--
--- FIXED VALIDATION LOGIC
---==================================================--
---==================================================--
--- VALIDATION LOGIC (FIXED VERSION)
+-- VALIDATION LOGIC
 --==================================================--
 local function validate(keyToVerify, skipFetch)
     local data = skipFetch and CachedData or fetchData()
-    if not data then 
-        print("[VALIDATE] Failed to fetch data")
-        return false, "Connection Error" 
-    end
+    if not data then return false, "Connection Error" end
 
     -- Ban Logic
     if data.bans and (data.bans[USER_NAME] or data.bans[USER_ID]) then
@@ -1068,65 +877,26 @@ local function validate(keyToVerify, skipFetch)
         return false, "Banned"
     end
 
+    -- Notifications
+    if data.notifications and data.notifications[USER_NAME] then
+        local n = data.notifications[USER_NAME]
+        if n.time > LastNotifTime then
+            LastNotifTime = n.time
+            if n.type == "DELETED" then createNotify("⚠️ Admin has revoked your key!", Color3.fromRGB(255, 50, 50))
+            elseif n.type == "RENEWED" then createNotify("✅ Key renewed by Admin!", Color3.fromRGB(50, 255, 50))
+            elseif n.type == "INFINITE" then createNotify("💎 Key is now PERMANENT!", Color3.fromRGB(0, 200, 255))
+            end
+        end
+    end
+
     if not keyToVerify then return false, "" end
 
     local entry = data.keys and data.keys[keyToVerify]
-    if not entry then 
-        print("[VALIDATE] Key not found in database")
-        return false, "❌ Invalid Key" 
-    end
-    
-    -- FIXED: Proper UserID comparison
-    -- Convert both to strings and clean them
-    local storedUserId = tostring(entry.rbx):gsub("%s+", ""):gsub('"', ""):gsub("'", "")
-    local currentUserId = tostring(USER_ID):gsub("%s+", ""):gsub('"', ""):gsub("'", "")
-    
-    print("[VALIDATE] Stored UserID:", storedUserId, "Type:", type(storedUserId))
-    print("[VALIDATE] Current UserID:", currentUserId, "Type:", type(currentUserId))
-    print("[VALIDATE] Match?", storedUserId == currentUserId)
-    
-    if storedUserId ~= currentUserId then 
-        print("[VALIDATE] ID MISMATCH - Stored:", storedUserId, "Current:", currentUserId)
-        return false, "❌ ID Mismatch" 
-    end
-    
-    if entry.exp ~= "INF" and os.time() > tonumber(entry.exp) then 
-        return false, "❌ Expired" 
-    end
+    if not entry then return false, "❌ Invalid Key" end
+    if tostring(entry.rbx) ~= USER_ID then return false, "❌ ID Mismatch" end
+    if entry.exp ~= "INF" and os.time() > tonumber(entry.exp) then return false, "❌ Expired" end
 
-    print("[VALIDATE] ✅ Key validation SUCCESS!")
     return true, entry
-end
-
--- Debug function to check all keys in database
-local function debugCheckAllKeys()
-    local data = fetchData()
-    if not data or not data.keys then
-        print("[DEBUG] No data or keys found")
-        return
-    end
-    
-    print("[DEBUG] ===== KEY DATABASE DUMP =====")
-    print("[DEBUG] Total keys:", #data.keys)
-    
-    for key, entry in pairs(data.keys) do
-        print("[DEBUG] Key:", key)
-        print("[DEBUG]   UserID:", entry.rbx, "Type:", type(entry.rbx))
-        print("[DEBUG]   Generated by:", entry.generatedBy)
-        print("[DEBUG]   Expires:", entry.exp)
-        print("[DEBUG]   Created:", entry.created)
-        
-        -- Check if this matches current user
-        local storedUserId = tostring(entry.rbx):gsub("%s+", ""):gsub('"', ""):gsub("'", "")
-        local currentUserId = tostring(USER_ID):gsub("%s+", ""):gsub('"', ""):gsub("'", "")
-        local matches = storedUserId == currentUserId
-        
-        print("[DEBUG]   Clean Stored ID:", storedUserId)
-        print("[DEBUG]   Clean Current ID:", currentUserId)
-        print("[DEBUG]   Matches current user?", matches)
-        print("[DEBUG] ---")
-    end
-    print("[DEBUG] =============================")
 end
 
 -- MODIFIED: Function to validate script execution (check game ID instead of keys)
@@ -1145,16 +915,13 @@ local function validateScriptExecution(scriptData, gameData)
 end
 
 --==================================================--
--- ADVANCED GAMES GUI (ONLY SHOWS AFTER VALID KEY AND REQUIREMENTS)
+-- ADVANCED GAMES GUI (ONLY SHOWS AFTER VALID KEY AND GROUP CHECK)
 --==================================================--
 local function showAdvancedGamesGUI()
-    -- First check requirements
-    if not IsInRequiredGroup or not HasRequiredBadge then
-        local missing = {}
-        if not IsInRequiredGroup then table.insert(missing, "group") end
-        if not HasRequiredBadge then table.insert(missing, "game badge") end
-        createNotify("❌ Missing requirements: " .. table.concat(missing, " and "), Color3.fromRGB(255, 59, 48))
-        createGroupAndGameRequirementNotification()
+    -- First check group membership
+    if not IsInRequiredGroup then
+        createNotify("❌ You must join the group first!", Color3.fromRGB(255, 59, 48))
+        createGroupRequirementNotification()
         return
     end
     
@@ -1282,25 +1049,8 @@ local function showAdvancedGamesGUI()
             
             -- Try to load the script
             local success, err = pcall(function()
-                print("[RSQ] Loading script from URL:", scriptData.url)
-                
-                -- Download the script
-                local scriptContent = game:HttpGet(scriptData.url, true)
-                
-                if not scriptContent or scriptContent == "" then
-                    error("Empty script content")
-                end
-                
-                print("[RSQ] Script loaded successfully, length:", #scriptContent)
-                
-                -- Execute the script
-                local loadedScript, compileError = loadstring(scriptContent)
-                if loadedScript then
-                    loadedScript()
-                    return true
-                else
-                    error("Failed to compile script: " .. tostring(compileError))
-                end
+                local scriptContent = game:HttpGet(scriptData.url)
+                loadstring(scriptContent)()
             end)
             
             if success then
@@ -1646,27 +1396,18 @@ local function showAdvancedGamesGUI()
     TweenService:Create(mainFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0.1}):Play()
 end
 
+-- REMOVED: Script Key Verification Frame (no longer needed since we're not checking keys)
+
 --==================================================--
--- INITIAL KEY GUI (WITH REQUIREMENTS CHECK) - FIXED
+-- INITIAL KEY GUI (WITH GROUP CHECK)
 --==================================================--
 local function showKeyGUI()
-    print("[DEBUG] showKeyGUI called")
-    print("[DEBUG] IsInRequiredGroup:", IsInRequiredGroup)
-    print("[DEBUG] HasRequiredBadge:", HasRequiredBadge)
-    
-    -- First check requirements
-    if not IsInRequiredGroup or not HasRequiredBadge then
-        print("[DEBUG] Requirements not met, showing requirement notification")
-        local missing = {}
-        if not IsInRequiredGroup then table.insert(missing, "group") end
-        if not HasRequiredBadge then table.insert(missing, "game badge") end
-        print("[DEBUG] Missing:", table.concat(missing, " and "))
-        createNotify("❌ Missing requirements: " .. table.concat(missing, " and "), Color3.fromRGB(255, 59, 48))
-        createGroupAndGameRequirementNotification()
+    -- First check group membership
+    if not IsInRequiredGroup then
+        createNotify("❌ You must join the group first!", Color3.fromRGB(255, 59, 48))
+        createGroupRequirementNotification()
         return
     end
-    
-    print("[DEBUG] Requirements met, proceeding with key GUI")
     
     -- Check if GUI is already loaded
     if isGUILoaded() then
@@ -1692,8 +1433,8 @@ local function showKeyGUI()
     CurrentGUI = gui
 
     local card = Instance.new("Frame", gui)
-    card.Size = UDim2.new(0, 350, 0, 280) -- Increased height for debug info
-    card.Position = UDim2.new(0.5, -175, 0.5, -140)
+    card.Size = UDim2.new(0, 350, 0, 250) -- Smaller
+    card.Position = UDim2.new(0.5, -175, 0.5, -125)
     card.BackgroundColor3 = Color3.fromRGB(20, 24, 36)
     card.BackgroundTransparency = 1
     card.BorderSizePixel = 0
@@ -1737,21 +1478,10 @@ local function showKeyGUI()
         CurrentGUI = nil
     end)
 
-    -- User info (for debugging)
-    local userInfo = Instance.new("TextLabel", card)
-    userInfo.Size = UDim2.new(1, -30, 0, 15)
-    userInfo.Position = UDim2.new(0, 15, 0, 45)
-    userInfo.Text = "User ID: " .. USER_ID
-    userInfo.Font = Enum.Font.Gotham
-    userInfo.TextSize = 10
-    userInfo.TextColor3 = Color3.fromRGB(150, 150, 150)
-    userInfo.BackgroundTransparency = 1
-    userInfo.TextXAlignment = Enum.TextXAlignment.Left
-
     local input = Instance.new("TextBox", card)
     input.PlaceholderText = "Paste your key here"
     input.Size = UDim2.new(1, -30, 0, 35)
-    input.Position = UDim2.new(0, 15, 0, 65)
+    input.Position = UDim2.new(0, 15, 0, 45)
     input.Font = Enum.Font.Gotham
     input.TextSize = 13
     input.TextColor3 = Color3.new(1,1,1)
@@ -1762,7 +1492,7 @@ local function showKeyGUI()
     local unlock = Instance.new("TextButton", card)
     unlock.Text = "Unlock / Check Key"
     unlock.Size = UDim2.new(1, -30, 0, 35)
-    unlock.Position = UDim2.new(0, 15, 0, 110)
+    unlock.Position = UDim2.new(0, 15, 0, 90)
     unlock.Font = Enum.Font.GothamBold
     unlock.TextSize = 13
     unlock.TextColor3 = Color3.new(1,1,1)
@@ -1773,7 +1503,7 @@ local function showKeyGUI()
     local getKey = Instance.new("TextButton", card)
     getKey.Text = "🌐 Get Key"
     getKey.Size = UDim2.new(1, -30, 0, 30)
-    getKey.Position = UDim2.new(0, 15, 0, 155)
+    getKey.Position = UDim2.new(0, 15, 0, 135)
     getKey.Font = Enum.Font.GothamBold
     getKey.TextSize = 12
     getKey.TextColor3 = Color3.new(1,1,1)
@@ -1781,27 +1511,9 @@ local function showKeyGUI()
     getKey.BorderSizePixel = 0
     Instance.new("UICorner", getKey).CornerRadius = UDim.new(0,8)
 
-    -- Debug button (new)
-    -- Add debug button (OPTIONAL - for testing)
-    local debugBtn = Instance.new("TextButton", card)
-    debugBtn.Text = "🐛 Debug"
-    debugBtn.Size = UDim2.new(0, 60, 0, 20)
-    debugBtn.Position = UDim2.new(1, -70, 1, -25)
-    debugBtn.Font = Enum.Font.GothamBold
-    debugBtn.TextSize = 10
-    debugBtn.TextColor3 = Color3.new(1,1,1)
-    debugBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-    debugBtn.BorderSizePixel = 0
-    Instance.new("UICorner", debugBtn).CornerRadius = UDim.new(0,4)
-    
-    debugBtn.MouseButton1Click:Connect(function()
-        debugCheckAllKeys()
-        createNotify("Debug info printed to console!", Color3.fromRGB(255, 140, 0))
-    end)
-
     local status = Instance.new("TextLabel", card)
-    status.Position = UDim2.new(0, 15, 0, 230)
-    status.Size = UDim2.new(1, -30, 0, 40)
+    status.Position = UDim2.new(0, 15, 0, 175)
+    status.Size = UDim2.new(1, -30, 0, 50)
     status.TextWrapped = true
     status.Font = Enum.Font.Gotham
     status.TextSize = 12
@@ -1812,23 +1524,17 @@ local function showKeyGUI()
     TweenService:Create(card, TweenInfo.new(0.4), {BackgroundTransparency = 0}):Play()
 
     -- Button events
-        -- Button events (FIXED VERSION)
     unlock.MouseButton1Click:Connect(function()
         local inputKey = string_trim(input.Text)
         if inputKey == "" then return end
 
         status.Text = "⚡ Checking..."
         
-        -- Debug info
-        print("[KEY CHECK] Testing key:", inputKey)
-        debugCheckAllKeys()  -- Show all keys in database
-        
-        -- Try local validation first
+        -- Try local validation first for instant response
         local ok, res = validate(inputKey, true) 
         
-        -- If cache was empty or invalid, try fresh fetch
+        -- If cache was empty or invalid, try one more time with a fresh fetch
         if not ok then
-            print("[KEY CHECK] Local validation failed, trying fresh fetch...")
             ok, res = validate(inputKey, false)
         end
 
@@ -1861,7 +1567,6 @@ local function showKeyGUI()
             end
         else
             status.Text = res
-            print("[KEY CHECK] Validation failed:", res)
             -- Clear saved key if validation fails
             if res == "❌ Expired" or res == "❌ Invalid Key" then
                 clearKeyStatus()
@@ -1875,147 +1580,55 @@ local function showKeyGUI()
         setclipboard(GET_KEY_URL)
         status.Text = "📋 Link Copied!"
     end)
-    
-    debugBtn.MouseButton1Click:Connect(function()
-        debugDatabaseStructure()
-        status.Text = "🔧 Debug info printed to console"
-    end)
 end
 
--- Quick test function (add anywhere)
-local function testValidation()
-    print("[TEST] Current UserID:", USER_ID)
-    print("[TEST] Current UserName:", USER_NAME)
-    
-    -- Fetch and test
-    local data = fetchData()
-    if data and data.keys then
-        print("[TEST] Found", #data.keys, "keys in database")
-        
-        -- Test each key against current user
-        for key, entry in pairs(data.keys) do
-            local storedUserId = tostring(entry.rbx):gsub("%s+", "")
-            local currentUserId = tostring(USER_ID):gsub("%s+", "")
-            
-            print(string.format("[TEST] Key: %s -> UserID: %s (Match: %s)", 
-                key:sub(1, 8).."...", 
-                storedUserId,
-                tostring(storedUserId == currentUserId)))
-        end
-    end
-end
-
--- Call it on startup
-task.spawn(function()
-    task.wait(3)
-    testValidation()
-end)
-
 --==================================================--
--- FIXED INITIALIZATION WITH REQUIREMENTS CHECK
+-- INITIALIZE WITH GROUP CHECK
 --==================================================--
-local function initializeWithRequirementsCheck()
-    print("[RSQ] Starting initialization with requirements check...")
+local function initializeWithGroupCheck()
     IsInitializing = true
     
-    -- First, load saved statuses
-    loadGroupStatus()
-    loadBadgeStatus()
+    -- First, show the group requirement notification
+    task.wait(1) -- Wait a bit for game to load
     
-    print("[RSQ] Initial loaded status - Group:", IsInRequiredGroup, "Badge:", HasRequiredBadge)
+    -- Check group membership
+    local isInGroup = checkGroupMembership()
     
-    -- Wait a bit for game to load
-    task.wait(2)
-    
-    -- Check all requirements (force fresh check)
-    local allRequirementsMet = checkRequirements()
-    
-    print("[RSQ] After fresh check - Group:", IsInRequiredGroup, "Badge:", HasRequiredBadge, "All met:", allRequirementsMet)
-    
-    if not allRequirementsMet then
-        print("[RSQ] Requirements NOT met, showing requirement notification...")
+    if not isInGroup then
+        -- Show group requirement notification
+        createGroupRequirementNotification()
         
-        -- Show requirements notification
-        task.wait(0.5)
-        createGroupAndGameRequirementNotification()
-        
-        -- Create open button immediately (but it will be disabled until requirements are met)
-        task.wait(1)
-        createOpenButton()
-        
-        -- Show reminder every 30 seconds
+        -- Show merch reminder every 30 seconds
         local reminderInterval = 30
         task.spawn(function()
-            while not (IsInRequiredGroup and HasRequiredBadge) do
+            while not IsInRequiredGroup do
                 task.wait(reminderInterval)
+                createNotify("📢 REMINDER: Join the group to access the UI!", Color3.fromRGB(255, 140, 0))
+                createMerchReminder()
                 
-                if not IsInRequiredGroup then
-                    createNotify("📢 REMINDER: Join the group to access the UI!", Color3.fromRGB(255, 140, 0))
-                end
-                if not HasRequiredBadge then
-                    createNotify("🎮 REMINDER: Play the required game and use code: " .. BADGE_CODE, Color3.fromRGB(255, 140, 0))
-                end
-                
-                -- Re-check requirements
-                checkRequirements()
-                print("[RSQ] Periodic check - Group:", IsInRequiredGroup, "Badge:", HasRequiredBadge)
+                -- Re-check group membership
+                checkGroupMembership()
             end
-            
-            -- Requirements are now met!
-            print("[RSQ] All requirements are NOW MET!")
-            createNotify("✅ All requirements met! Loading UI...", Color3.fromRGB(40, 200, 80))
-            
-            -- Proceed with GUI initialization
-            proceedWithGUIAfterRequirements()
         end)
         
-        -- Don't proceed further until all requirements are met
-        -- But run in background
-        task.spawn(function()
-            repeat
-                task.wait(5)
-                checkRequirements()
-                print("[RSQ] Waiting loop - Group:", IsInRequiredGroup, "Badge:", HasRequiredBadge)
-            until IsInRequiredGroup and HasRequiredBadge
-            
-            print("[RSQ] Loop finished - requirements met!")
-        end)
+        -- Don't proceed further until user is in group
+        repeat
+            task.wait(5)
+            checkGroupMembership()
+        until IsInRequiredGroup
         
-    else
-        print("[RSQ] Requirements already met on startup!")
-        -- Requirements already met, proceed with GUI
-        task.wait(1)
-        createOpenButton()
-        proceedWithGUIAfterRequirements()
+        -- Show success message when they join
+        createNotify("✅ You're now in the group! Loading UI...", Color3.fromRGB(40, 200, 80))
     end
     
-    IsInitializing = false
-    print("[RSQ] Initialization function finished (may still be waiting for requirements)")
-end
-
--- Separate function to handle GUI after requirements are met
-local function proceedWithGUIAfterRequirements()
-    print("[RSQ] proceedWithGUIAfterRequirements called")
-    
-    -- Double-check requirements
-    if not (IsInRequiredGroup and HasRequiredBadge) then
-        print("[RSQ] ERROR: Requirements not actually met!")
-        createNotify("❌ Requirements check failed!", Color3.fromRGB(255, 50, 50))
-        return
-    end
-    
-    -- All requirements met, proceed with initialization
+    -- User is in group, proceed with initialization
     local hasSavedKey = loadKeyStatus()
-    print("[RSQ] Has saved key:", hasSavedKey)
-    
     if hasSavedKey then
         -- Auto-open advanced GUI if key is saved and valid
-        createNotify("Checking saved key...", Color3.fromRGB(79, 124, 255))
+        createNotify("Loading saved key...", Color3.fromRGB(79, 124, 255))
         
         -- Validate the saved key
         local ok, res = validate(CurrentKey, false)
-        print("[RSQ] Key validation result:", ok, res)
-        
         if ok then
             createNotify("✅ Key validated successfully!", Color3.fromRGB(40, 200, 80))
             
@@ -2033,7 +1646,7 @@ local function proceedWithGUIAfterRequirements()
                 end)
             end
         else
-            createNotify("❌ Saved key is invalid: " .. (res or "unknown error"), Color3.fromRGB(255, 50, 50))
+            createNotify("❌ Saved key is invalid: " .. res, Color3.fromRGB(255, 50, 50))
             clearKeyStatus()
             CurrentKey = nil
             KeyActive = false
@@ -2041,13 +1654,67 @@ local function proceedWithGUIAfterRequirements()
         end
     else
         -- No saved key, show initial GUI
-        print("[RSQ] No saved key, showing key GUI")
         showKeyGUI()
     end
+    
+    IsInitializing = false
 end
 
--- Function to create open button (only created when requirements are met)
+--==================================================--
+-- INITIALIZE
+--==================================================--
+-- Start initialization
+task.spawn(function()
+    initializeWithGroupCheck()
+end)
+
+--==================================================--
+-- SECURITY LOOPS (HIGH FREQUENCY)
+--==================================================--
+task.spawn(function()
+    while true do
+        task.wait(CHECK_INTERVAL)
+        
+        -- Periodically check group membership
+        if IsInRequiredGroup then
+            checkGroupMembership()
+        end
+        
+        if KeyActive and CurrentKey then
+            local ok, res = validate(CurrentKey, false)
+            if not ok then
+                -- Key expired or invalid
+                createNotify("❌ Key is no longer valid: " .. res, Color3.fromRGB(255, 50, 50))
+                KeyActive = false
+                CurrentKey = nil
+                clearKeyStatus()
+                
+                -- Close any open GUIs
+                if CurrentGUI and CurrentGUI.Parent then
+                    CurrentGUI:Destroy()
+                    CurrentGUI = nil
+                end
+                
+                IsGuiOpen = false
+                
+                -- Show key GUI again (if in group)
+                if IsInRequiredGroup then
+                    showKeyGUI()
+                else
+                    createGroupRequirementNotification()
+                end
+            end
+        end
+    end
+end)
+
+-- Function to create open button (only created when in group)
 local function createOpenButton()
+    -- Only create if in group
+    if not IsInRequiredGroup then
+        return
+    end
+    
     -- Remove existing open button if it exists
     if OpenButton and OpenButton.Parent then
         OpenButton:Destroy()
@@ -2059,16 +1726,7 @@ local function createOpenButton()
     OpenButton.IgnoreGuiInset = true
     OpenButton.ResetOnSpawn = false
     OpenButton.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    
-    -- Make sure we're putting it in the right place
-    if CoreGui then
-        OpenButton.Parent = CoreGui
-    elseif player:FindFirstChild("PlayerGui") then
-        OpenButton.Parent = player.PlayerGui
-    else
-        warn("[RSQ] Could not find GUI parent")
-        return
-    end
+    OpenButton.Parent = CoreGui
     
     local button = Instance.new("TextButton", OpenButton)
     button.Name = "ToggleButton"
@@ -2217,129 +1875,35 @@ local function createOpenButton()
     return OpenButton
 end
 
---==================================================--
--- START EVERYTHING
---==================================================--
-print("[RSQ] ===== RSQ KEY SYSTEM STARTING =====")
-print("[RSQ] User ID:", USER_ID)
-print("[RSQ] User Name:", USER_NAME)
-print("[RSQ] Place ID:", PLACE_ID)
-print("[RSQ] Badge Code:", BADGE_CODE)
-
--- Start initialization
+-- Create open button when user joins group
 task.spawn(function()
-    initializeWithRequirementsCheck()
-end)
-
--- Add debug/test command
-UserInputService.InputBegan:Connect(function(input)
-    if input.KeyCode == Enum.KeyCode.F9 then
-        print("[DEBUG] ==== DEBUG INFO ====")
-        print("[DEBUG] IsInRequiredGroup:", IsInRequiredGroup)
-        print("[DEBUG] HasRequiredBadge:", HasRequiredBadge)
-        print("[DEBUG] KeyActive:", KeyActive)
-        print("[DEBUG] CurrentKey:", CurrentKey)
-        print("[DEBUG] IsGuiOpen:", IsGuiOpen)
-        print("[DEBUG] HasShownGUIAlready:", HasShownGUIAlready)
-        print("[DEBUG] IsInitializing:", IsInitializing)
-        
-        -- Force show GUI for testing
-        if IsInRequiredGroup and HasRequiredBadge then
-            if KeyActive then
-                showAdvancedGamesGUI()
-            else
-                showKeyGUI()
-            end
-        else
-            createGroupAndGameRequirementNotification()
-        end
-    end
-end)
-
---==================================================--
--- SECURITY LOOPS (HIGH FREQUENCY)
---==================================================--
-task.spawn(function()
-    while true do
-        task.wait(CHECK_INTERVAL)
-        
-        -- Periodically check requirements
-        if IsInRequiredGroup and HasRequiredBadge then
-            checkRequirements()
-        end
-        
-        if KeyActive and CurrentKey then
-            local ok, res = validate(CurrentKey, false)
-            if not ok then
-                -- Key expired or invalid
-                createNotify("❌ Key is no longer valid: " .. res, Color3.fromRGB(255, 50, 50))
-                KeyActive = false
-                CurrentKey = nil
-                clearKeyStatus()
-                
-                -- Close any open GUIs
-                if CurrentGUI and CurrentGUI.Parent then
-                    CurrentGUI:Destroy()
-                    CurrentGUI = nil
-                end
-                
-                IsGuiOpen = false
-                
-                -- Show key GUI again (if requirements are met)
-                if IsInRequiredGroup and HasRequiredBadge then
-                    showKeyGUI()
-                else
-                    createGroupAndGameRequirementNotification()
+    -- Wait until user is in group
+    repeat
+        task.wait(5)
+        checkGroupMembership()
+    until IsInRequiredGroup
+    
+    -- Create open button when in group
+    createOpenButton()
+    
+    -- Add merch reminders to Advanced Games GUI
+    local function addMerchRemindersToGUI()
+        if IsGuiOpen then
+            -- Show merch reminder every 5 minutes
+            while IsGuiOpen do
+                task.wait(300) -- 5 minutes
+                if IsGuiOpen then
+                    createMerchReminder()
                 end
             end
         end
     end
-end)
-
---==================================================--
--- AUTOMATIC BADGE CHECKING
---==================================================--
-task.spawn(function()
-    while true do
-        task.wait(60) -- Check every minute
-        
-        -- Check if user doesn't have the required badge
-        if not HasRequiredBadge then
-            -- Send reminder about badge code
-            createNotify("🎮 Need badge? Use code: " .. BADGE_CODE .. " in the game!", Color3.fromRGB(255, 215, 0))
-            
-            -- Re-check if they now have the required badge
-            HasRequiredBadge = checkBadgeOwnership(REQUIRED_BADGE_ID)
-            saveBadgeStatus(HasRequiredBadge)
-        end
-        
-        -- Update last check time
-        LastBadgeCheck = os.time()
+    
+    -- Hook into GUI opening
+    local originalShowAdvancedGamesGUI = showAdvancedGamesGUI
+    showAdvancedGamesGUI = function(...)
+        local result = originalShowAdvancedGamesGUI(...)
+        task.spawn(addMerchRemindersToGUI)
+        return result
     end
 end)
-
---==================================================--
--- MERCH REMINDERS FOR ADVANCED GUI
---==================================================--
-local function addMerchRemindersToGUI()
-    if IsGuiOpen then
-        -- Show merch reminder every 5 minutes
-        while IsGuiOpen do
-            task.wait(300) -- 5 minutes
-            if IsGuiOpen then
-                createMerchReminder()
-            end
-        end
-    end
-end
-
--- Hook into GUI opening
-local originalShowAdvancedGamesGUI = showAdvancedGamesGUI
-showAdvancedGamesGUI = function(...)
-    local result = originalShowAdvancedGamesGUI(...)
-    task.spawn(addMerchRemindersToGUI)
-    return result
-end
-
-print("[RSQ] System fully initialized. Press F9 for debug info.")
-print("[RSQ] Waiting for requirements to be met...")
