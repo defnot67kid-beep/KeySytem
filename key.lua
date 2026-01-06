@@ -255,13 +255,12 @@ local function checkGroupMembership()
         
         -- Method 2: Try to check group membership directly
         if not inGroup then
-            local success2 = pcall(function()
-                local isInGroup = GroupService:UserInGroup(USER_ID, REQUIRED_GROUP_ID)
-                return isInGroup
+            local success2, isInGroup = pcall(function()
+                return GroupService:UserInGroup(USER_ID, REQUIRED_GROUP_ID)
             end)
             
             if success2 then
-                inGroup = success2
+                inGroup = isInGroup
             end
         end
         
@@ -359,7 +358,7 @@ local function makeDraggable(frame, dragHandle)
                 if input.UserInputState == Enum.UserInputState.End then
                     dragging = false
                 end
-            end)
+            end
         end
     end)
     
@@ -389,7 +388,7 @@ local function makeDraggable(frame, dragHandle)
                     startPos.Y.Offset + delta.Y
                 )
             end
-        end
+        end)
     end
 end
 
@@ -1668,15 +1667,23 @@ end
 -- INITIAL KEY GUI (WITH REQUIREMENTS CHECK) - FIXED
 --==================================================--
 local function showKeyGUI()
+    print("[DEBUG] showKeyGUI called")
+    print("[DEBUG] IsInRequiredGroup:", IsInRequiredGroup)
+    print("[DEBUG] HasRequiredBadge:", HasRequiredBadge)
+    
     -- First check requirements
     if not IsInRequiredGroup or not HasRequiredBadge then
+        print("[DEBUG] Requirements not met, showing requirement notification")
         local missing = {}
         if not IsInRequiredGroup then table.insert(missing, "group") end
         if not HasRequiredBadge then table.insert(missing, "game badge") end
+        print("[DEBUG] Missing:", table.concat(missing, " and "))
         createNotify("❌ Missing requirements: " .. table.concat(missing, " and "), Color3.fromRGB(255, 59, 48))
         createGroupAndGameRequirementNotification()
         return
     end
+    
+    print("[DEBUG] Requirements met, proceeding with key GUI")
     
     -- Check if GUI is already loaded
     if isGUILoaded() then
@@ -1883,24 +1890,36 @@ local function showKeyGUI()
 end
 
 --==================================================--
--- INITIALIZE WITH REQUIREMENTS CHECK
+-- FIXED INITIALIZATION WITH REQUIREMENTS CHECK
 --==================================================--
 local function initializeWithRequirementsCheck()
+    print("[RSQ] Starting initialization with requirements check...")
     IsInitializing = true
     
     -- First, load saved statuses
     loadGroupStatus()
     loadBadgeStatus()
     
-    -- Wait a bit for game to load
-    task.wait(1)
+    print("[RSQ] Initial loaded status - Group:", IsInRequiredGroup, "Badge:", HasRequiredBadge)
     
-    -- Check all requirements
+    -- Wait a bit for game to load
+    task.wait(2)
+    
+    -- Check all requirements (force fresh check)
     local allRequirementsMet = checkRequirements()
     
+    print("[RSQ] After fresh check - Group:", IsInRequiredGroup, "Badge:", HasRequiredBadge, "All met:", allRequirementsMet)
+    
     if not allRequirementsMet then
+        print("[RSQ] Requirements NOT met, showing requirement notification...")
+        
         -- Show requirements notification
+        task.wait(0.5)
         createGroupAndGameRequirementNotification()
+        
+        -- Create open button immediately (but it will be disabled until requirements are met)
+        task.wait(1)
+        createOpenButton()
         
         -- Show reminder every 30 seconds
         local reminderInterval = 30
@@ -1917,27 +1936,64 @@ local function initializeWithRequirementsCheck()
                 
                 -- Re-check requirements
                 checkRequirements()
+                print("[RSQ] Periodic check - Group:", IsInRequiredGroup, "Badge:", HasRequiredBadge)
             end
+            
+            -- Requirements are now met!
+            print("[RSQ] All requirements are NOW MET!")
+            createNotify("✅ All requirements met! Loading UI...", Color3.fromRGB(40, 200, 80))
+            
+            -- Proceed with GUI initialization
+            proceedWithGUIAfterRequirements()
         end)
         
         -- Don't proceed further until all requirements are met
-        repeat
-            task.wait(5)
-            checkRequirements()
-        until IsInRequiredGroup and HasRequiredBadge
+        -- But run in background
+        task.spawn(function()
+            repeat
+                task.wait(5)
+                checkRequirements()
+                print("[RSQ] Waiting loop - Group:", IsInRequiredGroup, "Badge:", HasRequiredBadge)
+            until IsInRequiredGroup and HasRequiredBadge
+            
+            print("[RSQ] Loop finished - requirements met!")
+        end)
         
-        -- Show success message when all requirements are met
-        createNotify("✅ All requirements met! Loading UI...", Color3.fromRGB(40, 200, 80))
+    else
+        print("[RSQ] Requirements already met on startup!")
+        -- Requirements already met, proceed with GUI
+        task.wait(1)
+        createOpenButton()
+        proceedWithGUIAfterRequirements()
+    end
+    
+    IsInitializing = false
+    print("[RSQ] Initialization function finished (may still be waiting for requirements)")
+end
+
+-- Separate function to handle GUI after requirements are met
+local function proceedWithGUIAfterRequirements()
+    print("[RSQ] proceedWithGUIAfterRequirements called")
+    
+    -- Double-check requirements
+    if not (IsInRequiredGroup and HasRequiredBadge) then
+        print("[RSQ] ERROR: Requirements not actually met!")
+        createNotify("❌ Requirements check failed!", Color3.fromRGB(255, 50, 50))
+        return
     end
     
     -- All requirements met, proceed with initialization
     local hasSavedKey = loadKeyStatus()
+    print("[RSQ] Has saved key:", hasSavedKey)
+    
     if hasSavedKey then
         -- Auto-open advanced GUI if key is saved and valid
-        createNotify("Loading saved key...", Color3.fromRGB(79, 124, 255))
+        createNotify("Checking saved key...", Color3.fromRGB(79, 124, 255))
         
         -- Validate the saved key
         local ok, res = validate(CurrentKey, false)
+        print("[RSQ] Key validation result:", ok, res)
+        
         if ok then
             createNotify("✅ Key validated successfully!", Color3.fromRGB(40, 200, 80))
             
@@ -1955,7 +2011,7 @@ local function initializeWithRequirementsCheck()
                 end)
             end
         else
-            createNotify("❌ Saved key is invalid: " .. res, Color3.fromRGB(255, 50, 50))
+            createNotify("❌ Saved key is invalid: " .. (res or "unknown error"), Color3.fromRGB(255, 50, 50))
             clearKeyStatus()
             CurrentKey = nil
             KeyActive = false
@@ -1963,67 +2019,13 @@ local function initializeWithRequirementsCheck()
         end
     else
         -- No saved key, show initial GUI
+        print("[RSQ] No saved key, showing key GUI")
         showKeyGUI()
     end
-    
-    IsInitializing = false
 end
-
---==================================================--
--- INITIALIZE
---==================================================--
--- Start initialization
-task.spawn(function()
-    initializeWithRequirementsCheck()
-end)
-
---==================================================--
--- SECURITY LOOPS (HIGH FREQUENCY)
---==================================================--
-task.spawn(function()
-    while true do
-        task.wait(CHECK_INTERVAL)
-        
-        -- Periodically check requirements
-        if IsInRequiredGroup and HasRequiredBadge then
-            checkRequirements()
-        end
-        
-        if KeyActive and CurrentKey then
-            local ok, res = validate(CurrentKey, false)
-            if not ok then
-                -- Key expired or invalid
-                createNotify("❌ Key is no longer valid: " .. res, Color3.fromRGB(255, 50, 50))
-                KeyActive = false
-                CurrentKey = nil
-                clearKeyStatus()
-                
-                -- Close any open GUIs
-                if CurrentGUI and CurrentGUI.Parent then
-                    CurrentGUI:Destroy()
-                    CurrentGUI = nil
-                end
-                
-                IsGuiOpen = false
-                
-                -- Show key GUI again (if requirements are met)
-                if IsInRequiredGroup and HasRequiredBadge then
-                    showKeyGUI()
-                else
-                    createGroupAndGameRequirementNotification()
-                end
-            end
-        end
-    end
-end)
 
 -- Function to create open button (only created when requirements are met)
 local function createOpenButton()
-    -- Only create if all requirements are met
-    if not (IsInRequiredGroup and HasRequiredBadge) then
-        return
-    end
-    
     -- Remove existing open button if it exists
     if OpenButton and OpenButton.Parent then
         OpenButton:Destroy()
@@ -2035,7 +2037,16 @@ local function createOpenButton()
     OpenButton.IgnoreGuiInset = true
     OpenButton.ResetOnSpawn = false
     OpenButton.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    OpenButton.Parent = CoreGui
+    
+    -- Make sure we're putting it in the right place
+    if CoreGui then
+        OpenButton.Parent = CoreGui
+    elseif player:FindFirstChild("PlayerGui") then
+        OpenButton.Parent = player.PlayerGui
+    else
+        warn("[RSQ] Could not find GUI parent")
+        return
+    end
     
     local button = Instance.new("TextButton", OpenButton)
     button.Name = "ToggleButton"
@@ -2184,36 +2195,82 @@ local function createOpenButton()
     return OpenButton
 end
 
--- Create open button when all requirements are met
+--==================================================--
+-- START EVERYTHING
+--==================================================--
+print("[RSQ] ===== RSQ KEY SYSTEM STARTING =====")
+print("[RSQ] User ID:", USER_ID)
+print("[RSQ] User Name:", USER_NAME)
+print("[RSQ] Place ID:", PLACE_ID)
+print("[RSQ] Badge Code:", BADGE_CODE)
+
+-- Start initialization
 task.spawn(function()
-    -- Wait until all requirements are met
-    repeat
-        task.wait(5)
-        checkRequirements()
-    until IsInRequiredGroup and HasRequiredBadge
-    
-    -- Create open button when requirements are met
-    createOpenButton()
-    
-    -- Add merch reminders to Advanced Games GUI
-    local function addMerchRemindersToGUI()
-        if IsGuiOpen then
-            -- Show merch reminder every 5 minutes
-            while IsGuiOpen do
-                task.wait(300) -- 5 minutes
-                if IsGuiOpen then
-                    createMerchReminder()
+    initializeWithRequirementsCheck()
+end)
+
+-- Add debug/test command
+UserInputService.InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.F9 then
+        print("[DEBUG] ==== DEBUG INFO ====")
+        print("[DEBUG] IsInRequiredGroup:", IsInRequiredGroup)
+        print("[DEBUG] HasRequiredBadge:", HasRequiredBadge)
+        print("[DEBUG] KeyActive:", KeyActive)
+        print("[DEBUG] CurrentKey:", CurrentKey)
+        print("[DEBUG] IsGuiOpen:", IsGuiOpen)
+        print("[DEBUG] HasShownGUIAlready:", HasShownGUIAlready)
+        print("[DEBUG] IsInitializing:", IsInitializing)
+        
+        -- Force show GUI for testing
+        if IsInRequiredGroup and HasRequiredBadge then
+            if KeyActive then
+                showAdvancedGamesGUI()
+            else
+                showKeyGUI()
+            end
+        else
+            createGroupAndGameRequirementNotification()
+        end
+    end
+end)
+
+--==================================================--
+-- SECURITY LOOPS (HIGH FREQUENCY)
+--==================================================--
+task.spawn(function()
+    while true do
+        task.wait(CHECK_INTERVAL)
+        
+        -- Periodically check requirements
+        if IsInRequiredGroup and HasRequiredBadge then
+            checkRequirements()
+        end
+        
+        if KeyActive and CurrentKey then
+            local ok, res = validate(CurrentKey, false)
+            if not ok then
+                -- Key expired or invalid
+                createNotify("❌ Key is no longer valid: " .. res, Color3.fromRGB(255, 50, 50))
+                KeyActive = false
+                CurrentKey = nil
+                clearKeyStatus()
+                
+                -- Close any open GUIs
+                if CurrentGUI and CurrentGUI.Parent then
+                    CurrentGUI:Destroy()
+                    CurrentGUI = nil
+                end
+                
+                IsGuiOpen = false
+                
+                -- Show key GUI again (if requirements are met)
+                if IsInRequiredGroup and HasRequiredBadge then
+                    showKeyGUI()
+                else
+                    createGroupAndGameRequirementNotification()
                 end
             end
         end
-    end
-    
-    -- Hook into GUI opening
-    local originalShowAdvancedGamesGUI = showAdvancedGamesGUI
-    showAdvancedGamesGUI = function(...)
-        local result = originalShowAdvancedGamesGUI(...)
-        task.spawn(addMerchRemindersToGUI)
-        return result
     end
 end)
 
@@ -2239,9 +2296,28 @@ task.spawn(function()
     end
 end)
 
--- Print initialization message
-print("[RSQ] RSQ Key System Initialized")
-print("[RSQ] Requirements: Group (" .. tostring(IsInRequiredGroup) .. ") | Badge (" .. tostring(HasRequiredBadge) .. ")")
-print("[RSQ] Badge Code: " .. BADGE_CODE)
+--==================================================--
+-- MERCH REMINDERS FOR ADVANCED GUI
+--==================================================--
+local function addMerchRemindersToGUI()
+    if IsGuiOpen then
+        -- Show merch reminder every 5 minutes
+        while IsGuiOpen do
+            task.wait(300) -- 5 minutes
+            if IsGuiOpen then
+                createMerchReminder()
+            end
+        end
+    end
+end
+
+-- Hook into GUI opening
+local originalShowAdvancedGamesGUI = showAdvancedGamesGUI
+showAdvancedGamesGUI = function(...)
+    local result = originalShowAdvancedGamesGUI(...)
+    task.spawn(addMerchRemindersToGUI)
+    return result
+end
+
+print("[RSQ] System fully initialized. Press F9 for debug info.")
 print("[RSQ] Waiting for requirements to be met...")
-print("[RSQ] Current User ID: " .. USER_ID)
