@@ -207,6 +207,7 @@ local toggleButton = nil
 local currentGameData = nil
 local activeGui = nil -- Track currently open GUI
 local refreshConnection = nil -- For auto-refresh loop
+local lastRefreshTime = 0
 
 -- Notification system
 local function showNotification(message, color, duration)
@@ -393,12 +394,46 @@ local function deleteSavedKey()
     end
 end
 
+-- Teleport function - FIXED VERSION
+local function teleportToGame(gameId)
+    -- Convert to number to ensure it's valid
+    local id = tonumber(gameId)
+    if not id then
+        showNotification("❌ Invalid game ID", Color3.fromRGB(255, 60, 60))
+        return false
+    end
+    
+    showNotification("🚀 Teleporting to game " .. id .. "...", Color3.fromRGB(79, 124, 255))
+    
+    -- Try multiple teleport methods for better compatibility
+    local success, err = pcall(function()
+        -- Method 1: Standard TeleportService
+        TeleportService:Teleport(id, player)
+    end)
+    
+    if not success then
+        -- Method 2: Try with additional parameters
+        pcall(function()
+            TeleportService:Teleport(id, player, nil, nil)
+        end)
+    end
+    
+    return true
+end
+
 -- Execute script from URL
 local function executeScriptFromUrl(url, scriptName)
     showNotification("⚡ Loading " .. scriptName, Color3.fromRGB(79, 124, 255))
     
+    -- Convert GitHub blob URL to raw URL if needed
+    local rawUrl = url
+    if string.find(url, "github.com/") and string.find(url, "/blob/") then
+        rawUrl = string.gsub(url, "github.com", "raw.githubusercontent.com")
+        rawUrl = string.gsub(rawUrl, "/blob/", "/")
+    end
+    
     local success, result = pcall(function()
-        local scriptContent = game:HttpGet(url)
+        local scriptContent = game:HttpGet(rawUrl)
         local func = loadstring(scriptContent)
         if func then
             func()
@@ -527,14 +562,11 @@ local function executeScript(scriptData, gameData)
         hereCorner.CornerRadius = UDim.new(0, 8)
         hereCorner.Parent = hereBtn
         
+        -- FIXED: Teleport button now uses the improved teleport function
         teleportBtn.MouseButton1Click:Connect(function()
             gui:Destroy()
             activeGui = nil
-            local gameId = tonumber(gameData.id)
-            if gameId then
-                showNotification("🚀 Teleporting...", Color3.fromRGB(79, 124, 255))
-                TeleportService:Teleport(gameId, player)
-            end
+            teleportToGame(gameData.id)
         end)
         
         hereBtn.MouseButton1Click:Connect(function()
@@ -1510,21 +1542,22 @@ local function initialize()
     end
 end
 
--- Auto-refresh system data every 0.41 seconds
+-- Auto-refresh system data every 0.41 seconds using Heartbeat
 refreshConnection = RunService.Heartbeat:Connect(function()
-    -- Only refresh if enough time has passed (approximately 0.41 seconds)
-    -- Using Heartbeat for smoother performance
-    if not refreshConnection.lastRefresh or tick() - refreshConnection.lastRefresh >= 0.41 then
-        refreshConnection.lastRefresh = tick()
+    local currentTime = tick()
+    if currentTime - lastRefreshTime >= 0.41 then
+        lastRefreshTime = currentTime
+        
+        -- Load system data
         loadSystemData()
         
-        -- Update toggle button state
-        if toggleButton and toggleButton.Parent then
-            local oldIsInGroup = isInGroup
-            checkGroup() -- Update group status
-            
-            -- Only recreate toggle if state changed
-            if oldIsInGroup ~= isInGroup then
+        -- Update group status
+        local oldIsInGroup = isInGroup
+        checkGroup()
+        
+        -- Update toggle button if group status changed
+        if oldIsInGroup ~= isInGroup then
+            if toggleButton and toggleButton.Parent then
                 toggleButton:Destroy()
                 createToggleButton()
             end
@@ -1554,24 +1587,24 @@ refreshConnection = RunService.Heartbeat:Connect(function()
         end
         
         -- Refresh GUI if open
-        if mainGui and mainGui.Parent and currentGameData then
-            -- Refresh current view
-            local tempGameData = currentGameData
-            createMainGUI() -- This will recreate with fresh data
-            if tempGameData then
-                -- Need to find the updated game data
+        if mainGui and mainGui.Parent then
+            if currentGameData then
+                -- Find updated game data
                 if systemData and systemData.games then
                     for _, gameData in ipairs(systemData.games) do
-                        if gameData.id == tempGameData.id then
-                            showScripts(gameData)
+                        if gameData.id == currentGameData.id then
+                            -- Recreate GUI with fresh data
+                            local tempGameData = gameData
+                            createMainGUI()
+                            showScripts(tempGameData)
                             break
                         end
                     end
                 end
+            else
+                -- Just refresh games list
+                createMainGUI()
             end
-        elseif mainGui and mainGui.Parent then
-            -- Just refresh games list
-            createMainGUI()
         end
     end
 end)
