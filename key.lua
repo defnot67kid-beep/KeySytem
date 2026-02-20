@@ -25,8 +25,8 @@ function FirebaseService.new(apiKey, projectId)
 end
 
 function FirebaseService:getDocument(path)
-    -- Check cache first (5 second cache)
-    if self.cache[path] and self.cacheTime[path] and (os.time() - self.cacheTime[path]) < 5 then
+    -- Check cache first (2 second cache for faster refresh)
+    if self.cache[path] and self.cacheTime[path] and (os.time() - self.cacheTime[path]) < 2 then
         return self.cache[path]
     end
     
@@ -206,6 +206,7 @@ local mainGui = nil
 local toggleButton = nil
 local currentGameData = nil
 local activeGui = nil -- Track currently open GUI
+local refreshConnection = nil -- For auto-refresh loop
 
 -- Notification system
 local function showNotification(message, color, duration)
@@ -392,6 +393,27 @@ local function deleteSavedKey()
     end
 end
 
+-- Execute script from URL
+local function executeScriptFromUrl(url, scriptName)
+    showNotification("⚡ Loading " .. scriptName, Color3.fromRGB(79, 124, 255))
+    
+    local success, result = pcall(function()
+        local scriptContent = game:HttpGet(url)
+        local func = loadstring(scriptContent)
+        if func then
+            func()
+            return true
+        end
+        return false, "Failed to load script"
+    end)
+    
+    if success then
+        showNotification("✅ Script loaded: " .. scriptName, Color3.fromRGB(40, 200, 80))
+    else
+        showNotification("❌ Failed to load script", Color3.fromRGB(255, 60, 60))
+    end
+end
+
 -- Execute script with game ID check
 local function executeScript(scriptData, gameData)
     -- Check if game ID matches
@@ -519,34 +541,14 @@ local function executeScript(scriptData, gameData)
             gui:Destroy()
             activeGui = nil
             -- Execute anyway
-            loadScript()
+            executeScriptFromUrl(scriptData.url, scriptData.name)
         end)
         
         return
     end
     
     -- Execute script
-    local function loadScript()
-        showNotification("⚡ Loading " .. scriptData.name, Color3.fromRGB(79, 124, 255))
-        
-        local success, result = pcall(function()
-            local scriptContent = game:HttpGet(scriptData.url)
-            local func = loadstring(scriptContent)
-            if func then
-                func()
-                return true
-            end
-            return false
-        end)
-        
-        if success then
-            showNotification("✅ Script loaded: " .. scriptData.name, Color3.fromRGB(40, 200, 80))
-        else
-            showNotification("❌ Failed to load script", Color3.fromRGB(255, 60, 60))
-        end
-    end
-    
-    loadScript()
+    executeScriptFromUrl(scriptData.url, scriptData.name)
 end
 
 -- Create main GUI (smaller size)
@@ -562,7 +564,7 @@ local function createMainGUI()
     mainGui.Parent = player:FindFirstChild("PlayerGui") or game:GetService("CoreGui")
     activeGui = mainGui
     
-    -- Main frame - SMALLER SIZE (400x350 instead of 500x450)
+    -- Main frame - SMALLER SIZE (400x350)
     local main = Instance.new("Frame")
     main.Size = UDim2.new(0, 400, 0, 350)
     main.Position = UDim2.new(0.5, -200, 0.5, -175)
@@ -749,27 +751,29 @@ local function createMainGUI()
                 nameLabel.TextXAlignment = Enum.TextXAlignment.Left
                 nameLabel.Parent = scriptFrame
                 
-                local urlLabel = Instance.new("TextLabel")
-                urlLabel.Size = UDim2.new(1, -90, 0, 18)
-                urlLabel.Position = UDim2.new(0, 8, 0, 27)
-                urlLabel.BackgroundTransparency = 1
-                urlLabel.Text = string.sub(scriptData.url, 1, 25) .. "..."
-                urlLabel.TextColor3 = Color3.fromRGB(150, 200, 255)
-                urlLabel.Font = Enum.Font.Gotham
-                urlLabel.TextSize = 10
-                urlLabel.TextXAlignment = Enum.TextXAlignment.Left
-                urlLabel.Parent = scriptFrame
-                
+                -- Hide the URL - only show script name
                 local gameIdLabel = Instance.new("TextLabel")
                 gameIdLabel.Size = UDim2.new(1, -90, 0, 18)
-                gameIdLabel.Position = UDim2.new(0, 8, 0, 45)
+                gameIdLabel.Position = UDim2.new(0, 8, 0, 30)
                 gameIdLabel.BackgroundTransparency = 1
-                gameIdLabel.Text = "ID: " .. gameData.id
+                gameIdLabel.Text = "🎮 Game: " .. gameData.name
                 gameIdLabel.TextColor3 = Color3.fromRGB(79, 124, 255)
                 gameIdLabel.Font = Enum.Font.Gotham
-                gameIdLabel.TextSize = 9
+                gameIdLabel.TextSize = 10
                 gameIdLabel.TextXAlignment = Enum.TextXAlignment.Left
                 gameIdLabel.Parent = scriptFrame
+                
+                -- Script type indicator
+                local typeLabel = Instance.new("TextLabel")
+                typeLabel.Size = UDim2.new(1, -90, 0, 18)
+                typeLabel.Position = UDim2.new(0, 8, 0, 48)
+                typeLabel.BackgroundTransparency = 1
+                typeLabel.Text = "📦 " .. (scriptData.type or "Script")
+                typeLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+                typeLabel.Font = Enum.Font.Gotham
+                typeLabel.TextSize = 9
+                typeLabel.TextXAlignment = Enum.TextXAlignment.Left
+                typeLabel.Parent = scriptFrame
                 
                 local execBtn = Instance.new("TextButton")
                 execBtn.Size = UDim2.new(0, 70, 0, 28)
@@ -809,11 +813,16 @@ local function createMainGUI()
     
     backBtn.MouseButton1Click:Connect(showGames)
     
+    -- Fixed refresh button
     refreshBtn.MouseButton1Click:Connect(function()
         showNotification("🔄 Refreshing data...", Color3.fromRGB(79, 124, 255))
         loadSystemData()
+        -- Refresh both views
         showGames()
         loadGames()
+        if currentGameData then
+            showScripts(currentGameData)
+        end
     end)
     
     -- Load games
@@ -1501,13 +1510,27 @@ local function initialize()
     end
 end
 
--- Auto-refresh system data periodically
-task.spawn(function()
-    while true do
-        task.wait(30)
+-- Auto-refresh system data every 0.41 seconds
+refreshConnection = RunService.Heartbeat:Connect(function()
+    -- Only refresh if enough time has passed (approximately 0.41 seconds)
+    -- Using Heartbeat for smoother performance
+    if not refreshConnection.lastRefresh or tick() - refreshConnection.lastRefresh >= 0.41 then
+        refreshConnection.lastRefresh = tick()
         loadSystemData()
         
-        -- Check if still valid
+        -- Update toggle button state
+        if toggleButton and toggleButton.Parent then
+            local oldIsInGroup = isInGroup
+            checkGroup() -- Update group status
+            
+            -- Only recreate toggle if state changed
+            if oldIsInGroup ~= isInGroup then
+                toggleButton:Destroy()
+                createToggleButton()
+            end
+        end
+        
+        -- Check if key still valid
         if userKey and keyValid then
             local valid, _ = validateKey(userKey)
             if not valid then
@@ -1530,10 +1553,25 @@ task.spawn(function()
             end
         end
         
-        -- Update toggle button state
-        if toggleButton and toggleButton.Parent then
-            toggleButton:Destroy()
-            createToggleButton()
+        -- Refresh GUI if open
+        if mainGui and mainGui.Parent and currentGameData then
+            -- Refresh current view
+            local tempGameData = currentGameData
+            createMainGUI() -- This will recreate with fresh data
+            if tempGameData then
+                -- Need to find the updated game data
+                if systemData and systemData.games then
+                    for _, gameData in ipairs(systemData.games) do
+                        if gameData.id == tempGameData.id then
+                            showScripts(gameData)
+                            break
+                        end
+                    end
+                end
+            end
+        elseif mainGui and mainGui.Parent then
+            -- Just refresh games list
+            createMainGUI()
         end
     end
 end)
