@@ -25,8 +25,8 @@ function FirebaseService.new(apiKey, projectId)
 end
 
 function FirebaseService:getDocument(path)
-    -- Check cache first (1 second cache for faster updates)
-    if self.cache[path] and self.cacheTime[path] and (os.time() - self.cacheTime[path]) < 1 then
+    -- Check cache first (2 second cache for faster refresh)
+    if self.cache[path] and self.cacheTime[path] and (os.time() - self.cacheTime[path]) < 2 then
         return self.cache[path]
     end
     
@@ -205,10 +205,8 @@ local guiOpen = false
 local mainGui = nil
 local toggleButton = nil
 local currentGameData = nil
-local activeGui = nil
-local lastRefreshTime = 0
-local isBanned = false
-local banReason = ""
+local activeGui = nil -- Track currently open GUI
+local refreshConnection = nil -- For auto-refresh loop
 
 -- Notification system
 local function showNotification(message, color, duration)
@@ -289,34 +287,7 @@ local function checkGroup()
     end)
     
     if success then
-        local oldStatus = isInGroup
         isInGroup = result
-        
-        -- If group status changed
-        if oldStatus ~= isInGroup then
-            if isInGroup then
-                showNotification("✅ You joined the group!", Color3.fromRGB(40, 200, 80))
-                -- Close group GUI if open
-                if activeGui and activeGui.Name == "RSQ_GroupRequired" then
-                    activeGui:Destroy()
-                    activeGui = nil
-                end
-            else
-                showNotification("❌ You left the group!", Color3.fromRGB(255, 60, 60))
-                -- Force close everything and show group GUI
-                closeAllGuis()
-                keyValid = false
-                userKey = nil
-                deleteSavedKey()
-            end
-            
-            -- Update toggle button
-            if toggleButton and toggleButton.Parent then
-                toggleButton:Destroy()
-                createToggleButton()
-            end
-        end
-        
         return result
     end
     return false
@@ -330,39 +301,35 @@ local function loadSystemData()
     
     if success and data then
         systemData = data
+        print("✅ System data loaded from Firebase")
         return true
+    else
+        print("❌ Failed to load system data")
+        return false
     end
-    return false
 end
 
 -- Check if user is banned
 local function checkBan()
-    if not systemData or not systemData.bans then 
-        isBanned = false
-        return false 
-    end
+    if not systemData or not systemData.bans then return false end
     
     -- Check by username
     if systemData.bans[username] then
-        isBanned = true
-        banReason = systemData.bans[username].reason or "Banned"
-        return true, banReason
+        return true, systemData.bans[username].reason or "Banned"
     end
     
     -- Check by userId
     if systemData.bans[userId] then
-        isBanned = true
-        banReason = systemData.bans[userId].reason or "Banned"
-        return true, banReason
+        return true, systemData.bans[userId].reason or "Banned"
     end
     
-    isBanned = false
     return false
 end
 
 -- Validate key against Firebase
 local function validateKey(key)
     if not systemData or not systemData.keys then
+        showNotification("❌ System data not loaded", Color3.fromRGB(255, 60, 60))
         return false, "System error"
     end
     
@@ -426,28 +393,18 @@ local function deleteSavedKey()
     end
 end
 
--- Check if script URL is valid
-local function isScriptValid(url)
-    local success, response = pcall(function()
-        return game:HttpGet(url)
-    end)
-    return success and response and #response > 0
-end
-
 -- Execute script from URL
 local function executeScriptFromUrl(url, scriptName)
     showNotification("⚡ Loading " .. scriptName, Color3.fromRGB(79, 124, 255))
     
     local success, result = pcall(function()
         local scriptContent = game:HttpGet(url)
-        if scriptContent and #scriptContent > 0 then
-            local func = loadstring(scriptContent)
-            if func then
-                func()
-                return true
-            end
+        local func = loadstring(scriptContent)
+        if func then
+            func()
+            return true
         end
-        return false
+        return false, "Failed to load script"
     end)
     
     if success then
@@ -459,15 +416,9 @@ end
 
 -- Execute script with game ID check
 local function executeScript(scriptData, gameData)
-    -- Check if script URL is still valid
-    if not isScriptValid(scriptData.url) then
-        showNotification("❌ Script no longer exists", Color3.fromRGB(255, 60, 60))
-        return
-    end
-    
     -- Check if game ID matches
     if gameData and gameData.id and tostring(gameData.id) ~= placeId then
-        -- Show game ID mismatch UI
+        -- Show game ID mismatch UI (smaller size)
         local gui = Instance.new("ScreenGui")
         gui.Name = "RSQ_GameMismatch"
         gui.IgnoreGuiInset = true
@@ -589,16 +540,18 @@ local function executeScript(scriptData, gameData)
         hereBtn.MouseButton1Click:Connect(function()
             gui:Destroy()
             activeGui = nil
+            -- Execute anyway
             executeScriptFromUrl(scriptData.url, scriptData.name)
         end)
         
         return
     end
     
+    -- Execute script
     executeScriptFromUrl(scriptData.url, scriptData.name)
 end
 
--- Create main GUI
+-- Create main GUI (smaller size)
 local function createMainGUI()
     if mainGui and mainGui.Parent then
         mainGui:Destroy()
@@ -611,7 +564,7 @@ local function createMainGUI()
     mainGui.Parent = player:FindFirstChild("PlayerGui") or game:GetService("CoreGui")
     activeGui = mainGui
     
-    -- Main frame
+    -- Main frame - SMALLER SIZE (400x350)
     local main = Instance.new("Frame")
     main.Size = UDim2.new(0, 400, 0, 350)
     main.Position = UDim2.new(0.5, -200, 0.5, -175)
@@ -741,7 +694,6 @@ local function createMainGUI()
         backBtn.Visible = false
         title.Text = "🎮 RSQ GAMES LIBRARY"
         currentGameData = nil
-        loadGames()
     end
     
     local function showScripts(gameData)
@@ -750,11 +702,7 @@ local function createMainGUI()
         backBtn.Visible = true
         title.Text = "📜 " .. gameData.name
         currentGameData = gameData
-        loadScripts(gameData)
-    end
-    
-    -- Load scripts function
-    local function loadScripts(gameData)
+        
         -- Clear scripts container
         for _, child in ipairs(scriptsContainer:GetChildren()) do
             if child:IsA("Frame") then
@@ -780,12 +728,9 @@ local function createMainGUI()
             emptyText.Parent = emptyFrame
         else
             for i, scriptData in ipairs(scripts) do
-                -- Check if script URL is valid
-                local isValid = isScriptValid(scriptData.url)
-                
                 local scriptFrame = Instance.new("Frame")
                 scriptFrame.Size = UDim2.new(1, 0, 0, 70)
-                scriptFrame.BackgroundColor3 = isValid and Color3.fromRGB(30, 35, 50) or Color3.fromRGB(50, 35, 35)
+                scriptFrame.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
                 scriptFrame.BackgroundTransparency = 0.3
                 scriptFrame.BorderSizePixel = 0
                 scriptFrame.LayoutOrder = i
@@ -799,30 +744,32 @@ local function createMainGUI()
                 nameLabel.Size = UDim2.new(1, -90, 0, 22)
                 nameLabel.Position = UDim2.new(0, 8, 0, 5)
                 nameLabel.BackgroundTransparency = 1
-                nameLabel.Text = scriptData.name .. (isValid and "" or " (DELETED)")
-                nameLabel.TextColor3 = isValid and Color3.new(1, 1, 1) or Color3.fromRGB(255, 100, 100)
+                nameLabel.Text = scriptData.name
+                nameLabel.TextColor3 = Color3.new(1, 1, 1)
                 nameLabel.Font = Enum.Font.GothamBold
                 nameLabel.TextSize = 13
                 nameLabel.TextXAlignment = Enum.TextXAlignment.Left
                 nameLabel.Parent = scriptFrame
                 
+                -- Hide the URL - only show script name
                 local gameIdLabel = Instance.new("TextLabel")
                 gameIdLabel.Size = UDim2.new(1, -90, 0, 18)
                 gameIdLabel.Position = UDim2.new(0, 8, 0, 30)
                 gameIdLabel.BackgroundTransparency = 1
                 gameIdLabel.Text = "🎮 Game: " .. gameData.name
-                gameIdLabel.TextColor3 = isValid and Color3.fromRGB(79, 124, 255) or Color3.fromRGB(150, 150, 150)
+                gameIdLabel.TextColor3 = Color3.fromRGB(79, 124, 255)
                 gameIdLabel.Font = Enum.Font.Gotham
                 gameIdLabel.TextSize = 10
                 gameIdLabel.TextXAlignment = Enum.TextXAlignment.Left
                 gameIdLabel.Parent = scriptFrame
                 
+                -- Script type indicator
                 local typeLabel = Instance.new("TextLabel")
                 typeLabel.Size = UDim2.new(1, -90, 0, 18)
                 typeLabel.Position = UDim2.new(0, 8, 0, 48)
                 typeLabel.BackgroundTransparency = 1
-                typeLabel.Text = isValid and (scriptData.type or "Script") or "❌ Deleted"
-                typeLabel.TextColor3 = isValid and Color3.fromRGB(150, 150, 150) or Color3.fromRGB(255, 60, 60)
+                typeLabel.Text = "📦 " .. (scriptData.type or "Script")
+                typeLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
                 typeLabel.Font = Enum.Font.Gotham
                 typeLabel.TextSize = 9
                 typeLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -831,29 +778,25 @@ local function createMainGUI()
                 local execBtn = Instance.new("TextButton")
                 execBtn.Size = UDim2.new(0, 70, 0, 28)
                 execBtn.Position = UDim2.new(1, -80, 0.5, -14)
-                execBtn.BackgroundColor3 = isValid and Color3.fromRGB(40, 200, 80) or Color3.fromRGB(100, 100, 100)
-                execBtn.Text = isValid and "⚡ Run" or "❌"
+                execBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
+                execBtn.Text = "⚡ Run"
                 execBtn.TextColor3 = Color3.new(1, 1, 1)
                 execBtn.Font = Enum.Font.GothamBold
                 execBtn.TextSize = 11
                 execBtn.BorderSizePixel = 0
                 execBtn.Parent = scriptFrame
-                execBtn.Active = isValid
-                execBtn.AutoButtonColor = isValid
                 
                 local execCorner = Instance.new("UICorner")
                 execCorner.CornerRadius = UDim.new(0, 6)
                 execCorner.Parent = execBtn
                 
-                -- Only allow execution if script is valid
-                if isValid then
-                    local thisScript = scriptData
-                    local thisGame = gameData
-                    
-                    execBtn.MouseButton1Click:Connect(function()
-                        executeScript(thisScript, thisGame)
-                    end)
-                end
+                -- Store script data for click
+                local thisScript = scriptData
+                local thisGame = gameData
+                
+                execBtn.MouseButton1Click:Connect(function()
+                    executeScript(thisScript, thisGame)
+                end)
             end
         end
         
@@ -870,24 +813,19 @@ local function createMainGUI()
     
     backBtn.MouseButton1Click:Connect(showGames)
     
+    -- Fixed refresh button
     refreshBtn.MouseButton1Click:Connect(function()
         showNotification("🔄 Refreshing data...", Color3.fromRGB(79, 124, 255))
         loadSystemData()
+        -- Refresh both views
         showGames()
+        loadGames()
         if currentGameData then
-            -- Find updated game data
-            if systemData and systemData.games then
-                for _, gameData in ipairs(systemData.games) do
-                    if gameData.id == currentGameData.id then
-                        showScripts(gameData)
-                        break
-                    end
-                end
-            end
+            showScripts(currentGameData)
         end
     end)
     
-    -- Load games function
+    -- Load games
     local function loadGames()
         -- Clear games container
         for _, child in ipairs(gamesContainer:GetChildren()) do
@@ -948,23 +886,13 @@ local function createMainGUI()
             idLabel.TextXAlignment = Enum.TextXAlignment.Left
             idLabel.Parent = gameFrame
             
-            -- Count valid scripts
-            local validScripts = 0
-            local totalScripts = #(gameData.scripts or {})
-            if gameData.scripts then
-                for _, script in ipairs(gameData.scripts) do
-                    if isScriptValid(script.url) then
-                        validScripts = validScripts + 1
-                    end
-                end
-            end
-            
+            local scriptsCount = #(gameData.scripts or {})
             local scriptLabel = Instance.new("TextLabel")
             scriptLabel.Size = UDim2.new(1, -90, 0, 18)
             scriptLabel.Position = UDim2.new(0, 8, 0, 45)
             scriptLabel.BackgroundTransparency = 1
-            scriptLabel.Text = string.format("📜 %d/%d scripts valid", validScripts, totalScripts)
-            scriptLabel.TextColor3 = validScripts > 0 and Color3.fromRGB(79, 124, 255) or Color3.fromRGB(255, 60, 60)
+            scriptLabel.Text = "📜 " .. scriptsCount .. " script" .. (scriptsCount ~= 1 and "s" or "")
+            scriptLabel.TextColor3 = Color3.fromRGB(79, 124, 255)
             scriptLabel.Font = Enum.Font.Gotham
             scriptLabel.TextSize = 10
             scriptLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -973,27 +901,23 @@ local function createMainGUI()
             local viewBtn = Instance.new("TextButton")
             viewBtn.Size = UDim2.new(0, 70, 0, 28)
             viewBtn.Position = UDim2.new(1, -80, 0.5, -14)
-            viewBtn.BackgroundColor3 = validScripts > 0 and Color3.fromRGB(79, 124, 255) or Color3.fromRGB(100, 100, 100)
-            viewBtn.Text = validScripts > 0 and "📜 View" or "🚫"
+            viewBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
+            viewBtn.Text = "📜 View"
             viewBtn.TextColor3 = Color3.new(1, 1, 1)
             viewBtn.Font = Enum.Font.GothamBold
             viewBtn.TextSize = 11
             viewBtn.BorderSizePixel = 0
             viewBtn.Parent = gameFrame
-            viewBtn.Active = validScripts > 0
-            viewBtn.AutoButtonColor = validScripts > 0
             
             local viewCorner = Instance.new("UICorner")
             viewCorner.CornerRadius = UDim.new(0, 6)
             viewCorner.Parent = viewBtn
             
-            -- Only allow viewing if there are valid scripts
-            if validScripts > 0 then
-                local thisGame = gameData
-                viewBtn.MouseButton1Click:Connect(function()
-                    showScripts(thisGame)
-                end)
-            end
+            -- Store game data for click
+            local thisGame = gameData
+            viewBtn.MouseButton1Click:Connect(function()
+                showScripts(thisGame)
+            end)
         end
         
         -- Update canvas size
@@ -1041,9 +965,9 @@ local function createMainGUI()
     end)
 end
 
--- Create group requirement GUI
+-- Create group requirement GUI (smaller with X button)
 local function createGroupGUI()
-    closeAllGuis()
+    closeAllGuis() -- Close any open GUIs first
     
     local gui = Instance.new("ScreenGui")
     gui.Name = "RSQ_GroupRequired"
@@ -1213,9 +1137,9 @@ local function createGroupGUI()
     return gui
 end
 
--- Create key input GUI
+-- Create key input GUI (smaller with X button)
 local function createKeyGUI()
-    closeAllGuis()
+    closeAllGuis() -- Close any open GUIs first
     
     local gui = Instance.new("ScreenGui")
     gui.Name = "RSQ_KeyInput"
@@ -1428,7 +1352,7 @@ local function createKeyGUI()
     return gui
 end
 
--- Create floating toggle button
+-- Create floating toggle button (disabled until group joined)
 local function createToggleButton()
     if toggleButton and toggleButton.Parent then
         toggleButton:Destroy()
@@ -1445,12 +1369,7 @@ local function createToggleButton()
     button.Position = UDim2.new(1, -60, 0, 20)
     
     -- Set color and text based on state
-    if isBanned then
-        button.BackgroundColor3 = Color3.fromRGB(100, 0, 0) -- Dark red when banned
-        button.Text = "⛔"
-        button.Active = false
-        button.AutoButtonColor = false
-    elseif not isInGroup then
+    if not isInGroup then
         button.BackgroundColor3 = Color3.fromRGB(100, 100, 100) -- Gray when disabled
         button.Text = "🔒"
         button.Active = false
@@ -1507,11 +1426,6 @@ local function createToggleButton()
     end)
     
     button.MouseButton1Click:Connect(function()
-        if isBanned then
-            showNotification("⛔ You are banned: " .. banReason, Color3.fromRGB(255, 60, 60))
-            return
-        end
-        
         if not isInGroup then
             showNotification("❌ You must join the group first", Color3.fromRGB(255, 60, 60))
             if not activeGui then
@@ -1551,10 +1465,9 @@ local function initialize()
     end
     
     -- Check if banned
-    checkBan()
-    if isBanned then
-        showNotification("⛔ You are banned: " .. banReason, Color3.fromRGB(255, 60, 60))
-        createToggleButton()
+    local banned, reason = checkBan()
+    if banned then
+        showNotification("⛔ You are banned: " .. reason, Color3.fromRGB(255, 60, 60))
         return
     end
     
@@ -1590,58 +1503,34 @@ local function initialize()
     createToggleButton()
     
     -- Show appropriate GUI
-    if isBanned then
-        -- Don't show any GUI, just banned notification
-    elseif not isInGroup then
+    if not isInGroup then
         createGroupGUI()
     elseif not keyValid then
         createKeyGUI()
     end
 end
 
--- Auto-refresh every 1 second - checks everything
-task.spawn(function()
-    while true do
-        task.wait(1) -- Exactly 1 second
-        
-        -- Load fresh system data
-        local oldSystemData = systemData
+-- Auto-refresh system data every 0.41 seconds
+refreshConnection = RunService.Heartbeat:Connect(function()
+    -- Only refresh if enough time has passed (approximately 0.41 seconds)
+    -- Using Heartbeat for smoother performance
+    if not refreshConnection.lastRefresh or tick() - refreshConnection.lastRefresh >= 0.41 then
+        refreshConnection.lastRefresh = tick()
         loadSystemData()
         
-        -- Check if data changed
-        local dataChanged = (oldSystemData ~= systemData)
-        
-        -- Check ban status
-        local wasBanned = isBanned
-        checkBan()
-        if wasBanned ~= isBanned then
-            if isBanned then
-                showNotification("⛔ You have been banned: " .. banReason, Color3.fromRGB(255, 60, 60))
-                closeAllGuis()
-                keyValid = false
-                userKey = nil
-            end
-            -- Update toggle button
-            if toggleButton and toggleButton.Parent then
+        -- Update toggle button state
+        if toggleButton and toggleButton.Parent then
+            local oldIsInGroup = isInGroup
+            checkGroup() -- Update group status
+            
+            -- Only recreate toggle if state changed
+            if oldIsInGroup ~= isInGroup then
                 toggleButton:Destroy()
                 createToggleButton()
             end
         end
         
-        -- Skip other checks if banned
-        if isBanned then
-            -- Keep showing banned state
-            if activeGui and activeGui.Name ~= "RSQ_Banned" then
-                closeAllGuis()
-            end
-            goto continue
-        end
-        
-        -- Check group status
-        local oldGroupStatus = isInGroup
-        checkGroup()
-        
-        -- Check key validity
+        -- Check if key still valid
         if userKey and keyValid then
             local valid, _ = validateKey(userKey)
             if not valid then
@@ -1649,67 +1538,41 @@ task.spawn(function()
                 userKey = nil
                 deleteSavedKey()
                 showNotification("❌ Key no longer valid", Color3.fromRGB(255, 60, 60))
+                
+                -- Close any open GUIs
                 closeAllGuis()
+                
+                -- Update toggle button
+                if toggleButton and toggleButton.Parent then
+                    toggleButton:Destroy()
+                    createToggleButton()
+                end
+                
+                -- Show key GUI
+                createKeyGUI()
             end
         end
         
-        -- Update toggle button if any state changed
-        if oldGroupStatus ~= isInGroup or dataChanged or (userKey and not keyValid) then
-            if toggleButton and toggleButton.Parent then
-                toggleButton:Destroy()
-                createToggleButton()
-            end
-        end
-        
-        -- Handle state transitions
-        if not isInGroup and not (activeGui and activeGui.Name == "RSQ_GroupRequired") then
-            closeAllGuis()
-            createGroupGUI()
-        elseif isInGroup and not keyValid and not (activeGui and activeGui.Name == "RSQ_KeyInput") then
-            closeAllGuis()
-            createKeyGUI()
-        elseif isInGroup and keyValid and guiOpen and mainGui and mainGui.Parent then
-            -- Refresh main GUI if data changed and it's open
-            if dataChanged then
-                local wasInScripts = currentGameData ~= nil
-                local oldGameData = currentGameData
-                createMainGUI()
-                if wasInScripts and oldGameData then
-                    -- Try to find updated game data
-                    if systemData and systemData.games then
-                        for _, gameData in ipairs(systemData.games) do
-                            if gameData.id == oldGameData.id then
-                                -- Need to wait for GUI to be created
-                                task.wait(0.1)
-                                if mainGui and mainGui.Parent then
-                                    -- Find scripts container and show scripts
-                                    for _, child in ipairs(mainGui:GetDescendants()) do
-                                        if child.Name == "scriptsContainer" and child:IsA("ScrollingFrame") then
-                                            child.Visible = true
-                                            -- Find back button
-                                            for _, btn in ipairs(mainGui:GetDescendants()) do
-                                                if btn.Name == "backBtn" and btn:IsA("TextButton") then
-                                                    btn.Visible = true
-                                                    break
-                                                end
-                                            end
-                                            -- Load scripts
-                                            task.spawn(function()
-                                                loadScripts(gameData)
-                                            end)
-                                            break
-                                        end
-                                    end
-                                end
-                                break
-                            end
+        -- Refresh GUI if open
+        if mainGui and mainGui.Parent and currentGameData then
+            -- Refresh current view
+            local tempGameData = currentGameData
+            createMainGUI() -- This will recreate with fresh data
+            if tempGameData then
+                -- Need to find the updated game data
+                if systemData and systemData.games then
+                    for _, gameData in ipairs(systemData.games) do
+                        if gameData.id == tempGameData.id then
+                            showScripts(gameData)
+                            break
                         end
                     end
                 end
             end
+        elseif mainGui and mainGui.Parent then
+            -- Just refresh games list
+            createMainGUI()
         end
-        
-        ::continue::
     end
 end)
 
