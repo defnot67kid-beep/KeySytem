@@ -205,6 +205,7 @@ local guiOpen = false
 local mainGui = nil
 local toggleButton = nil
 local currentGameData = nil
+local activeGui = nil -- Track currently open GUI
 
 -- Notification system
 local function showNotification(message, color, duration)
@@ -218,7 +219,7 @@ local function showNotification(message, color, duration)
     notification.Parent = player:FindFirstChild("PlayerGui") or game:GetService("CoreGui")
     
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 300, 0, 50)
+    frame.Size = UDim2.new(0, 280, 0, 45)
     frame.Position = UDim2.new(1, 20, 0, 20)
     frame.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
     frame.BackgroundTransparency = 0.1
@@ -252,7 +253,7 @@ local function showNotification(message, color, duration)
     
     -- Slide in animation
     frame.Position = UDim2.new(1, 20, 0, 20)
-    TweenService:Create(frame, TweenInfo.new(0.3), {Position = UDim2.new(1, -310, 0, 20)}):Play()
+    TweenService:Create(frame, TweenInfo.new(0.3), {Position = UDim2.new(1, -290, 0, 20)}):Play()
     
     -- Auto remove
     task.delay(duration, function()
@@ -263,6 +264,19 @@ local function showNotification(message, color, duration)
             end)
         end
     end)
+end
+
+-- Close all open GUIs function
+local function closeAllGuis()
+    if activeGui and activeGui.Parent then
+        activeGui:Destroy()
+        activeGui = nil
+    end
+    if mainGui and mainGui.Parent then
+        mainGui:Destroy()
+        mainGui = nil
+        guiOpen = false
+    end
 end
 
 -- Group check function
@@ -382,16 +396,17 @@ end
 local function executeScript(scriptData, gameData)
     -- Check if game ID matches
     if gameData and gameData.id and tostring(gameData.id) ~= placeId then
-        -- Show game ID mismatch UI
+        -- Show game ID mismatch UI (smaller size)
         local gui = Instance.new("ScreenGui")
         gui.Name = "RSQ_GameMismatch"
         gui.IgnoreGuiInset = true
         gui.ResetOnSpawn = false
         gui.Parent = player:FindFirstChild("PlayerGui") or game:GetService("CoreGui")
+        activeGui = gui
         
         local main = Instance.new("Frame")
-        main.Size = UDim2.new(0, 400, 0, 250)
-        main.Position = UDim2.new(0.5, -200, 0.5, -125)
+        main.Size = UDim2.new(0, 350, 0, 220)
+        main.Position = UDim2.new(0.5, -175, 0.5, -110)
         main.BackgroundColor3 = Color3.fromRGB(25, 30, 45)
         main.BackgroundTransparency = 0.1
         main.BorderSizePixel = 0
@@ -401,19 +416,52 @@ local function executeScript(scriptData, gameData)
         corner.CornerRadius = UDim.new(0, 12)
         corner.Parent = main
         
+        -- Title bar with X button
+        local titleBar = Instance.new("Frame")
+        titleBar.Size = UDim2.new(1, 0, 0, 35)
+        titleBar.BackgroundColor3 = Color3.fromRGB(35, 40, 55)
+        titleBar.BackgroundTransparency = 0.2
+        titleBar.BorderSizePixel = 0
+        titleBar.Parent = main
+        
+        local titleCorner = Instance.new("UICorner")
+        titleCorner.CornerRadius = UDim.new(0, 12)
+        titleCorner.Parent = titleBar
+        
         local title = Instance.new("TextLabel")
-        title.Size = UDim2.new(1, -20, 0, 40)
-        title.Position = UDim2.new(0, 10, 0, 10)
+        title.Size = UDim2.new(1, -40, 1, 0)
+        title.Position = UDim2.new(0, 10, 0, 0)
         title.BackgroundTransparency = 1
         title.Text = "⚠️ Wrong Game"
         title.TextColor3 = Color3.fromRGB(255, 140, 0)
         title.Font = Enum.Font.GothamBold
-        title.TextSize = 18
-        title.Parent = main
+        title.TextSize = 16
+        title.TextXAlignment = Enum.TextXAlignment.Left
+        title.Parent = titleBar
+        
+        local closeBtn = Instance.new("TextButton")
+        closeBtn.Size = UDim2.new(0, 22, 0, 22)
+        closeBtn.Position = UDim2.new(1, -27, 0.5, -11)
+        closeBtn.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+        closeBtn.Text = "✕"
+        closeBtn.TextColor3 = Color3.new(1, 1, 1)
+        closeBtn.Font = Enum.Font.GothamBold
+        closeBtn.TextSize = 14
+        closeBtn.BorderSizePixel = 0
+        closeBtn.Parent = titleBar
+        
+        local closeCorner = Instance.new("UICorner")
+        closeCorner.CornerRadius = UDim.new(0, 6)
+        closeCorner.Parent = closeBtn
+        
+        closeBtn.MouseButton1Click:Connect(function()
+            gui:Destroy()
+            activeGui = nil
+        end)
         
         local desc = Instance.new("TextLabel")
-        desc.Size = UDim2.new(1, -20, 0, 80)
-        desc.Position = UDim2.new(0, 10, 0, 60)
+        desc.Size = UDim2.new(1, -20, 0, 70)
+        desc.Position = UDim2.new(0, 10, 0, 45)
         desc.BackgroundTransparency = 1
         desc.Text = string.format(
             "This script is for:\n%s (ID: %s)\n\nCurrent game: %s",
@@ -423,18 +471,18 @@ local function executeScript(scriptData, gameData)
         )
         desc.TextColor3 = Color3.fromRGB(200, 200, 200)
         desc.Font = Enum.Font.Gotham
-        desc.TextSize = 13
+        desc.TextSize = 12
         desc.TextWrapped = true
         desc.Parent = main
         
         local teleportBtn = Instance.new("TextButton")
-        teleportBtn.Size = UDim2.new(0, 160, 0, 40)
-        teleportBtn.Position = UDim2.new(0.5, -170, 1, -60)
+        teleportBtn.Size = UDim2.new(0, 140, 0, 35)
+        teleportBtn.Position = UDim2.new(0.5, -150, 1, -50)
         teleportBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
         teleportBtn.Text = "🚀 Teleport"
         teleportBtn.TextColor3 = Color3.new(1, 1, 1)
         teleportBtn.Font = Enum.Font.GothamBold
-        teleportBtn.TextSize = 14
+        teleportBtn.TextSize = 13
         teleportBtn.BorderSizePixel = 0
         teleportBtn.Parent = main
         
@@ -443,13 +491,13 @@ local function executeScript(scriptData, gameData)
         btnCorner.Parent = teleportBtn
         
         local hereBtn = Instance.new("TextButton")
-        hereBtn.Size = UDim2.new(0, 160, 0, 40)
-        hereBtn.Position = UDim2.new(0.5, 10, 1, -60)
+        hereBtn.Size = UDim2.new(0, 140, 0, 35)
+        hereBtn.Position = UDim2.new(0.5, 10, 1, -50)
         hereBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
         hereBtn.Text = "🎮 Use Here"
         hereBtn.TextColor3 = Color3.new(1, 1, 1)
         hereBtn.Font = Enum.Font.GothamBold
-        hereBtn.TextSize = 14
+        hereBtn.TextSize = 13
         hereBtn.BorderSizePixel = 0
         hereBtn.Parent = main
         
@@ -459,6 +507,7 @@ local function executeScript(scriptData, gameData)
         
         teleportBtn.MouseButton1Click:Connect(function()
             gui:Destroy()
+            activeGui = nil
             local gameId = tonumber(gameData.id)
             if gameId then
                 showNotification("🚀 Teleporting...", Color3.fromRGB(79, 124, 255))
@@ -468,6 +517,7 @@ local function executeScript(scriptData, gameData)
         
         hereBtn.MouseButton1Click:Connect(function()
             gui:Destroy()
+            activeGui = nil
             -- Execute anyway
             loadScript()
         end)
@@ -499,7 +549,7 @@ local function executeScript(scriptData, gameData)
     loadScript()
 end
 
--- Create main GUI
+-- Create main GUI (smaller size)
 local function createMainGUI()
     if mainGui and mainGui.Parent then
         mainGui:Destroy()
@@ -510,11 +560,12 @@ local function createMainGUI()
     mainGui.IgnoreGuiInset = true
     mainGui.ResetOnSpawn = false
     mainGui.Parent = player:FindFirstChild("PlayerGui") or game:GetService("CoreGui")
+    activeGui = mainGui
     
-    -- Main frame
+    -- Main frame - SMALLER SIZE (400x350 instead of 500x450)
     local main = Instance.new("Frame")
-    main.Size = UDim2.new(0, 500, 0, 450)
-    main.Position = UDim2.new(0.5, -250, 0.5, -225)
+    main.Size = UDim2.new(0, 400, 0, 350)
+    main.Position = UDim2.new(0.5, -200, 0.5, -175)
     main.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
     main.BackgroundTransparency = 0.1
     main.BorderSizePixel = 0
@@ -526,7 +577,7 @@ local function createMainGUI()
     
     -- Title bar
     local titleBar = Instance.new("Frame")
-    titleBar.Size = UDim2.new(1, 0, 0, 40)
+    titleBar.Size = UDim2.new(1, 0, 0, 35)
     titleBar.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
     titleBar.BackgroundTransparency = 0.3
     titleBar.BorderSizePixel = 0
@@ -543,13 +594,13 @@ local function createMainGUI()
     title.Text = "🎮 RSQ GAMES LIBRARY"
     title.TextColor3 = Color3.fromRGB(79, 124, 255)
     title.Font = Enum.Font.GothamBold
-    title.TextSize = 15
+    title.TextSize = 14
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.Parent = titleBar
     
     local closeBtn = Instance.new("TextButton")
-    closeBtn.Size = UDim2.new(0, 25, 0, 25)
-    closeBtn.Position = UDim2.new(1, -30, 0.5, -12.5)
+    closeBtn.Size = UDim2.new(0, 22, 0, 22)
+    closeBtn.Position = UDim2.new(1, -27, 0.5, -11)
     closeBtn.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
     closeBtn.Text = "✕"
     closeBtn.TextColor3 = Color3.new(1, 1, 1)
@@ -566,17 +617,18 @@ local function createMainGUI()
         guiOpen = false
         mainGui:Destroy()
         mainGui = nil
+        activeGui = nil
     end)
     
-    -- Back button (hidden by default)
+    -- Back button
     local backBtn = Instance.new("TextButton")
-    backBtn.Size = UDim2.new(0, 60, 0, 25)
-    backBtn.Position = UDim2.new(0, 10, 1, -35)
+    backBtn.Size = UDim2.new(0, 55, 0, 22)
+    backBtn.Position = UDim2.new(0, 10, 1, -32)
     backBtn.BackgroundColor3 = Color3.fromRGB(60, 65, 80)
     backBtn.Text = "← Back"
     backBtn.TextColor3 = Color3.new(1, 1, 1)
     backBtn.Font = Enum.Font.GothamBold
-    backBtn.TextSize = 12
+    backBtn.TextSize = 11
     backBtn.BorderSizePixel = 0
     backBtn.Visible = false
     backBtn.Parent = main
@@ -587,8 +639,8 @@ local function createMainGUI()
     
     -- Games container
     local gamesContainer = Instance.new("ScrollingFrame")
-    gamesContainer.Size = UDim2.new(1, -20, 1, -80)
-    gamesContainer.Position = UDim2.new(0, 10, 0, 50)
+    gamesContainer.Size = UDim2.new(1, -20, 1, -70)
+    gamesContainer.Position = UDim2.new(0, 10, 0, 45)
     gamesContainer.BackgroundTransparency = 1
     gamesContainer.ScrollBarThickness = 4
     gamesContainer.ScrollBarImageColor3 = Color3.fromRGB(79, 124, 255)
@@ -597,14 +649,14 @@ local function createMainGUI()
     gamesContainer.Parent = main
     
     local gamesLayout = Instance.new("UIListLayout")
-    gamesLayout.Padding = UDim.new(0, 8)
+    gamesLayout.Padding = UDim.new(0, 6)
     gamesLayout.SortOrder = Enum.SortOrder.LayoutOrder
     gamesLayout.Parent = gamesContainer
     
-    -- Scripts container (hidden by default)
+    -- Scripts container
     local scriptsContainer = Instance.new("ScrollingFrame")
-    scriptsContainer.Size = UDim2.new(1, -20, 1, -80)
-    scriptsContainer.Position = UDim2.new(0, 10, 0, 50)
+    scriptsContainer.Size = UDim2.new(1, -20, 1, -70)
+    scriptsContainer.Position = UDim2.new(0, 10, 0, 45)
     scriptsContainer.BackgroundTransparency = 1
     scriptsContainer.ScrollBarThickness = 4
     scriptsContainer.ScrollBarImageColor3 = Color3.fromRGB(79, 124, 255)
@@ -613,19 +665,19 @@ local function createMainGUI()
     scriptsContainer.Parent = main
     
     local scriptsLayout = Instance.new("UIListLayout")
-    scriptsLayout.Padding = UDim.new(0, 8)
+    scriptsLayout.Padding = UDim.new(0, 6)
     scriptsLayout.SortOrder = Enum.SortOrder.LayoutOrder
     scriptsLayout.Parent = scriptsContainer
     
     -- Refresh button
     local refreshBtn = Instance.new("TextButton")
-    refreshBtn.Size = UDim2.new(0, 80, 0, 25)
-    refreshBtn.Position = UDim2.new(1, -90, 1, -35)
+    refreshBtn.Size = UDim2.new(0, 70, 0, 22)
+    refreshBtn.Position = UDim2.new(1, -80, 1, -32)
     refreshBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
     refreshBtn.Text = "🔄 Refresh"
     refreshBtn.TextColor3 = Color3.new(1, 1, 1)
     refreshBtn.Font = Enum.Font.GothamBold
-    refreshBtn.TextSize = 11
+    refreshBtn.TextSize = 10
     refreshBtn.BorderSizePixel = 0
     refreshBtn.Parent = main
     
@@ -660,7 +712,7 @@ local function createMainGUI()
         local scripts = gameData.scripts or {}
         if #scripts == 0 then
             local emptyFrame = Instance.new("Frame")
-            emptyFrame.Size = UDim2.new(1, 0, 0, 100)
+            emptyFrame.Size = UDim2.new(1, 0, 0, 60)
             emptyFrame.BackgroundTransparency = 1
             emptyFrame.Parent = scriptsContainer
             
@@ -670,12 +722,12 @@ local function createMainGUI()
             emptyText.Text = "📭 No scripts available"
             emptyText.TextColor3 = Color3.fromRGB(150, 150, 150)
             emptyText.Font = Enum.Font.Gotham
-            emptyText.TextSize = 14
+            emptyText.TextSize = 13
             emptyText.Parent = emptyFrame
         else
             for i, scriptData in ipairs(scripts) do
                 local scriptFrame = Instance.new("Frame")
-                scriptFrame.Size = UDim2.new(1, 0, 0, 80)
+                scriptFrame.Size = UDim2.new(1, 0, 0, 70)
                 scriptFrame.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
                 scriptFrame.BackgroundTransparency = 0.3
                 scriptFrame.BorderSizePixel = 0
@@ -687,46 +739,46 @@ local function createMainGUI()
                 scriptCorner.Parent = scriptFrame
                 
                 local nameLabel = Instance.new("TextLabel")
-                nameLabel.Size = UDim2.new(1, -100, 0, 25)
-                nameLabel.Position = UDim2.new(0, 10, 0, 5)
+                nameLabel.Size = UDim2.new(1, -90, 0, 22)
+                nameLabel.Position = UDim2.new(0, 8, 0, 5)
                 nameLabel.BackgroundTransparency = 1
                 nameLabel.Text = scriptData.name
                 nameLabel.TextColor3 = Color3.new(1, 1, 1)
                 nameLabel.Font = Enum.Font.GothamBold
-                nameLabel.TextSize = 14
+                nameLabel.TextSize = 13
                 nameLabel.TextXAlignment = Enum.TextXAlignment.Left
                 nameLabel.Parent = scriptFrame
                 
                 local urlLabel = Instance.new("TextLabel")
-                urlLabel.Size = UDim2.new(1, -100, 0, 20)
-                urlLabel.Position = UDim2.new(0, 10, 0, 30)
+                urlLabel.Size = UDim2.new(1, -90, 0, 18)
+                urlLabel.Position = UDim2.new(0, 8, 0, 27)
                 urlLabel.BackgroundTransparency = 1
-                urlLabel.Text = string.sub(scriptData.url, 1, 30) .. "..."
+                urlLabel.Text = string.sub(scriptData.url, 1, 25) .. "..."
                 urlLabel.TextColor3 = Color3.fromRGB(150, 200, 255)
                 urlLabel.Font = Enum.Font.Gotham
-                urlLabel.TextSize = 11
+                urlLabel.TextSize = 10
                 urlLabel.TextXAlignment = Enum.TextXAlignment.Left
                 urlLabel.Parent = scriptFrame
                 
                 local gameIdLabel = Instance.new("TextLabel")
-                gameIdLabel.Size = UDim2.new(1, -100, 0, 20)
-                gameIdLabel.Position = UDim2.new(0, 10, 0, 50)
+                gameIdLabel.Size = UDim2.new(1, -90, 0, 18)
+                gameIdLabel.Position = UDim2.new(0, 8, 0, 45)
                 gameIdLabel.BackgroundTransparency = 1
-                gameIdLabel.Text = "🎮 Game ID: " .. gameData.id
+                gameIdLabel.Text = "ID: " .. gameData.id
                 gameIdLabel.TextColor3 = Color3.fromRGB(79, 124, 255)
                 gameIdLabel.Font = Enum.Font.Gotham
-                gameIdLabel.TextSize = 10
+                gameIdLabel.TextSize = 9
                 gameIdLabel.TextXAlignment = Enum.TextXAlignment.Left
                 gameIdLabel.Parent = scriptFrame
                 
                 local execBtn = Instance.new("TextButton")
-                execBtn.Size = UDim2.new(0, 80, 0, 30)
-                execBtn.Position = UDim2.new(1, -90, 0.5, -15)
+                execBtn.Size = UDim2.new(0, 70, 0, 28)
+                execBtn.Position = UDim2.new(1, -80, 0.5, -14)
                 execBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
                 execBtn.Text = "⚡ Run"
                 execBtn.TextColor3 = Color3.new(1, 1, 1)
                 execBtn.Font = Enum.Font.GothamBold
-                execBtn.TextSize = 12
+                execBtn.TextSize = 11
                 execBtn.BorderSizePixel = 0
                 execBtn.Parent = scriptFrame
                 
@@ -775,7 +827,7 @@ local function createMainGUI()
         
         if not systemData or not systemData.games or #systemData.games == 0 then
             local emptyFrame = Instance.new("Frame")
-            emptyFrame.Size = UDim2.new(1, 0, 0, 100)
+            emptyFrame.Size = UDim2.new(1, 0, 0, 60)
             emptyFrame.BackgroundTransparency = 1
             emptyFrame.Parent = gamesContainer
             
@@ -785,14 +837,14 @@ local function createMainGUI()
             emptyText.Text = "📭 No games available"
             emptyText.TextColor3 = Color3.fromRGB(150, 150, 150)
             emptyText.Font = Enum.Font.Gotham
-            emptyText.TextSize = 14
+            emptyText.TextSize = 13
             emptyText.Parent = emptyFrame
             return
         end
         
         for i, gameData in ipairs(systemData.games) do
             local gameFrame = Instance.new("Frame")
-            gameFrame.Size = UDim2.new(1, 0, 0, 80)
+            gameFrame.Size = UDim2.new(1, 0, 0, 70)
             gameFrame.BackgroundColor3 = Color3.fromRGB(40, 45, 60)
             gameFrame.BackgroundTransparency = 0.3
             gameFrame.BorderSizePixel = 0
@@ -804,47 +856,47 @@ local function createMainGUI()
             gameCorner.Parent = gameFrame
             
             local nameLabel = Instance.new("TextLabel")
-            nameLabel.Size = UDim2.new(1, -100, 0, 25)
-            nameLabel.Position = UDim2.new(0, 10, 0, 5)
+            nameLabel.Size = UDim2.new(1, -90, 0, 22)
+            nameLabel.Position = UDim2.new(0, 8, 0, 5)
             nameLabel.BackgroundTransparency = 1
             nameLabel.Text = gameData.name
             nameLabel.TextColor3 = Color3.new(1, 1, 1)
             nameLabel.Font = Enum.Font.GothamBold
-            nameLabel.TextSize = 15
+            nameLabel.TextSize = 14
             nameLabel.TextXAlignment = Enum.TextXAlignment.Left
             nameLabel.Parent = gameFrame
             
             local idLabel = Instance.new("TextLabel")
-            idLabel.Size = UDim2.new(1, -100, 0, 20)
-            idLabel.Position = UDim2.new(0, 10, 0, 30)
+            idLabel.Size = UDim2.new(1, -90, 0, 18)
+            idLabel.Position = UDim2.new(0, 8, 0, 27)
             idLabel.BackgroundTransparency = 1
             idLabel.Text = "🆔 ID: " .. gameData.id
             idLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
             idLabel.Font = Enum.Font.Gotham
-            idLabel.TextSize = 11
+            idLabel.TextSize = 10
             idLabel.TextXAlignment = Enum.TextXAlignment.Left
             idLabel.Parent = gameFrame
             
             local scriptsCount = #(gameData.scripts or {})
             local scriptLabel = Instance.new("TextLabel")
-            scriptLabel.Size = UDim2.new(1, -100, 0, 20)
-            scriptLabel.Position = UDim2.new(0, 10, 0, 50)
+            scriptLabel.Size = UDim2.new(1, -90, 0, 18)
+            scriptLabel.Position = UDim2.new(0, 8, 0, 45)
             scriptLabel.BackgroundTransparency = 1
             scriptLabel.Text = "📜 " .. scriptsCount .. " script" .. (scriptsCount ~= 1 and "s" or "")
             scriptLabel.TextColor3 = Color3.fromRGB(79, 124, 255)
             scriptLabel.Font = Enum.Font.Gotham
-            scriptLabel.TextSize = 11
+            scriptLabel.TextSize = 10
             scriptLabel.TextXAlignment = Enum.TextXAlignment.Left
             scriptLabel.Parent = gameFrame
             
             local viewBtn = Instance.new("TextButton")
-            viewBtn.Size = UDim2.new(0, 80, 0, 30)
-            viewBtn.Position = UDim2.new(1, -90, 0.5, -15)
+            viewBtn.Size = UDim2.new(0, 70, 0, 28)
+            viewBtn.Position = UDim2.new(1, -80, 0.5, -14)
             viewBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
             viewBtn.Text = "📜 View"
             viewBtn.TextColor3 = Color3.new(1, 1, 1)
             viewBtn.Font = Enum.Font.GothamBold
-            viewBtn.TextSize = 12
+            viewBtn.TextSize = 11
             viewBtn.BorderSizePixel = 0
             viewBtn.Parent = gameFrame
             
@@ -904,17 +956,20 @@ local function createMainGUI()
     end)
 end
 
--- Create group requirement GUI
+-- Create group requirement GUI (smaller with X button)
 local function createGroupGUI()
+    closeAllGuis() -- Close any open GUIs first
+    
     local gui = Instance.new("ScreenGui")
     gui.Name = "RSQ_GroupRequired"
     gui.IgnoreGuiInset = true
     gui.ResetOnSpawn = false
     gui.Parent = player:FindFirstChild("PlayerGui") or game:GetService("CoreGui")
+    activeGui = gui
     
     local main = Instance.new("Frame")
-    main.Size = UDim2.new(0, 400, 0, 300)
-    main.Position = UDim2.new(0.5, -200, 0.5, -150)
+    main.Size = UDim2.new(0, 320, 0, 250)
+    main.Position = UDim2.new(0.5, -160, 0.5, -125)
     main.BackgroundColor3 = Color3.fromRGB(25, 30, 45)
     main.BackgroundTransparency = 0.1
     main.BorderSizePixel = 0
@@ -924,45 +979,78 @@ local function createGroupGUI()
     corner.CornerRadius = UDim.new(0, 12)
     corner.Parent = main
     
+    -- Title bar with X button
+    local titleBar = Instance.new("Frame")
+    titleBar.Size = UDim2.new(1, 0, 0, 35)
+    titleBar.BackgroundColor3 = Color3.fromRGB(35, 40, 55)
+    titleBar.BackgroundTransparency = 0.2
+    titleBar.BorderSizePixel = 0
+    titleBar.Parent = main
+    
+    local titleCorner = Instance.new("UICorner")
+    titleCorner.CornerRadius = UDim.new(0, 12)
+    titleCorner.Parent = titleBar
+    
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, -40, 1, 0)
+    title.Position = UDim2.new(0, 10, 0, 0)
+    title.BackgroundTransparency = 1
+    title.Text = "⚠️ GROUP REQUIRED"
+    title.TextColor3 = Color3.fromRGB(255, 140, 0)
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 14
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    title.Parent = titleBar
+    
+    local closeBtn = Instance.new("TextButton")
+    closeBtn.Size = UDim2.new(0, 22, 0, 22)
+    closeBtn.Position = UDim2.new(1, -27, 0.5, -11)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+    closeBtn.Text = "✕"
+    closeBtn.TextColor3 = Color3.new(1, 1, 1)
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 14
+    closeBtn.BorderSizePixel = 0
+    closeBtn.Parent = titleBar
+    
+    local closeCorner = Instance.new("UICorner")
+    closeCorner.CornerRadius = UDim.new(0, 6)
+    closeCorner.Parent = closeBtn
+    
+    closeBtn.MouseButton1Click:Connect(function()
+        gui:Destroy()
+        activeGui = nil
+    end)
+    
     local icon = Instance.new("TextLabel")
-    icon.Size = UDim2.new(1, 0, 0, 60)
-    icon.Position = UDim2.new(0, 0, 0, 20)
+    icon.Size = UDim2.new(1, 0, 0, 40)
+    icon.Position = UDim2.new(0, 0, 0, 40)
     icon.BackgroundTransparency = 1
     icon.Text = "⚠️"
     icon.TextColor3 = Color3.fromRGB(255, 140, 0)
     icon.Font = Enum.Font.GothamBold
-    icon.TextSize = 40
+    icon.TextSize = 30
     icon.Parent = main
     
-    local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, -40, 0, 40)
-    title.Position = UDim2.new(0, 20, 0, 90)
-    title.BackgroundTransparency = 1
-    title.Text = "GROUP REQUIRED"
-    title.TextColor3 = Color3.fromRGB(255, 140, 0)
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 20
-    title.Parent = main
-    
     local desc = Instance.new("TextLabel")
-    desc.Size = UDim2.new(1, -40, 0, 60)
-    desc.Position = UDim2.new(0, 20, 0, 130)
+    desc.Size = UDim2.new(1, -40, 0, 50)
+    desc.Position = UDim2.new(0, 20, 0, 85)
     desc.BackgroundTransparency = 1
-    desc.Text = "You must join the group before accessing RSQ Elite:\nCASHGRAB-EXPERIENCE (ID: 687789545)"
+    desc.Text = "You must join the group before accessing RSQ Elite"
     desc.TextColor3 = Color3.fromRGB(200, 200, 200)
     desc.Font = Enum.Font.Gotham
-    desc.TextSize = 13
+    desc.TextSize = 12
     desc.TextWrapped = true
     desc.Parent = main
     
     local copyBtn = Instance.new("TextButton")
-    copyBtn.Size = UDim2.new(0, 160, 0, 40)
-    copyBtn.Position = UDim2.new(0.5, -170, 1, -60)
+    copyBtn.Size = UDim2.new(0, 130, 0, 35)
+    copyBtn.Position = UDim2.new(0.5, -140, 1, -55)
     copyBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
-    copyBtn.Text = "📋 Copy Group Link"
+    copyBtn.Text = "📋 Copy Link"
     copyBtn.TextColor3 = Color3.new(1, 1, 1)
     copyBtn.Font = Enum.Font.GothamBold
-    copyBtn.TextSize = 13
+    copyBtn.TextSize = 12
     copyBtn.BorderSizePixel = 0
     copyBtn.Parent = main
     
@@ -971,13 +1059,13 @@ local function createGroupGUI()
     copyCorner.Parent = copyBtn
     
     local checkBtn = Instance.new("TextButton")
-    checkBtn.Size = UDim2.new(0, 160, 0, 40)
-    checkBtn.Position = UDim2.new(0.5, 10, 1, -60)
+    checkBtn.Size = UDim2.new(0, 130, 0, 35)
+    checkBtn.Position = UDim2.new(0.5, 10, 1, -55)
     checkBtn.BackgroundColor3 = Color3.fromRGB(40, 200, 80)
-    checkBtn.Text = "🔄 Check Again"
+    checkBtn.Text = "🔄 Check"
     checkBtn.TextColor3 = Color3.new(1, 1, 1)
     checkBtn.Font = Enum.Font.GothamBold
-    checkBtn.TextSize = 13
+    checkBtn.TextSize = 12
     checkBtn.BorderSizePixel = 0
     checkBtn.Parent = main
     
@@ -993,27 +1081,67 @@ local function createGroupGUI()
     checkBtn.MouseButton1Click:Connect(function()
         if checkGroup() then
             gui:Destroy()
-            showNotification("✅ You're in the group! Loading...", Color3.fromRGB(40, 200, 80))
-            createKeyGUI()
+            activeGui = nil
+            showNotification("✅ You're in the group!", Color3.fromRGB(40, 200, 80))
+            if not keyValid then
+                createKeyGUI()
+            else
+                createMainGUI()
+                guiOpen = true
+            end
         else
             showNotification("❌ Still not in group", Color3.fromRGB(255, 60, 60))
+        end
+    end)
+    
+    -- Make draggable
+    local dragging = false
+    local dragStart
+    local startPos
+    
+    titleBar.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = main.Position
+        end
+    end)
+    
+    titleBar.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local delta = input.Position - dragStart
+            main.Position = UDim2.new(
+                startPos.X.Scale,
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale,
+                startPos.Y.Offset + delta.Y
+            )
         end
     end)
     
     return gui
 end
 
--- Create key input GUI
+-- Create key input GUI (smaller with X button)
 local function createKeyGUI()
+    closeAllGuis() -- Close any open GUIs first
+    
     local gui = Instance.new("ScreenGui")
     gui.Name = "RSQ_KeyInput"
     gui.IgnoreGuiInset = true
     gui.ResetOnSpawn = false
     gui.Parent = player:FindFirstChild("PlayerGui") or game:GetService("CoreGui")
+    activeGui = gui
     
     local main = Instance.new("Frame")
-    main.Size = UDim2.new(0, 350, 0, 250)
-    main.Position = UDim2.new(0.5, -175, 0.5, -125)
+    main.Size = UDim2.new(0, 300, 0, 220)
+    main.Position = UDim2.new(0.5, -150, 0.5, -110)
     main.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
     main.BackgroundTransparency = 0.1
     main.BorderSizePixel = 0
@@ -1023,36 +1151,69 @@ local function createKeyGUI()
     corner.CornerRadius = UDim.new(0, 12)
     corner.Parent = main
     
+    -- Title bar with X button
+    local titleBar = Instance.new("Frame")
+    titleBar.Size = UDim2.new(1, 0, 0, 35)
+    titleBar.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+    titleBar.BackgroundTransparency = 0.3
+    titleBar.BorderSizePixel = 0
+    titleBar.Parent = main
+    
+    local titleCorner = Instance.new("UICorner")
+    titleCorner.CornerRadius = UDim.new(0, 12)
+    titleCorner.Parent = titleBar
+    
     local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, 0, 0, 40)
-    title.Position = UDim2.new(0, 0, 0, 10)
+    title.Size = UDim2.new(1, -40, 1, 0)
+    title.Position = UDim2.new(0, 10, 0, 0)
     title.BackgroundTransparency = 1
-    title.Text = "🔐 RSQ KEY SYSTEM"
+    title.Text = "🔐 KEY SYSTEM"
     title.TextColor3 = Color3.fromRGB(79, 124, 255)
     title.Font = Enum.Font.GothamBold
-    title.TextSize = 16
-    title.Parent = main
+    title.TextSize = 14
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    title.Parent = titleBar
+    
+    local closeBtn = Instance.new("TextButton")
+    closeBtn.Size = UDim2.new(0, 22, 0, 22)
+    closeBtn.Position = UDim2.new(1, -27, 0.5, -11)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+    closeBtn.Text = "✕"
+    closeBtn.TextColor3 = Color3.new(1, 1, 1)
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 14
+    closeBtn.BorderSizePixel = 0
+    closeBtn.Parent = titleBar
+    
+    local closeCorner = Instance.new("UICorner")
+    closeCorner.CornerRadius = UDim.new(0, 6)
+    closeCorner.Parent = closeBtn
+    
+    closeBtn.MouseButton1Click:Connect(function()
+        gui:Destroy()
+        activeGui = nil
+    end)
     
     local desc = Instance.new("TextLabel")
-    desc.Size = UDim2.new(1, -40, 0, 40)
-    desc.Position = UDim2.new(0, 20, 0, 50)
+    desc.Size = UDim2.new(1, -40, 0, 25)
+    desc.Position = UDim2.new(0, 20, 0, 40)
     desc.BackgroundTransparency = 1
     desc.Text = "Enter your access key:"
     desc.TextColor3 = Color3.fromRGB(200, 200, 200)
     desc.Font = Enum.Font.Gotham
-    desc.TextSize = 13
+    desc.TextSize = 12
     desc.TextXAlignment = Enum.TextXAlignment.Left
     desc.Parent = main
     
     local keyBox = Instance.new("TextBox")
-    keyBox.Size = UDim2.new(1, -40, 0, 35)
-    keyBox.Position = UDim2.new(0, 20, 0, 90)
+    keyBox.Size = UDim2.new(1, -40, 0, 30)
+    keyBox.Position = UDim2.new(0, 20, 0, 70)
     keyBox.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
-    keyBox.PlaceholderText = "Enter your key here..."
+    keyBox.PlaceholderText = "Enter key..."
     keyBox.Text = ""
     keyBox.TextColor3 = Color3.new(1, 1, 1)
     keyBox.Font = Enum.Font.Gotham
-    keyBox.TextSize = 13
+    keyBox.TextSize = 12
     keyBox.BorderSizePixel = 0
     keyBox.Parent = main
     
@@ -1061,13 +1222,13 @@ local function createKeyGUI()
     boxCorner.Parent = keyBox
     
     local submitBtn = Instance.new("TextButton")
-    submitBtn.Size = UDim2.new(1, -40, 0, 40)
-    submitBtn.Position = UDim2.new(0, 20, 0, 140)
+    submitBtn.Size = UDim2.new(1, -40, 0, 35)
+    submitBtn.Position = UDim2.new(0, 20, 0, 110)
     submitBtn.BackgroundColor3 = Color3.fromRGB(79, 124, 255)
     submitBtn.Text = "🔓 Validate Key"
     submitBtn.TextColor3 = Color3.new(1, 1, 1)
     submitBtn.Font = Enum.Font.GothamBold
-    submitBtn.TextSize = 14
+    submitBtn.TextSize = 13
     submitBtn.BorderSizePixel = 0
     submitBtn.Parent = main
     
@@ -1076,13 +1237,13 @@ local function createKeyGUI()
     btnCorner.Parent = submitBtn
     
     local getKeyBtn = Instance.new("TextButton")
-    getKeyBtn.Size = UDim2.new(1, -40, 0, 30)
-    getKeyBtn.Position = UDim2.new(0, 20, 0, 190)
+    getKeyBtn.Size = UDim2.new(1, -40, 0, 25)
+    getKeyBtn.Position = UDim2.new(0, 20, 0, 155)
     getKeyBtn.BackgroundColor3 = Color3.fromRGB(255, 140, 0)
     getKeyBtn.Text = "🌐 Get Key"
     getKeyBtn.TextColor3 = Color3.new(1, 1, 1)
     getKeyBtn.Font = Enum.Font.GothamBold
-    getKeyBtn.TextSize = 12
+    getKeyBtn.TextSize = 11
     getKeyBtn.BorderSizePixel = 0
     getKeyBtn.Parent = main
     
@@ -1092,12 +1253,12 @@ local function createKeyGUI()
     
     local status = Instance.new("TextLabel")
     status.Size = UDim2.new(1, -40, 0, 20)
-    status.Position = UDim2.new(0, 20, 0, 225)
+    status.Position = UDim2.new(0, 20, 0, 185)
     status.BackgroundTransparency = 1
     status.Text = ""
     status.TextColor3 = Color3.fromRGB(150, 150, 150)
     status.Font = Enum.Font.Gotham
-    status.TextSize = 11
+    status.TextSize = 10
     status.Parent = main
     
     submitBtn.MouseButton1Click:Connect(function()
@@ -1119,6 +1280,7 @@ local function createKeyGUI()
                 keyValid = true
                 saveKey(key)
                 gui:Destroy()
+                activeGui = nil
                 showNotification("✅ Key validated successfully!", Color3.fromRGB(40, 200, 80))
                 
                 -- Load required scripts
@@ -1142,15 +1304,46 @@ local function createKeyGUI()
     end)
     
     getKeyBtn.MouseButton1Click:Connect(function()
-        setclipboard("https://your-key-shop.com")  -- Replace with actual key shop URL
-        status.Text = "📋 Link copied to clipboard!"
+        setclipboard("https://your-key-shop.com")
+        status.Text = "📋 Link copied!"
         status.TextColor3 = Color3.fromRGB(79, 124, 255)
+    end)
+    
+    -- Make draggable
+    local dragging = false
+    local dragStart
+    local startPos
+    
+    titleBar.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = main.Position
+        end
+    end)
+    
+    titleBar.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local delta = input.Position - dragStart
+            main.Position = UDim2.new(
+                startPos.X.Scale,
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale,
+                startPos.Y.Offset + delta.Y
+            )
+        end
     end)
     
     return gui
 end
 
--- Create floating toggle button
+-- Create floating toggle button (disabled until group joined)
 local function createToggleButton()
     if toggleButton and toggleButton.Parent then
         toggleButton:Destroy()
@@ -1163,13 +1356,28 @@ local function createToggleButton()
     toggleButton.Parent = player:FindFirstChild("PlayerGui") or game:GetService("CoreGui")
     
     local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0, 60, 0, 60)
-    button.Position = UDim2.new(1, -70, 0, 20)
-    button.BackgroundColor3 = keyValid and Color3.fromRGB(79, 124, 255) or Color3.fromRGB(255, 140, 0)
-    button.Text = keyValid and "🔓" or "🔒"
+    button.Size = UDim2.new(0, 50, 0, 50)
+    button.Position = UDim2.new(1, -60, 0, 20)
+    
+    -- Set color and text based on state
+    if not isInGroup then
+        button.BackgroundColor3 = Color3.fromRGB(100, 100, 100) -- Gray when disabled
+        button.Text = "🔒"
+        button.Active = false
+        button.AutoButtonColor = false
+    elseif keyValid then
+        button.BackgroundColor3 = Color3.fromRGB(79, 124, 255) -- Blue when unlocked
+        button.Text = "🔓"
+        button.Active = true
+    else
+        button.BackgroundColor3 = Color3.fromRGB(255, 140, 0) -- Orange when locked
+        button.Text = "🔒"
+        button.Active = true
+    end
+    
     button.TextColor3 = Color3.new(1, 1, 1)
     button.Font = Enum.Font.GothamBold
-    button.TextSize = 24
+    button.TextSize = 20
     button.BorderSizePixel = 0
     button.Parent = toggleButton
     
@@ -1209,11 +1417,22 @@ local function createToggleButton()
     end)
     
     button.MouseButton1Click:Connect(function()
+        if not isInGroup then
+            showNotification("❌ You must join the group first", Color3.fromRGB(255, 60, 60))
+            if not activeGui then
+                createGroupGUI()
+            end
+            return
+        end
+        
         if not dragging then
-            if guiOpen and mainGui and mainGui.Parent then
-                mainGui:Destroy()
-                mainGui = nil
-                guiOpen = false
+            if activeGui and activeGui.Parent then
+                activeGui:Destroy()
+                activeGui = nil
+                if mainGui then
+                    mainGui = nil
+                    guiOpen = false
+                end
             elseif keyValid then
                 createMainGUI()
                 guiOpen = true
@@ -1246,26 +1465,28 @@ local function initialize()
     -- Check group
     checkGroup()
     
-    -- Check for saved key
-    local savedKey = loadSavedKey()
-    if savedKey then
-        local valid, keyData = validateKey(savedKey)
-        if valid then
-            userKey = savedKey
-            keyValid = true
-            showNotification("✅ Saved key validated!", Color3.fromRGB(40, 200, 80))
-            
-            -- Load required scripts
-            for _, url in ipairs(REQUIRED_SCRIPTS) do
-                task.spawn(function()
-                    pcall(function()
-                        local script = game:HttpGet(url)
-                        loadstring(script)()
+    -- Check for saved key (only if in group)
+    if isInGroup then
+        local savedKey = loadSavedKey()
+        if savedKey then
+            local valid, keyData = validateKey(savedKey)
+            if valid then
+                userKey = savedKey
+                keyValid = true
+                showNotification("✅ Saved key validated!", Color3.fromRGB(40, 200, 80))
+                
+                -- Load required scripts
+                for _, url in ipairs(REQUIRED_SCRIPTS) do
+                    task.spawn(function()
+                        pcall(function()
+                            local script = game:HttpGet(url)
+                            loadstring(script)()
+                        end)
                     end)
-                end)
+                end
+            else
+                deleteSavedKey()
             end
-        else
-            deleteSavedKey()
         end
     end
     
@@ -1288,21 +1509,31 @@ task.spawn(function()
         
         -- Check if still valid
         if userKey and keyValid then
-            local valid = validateKey(userKey)
+            local valid, _ = validateKey(userKey)
             if not valid then
                 keyValid = false
                 userKey = nil
                 deleteSavedKey()
                 showNotification("❌ Key no longer valid", Color3.fromRGB(255, 60, 60))
                 
-                if guiOpen and mainGui then
-                    mainGui:Destroy()
-                    mainGui = nil
-                    guiOpen = false
+                -- Close any open GUIs
+                closeAllGuis()
+                
+                -- Update toggle button
+                if toggleButton and toggleButton.Parent then
+                    toggleButton:Destroy()
+                    createToggleButton()
                 end
                 
+                -- Show key GUI
                 createKeyGUI()
             end
+        end
+        
+        -- Update toggle button state
+        if toggleButton and toggleButton.Parent then
+            toggleButton:Destroy()
+            createToggleButton()
         end
     end
 end)
