@@ -1700,8 +1700,1894 @@ button.mini {
     </div>
 </div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
 <script>
-const _0x381d2f=_0x5391;(function(_0x233e1f,_0x5dc3d0){const _0x4ff3a0=_0x5391,_0x13237c=_0x233e1f();while(!![]){try{const _0x44dbe3=-parseInt(_0x4ff3a0(0x2c0))/0x1+parseInt(_0x4ff3a0(0x251))/0x2*(-parseInt(_0x4ff3a0(0x2b3))/0x3)+-parseInt(_0x4ff3a0(0x31a))/0x4+parseInt(_0x4ff3a0(0x206))/0x5*(-parseInt(_0x4ff3a0(0x352))/0x6)+-parseInt(_0x4ff3a0(0x279))/0x7+parseInt(_0x4ff3a0(0x24d))/0x8*(-parseInt(_0x4ff3a0(0x264))/0x9)+-parseInt(_0x4ff3a0(0x343))/0xa*(-parseInt(_0x4ff3a0(0x330))/0xb);if(_0x44dbe3===_0x5dc3d0)break;else _0x13237c['push'](_0x13237c['shift']());}catch(_0x1025d8){_0x13237c['push'](_0x13237c['shift']());}}}(_0x24ba,0xcf4e9));const JSONBIN_BIN_ID='6952cbcdd0ea881f4047f5ff',JSONBIN_API_KEY=_0x381d2f(0x2fb),JSONBIN_API_URL=_0x381d2f(0x2bb);let dataCache=null,lastFetchTime=0x0;const CACHE_TTL=0x7530;let apiFailureCount=0x0;const MAX_API_FAILURES=0x3;let isAdminAuthenticated=![],currentUser=null;const ADMIN_USERNAME=_0x381d2f(0x2a0),ADMIN_PASSWORD='Livetopimo';let userKeys={},currentGameIndex=-0x1,lastSeenMessageTime=0x0,unreadCount=0x0;async function makeJsonBinRequest(_0x4259df=_0x381d2f(0x34a),_0x5d1ddb=null){const _0x554f4b=_0x381d2f,_0x3b89d1=JSONBIN_API_URL+'/'+JSONBIN_BIN_ID;try{const _0x4f61f8={'X-Master-Key':JSONBIN_API_KEY,'Content-Type':_0x554f4b(0x280)},_0x44db2f={'method':_0x4259df,'headers':_0x4f61f8};_0x5d1ddb&&(_0x4259df===_0x554f4b(0x25c)||_0x4259df==='POST')&&(_0x44db2f['body']=JSON['stringify'](_0x5d1ddb));const _0x1a561d=await fetch(_0x3b89d1,_0x44db2f);if(!_0x1a561d['ok'])throw new Error(_0x554f4b(0x22e)+_0x1a561d['status']+':\x20'+_0x1a561d[_0x554f4b(0x2a8)]);return await _0x1a561d['json']();}catch(_0x3c42ec){console[_0x554f4b(0x2c6)](_0x554f4b(0x253),_0x3c42ec);throw _0x3c42ec;}}async function createInitialBin(){const _0x12f796=_0x381d2f,_0x3fef4c={'users':{},'keys':{},'games':[],'bans':{},'feedbacks':[],'chats':[],'pinned':null,'admins':{[ADMIN_USERNAME]:{'password':ADMIN_PASSWORD,'created':Date[_0x12f796(0x344)](),'role':_0x12f796(0x25b)}},'settings':{'version':_0x12f796(0x2c9),'created':Date[_0x12f796(0x344)](),'last_updated':Date[_0x12f796(0x344)]()}};try{const _0x3738a3=await makeJsonBinRequest(_0x12f796(0x25c),_0x3fef4c);return showToast(_0x12f796(0x1f3),'success'),!![];}catch(_0x3cf11c){return console[_0x12f796(0x2c6)]('Failed\x20to\x20create\x20initial\x20bin:',_0x3cf11c),showToast(_0x12f796(0x2e5),_0x12f796(0x2c6)),![];}}async function initializeDatabase(){const _0x45a529=_0x381d2f;showLoading(_0x45a529(0x27e));try{const _0x28a40e=await makeJsonBinRequest(_0x45a529(0x34a));if(_0x28a40e[_0x45a529(0x2f3)])dataCache=_0x28a40e[_0x45a529(0x2f3)];else{if(!await createInitialBin())throw new Error('Failed\x20to\x20create\x20initial\x20database');const _0x589081=await makeJsonBinRequest(_0x45a529(0x34a));dataCache=_0x589081[_0x45a529(0x2f3)];}return setInterval(()=>{const _0x2844f3=_0x45a529;fetchData(![])['catch'](console[_0x2844f3(0x2c6)]);},0xea60),hideLoading(),!![];}catch(_0xba71c4){console[_0x45a529(0x2c6)]('Database\x20initialization\x20failed:',_0xba71c4);if(!await createInitialBin())return hideLoading(),![];return hideLoading(),!![];}}async function api(_0x1b727f,_0x4e09dd=_0x381d2f(0x34a),_0x194e4f=null){const _0x44a10c=_0x381d2f;showLoading();try{if(_0x4e09dd===_0x44a10c(0x34a)){const _0x1f925c=await makeJsonBinRequest('GET'),_0x51033f=_0x1f925c[_0x44a10c(0x2f3)];if(_0x1b727f===_0x44a10c(0x1d9))return{'record':{'games':_0x51033f[_0x44a10c(0x1d9)]||[]}};else{if(_0x1b727f===_0x44a10c(0x27b))return{'record':{'keys':_0x51033f[_0x44a10c(0x27b)]||{}}};else{if(_0x1b727f==='bans')return{'record':{'bans':_0x51033f[_0x44a10c(0x26f)]||{}}};else{if(_0x1b727f===_0x44a10c(0x2b5))return{'record':{'feedbacks':_0x51033f[_0x44a10c(0x2b5)]||[]}};else{if(_0x1b727f==='chat')return{'record':{'chat':_0x51033f[_0x44a10c(0x258)]||[]}};}}}}return{'record':_0x51033f};}if(_0x4e09dd===_0x44a10c(0x25c)){const _0x5b9e58=await makeJsonBinRequest('GET');let _0x3c209c=_0x5b9e58[_0x44a10c(0x2f3)];_0x194e4f&&(Object[_0x44a10c(0x23b)](_0x3c209c,_0x194e4f),_0x3c209c['settings']=_0x3c209c[_0x44a10c(0x28d)]||{},_0x3c209c[_0x44a10c(0x28d)][_0x44a10c(0x2ee)]=Date['now']());const _0x1f4335=await makeJsonBinRequest('PUT',_0x3c209c);return dataCache=_0x1f4335[_0x44a10c(0x2f3)],lastFetchTime=Date[_0x44a10c(0x344)](),updateConnectionStatus(!![]),{'record':_0x1f4335[_0x44a10c(0x2f3)]};}throw new Error(_0x44a10c(0x230)+_0x4e09dd);}catch(_0x295a5c){console['error'](_0x44a10c(0x200),_0x295a5c),apiFailureCount++;apiFailureCount>=MAX_API_FAILURES&&showToast(_0x44a10c(0x34b),'warning');updateConnectionStatus(![]);throw _0x295a5c;}finally{hideLoading();}}async function batchUpdate(_0x3ad8a9){const _0x4f46b6=_0x381d2f;showLoading();try{const _0x4458f0=await makeJsonBinRequest(_0x4f46b6(0x34a));let _0x18934e=_0x4458f0['record'];for(const _0x2c6452 of _0x3ad8a9){Object[_0x4f46b6(0x23b)](_0x18934e,_0x2c6452);}_0x18934e['settings']=_0x18934e['settings']||{},_0x18934e[_0x4f46b6(0x28d)][_0x4f46b6(0x2ee)]=Date[_0x4f46b6(0x344)]();const _0x1a6dfa=await makeJsonBinRequest(_0x4f46b6(0x25c),_0x18934e);return dataCache=_0x1a6dfa['record'],lastFetchTime=Date['now'](),apiFailureCount=0x0,updateConnectionStatus(!![]),{'success':!![],'record':_0x1a6dfa[_0x4f46b6(0x2f3)]};}catch(_0x6bf34){console['error'](_0x4f46b6(0x1fe),_0x6bf34),updateConnectionStatus(![]);throw _0x6bf34;}finally{hideLoading();}}async function fetchData(_0x13afa1=![]){const _0x17953e=_0x381d2f,_0x206eb9=Date[_0x17953e(0x344)]();if(!_0x13afa1&&dataCache&&_0x206eb9-lastFetchTime<CACHE_TTL)return dataCache;try{const _0x16a054=await api(_0x17953e(0x208),_0x17953e(0x34a));return dataCache=_0x16a054[_0x17953e(0x2f3)],lastFetchTime=_0x206eb9,apiFailureCount=0x0,updateConnectionStatus(!![]),dataCache;}catch(_0x1376be){console[_0x17953e(0x2c6)]('Failed\x20to\x20fetch\x20data:',_0x1376be);if(dataCache)return dataCache;throw _0x1376be;}}function updateConnectionStatus(_0x597c03){const _0x214d45=_0x381d2f,_0x22a512=document['getElementById'](_0x214d45(0x1df));if(!_0x22a512)return;_0x597c03?(_0x22a512[_0x214d45(0x2b0)]=_0x214d45(0x341),_0x22a512[_0x214d45(0x26d)]=_0x214d45(0x221)):(_0x22a512[_0x214d45(0x2b0)]=_0x214d45(0x2bd),_0x22a512[_0x214d45(0x26d)]=_0x214d45(0x321));}function showLoading(_0x56476c=_0x381d2f(0x234)){const _0x4d6ebc=_0x381d2f,_0x5b1ea0=document['getElementById']('loadingOverlay'),_0x381ee1=document[_0x4d6ebc(0x203)](_0x4d6ebc(0x1f0));_0x5b1ea0&&_0x381ee1&&(_0x381ee1[_0x4d6ebc(0x218)]=_0x56476c,_0x5b1ea0['classList'][_0x4d6ebc(0x1ff)]('hidden'));}function hideLoading(){const _0xd4e66=_0x381d2f,_0x46423d=document[_0xd4e66(0x203)](_0xd4e66(0x32a));_0x46423d&&_0x46423d[_0xd4e66(0x30b)][_0xd4e66(0x1e0)](_0xd4e66(0x1c2));}function showToast(_0x1bc42c,_0x14541b=_0x381d2f(0x1f2),_0x5a323b=0xbb8){const _0x3389f3=_0x381d2f,_0x3ceee4=document[_0x3389f3(0x1e5)]('div');_0x3ceee4['className']=_0x3389f3(0x296)+_0x14541b,_0x3ceee4[_0x3389f3(0x218)]=_0x1bc42c,document[_0x3389f3(0x2f6)]['appendChild'](_0x3ceee4),setTimeout(()=>{const _0x29d304=_0x3389f3;_0x3ceee4[_0x29d304(0x346)][_0x29d304(0x1e4)]='0',_0x3ceee4['style'][_0x29d304(0x269)]=_0x29d304(0x324),setTimeout(()=>_0x3ceee4[_0x29d304(0x1ff)](),0x12c);},_0x5a323b);}function moderate(_0x2e62e8){const _0x1477b2=_0x381d2f;if(!_0x2e62e8)return![];const _0x4f0396=[_0x1477b2(0x2e6),_0x1477b2(0x25a)],_0x231388=_0x2e62e8['toLowerCase']();for(const _0x2b4f0e of _0x4f0396){if(_0x231388[_0x1477b2(0x2ad)](_0x2b4f0e))return!![];}return![];}function getUserIdentifier(){const _0x1ce165=_0x381d2f;return currentUser?.[_0x1ce165(0x202)]||_0x1ce165(0x2de);}async function debugUserKey(_0x5853fa){const _0x233429=_0x381d2f;try{const _0x1fb77a=await fetchData(),_0x402ffe=_0x1fb77a[_0x233429(0x27b)]||{};console[_0x233429(0x300)](_0x233429(0x232)),console[_0x233429(0x300)](_0x233429(0x2ea),_0x5853fa),console[_0x233429(0x300)]('Total\x20keys\x20in\x20system:',Object[_0x233429(0x27b)](_0x402ffe)[_0x233429(0x29c)]);let _0x27509d=![];for(const [_0x49ff36,_0x1a959d]of Object[_0x233429(0x229)](_0x402ffe)){console[_0x233429(0x300)](_0x233429(0x22b)+_0x49ff36[_0x233429(0x2aa)](0x0,0x8)+'...'),console['log'](_0x233429(0x214)+_0x1a959d[_0x233429(0x237)]+_0x233429(0x302)+typeof _0x1a959d[_0x233429(0x237)]+')'),console[_0x233429(0x300)](_0x233429(0x2bf)+_0x1a959d[_0x233429(0x216)]),console[_0x233429(0x300)]('\x20\x20-\x20Expires:\x20'+_0x1a959d[_0x233429(0x2e9)]),String(_0x1a959d[_0x233429(0x237)])===String(_0x5853fa)&&(console['log']('✅\x20MATCH\x20FOUND!'),console['log'](_0x233429(0x336),_0x49ff36),_0x27509d=!![]);}return!_0x27509d&&console['log'](_0x233429(0x297)),console[_0x233429(0x300)](_0x233429(0x215)),_0x27509d;}catch(_0x20bd39){console[_0x233429(0x2c6)](_0x233429(0x304),_0x20bd39);}}async function testKeyForLua(_0x2d6e92,_0x2a562f){const _0x228da9=_0x381d2f;console[_0x228da9(0x300)](_0x228da9(0x23d)),console[_0x228da9(0x300)](_0x228da9(0x32b),_0x2a562f,_0x228da9(0x236),_0x2d6e92);const _0x590b9d=await fetchData(),_0x46fd41=_0x590b9d[_0x228da9(0x27b)]||{},_0x41c054=_0x46fd41[_0x2a562f];if(!_0x41c054)return console['log']('❌\x20Key\x20not\x20found\x20in\x20database'),![];return console['log'](_0x228da9(0x32d),_0x41c054),console[_0x228da9(0x300)](_0x228da9(0x1ef),_0x41c054[_0x228da9(0x237)],_0x228da9(0x2a4),typeof _0x41c054[_0x228da9(0x237)]),console[_0x228da9(0x300)](_0x228da9(0x204),_0x2d6e92,'Type:',typeof _0x2d6e92),console[_0x228da9(0x300)](_0x228da9(0x325)),console['log'](_0x228da9(0x301),String(_0x41c054[_0x228da9(0x237)])===String(_0x2d6e92)),console[_0x228da9(0x300)](_0x228da9(0x1c3),_0x41c054['rbx']==_0x2d6e92),console[_0x228da9(0x300)](_0x228da9(0x1ee),parseInt(_0x41c054['rbx'])===parseInt(_0x2d6e92)),String(_0x41c054[_0x228da9(0x237)])===String(_0x2d6e92);}async function handleAuth(_0x30d080){const _0x8b1fb=_0x381d2f,_0x1e0fb5=_0x30d080===_0x8b1fb(0x310)?document['getElementById'](_0x8b1fb(0x29a)):document[_0x8b1fb(0x203)](_0x8b1fb(0x303)),_0x371f98=document[_0x8b1fb(0x203)](_0x8b1fb(0x1f5));if(_0x1e0fb5)_0x1e0fb5[_0x8b1fb(0x346)][_0x8b1fb(0x2c4)]=_0x8b1fb(0x274);if(_0x371f98)_0x371f98[_0x8b1fb(0x218)]='';let _0x2786ac,_0xf8f163;if(_0x30d080==='login')_0x2786ac=document[_0x8b1fb(0x203)]('l-user')[_0x8b1fb(0x2b4)][_0x8b1fb(0x226)](),_0xf8f163=document['getElementById'](_0x8b1fb(0x290))[_0x8b1fb(0x2b4)][_0x8b1fb(0x226)]();else{_0x2786ac=document[_0x8b1fb(0x203)](_0x8b1fb(0x1d8))[_0x8b1fb(0x2b4)][_0x8b1fb(0x226)](),_0xf8f163=document['getElementById'](_0x8b1fb(0x2e1))[_0x8b1fb(0x2b4)][_0x8b1fb(0x226)]();if(_0x2786ac['length']<0x3){_0x371f98[_0x8b1fb(0x218)]=_0x8b1fb(0x257),_0x371f98[_0x8b1fb(0x346)]['color']=_0x8b1fb(0x2ce),_0x1e0fb5[_0x8b1fb(0x346)]['display']=_0x8b1fb(0x332);return;}if(_0xf8f163[_0x8b1fb(0x29c)]<0x4){_0x371f98[_0x8b1fb(0x218)]=_0x8b1fb(0x2f7),_0x371f98['style'][_0x8b1fb(0x211)]=_0x8b1fb(0x2ce),_0x1e0fb5[_0x8b1fb(0x346)][_0x8b1fb(0x2c4)]=_0x8b1fb(0x332);return;}}if(!_0x2786ac||!_0xf8f163){_0x371f98[_0x8b1fb(0x218)]=_0x8b1fb(0x34d),_0x371f98[_0x8b1fb(0x346)][_0x8b1fb(0x211)]=_0x8b1fb(0x2ce),_0x1e0fb5[_0x8b1fb(0x346)][_0x8b1fb(0x2c4)]=_0x8b1fb(0x332);return;}try{const _0x3bbebc=await fetchData();!_0x3bbebc['users']&&(_0x3bbebc[_0x8b1fb(0x21e)]={});if(_0x30d080===_0x8b1fb(0x245)){if(_0x3bbebc[_0x8b1fb(0x21e)][_0x2786ac]){_0x371f98[_0x8b1fb(0x218)]=_0x8b1fb(0x28a),_0x371f98[_0x8b1fb(0x346)][_0x8b1fb(0x211)]=_0x8b1fb(0x2ce),_0x1e0fb5[_0x8b1fb(0x346)][_0x8b1fb(0x2c4)]='none';return;}_0x3bbebc[_0x8b1fb(0x21e)][_0x2786ac]={'password':_0xf8f163,'created':Date['now'](),'role':_0x2786ac===ADMIN_USERNAME?_0x8b1fb(0x25b):'user'};const _0x1554be=[{'users':_0x3bbebc[_0x8b1fb(0x21e)]}];await batchUpdate(_0x1554be),_0x371f98[_0x8b1fb(0x218)]=_0x8b1fb(0x28c),_0x371f98[_0x8b1fb(0x346)]['color']=_0x8b1fb(0x33a),toggleAuth(![]);}else{const _0x1ae2fa=_0x3bbebc['users'][_0x2786ac];if(!_0x1ae2fa||_0x1ae2fa[_0x8b1fb(0x348)]!==_0xf8f163){_0x371f98[_0x8b1fb(0x218)]='Invalid\x20username\x20or\x20password',_0x371f98[_0x8b1fb(0x346)][_0x8b1fb(0x211)]='var(--danger)',_0x1e0fb5[_0x8b1fb(0x346)][_0x8b1fb(0x2c4)]=_0x8b1fb(0x332);return;}currentUser={'username':_0x2786ac,'role':_0x1ae2fa[_0x8b1fb(0x249)]||_0x8b1fb(0x217)},localStorage['setItem'](_0x8b1fb(0x329),JSON[_0x8b1fb(0x238)](currentUser));if(_0x2786ac===ADMIN_USERNAME){const _0x5b3d17=document[_0x8b1fb(0x203)](_0x8b1fb(0x1c8));_0x5b3d17&&(_0x5b3d17[_0x8b1fb(0x2b4)]=ADMIN_PASSWORD);}document[_0x8b1fb(0x203)](_0x8b1fb(0x1ed))['classList']['add'](_0x8b1fb(0x1c2)),document['getElementById'](_0x8b1fb(0x2e8))[_0x8b1fb(0x30b)][_0x8b1fb(0x1ff)]('hidden');const _0x2bba42=document[_0x8b1fb(0x203)]('welcomeUser');_0x2bba42&&(_0x2bba42[_0x8b1fb(0x218)]=_0x8b1fb(0x2f0)+_0x2786ac);const _0x2a993a=document['getElementById'](_0x8b1fb(0x267));_0x2a993a&&(_0x2786ac===ADMIN_USERNAME?_0x2a993a['style'][_0x8b1fb(0x2c4)]=_0x8b1fb(0x2ac):_0x2a993a['style']['display']=_0x8b1fb(0x332)),showToast(_0x8b1fb(0x333)+_0x2786ac+'!',_0x8b1fb(0x207));}}catch(_0x4927ae){console[_0x8b1fb(0x2c6)](_0x8b1fb(0x270),_0x4927ae),_0x371f98['textContent']=_0x8b1fb(0x2da)+_0x4927ae[_0x8b1fb(0x2cb)],_0x371f98[_0x8b1fb(0x346)][_0x8b1fb(0x211)]='var(--danger)';}finally{if(_0x1e0fb5)_0x1e0fb5[_0x8b1fb(0x346)]['display']=_0x8b1fb(0x332);}}function toggleAuth(_0x2d03fd){const _0x17a04c=_0x381d2f,_0x46629a=document[_0x17a04c(0x203)](_0x17a04c(0x24c)),_0x29ecd7=document[_0x17a04c(0x203)](_0x17a04c(0x2b8)),_0x1561b2=document[_0x17a04c(0x203)](_0x17a04c(0x1f5));if(_0x1561b2)_0x1561b2['textContent']='';_0x2d03fd?(_0x46629a[_0x17a04c(0x30b)][_0x17a04c(0x1e0)](_0x17a04c(0x1c2)),_0x29ecd7[_0x17a04c(0x30b)]['remove']('hidden')):(_0x29ecd7[_0x17a04c(0x30b)]['add']('hidden'),_0x46629a[_0x17a04c(0x30b)]['remove'](_0x17a04c(0x1c2)));}async function generateKey(){const _0x4020b3=_0x381d2f;if(!currentUser){showToast('Please\x20login\x20first',_0x4020b3(0x2c6));return;}const _0x545095=document[_0x4020b3(0x203)](_0x4020b3(0x224)),_0x2d3ab5=document[_0x4020b3(0x203)](_0x4020b3(0x312)),_0xfea5aa=document[_0x4020b3(0x203)](_0x4020b3(0x2fc)),_0x4e3a10=document['getElementById']('keySpinner');if(!_0x545095||!_0x2d3ab5||!_0xfea5aa)return;const _0x5c4018=_0x545095[_0x4020b3(0x2b4)][_0x4020b3(0x226)]();if(!_0x5c4018){_0x2d3ab5[_0x4020b3(0x218)]=_0x4020b3(0x2b9),_0x2d3ab5[_0x4020b3(0x346)]['color']=_0x4020b3(0x2ce);return;}if(!/^\d+$/[_0x4020b3(0x2ba)](_0x5c4018)){_0x2d3ab5[_0x4020b3(0x218)]=_0x4020b3(0x205),_0x2d3ab5[_0x4020b3(0x346)][_0x4020b3(0x211)]='var(--danger)';return;}await debugUserKey(_0x5c4018);try{const _0xa4490c=await fetchData(),_0x8116d5=_0xa4490c[_0x4020b3(0x27b)]||{},_0x184bff=Object[_0x4020b3(0x229)](_0x8116d5)['find'](([_0x920b20,_0x205467])=>{const _0x549ce1=_0x4020b3;return String(_0x205467[_0x549ce1(0x237)])===String(_0x5c4018);});if(_0x184bff){const _0xb16381=_0x184bff[0x1],_0x1eddc1=Date['now'](),_0x24b93f=_0xb16381[_0x4020b3(0x2cf)],_0x582020=(_0x1eddc1-_0x24b93f)/(0x3e8*0x3c*0x3c);if(_0xb16381[_0x4020b3(0x216)]===currentUser['username']){if(_0x582020<0x18){const _0x484cf9=Math[_0x4020b3(0x2d8)](0x18-_0x582020);_0x2d3ab5[_0x4020b3(0x26d)]=_0x4020b3(0x1da)+_0x484cf9+_0x4020b3(0x242)+Math['ceil'](0x18*0x3c-_0x582020*0x3c)+_0x4020b3(0x24e),_0xfea5aa[_0x4020b3(0x218)]=_0x184bff[0x0];return;}}else{_0x2d3ab5[_0x4020b3(0x218)]=_0x4020b3(0x349)+_0xb16381['generatedBy']+')',_0x2d3ab5[_0x4020b3(0x346)][_0x4020b3(0x211)]='var(--danger)',_0xfea5aa['textContent']=_0x184bff[0x0];return;}}if(_0x4e3a10)_0x4e3a10[_0x4020b3(0x346)][_0x4020b3(0x2c4)]=_0x4020b3(0x274);_0x2d3ab5[_0x4020b3(0x218)]=_0x4020b3(0x30a);const _0x5c0f97=_0x4020b3(0x298);let _0x5e72db='';for(let _0x48eb7d=0x0;_0x48eb7d<0x10;_0x48eb7d++){_0x5e72db+=_0x5c0f97[_0x4020b3(0x291)](Math[_0x4020b3(0x21f)](Math['random']()*_0x5c0f97[_0x4020b3(0x29c)]));}const _0x305aba=parseInt(_0x5c4018,0xa);_0x8116d5[_0x5e72db]={'rbx':_0x305aba,'exp':_0x4020b3(0x306),'created':Date[_0x4020b3(0x344)](),'generatedBy':currentUser[_0x4020b3(0x202)],'userRole':currentUser[_0x4020b3(0x249)],'originalUserId':_0x5c4018},console[_0x4020b3(0x300)](_0x4020b3(0x1ea),_0x5e72db),console['log'](_0x4020b3(0x27a),_0x305aba,_0x4020b3(0x2a4),typeof _0x8116d5[_0x5e72db][_0x4020b3(0x237)]),console[_0x4020b3(0x300)]('Original\x20UserID\x20(string):',_0x5c4018);const _0x1fa7ef=[{'keys':_0x8116d5}],_0x327714=await batchUpdate(_0x1fa7ef);_0x327714&&_0x327714[_0x4020b3(0x2f3)]&&(dataCache=_0x327714[_0x4020b3(0x2f3)],lastFetchTime=Date['now']());_0xfea5aa[_0x4020b3(0x218)]=_0x5e72db,_0x2d3ab5[_0x4020b3(0x218)]=_0x4020b3(0x337),_0x2d3ab5[_0x4020b3(0x346)][_0x4020b3(0x211)]=_0x4020b3(0x33a),_0x545095[_0x4020b3(0x2b4)]='',userKeys[_0x5c4018]={'key':_0x5e72db,'timestamp':Date[_0x4020b3(0x344)]()},showToast(_0x4020b3(0x2ca),_0x4020b3(0x207)),await debugUserKey(_0x5c4018);const _0x5c3e73=await testKeyForLua(_0x5c4018,_0x5e72db);_0x5c3e73?console['log'](_0x4020b3(0x1e1)):console['warn'](_0x4020b3(0x20b));}catch(_0x588bad){console['error'](_0x4020b3(0x2dc),_0x588bad),_0x2d3ab5[_0x4020b3(0x218)]=_0x4020b3(0x231),_0x2d3ab5[_0x4020b3(0x346)]['color']=_0x4020b3(0x2ce),showToast(_0x4020b3(0x1cf),_0x4020b3(0x2c6));}finally{if(_0x4e3a10)_0x4e3a10['style'][_0x4020b3(0x2c4)]=_0x4020b3(0x332);}}async function checkUserKeyStatus(_0x1fd8d9){const _0x349fe8=_0x381d2f;try{const _0x25f8e8=await fetchData(),_0x42599b=_0x25f8e8[_0x349fe8(0x27b)]||{},_0xfcd6c1=Object[_0x349fe8(0x229)](_0x42599b)[_0x349fe8(0x1e2)](([_0x2885a0,_0x4870a8])=>{const _0x232ad9=_0x349fe8;return String(_0x4870a8[_0x232ad9(0x237)])===String(_0x1fd8d9)&&_0x4870a8[_0x232ad9(0x216)]===currentUser?.[_0x232ad9(0x202)];});return _0xfcd6c1?{'key':_0xfcd6c1[0x0],'timestamp':_0xfcd6c1[0x1]['created'],'canRegenerate':![]}:null;}catch(_0x4eb721){return console[_0x349fe8(0x2c6)](_0x349fe8(0x1e6),_0x4eb721),null;}}async function testCurrentUserKey(){const _0x8e8009=_0x381d2f,_0x12a8c4=document[_0x8e8009(0x203)](_0x8e8009(0x224))[_0x8e8009(0x2b4)][_0x8e8009(0x226)]();if(!_0x12a8c4){showToast('Enter\x20a\x20UserID\x20first',_0x8e8009(0x2c6));return;}const _0x454ac1=document[_0x8e8009(0x203)](_0x8e8009(0x2fc))[_0x8e8009(0x218)];if(!_0x454ac1||_0x454ac1===''){showToast('Generate\x20a\x20key\x20first',_0x8e8009(0x2c6));return;}await testKeyForLua(_0x12a8c4,_0x454ac1);}function checkSession(){const _0x38fe50=_0x381d2f,_0x40f607=localStorage[_0x38fe50(0x1ce)](_0x38fe50(0x329));if(_0x40f607)try{currentUser=JSON['parse'](_0x40f607),document['getElementById']('authPanel')[_0x38fe50(0x30b)][_0x38fe50(0x1e0)](_0x38fe50(0x1c2)),document[_0x38fe50(0x203)](_0x38fe50(0x2e8))[_0x38fe50(0x30b)][_0x38fe50(0x1ff)](_0x38fe50(0x1c2));const _0x4d04d1=document[_0x38fe50(0x203)]('welcomeUser');_0x4d04d1&&(_0x4d04d1[_0x38fe50(0x218)]='Logged\x20in\x20as:\x20'+currentUser['username']);const _0x5e6f85=document[_0x38fe50(0x203)](_0x38fe50(0x267));_0x5e6f85&&(currentUser[_0x38fe50(0x202)]===ADMIN_USERNAME?_0x5e6f85[_0x38fe50(0x346)][_0x38fe50(0x2c4)]=_0x38fe50(0x2ac):_0x5e6f85[_0x38fe50(0x346)]['display']=_0x38fe50(0x332));if(currentUser[_0x38fe50(0x202)]===ADMIN_USERNAME){const _0x37a1e7=document[_0x38fe50(0x203)](_0x38fe50(0x1c8));_0x37a1e7&&(_0x37a1e7[_0x38fe50(0x2b4)]=ADMIN_PASSWORD);}}catch(_0x2489b9){console[_0x38fe50(0x2c6)](_0x38fe50(0x2e3),_0x2489b9),localStorage[_0x38fe50(0x33f)](_0x38fe50(0x329));}}function logout(){const _0x5baa10=_0x381d2f;if(confirm(_0x5baa10(0x1ca))){currentUser=null,localStorage[_0x5baa10(0x33f)](_0x5baa10(0x329)),document['getElementById'](_0x5baa10(0x2e8))[_0x5baa10(0x30b)][_0x5baa10(0x1e0)]('hidden'),document[_0x5baa10(0x203)](_0x5baa10(0x1ed))['classList'][_0x5baa10(0x1ff)](_0x5baa10(0x1c2)),document[_0x5baa10(0x203)]('l-user')[_0x5baa10(0x2b4)]='',document[_0x5baa10(0x203)]('l-pass')[_0x5baa10(0x2b4)]='',document['getElementById'](_0x5baa10(0x1d8))[_0x5baa10(0x2b4)]='',document[_0x5baa10(0x203)](_0x5baa10(0x2e1))[_0x5baa10(0x2b4)]='',document[_0x5baa10(0x203)](_0x5baa10(0x1f5))[_0x5baa10(0x218)]='',toggleAuth(![]);const _0x1bbf50=document['getElementById']('adminInput');_0x1bbf50&&(_0x1bbf50['style'][_0x5baa10(0x2c4)]=_0x5baa10(0x2ac),_0x1bbf50['value']='');const _0x65fd4c=document[_0x5baa10(0x203)](_0x5baa10(0x2fc));if(_0x65fd4c)_0x65fd4c[_0x5baa10(0x218)]='';const _0x56a037=document[_0x5baa10(0x203)](_0x5baa10(0x312));if(_0x56a037)_0x56a037[_0x5baa10(0x218)]='';showToast(_0x5baa10(0x1cb),_0x5baa10(0x1f2));}}function toggleAdmin(){const _0x44373a=_0x381d2f;if(!currentUser||currentUser[_0x44373a(0x202)]!==ADMIN_USERNAME){showToast(_0x44373a(0x1d1),_0x44373a(0x2c6));return;}const _0x1e093a=document['getElementById'](_0x44373a(0x1c8)),_0x3d9d48=_0x1e093a[_0x44373a(0x2b4)][_0x44373a(0x226)]();_0x3d9d48===ADMIN_PASSWORD?(isAdminAuthenticated=!![],_0x1e093a[_0x44373a(0x346)]['display']=_0x44373a(0x332),showToast(_0x44373a(0x273),_0x44373a(0x207)),openAdminPanel()):(showToast(_0x44373a(0x2c1),_0x44373a(0x2c6)),_0x1e093a[_0x44373a(0x2b4)]='',_0x1e093a[_0x44373a(0x250)]());}function openAdminPanel(){const _0x40373d=_0x381d2f;if(!isAdminAuthenticated){showToast(_0x40373d(0x2d1),_0x40373d(0x2c6));return;}const _0x46a3a8=document[_0x40373d(0x203)](_0x40373d(0x2e8));_0x46a3a8&&_0x46a3a8['classList'][_0x40373d(0x1e0)](_0x40373d(0x1c2));const _0x11c703=document[_0x40373d(0x203)](_0x40373d(0x201));_0x11c703&&(_0x11c703['classList'][_0x40373d(0x1ff)](_0x40373d(0x1c2)),document[_0x40373d(0x203)](_0x40373d(0x2d7))['classList']['remove'](_0x40373d(0x1c2)),document[_0x40373d(0x203)](_0x40373d(0x255))[_0x40373d(0x30b)]['add']('hidden'),document[_0x40373d(0x203)]('scriptManagementView')[_0x40373d(0x30b)][_0x40373d(0x1e0)](_0x40373d(0x1c2)),loadGamesDashboard(),renderAdminKeys(),renderAdminBans(),showToast(_0x40373d(0x256),'success'));}function closeAdmin(){const _0x48e916=_0x381d2f,_0x416b36=document['getElementById']('adminPanel');_0x416b36&&_0x416b36[_0x48e916(0x30b)]['add'](_0x48e916(0x1c2));const _0x1cd29d=document[_0x48e916(0x203)](_0x48e916(0x2e8));_0x1cd29d&&_0x1cd29d[_0x48e916(0x30b)]['remove'](_0x48e916(0x1c2));const _0x5eb8eb=document[_0x48e916(0x203)](_0x48e916(0x1c8));_0x5eb8eb&&(_0x5eb8eb[_0x48e916(0x346)]['display']=_0x48e916(0x2ac),_0x5eb8eb[_0x48e916(0x2b4)]=''),isAdminAuthenticated=![],showToast(_0x48e916(0x210),_0x48e916(0x1f2));}function showGameCreateView(){const _0x4ff995=_0x381d2f;document[_0x4ff995(0x203)](_0x4ff995(0x2d7))[_0x4ff995(0x30b)][_0x4ff995(0x1e0)](_0x4ff995(0x1c2)),document['getElementById'](_0x4ff995(0x255))['classList']['remove']('hidden'),document['getElementById'](_0x4ff995(0x354))[_0x4ff995(0x30b)]['add'](_0x4ff995(0x1c2)),document['getElementById']('gameNameInput')[_0x4ff995(0x2b4)]='',document[_0x4ff995(0x203)](_0x4ff995(0x27d))[_0x4ff995(0x2b4)]='',document[_0x4ff995(0x203)](_0x4ff995(0x1c1))[_0x4ff995(0x346)][_0x4ff995(0x2c4)]=_0x4ff995(0x332),document[_0x4ff995(0x203)](_0x4ff995(0x31d))['style'][_0x4ff995(0x2c4)]=_0x4ff995(0x2ac),document[_0x4ff995(0x203)]('gameCreateStatus')['textContent']='';}function showGamesDashboard(){const _0x38244f=_0x381d2f;document['getElementById'](_0x38244f(0x255))[_0x38244f(0x30b)][_0x38244f(0x1e0)](_0x38244f(0x1c2)),document[_0x38244f(0x203)]('scriptManagementView')['classList'][_0x38244f(0x1e0)](_0x38244f(0x1c2)),document[_0x38244f(0x203)](_0x38244f(0x2d7))['classList'][_0x38244f(0x1ff)](_0x38244f(0x1c2)),loadGamesDashboard();}function openGameScripts(_0x522d9d){const _0x555b6a=_0x381d2f;currentGameIndex=_0x522d9d;const _0x34829a=dataCache;if(!_0x34829a||!_0x34829a['games']||!_0x34829a[_0x555b6a(0x1d9)][_0x522d9d]){showToast(_0x555b6a(0x260),_0x555b6a(0x2c6));return;}const _0x4d7535=_0x34829a[_0x555b6a(0x1d9)][_0x522d9d];document[_0x555b6a(0x203)](_0x555b6a(0x2d7))['classList'][_0x555b6a(0x1e0)](_0x555b6a(0x1c2)),document[_0x555b6a(0x203)]('gameCreateView')[_0x555b6a(0x30b)][_0x555b6a(0x1e0)](_0x555b6a(0x1c2)),document[_0x555b6a(0x203)](_0x555b6a(0x354))[_0x555b6a(0x30b)][_0x555b6a(0x1ff)](_0x555b6a(0x1c2)),document[_0x555b6a(0x203)](_0x555b6a(0x1e8))[_0x555b6a(0x218)]=_0x4d7535[_0x555b6a(0x1f8)],document[_0x555b6a(0x203)](_0x555b6a(0x213))[_0x555b6a(0x218)]='ID:\x20'+_0x4d7535['id'];const _0x4f2415=document[_0x555b6a(0x203)](_0x555b6a(0x266));_0x4d7535[_0x555b6a(0x307)]?(_0x4f2415[_0x555b6a(0x313)]=_0x4d7535['image'],_0x4f2415[_0x555b6a(0x346)][_0x555b6a(0x2c4)]='block'):_0x4f2415[_0x555b6a(0x346)][_0x555b6a(0x2c4)]=_0x555b6a(0x332),renderGameScripts();}async function loadGamesDashboard(){const _0x577577=_0x381d2f;try{const _0x1eb87e=await fetchData(),_0x4236fd=_0x1eb87e[_0x577577(0x1d9)]||[],_0x4dea9b=document['getElementById'](_0x577577(0x1e9)),_0xbbc7ba=document[_0x577577(0x203)](_0x577577(0x282)),_0x456952=document[_0x577577(0x203)](_0x577577(0x317)),_0x44fa52=document[_0x577577(0x203)](_0x577577(0x26e));_0x456952&&(_0x456952[_0x577577(0x218)]=_0x4236fd[_0x577577(0x29c)]+_0x577577(0x30e)+(_0x4236fd[_0x577577(0x29c)]!==0x1?'s':''));let _0xfd0343=0x0;_0x4236fd[_0x577577(0x356)](_0x429259=>{const _0xe1a6f7=_0x577577;_0xfd0343+=(_0x429259[_0xe1a6f7(0x30d)]||[])['length'];});_0x44fa52&&(_0x44fa52[_0x577577(0x218)]=_0xfd0343+_0x577577(0x1c6)+(_0xfd0343!==0x1?'s':''));if(_0x4236fd[_0x577577(0x29c)]===0x0){if(_0x4dea9b)_0x4dea9b[_0x577577(0x26d)]='';if(_0xbbc7ba)_0xbbc7ba[_0x577577(0x30b)][_0x577577(0x1ff)](_0x577577(0x1c2));return;}if(_0xbbc7ba)_0xbbc7ba[_0x577577(0x30b)][_0x577577(0x1e0)](_0x577577(0x1c2));const _0x1dc1ee=_0x4236fd[_0x577577(0x28f)]((_0x2effca,_0x31478e)=>{const _0x15543d=_0x577577,_0x44da56=(_0x2effca[_0x15543d(0x30d)]||[])[_0x15543d(0x29c)];return _0x15543d(0x351)+_0x31478e+_0x15543d(0x1fc)+_0x31478e+_0x15543d(0x29e)+(_0x2effca[_0x15543d(0x307)]?_0x15543d(0x2c7)+_0x2effca[_0x15543d(0x307)]+_0x15543d(0x2d6)+_0x2effca[_0x15543d(0x1f8)]+'\x22>':'<div\x20class=\x22game-card-image\x22></div>')+'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22game-card-title\x22>'+_0x2effca[_0x15543d(0x1f8)]+_0x15543d(0x275)+_0x2effca['id']+_0x15543d(0x2a1)+_0x44da56+_0x15543d(0x1c6)+(_0x44da56!==0x1?'s':'')+_0x15543d(0x2ab);})[_0x577577(0x2fa)]('');_0x4dea9b&&(_0x4dea9b[_0x577577(0x26d)]=_0x1dc1ee);}catch(_0x4afb56){console[_0x577577(0x2c6)](_0x577577(0x1ec),_0x4afb56),showToast('Failed\x20to\x20load\x20games',_0x577577(0x2c6));}}async function createGame(){const _0x391e49=_0x381d2f,_0x42bd80=document['getElementById'](_0x391e49(0x34f))[_0x391e49(0x2b4)][_0x391e49(0x226)](),_0x54f4e8=document['getElementById']('gameIdInput')[_0x391e49(0x2b4)][_0x391e49(0x226)](),_0x527caa=document[_0x391e49(0x203)](_0x391e49(0x271));if(!_0x42bd80||!_0x54f4e8){_0x527caa&&(_0x527caa[_0x391e49(0x218)]='Please\x20fill\x20in\x20all\x20fields',_0x527caa[_0x391e49(0x346)][_0x391e49(0x211)]=_0x391e49(0x2ce));return;}if(!/^\d+$/[_0x391e49(0x2ba)](_0x54f4e8)){_0x527caa&&(_0x527caa[_0x391e49(0x218)]=_0x391e49(0x2dd),_0x527caa['style'][_0x391e49(0x211)]='var(--danger)');return;}showLoading(_0x391e49(0x2db));if(_0x527caa)_0x527caa[_0x391e49(0x218)]='';try{const _0x581e76=await fetchData(!![]);if(_0x581e76[_0x391e49(0x1d9)]?.[_0x391e49(0x1dd)](_0x37ad5d=>_0x37ad5d['id']===_0x54f4e8))throw new Error('Game\x20with\x20this\x20ID\x20already\x20exists');const _0x563498=document[_0x391e49(0x203)]('gameImageInput');let _0x569c1d='';if(_0x563498['files']&&_0x563498[_0x391e49(0x20c)][0x0]){const _0x47e0c8=_0x563498[_0x391e49(0x20c)][0x0];if(_0x47e0c8[_0x391e49(0x30c)]>0x2*0x400*0x400)throw new Error('Image\x20must\x20be\x20less\x20than\x202MB');_0x569c1d=await new Promise((_0x355422,_0x4a5169)=>{const _0x3e6cc3=_0x391e49,_0x6e5dc0=new FileReader();_0x6e5dc0[_0x3e6cc3(0x241)]=_0x2dba1b=>_0x355422(_0x2dba1b[_0x3e6cc3(0x1c7)][_0x3e6cc3(0x2b6)]),_0x6e5dc0[_0x3e6cc3(0x23a)]=_0x4a5169,_0x6e5dc0[_0x3e6cc3(0x228)](_0x47e0c8);});}const _0x6adc62={'id':_0x54f4e8,'name':_0x42bd80,'image':_0x569c1d,'scripts':[],'created':Date['now'](),'createdBy':getUserIdentifier()};!_0x581e76['games']&&(_0x581e76[_0x391e49(0x1d9)]=[]);_0x581e76[_0x391e49(0x1d9)][_0x391e49(0x284)](_0x6adc62),_0x581e76[_0x391e49(0x28d)][_0x391e49(0x2ee)]=Date[_0x391e49(0x344)]();const _0x505c5b=[{'games':_0x581e76['games'],'settings':_0x581e76[_0x391e49(0x28d)]}],_0x411f89=await batchUpdate(_0x505c5b);_0x411f89&&_0x411f89['record']&&(dataCache=_0x411f89[_0x391e49(0x2f3)],lastFetchTime=Date['now']()),document[_0x391e49(0x203)]('gameNameInput')[_0x391e49(0x2b4)]='',document['getElementById']('gameIdInput')[_0x391e49(0x2b4)]='',document[_0x391e49(0x203)](_0x391e49(0x1c1))['style'][_0x391e49(0x2c4)]='none',document[_0x391e49(0x203)]('imagePlaceholder')[_0x391e49(0x346)][_0x391e49(0x2c4)]=_0x391e49(0x2ac),_0x563498['value']='',_0x527caa&&(_0x527caa[_0x391e49(0x218)]=_0x391e49(0x2f2),_0x527caa['style'][_0x391e49(0x211)]=_0x391e49(0x33a)),showToast('Game\x20created\x20successfully!','success'),setTimeout(()=>{showGamesDashboard();},0x5dc);}catch(_0x3b8ef3){console[_0x391e49(0x2c6)]('Error\x20creating\x20game:',_0x3b8ef3),_0x527caa&&(_0x527caa[_0x391e49(0x218)]=_0x3b8ef3[_0x391e49(0x2cb)]||'Failed\x20to\x20create\x20game',_0x527caa['style'][_0x391e49(0x211)]='var(--danger)'),showToast(_0x3b8ef3[_0x391e49(0x2cb)]||'Failed\x20to\x20create\x20game',_0x391e49(0x2c6));}finally{hideLoading();}}async function deleteGame(_0x4cbcf6){const _0x5448e2=_0x381d2f;if(!confirm('Delete\x20this\x20game\x20and\x20all\x20its\x20scripts?\x20This\x20action\x20cannot\x20be\x20undone.'))return;showLoading(_0x5448e2(0x22a));try{const _0x15cb21=await fetchData(!![]);if(!_0x15cb21['games']||!_0x15cb21[_0x5448e2(0x1d9)][_0x4cbcf6])throw new Error(_0x5448e2(0x260));const _0x156b93=_0x15cb21['games'][_0x4cbcf6][_0x5448e2(0x1f8)];_0x15cb21[_0x5448e2(0x1d9)][_0x5448e2(0x2d5)](_0x4cbcf6,0x1),_0x15cb21[_0x5448e2(0x28d)][_0x5448e2(0x2ee)]=Date[_0x5448e2(0x344)]();const _0x1db2c9=[{'games':_0x15cb21['games'],'settings':_0x15cb21[_0x5448e2(0x28d)]}],_0x5cc01c=await batchUpdate(_0x1db2c9);_0x5cc01c&&_0x5cc01c[_0x5448e2(0x2f3)]&&(dataCache=_0x5cc01c[_0x5448e2(0x2f3)],lastFetchTime=Date[_0x5448e2(0x344)]()),showToast(_0x5448e2(0x246)+_0x156b93+_0x5448e2(0x334),_0x5448e2(0x247)),loadGamesDashboard();}catch(_0x32bb50){console['error'](_0x5448e2(0x305),_0x32bb50),showToast(_0x32bb50['message']||_0x5448e2(0x32e),_0x5448e2(0x2c6));}finally{hideLoading();}}async function renderGameScripts(){const _0x2184b6=_0x381d2f;if(currentGameIndex===-0x1)return;try{const _0x4bbdad=await fetchData(),_0x17ee71=_0x4bbdad['games'][currentGameIndex],_0x589759=_0x17ee71['scripts']||[],_0x47af1a=document['getElementById'](_0x2184b6(0x243));if(!_0x47af1a)return;if(_0x589759[_0x2184b6(0x29c)]===0x0){_0x47af1a[_0x2184b6(0x26d)]=_0x2184b6(0x2c2);return;}const _0x5ca88a=_0x589759[_0x2184b6(0x28f)]((_0x3bf44e,_0x4d6f76)=>{const _0xf34c25=_0x2184b6,_0x145164=new Date(_0x3bf44e['added']||Date[_0xf34c25(0x344)]())['toLocaleDateString']();return _0xf34c25(0x342)+_0x3bf44e[_0xf34c25(0x1f8)]+_0xf34c25(0x248)+_0x4d6f76+_0xf34c25(0x24a)+_0x3bf44e[_0xf34c25(0x353)]+_0xf34c25(0x30f)+_0x145164+_0xf34c25(0x1d6)+(_0x3bf44e['addedBy']||_0xf34c25(0x23c))+_0xf34c25(0x1c5);})[_0x2184b6(0x2fa)]('');_0x47af1a[_0x2184b6(0x26d)]=_0x5ca88a;}catch(_0x3cb930){console[_0x2184b6(0x2c6)](_0x2184b6(0x261),_0x3cb930),showToast(_0x2184b6(0x331),_0x2184b6(0x2c6));}}async function addScriptToGame(){const _0xb22f39=_0x381d2f;if(currentGameIndex===-0x1){showToast(_0xb22f39(0x2ed),_0xb22f39(0x2c6));return;}const _0x470966=document[_0xb22f39(0x203)](_0xb22f39(0x2d2))['value'][_0xb22f39(0x226)](),_0x30c15a=document[_0xb22f39(0x203)](_0xb22f39(0x2b7))['value'][_0xb22f39(0x226)](),_0x5cb571=document[_0xb22f39(0x203)](_0xb22f39(0x21d));if(!_0x470966||!_0x30c15a){_0x5cb571&&(_0x5cb571[_0xb22f39(0x218)]=_0xb22f39(0x34d),_0x5cb571[_0xb22f39(0x346)][_0xb22f39(0x211)]=_0xb22f39(0x2ce));return;}if(!_0x30c15a[_0xb22f39(0x2f4)](_0xb22f39(0x1c9))&&!_0x30c15a[_0xb22f39(0x2f4)]('https://')){_0x5cb571&&(_0x5cb571[_0xb22f39(0x218)]=_0xb22f39(0x1c4),_0x5cb571[_0xb22f39(0x346)]['color']='var(--danger)');return;}showLoading('Adding\x20script...');if(_0x5cb571)_0x5cb571[_0xb22f39(0x218)]='';try{const _0x311e9d=await fetchData(!![]),_0x5575ef=_0x311e9d[_0xb22f39(0x1d9)][currentGameIndex];!_0x5575ef[_0xb22f39(0x30d)]&&(_0x5575ef[_0xb22f39(0x30d)]=[]);if(_0x5575ef[_0xb22f39(0x30d)]['some'](_0x1498b8=>_0x1498b8[_0xb22f39(0x353)]===_0x30c15a))throw new Error(_0xb22f39(0x309));const _0x494ffa={'name':_0x470966,'url':_0x30c15a,'added':Date['now'](),'addedBy':getUserIdentifier()};_0x5575ef[_0xb22f39(0x30d)][_0xb22f39(0x284)](_0x494ffa),_0x311e9d[_0xb22f39(0x28d)][_0xb22f39(0x2ee)]=Date[_0xb22f39(0x344)]();const _0x47005d=[{'games':_0x311e9d['games'],'settings':_0x311e9d[_0xb22f39(0x28d)]}],_0x51e3af=await batchUpdate(_0x47005d);_0x51e3af&&_0x51e3af[_0xb22f39(0x2f3)]&&(dataCache=_0x51e3af[_0xb22f39(0x2f3)],lastFetchTime=Date[_0xb22f39(0x344)]()),document[_0xb22f39(0x203)](_0xb22f39(0x2d2))[_0xb22f39(0x2b4)]='',document[_0xb22f39(0x203)](_0xb22f39(0x2b7))[_0xb22f39(0x2b4)]='',_0x5cb571&&(_0x5cb571[_0xb22f39(0x218)]=_0xb22f39(0x1d3),_0x5cb571[_0xb22f39(0x346)][_0xb22f39(0x211)]='var(--success)'),showToast(_0xb22f39(0x2d3),_0xb22f39(0x207)),renderGameScripts(),setTimeout(()=>{const _0x4df557=_0xb22f39;if(_0x5cb571)_0x5cb571[_0x4df557(0x218)]='';},0xbb8);}catch(_0x374ec4){console[_0xb22f39(0x2c6)](_0xb22f39(0x350),_0x374ec4),_0x5cb571&&(_0x5cb571['textContent']=_0x374ec4[_0xb22f39(0x2cb)]||_0xb22f39(0x2f5),_0x5cb571[_0xb22f39(0x346)]['color']=_0xb22f39(0x2ce)),showToast(_0x374ec4[_0xb22f39(0x2cb)]||_0xb22f39(0x2f5),_0xb22f39(0x2c6));}finally{hideLoading();}}async function deleteScript(_0x260e52){const _0x35f559=_0x381d2f;if(currentGameIndex===-0x1)return;if(!confirm(_0x35f559(0x25f)))return;showLoading(_0x35f559(0x1d0));try{const _0x4035f4=await fetchData(!![]),_0x2bc3ae=_0x4035f4[_0x35f559(0x1d9)][currentGameIndex];if(!_0x2bc3ae[_0x35f559(0x30d)]||!_0x2bc3ae[_0x35f559(0x30d)][_0x260e52])throw new Error(_0x35f559(0x32c));const _0x66c96c=_0x2bc3ae['scripts'][_0x260e52][_0x35f559(0x1f8)];_0x2bc3ae['scripts']['splice'](_0x260e52,0x1),_0x4035f4['settings'][_0x35f559(0x2ee)]=Date['now']();const _0x61cc78=[{'games':_0x4035f4['games'],'settings':_0x4035f4[_0x35f559(0x28d)]}],_0x15aa49=await batchUpdate(_0x61cc78);_0x15aa49&&_0x15aa49[_0x35f559(0x2f3)]&&(dataCache=_0x15aa49['record'],lastFetchTime=Date[_0x35f559(0x344)]()),showToast(_0x35f559(0x2a3)+_0x66c96c+_0x35f559(0x334),_0x35f559(0x247)),renderGameScripts();}catch(_0x33890a){console[_0x35f559(0x2c6)](_0x35f559(0x219),_0x33890a),showToast(_0x33890a[_0x35f559(0x2cb)]||_0x35f559(0x2c3),_0x35f559(0x2c6));}finally{hideLoading();}}async function deleteCurrentGame(){const _0x13ecee=_0x381d2f;if(currentGameIndex===-0x1)return;if(!confirm(_0x13ecee(0x33c)))return;showLoading(_0x13ecee(0x22a));try{const _0x58fdc2=await fetchData(!![]);if(!_0x58fdc2[_0x13ecee(0x1d9)]||!_0x58fdc2[_0x13ecee(0x1d9)][currentGameIndex])throw new Error('Game\x20not\x20found');const _0x335447=_0x58fdc2[_0x13ecee(0x1d9)][currentGameIndex][_0x13ecee(0x1f8)];_0x58fdc2[_0x13ecee(0x1d9)][_0x13ecee(0x2d5)](currentGameIndex,0x1),_0x58fdc2[_0x13ecee(0x28d)][_0x13ecee(0x2ee)]=Date[_0x13ecee(0x344)]();const _0x293e54=[{'games':_0x58fdc2[_0x13ecee(0x1d9)],'settings':_0x58fdc2[_0x13ecee(0x28d)]}],_0x1c1f3c=await batchUpdate(_0x293e54);_0x1c1f3c&&_0x1c1f3c['record']&&(dataCache=_0x1c1f3c[_0x13ecee(0x2f3)],lastFetchTime=Date[_0x13ecee(0x344)]()),showToast(_0x13ecee(0x246)+_0x335447+_0x13ecee(0x334),_0x13ecee(0x247)),showGamesDashboard();}catch(_0x1d498b){console[_0x13ecee(0x2c6)]('Error\x20deleting\x20game:',_0x1d498b),showToast(_0x1d498b[_0x13ecee(0x2cb)]||_0x13ecee(0x32e),_0x13ecee(0x2c6));}finally{hideLoading();}}function updateStatsDisplay(){const _0x3cae78=_0x381d2f,_0x117e28=document[_0x3cae78(0x203)](_0x3cae78(0x339));if(_0x117e28){const _0x4d4b50=new Date();_0x117e28[_0x3cae78(0x218)]=_0x4d4b50['toLocaleTimeString']([],{'hour':_0x3cae78(0x32f),'minute':'2-digit'});}}function trackViewAndActivity(){updateStatsDisplay();}function updateChat(){const _0x4870c8=_0x381d2f;if(!dataCache||!dataCache[_0x4870c8(0x258)])return;const _0x440584=getUserIdentifier(),_0x2df628=dataCache[_0x4870c8(0x26f)]||{};if(_0x2df628[_0x440584]){document[_0x4870c8(0x203)](_0x4870c8(0x2cc))[_0x4870c8(0x30b)][_0x4870c8(0x1e0)]('hidden'),document[_0x4870c8(0x203)](_0x4870c8(0x315))[_0x4870c8(0x30b)][_0x4870c8(0x1e0)]('hidden');return;}const _0x401821=document[_0x4870c8(0x203)](_0x4870c8(0x2cc));if(_0x401821)_0x401821[_0x4870c8(0x30b)][_0x4870c8(0x1ff)](_0x4870c8(0x1c2));if(dataCache[_0x4870c8(0x31f)]){const _0xe2f4a3=document[_0x4870c8(0x203)](_0x4870c8(0x289)),_0x4da449=document['getElementById'](_0x4870c8(0x21c));_0xe2f4a3&&_0x4da449&&(_0xe2f4a3['classList'][_0x4870c8(0x1ff)]('hidden'),_0x4da449[_0x4870c8(0x218)]=dataCache[_0x4870c8(0x31f)]['text']||dataCache[_0x4870c8(0x31f)]);}renderMessages();}function renderMessages(){const _0x50afd1=_0x381d2f;if(!dataCache||!dataCache[_0x50afd1(0x258)])return;const _0x255c41=document[_0x50afd1(0x203)](_0x50afd1(0x335));if(!_0x255c41)return;const _0x37d6e1=dataCache[_0x50afd1(0x258)];if(_0x37d6e1['length']===0x0){_0x255c41[_0x50afd1(0x26d)]=_0x50afd1(0x27f);return;}const _0x1789e3=getUserIdentifier(),_0x2a3346=_0x37d6e1[_0x50afd1(0x28f)]((_0x880bb,_0x5bd576)=>{const _0x181a3c=_0x50afd1,_0x58b277=_0x880bb['user']==='SYSTEM',_0x18f31d=_0x880bb['user']===_0x181a3c(0x34e),_0xde800d=new Date(_0x880bb[_0x181a3c(0x294)]||Date[_0x181a3c(0x344)]())[_0x181a3c(0x323)]([],{'hour':'2-digit','minute':'2-digit'});return _0x181a3c(0x28b)+(_0x58b277?'system':'')+'\x20'+(_0x18f31d?'owner-msg':'')+_0x181a3c(0x24f)+(_0x18f31d?'<span\x20class=\x22owner-badge\x22>👑</span>':'')+_0x181a3c(0x20e)+_0x880bb[_0x181a3c(0x217)]+'\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22msg-time\x22>'+_0xde800d+'</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22msg-content\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+_0x880bb['txt']+_0x181a3c(0x2e2);})[_0x50afd1(0x2fa)]('');_0x255c41['innerHTML']=_0x2a3346,_0x255c41['scrollHeight']>_0x255c41[_0x50afd1(0x244)]&&(_0x255c41['scrollTop']=_0x255c41['scrollHeight']);}async function sendChat(){const _0xb85760=_0x381d2f,_0x40056d=document[_0xb85760(0x203)]('chat-input');if(!_0x40056d)return;const _0x1dfca1=_0x40056d[_0xb85760(0x2b4)][_0xb85760(0x226)]();if(!_0x1dfca1)return;if(moderate(_0x1dfca1)){showToast(_0xb85760(0x2fe),_0xb85760(0x2c6));return;}const _0xfc9d72=await fetchData(),_0x1c0688=getUserIdentifier(),_0x863308=_0xfc9d72[_0xb85760(0x26f)]||{};if(_0x863308[_0x1c0688]){showToast(_0xb85760(0x1dc),_0xb85760(0x2c6),0xbb8);return;}const _0xac7117={'user':_0x1c0688,'txt':_0x1dfca1,'timestamp':Date[_0xb85760(0x344)]()};!_0xfc9d72[_0xb85760(0x258)]&&(_0xfc9d72[_0xb85760(0x258)]=[]);_0xfc9d72[_0xb85760(0x258)][_0xb85760(0x284)](_0xac7117);_0xfc9d72['chats'][_0xb85760(0x29c)]>0x64&&(_0xfc9d72[_0xb85760(0x258)]=_0xfc9d72['chats'][_0xb85760(0x283)](-0x64));const _0x349141=[{'chats':_0xfc9d72[_0xb85760(0x258)]}],_0x3a91d0=await batchUpdate(_0x349141);_0x3a91d0&&_0x3a91d0['record']&&(dataCache=_0x3a91d0[_0xb85760(0x2f3)],lastFetchTime=Date['now']()),_0x40056d[_0xb85760(0x2b4)]='',updateChat();}function toggleChat(_0x33bea3){const _0x55b1b4=_0x381d2f,_0xeca89c=document[_0x55b1b4(0x203)](_0x55b1b4(0x315));if(!_0xeca89c)return;_0x33bea3?_0xeca89c['classList']['remove'](_0x55b1b4(0x1c2)):_0xeca89c[_0x55b1b4(0x30b)][_0x55b1b4(0x1e0)](_0x55b1b4(0x1c2));}async function renderAdminKeys(){const _0x4ce5db=_0x381d2f;try{const _0x86617a=await fetchData(),_0x13f0fc=_0x86617a[_0x4ce5db(0x27b)]||{},_0x5cf67e=document['getElementById'](_0x4ce5db(0x2b1)),_0x1c6352=document[_0x4ce5db(0x203)](_0x4ce5db(0x340));_0x1c6352&&(_0x1c6352[_0x4ce5db(0x218)]=Object[_0x4ce5db(0x27b)](_0x13f0fc)[_0x4ce5db(0x29c)]+'\x20key'+(Object[_0x4ce5db(0x27b)](_0x13f0fc)['length']!==0x1?'s':''));if(!_0x5cf67e)return;if(Object[_0x4ce5db(0x27b)](_0x13f0fc)[_0x4ce5db(0x29c)]===0x0){_0x5cf67e[_0x4ce5db(0x26d)]=_0x4ce5db(0x26c);return;}const _0x1959ab=Object[_0x4ce5db(0x229)](_0x13f0fc)['map'](([_0x2f5702,_0x960eb3])=>{const _0x17113b=_0x4ce5db,_0xc242ea=new Date(_0x960eb3[_0x17113b(0x2cf)]||Date['now']())[_0x17113b(0x227)]();return _0x17113b(0x292)+_0x2f5702['substring'](0x0,0x8)+_0x17113b(0x1f9)+_0x2f5702+_0x17113b(0x1f4)+_0x960eb3[_0x17113b(0x237)]+_0x17113b(0x302)+typeof _0x960eb3['rbx']+')<br>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Generated\x20by:\x20'+(_0x960eb3[_0x17113b(0x216)]||'system')+_0x17113b(0x2a2)+_0xc242ea+'<br>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Expires:\x20'+(_0x960eb3[_0x17113b(0x2e9)]===_0x17113b(0x306)?_0x17113b(0x33e):new Date(parseInt(_0x960eb3['exp']))[_0x17113b(0x227)]())+_0x17113b(0x277);})['join']('');_0x5cf67e[_0x4ce5db(0x26d)]=_0x1959ab;}catch(_0x4585fc){console[_0x4ce5db(0x2c6)](_0x4ce5db(0x254),_0x4585fc),showToast(_0x4ce5db(0x288),_0x4ce5db(0x2c6));}}async function deleteAdminKey(_0x377b8c){const _0x5ee11b=_0x381d2f;if(!confirm(_0x5ee11b(0x299)))return;try{const _0x1365fa=await fetchData(!![]);if(!_0x1365fa[_0x5ee11b(0x27b)]||!_0x1365fa[_0x5ee11b(0x27b)][_0x377b8c])throw new Error('Key\x20not\x20found');delete _0x1365fa[_0x5ee11b(0x27b)][_0x377b8c],_0x1365fa[_0x5ee11b(0x28d)]['last_updated']=Date[_0x5ee11b(0x344)]();const _0x51f7c0=[{'keys':_0x1365fa[_0x5ee11b(0x27b)],'settings':_0x1365fa[_0x5ee11b(0x28d)]}],_0x2ad51c=await batchUpdate(_0x51f7c0);_0x2ad51c&&_0x2ad51c[_0x5ee11b(0x2f3)]&&(dataCache=_0x2ad51c[_0x5ee11b(0x2f3)],lastFetchTime=Date[_0x5ee11b(0x344)]()),showToast(_0x5ee11b(0x33d),_0x5ee11b(0x247)),renderAdminKeys();}catch(_0x23eee0){console[_0x5ee11b(0x2c6)](_0x5ee11b(0x23e),_0x23eee0),showToast(_0x5ee11b(0x314),_0x5ee11b(0x2c6));}}async function renderAdminBans(){const _0x3be050=_0x381d2f;try{const _0x5cf3bc=await fetchData(),_0x918efd=_0x5cf3bc[_0x3be050(0x26f)]||{},_0x105a61=document[_0x3be050(0x203)](_0x3be050(0x278)),_0x341146=document[_0x3be050(0x203)](_0x3be050(0x23f));_0x341146&&(_0x341146['textContent']=Object[_0x3be050(0x27b)](_0x918efd)['length']+_0x3be050(0x357));if(!_0x105a61)return;if(Object[_0x3be050(0x27b)](_0x918efd)[_0x3be050(0x29c)]===0x0){_0x105a61[_0x3be050(0x26d)]=_0x3be050(0x24b);return;}const _0x940d12=Object[_0x3be050(0x229)](_0x918efd)[_0x3be050(0x28f)](([_0x3ffc3c,_0x5c1d02])=>{const _0x23ab08=_0x3be050,_0x251ff2=new Date(_0x5c1d02[_0x23ab08(0x1e7)]||Date[_0x23ab08(0x344)]())['toLocaleString']();return _0x23ab08(0x252)+_0x3ffc3c+_0x23ab08(0x285)+_0x3ffc3c+'\x27)\x22>Unban</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:\x2011px;\x20opacity:\x200.8;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Reason:\x20'+(_0x5c1d02['reason']||_0x23ab08(0x308))+_0x23ab08(0x240)+(_0x5c1d02[_0x23ab08(0x316)]||_0x23ab08(0x23c))+_0x23ab08(0x1e3)+_0x251ff2+_0x23ab08(0x277);})['join']('');_0x105a61[_0x3be050(0x26d)]=_0x940d12;}catch(_0x1769b7){console['error'](_0x3be050(0x262),_0x1769b7),showToast('Failed\x20to\x20load\x20bans','error');}}async function banAllKeyHolders(){const _0x1f5921=_0x381d2f;if(!confirm(_0x1f5921(0x2e4)))return;showLoading(_0x1f5921(0x2a6));try{const _0x8a4948=await fetchData(!![]),_0x12ab8b=_0x8a4948['keys']||{};!_0x8a4948[_0x1f5921(0x26f)]&&(_0x8a4948['bans']={});let _0x55d3bb=0x0;for(const [_0x18ddf5,_0xaab742]of Object[_0x1f5921(0x229)](_0x12ab8b)){_0xaab742[_0x1f5921(0x237)]&&!_0x8a4948[_0x1f5921(0x26f)][_0xaab742['rbx']]&&(_0x8a4948[_0x1f5921(0x26f)][_0xaab742['rbx']]={'reason':_0x1f5921(0x2d9),'banned_by':getUserIdentifier(),'time':Date['now']()},_0x55d3bb++);}_0x8a4948[_0x1f5921(0x28d)][_0x1f5921(0x2ee)]=Date[_0x1f5921(0x344)]();const _0x34d132=[{'bans':_0x8a4948[_0x1f5921(0x26f)],'settings':_0x8a4948[_0x1f5921(0x28d)]}],_0x5a0d83=await batchUpdate(_0x34d132);_0x5a0d83&&_0x5a0d83[_0x1f5921(0x2f3)]&&(dataCache=_0x5a0d83[_0x1f5921(0x2f3)],lastFetchTime=Date[_0x1f5921(0x344)]()),showToast(_0x1f5921(0x272)+_0x55d3bb+'\x20key\x20holders',_0x1f5921(0x247)),renderAdminBans();}catch(_0x2cb17b){console[_0x1f5921(0x2c6)](_0x1f5921(0x322),_0x2cb17b),showToast('Failed\x20to\x20ban\x20key\x20holders',_0x1f5921(0x2c6));}finally{hideLoading();}}async function unbanEveryone(){const _0x192231=_0x381d2f;if(!confirm(_0x192231(0x1cc)))return;showLoading(_0x192231(0x2e7));try{const _0x1fe4e4=await fetchData(!![]);_0x1fe4e4[_0x192231(0x26f)]={},_0x1fe4e4[_0x192231(0x28d)][_0x192231(0x2ee)]=Date[_0x192231(0x344)]();const _0x222582=[{'bans':_0x1fe4e4[_0x192231(0x26f)],'settings':_0x1fe4e4['settings']}],_0x36c452=await batchUpdate(_0x222582);_0x36c452&&_0x36c452[_0x192231(0x2f3)]&&(dataCache=_0x36c452[_0x192231(0x2f3)],lastFetchTime=Date[_0x192231(0x344)]()),showToast(_0x192231(0x2fd),_0x192231(0x207)),renderAdminBans();}catch(_0x1c09af){console[_0x192231(0x2c6)](_0x192231(0x328),_0x1c09af),showToast('Failed\x20to\x20unban\x20users',_0x192231(0x2c6));}finally{hideLoading();}}async function unbanUser(_0x5c8641){const _0x4fe061=_0x381d2f;if(!confirm(_0x4fe061(0x268)+_0x5c8641+'?'))return;try{const _0x2a6368=await fetchData(!![]);if(!_0x2a6368[_0x4fe061(0x26f)]||!_0x2a6368[_0x4fe061(0x26f)][_0x5c8641])throw new Error(_0x4fe061(0x2e0));delete _0x2a6368['bans'][_0x5c8641],_0x2a6368[_0x4fe061(0x28d)][_0x4fe061(0x2ee)]=Date[_0x4fe061(0x344)]();const _0x54a886=[{'bans':_0x2a6368[_0x4fe061(0x26f)],'settings':_0x2a6368['settings']}],_0x2d3e15=await batchUpdate(_0x54a886);_0x2d3e15&&_0x2d3e15[_0x4fe061(0x2f3)]&&(dataCache=_0x2d3e15[_0x4fe061(0x2f3)],lastFetchTime=Date[_0x4fe061(0x344)]()),showToast(_0x4fe061(0x276)+_0x5c8641,_0x4fe061(0x207)),renderAdminBans();}catch(_0x4fe65a){console['error'](_0x4fe061(0x22d),_0x4fe65a),showToast(_0x4fe061(0x1d5),'error');}}function _0x24ba(){const _0x5a13dc=['Error\x20deleting\x20feedback:','plstealme2','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22game-card-scripts\x22>','<br>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Created:\x20','Script\x20\x22','Type:','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22fb-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<strong>','Banning\x20all\x20key\x20holders...','Clearing\x20chat...','statusText','addEventListener','substring','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','block','includes','Error\x20clearing\x20messages:',')\x22>Delete</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','className','keyLogs','Clear\x20all\x20pinned\x20and\x20system\x20messages?','4467579SHuRVq','value','feedbacks','result','newScriptUrl','signupView','Please\x20enter\x20a\x20Roblox\x20UserID','test','https://api.jsonbin.io/v3/b','Delete\x20this\x20feedback?','connection-status\x20disconnected','change','\x20\x20-\x20Generated\x20By:\x20','1148889WCygfb','❌\x20Invalid\x20password','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22script-empty-state\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22icon\x22>📜</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div>No\x20scripts\x20added\x20yet</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:11px;\x20margin-top:5px;\x22>Add\x20your\x20first\x20script\x20below</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','Failed\x20to\x20delete\x20script','display','Chat\x20cleared','error','<img\x20src=\x22',')\x22>View</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22mini\x20danger\x22\x20onclick=\x22deleteFeedback(','2.0','Key\x20generated\x20and\x20saved\x20to\x20database','message','chat-toggle','status','var(--danger)','created','key','Admin\x20access\x20required','newScriptName','Script\x20added\x20successfully!','Failed\x20to\x20load\x20feedbacks','splice','\x22\x20class=\x22game-card-image\x22\x20alt=\x22','adminDefaultView','ceil','Mass\x20ban\x20of\x20all\x20key\x20holders','Error:\x20','Creating\x20game...','Error\x20generating\x20key:','Game\x20ID\x20must\x20be\x20numeric','anonymous','\x0a\x0aMessage:\x0a','User\x20not\x20banned','s-pass','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20','Session\x20restore\x20error:','Ban\x20all\x20key\x20holders?\x20This\x20will\x20ban\x20every\x20user\x20who\x20has\x20a\x20key.','❌\x20Failed\x20to\x20initialize\x20database','badword1','Unbanning\x20all\x20users...','mainSystem','exp','Looking\x20for\x20UserID:','\x20hours\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cooldown-indicator\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Next\x20available:\x20<span\x20class=\x22cooldown-time\x22>','gameImageInput','No\x20game\x20selected','last_updated','resetTarget','Logged\x20in\x20as:\x20','Failed\x20to\x20delete\x20feedback','✅\x20Game\x20created\x20successfully!','record','startsWith','Failed\x20to\x20add\x20script','body','Password\x20must\x20be\x20at\x20least\x204\x20characters','Error\x20clearing\x20chat:','preventDefault','join','$2a$10$f6r4B1gP.MfB1k49kq2m7eEzyesjD9KWP5zCa6QtJKW5ZBhL1M0/O','keyOut','All\x20users\x20unbanned','Message\x20contains\x20blocked\x20content','chat','log','1.\x20String(entry.rbx)\x20===\x20String(userId):','\x20(type:\x20','signupSpinner','Debug\x20error:','Error\x20deleting\x20game:','INF','image','No\x20reason\x20provided','Script\x20with\x20this\x20URL\x20already\x20exists','Generating\x20key...','classList','size','scripts','\x20game','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22script-meta\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span>Added:\x20','login','\x0aUser:\x20','statusMsg','src','Failed\x20to\x20delete\x20key','chat-window','banned_by','totalGames','Image\x20must\x20be\x20less\x20than\x202MB','Sending\x20broadcast...','2545596rylFiV','Failed\x20to\x20ban\x20user','Error\x20sending\x20message:','imagePlaceholder','Clear\x20all\x20chat\x20messages?\x20This\x20cannot\x20be\x20undone.','pinned','Clear\x20all\x20user\x20accounts?\x20This\x20will\x20remove\x20all\x20user\x20data.','<div\x20class=\x22status-dot\x22></div><span>Disconnected</span>','Error\x20banning\x20key\x20holders:','toLocaleTimeString','translateX(100%)','Comparison\x20tests:','Clear\x20all\x20chat\x20history?','Feedback\x20submitted\x20successfully!','Error\x20unbanning\x20users:','RSQ_CURRENT_USER','loadingOverlay','Testing\x20key:','Script\x20not\x20found','Found\x20entry:','Failed\x20to\x20delete\x20game','2-digit','33zCDdni','Failed\x20to\x20load\x20scripts','none','Welcome\x20','\x22\x20deleted','chat-msgs','Full\x20key:','✅\x20Key\x20generated\x20successfully!','keypress','currentTime','var(--success)','all','Delete\x20this\x20game\x20and\x20all\x20its\x20scripts?\x20This\x20action\x20cannot\x20be\x20undone.','Key\x20deleted','Never','removeItem','keyCount','connection-status\x20connected','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22script-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22script-header\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22script-name\x22>','21865460IECFsU','now','FACTORY\x20RESET:\x20This\x20will\x20wipe\x20EVERYTHING\x20and\x20cannot\x20be\x20undone.\x20Continue?','style','\x0aSubmitted:\x20','password','❌\x20This\x20UserID\x20already\x20has\x20a\x20key\x20(generated\x20by\x20','GET','⚠️\x20Connection\x20issues.\x20Using\x20cached\x20data.','focusBanReason','Please\x20fill\x20in\x20all\x20fields','SUPER_ADMIN','gameNameInput','Error\x20adding\x20script:','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22game-card\x22\x20onclick=\x22openGameScripts(','282066uQQpdp','url','scriptManagementView','Please\x20select\x20an\x20image\x20file','forEach','\x20banned','fbSearch','gameImagePreview','hidden','2.\x20entry.rbx\x20==\x20userId:','Please\x20enter\x20a\x20valid\x20URL\x20starting\x20with\x20http://\x20or\x20https://','</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','\x20script','target','adminInput','http://','Logout\x20from\x20the\x20system?','Logged\x20out\x20successfully','Unban\x20all\x20users?','Messages\x20cleared','getItem','Failed\x20to\x20generate\x20key','Deleting\x20script...','Admin\x20access\x20denied','Failed\x20to\x20submit\x20feedback','✅\x20Script\x20added\x20successfully!','Banning\x20user...','Failed\x20to\x20unban\x20user','</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span>By:\x20','Failed\x20to\x20send\x20message','s-user','games','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20style=\x22color:\x20var(--warning);\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20⏳\x20You\x20can\x20generate\x20a\x20new\x20key\x20for\x20this\x20UserID\x20in\x20','chat-input','You\x20are\x20banned\x20from\x20chat','some','</small>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22mini\x22\x20onclick=\x22viewFeedback(','connectionStatus','add','✅\x20Key\x20is\x20Lua-compatible!','find','<br>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Date:\x20','opacity','createElement','Error\x20checking\x20key\x20status:','time','currentGameName','gamesDashboard','Generated\x20key:','fb-msg','Error\x20loading\x20games\x20dashboard:','authPanel','3.\x20parseInt(entry.rbx)\x20===\x20parseInt(userId):','Stored\x20UserID:','loadingText','Feedback\x20not\x20found','info','✅\x20New\x20database\x20created\x20with\x20JSONBin','\x27)\x22>Delete</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22font-size:\x2011px;\x20opacity:\x200.8;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20UserID:\x20','authStatus','toLowerCase','SYSTEM','name','...</strong>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22mini\x20danger\x22\x20onclick=\x22deleteAdminKey(\x27','Factory\x20reset\x20complete','System\x20initialized',')\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22game-actions\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22game-action-btn\x20delete\x22\x20onclick=\x22event.stopPropagation();\x20deleteGame(','\x20minutes</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','Batch\x20update\x20failed:','remove','API\x20Error:','adminPanel','username','getElementById','Input\x20UserID:','Invalid\x20UserID.\x20Must\x20be\x20numeric.','75cVtQOl','success','data','Error\x20banning\x20user:','filter','⚠️\x20Key\x20might\x20have\x20Lua\x20compatibility\x20issues','files','focusBanUser','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','banNowModal','Exited\x20admin\x20panel','color','Violation\x20of\x20terms','currentGameId','\x20\x20-\x20UserID:\x20','===\x20END\x20DEBUG\x20===','generatedBy','user','textContent','Error\x20deleting\x20script:','match','\x0aStatus:\x20','pinnedText','addScriptStatus','users','floor','fb-id','<div\x20class=\x22status-dot\x22></div><span>Connected</span>','fbLogs','Error\x20submitting\x20feedback:','userid','Message\x20must\x20be\x20200\x20characters\x20or\x20less','trim','toLocaleString','readAsDataURL','entries','Deleting\x20game...','Key:\x20','shiftKey','Error\x20unbanning\x20user:','HTTP\x20','DOMContentLoaded','Unsupported\x20method:\x20','❌\x20Failed\x20to\x20generate\x20key','===\x20DEBUG\x20KEY\x20LOOKUP\x20===','</strong>\x20(','Loading...',')<br>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<small>','for\x20UserID:','rbx','stringify','Error\x20resetting\x20system:','onerror','assign','system','===\x20LUA\x20KEY\x20TEST\x20===','Error\x20deleting\x20key:','banCount','<br>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Banned\x20by:\x20','onload','\x20hours\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22cooldown-indicator\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20Next\x20available:\x20<span\x20class=\x22cooldown-time\x22>','scriptsList','clientHeight','signup','Game\x20\x22','warning','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22script-actions\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22mini\x20danger\x22\x20onclick=\x22deleteScript(','role',')\x22>Delete</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22script-url\x22>','<div\x20style=\x22text-align:\x20center;\x20padding:\x2040px;\x20color:\x20rgba(255,255,255,0.5);\x22>No\x20banned\x20users</div>','loginView','8bbBRjQ','\x20minutes</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22msg-header\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22msg-user\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','focus','2LgkDZi','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22background:\x20rgba(255,59,48,0.1);\x20padding:\x2010px;\x20border-radius:\x208px;\x20margin-bottom:\x208px;\x20border-left:\x203px\x20solid\x20var(--danger);\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22display:\x20flex;\x20justify-content:\x20space-between;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<strong>','JSONBin\x20API\x20error:','Error\x20rendering\x20admin\x20keys:','gameCreateView','Admin\x20panel\x20loaded\x20successfully!','Username\x20must\x20be\x20at\x20least\x203\x20characters','chats','fb-user','badword2','admin','PUT','userId','\x0aUserID:\x20','Delete\x20this\x20script?','Game\x20not\x20found','Error\x20rendering\x20scripts:','Error\x20rendering\x20bans:','userFeedbackUI','14252661tROgMQ','image.*','currentGameImage','adminBtn','Unban\x20user\x20','transform','Message\x20pinned','Resetting\x20system...','<div\x20style=\x22text-align:\x20center;\x20padding:\x2040px;\x20color:\x20rgba(255,255,255,0.5);\x22>No\x20keys\x20in\x20system</div>','innerHTML','totalScripts','bans','Auth\x20error:','gameCreateStatus','Banned\x20','✅\x20Admin\x20access\x20granted','inline-block','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22game-card-id\x22>ID:\x20','Unbanned\x20user\x20','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','banLogs','1030638YHappX','Stored\x20data\x20-\x20UserID\x20(number):','keys','globalMsgInput','gameIdInput','Initializing\x20database...','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22empty-state\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22empty-state-icon\x22>💬</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div>No\x20messages\x20yet.\x20Be\x20the\x20first\x20to\x20say\x20hello!</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20','application/json','Unknown','noGamesMessage','slice','push','</strong>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22mini\x20success\x22\x20onclick=\x22unbanUser(\x27','focusBanId','Failed\x20to\x20clear\x20chat','Failed\x20to\x20load\x20keys','pinned-area','Username\x20already\x20exists','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22msg-item\x20','Account\x20created!\x20Please\x20login.','settings','Please\x20enter\x20a\x20message','map','l-pass','charAt','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22background:\x20rgba(255,255,255,0.03);\x20padding:\x2010px;\x20border-radius:\x208px;\x20margin-bottom:\x208px;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22display:\x20flex;\x20justify-content:\x20space-between;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<strong\x20style=\x22color:\x20var(--secondary);\x22>','type','timestamp','Enter','toast\x20','❌\x20No\x20key\x20found\x20for\x20this\x20UserID','ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*','Delete\x20this\x20key?','loginSpinner','fbSpinner','length','feedbackModal',')\x22\x20title=\x22Delete\x20Game\x22>🗑️</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'];_0x24ba=function(){return _0x5a13dc;};return _0x24ba();}function showBanNowModal(){const _0x3588a8=_0x381d2f;document[_0x3588a8(0x203)](_0x3588a8(0x20f))[_0x3588a8(0x30b)]['remove'](_0x3588a8(0x1c2)),document['getElementById'](_0x3588a8(0x286))[_0x3588a8(0x250)]();}function hideBanNowModal(){const _0xf9cf3f=_0x381d2f;document[_0xf9cf3f(0x203)](_0xf9cf3f(0x20f))['classList'][_0xf9cf3f(0x1e0)](_0xf9cf3f(0x1c2)),document[_0xf9cf3f(0x203)](_0xf9cf3f(0x286))['value']='',document[_0xf9cf3f(0x203)](_0xf9cf3f(0x20d))[_0xf9cf3f(0x2b4)]='',document[_0xf9cf3f(0x203)](_0xf9cf3f(0x34c))['value']='';}async function executeFocusBan(){const _0x474825=_0x381d2f,_0xb4419f=document[_0x474825(0x203)](_0x474825(0x286))[_0x474825(0x2b4)][_0x474825(0x226)](),_0x32c317=document[_0x474825(0x203)](_0x474825(0x20d))[_0x474825(0x2b4)]['trim'](),_0xf0b594=document['getElementById'](_0x474825(0x34c))['value'][_0x474825(0x226)]();if(!_0xb4419f){showToast('Please\x20enter\x20a\x20UserID','error');return;}showLoading(_0x474825(0x1d4));try{const _0x2d9cb1=await fetchData(!![]);!_0x2d9cb1[_0x474825(0x26f)]&&(_0x2d9cb1[_0x474825(0x26f)]={});_0x2d9cb1[_0x474825(0x26f)][_0xb4419f]={'reason':_0xf0b594||_0x474825(0x212),'banned_by':getUserIdentifier(),'time':Date[_0x474825(0x344)](),'username':_0x32c317||_0x474825(0x281)},_0x2d9cb1[_0x474825(0x28d)][_0x474825(0x2ee)]=Date[_0x474825(0x344)]();const _0x340a77=[{'bans':_0x2d9cb1[_0x474825(0x26f)],'settings':_0x2d9cb1[_0x474825(0x28d)]}],_0x22c330=await batchUpdate(_0x340a77);_0x22c330&&_0x22c330[_0x474825(0x2f3)]&&(dataCache=_0x22c330['record'],lastFetchTime=Date['now']()),hideBanNowModal(),showToast(_0x474825(0x272)+(_0x32c317||_0xb4419f),_0x474825(0x207)),renderAdminBans();}catch(_0x1a7c7e){console[_0x474825(0x2c6)](_0x474825(0x209),_0x1a7c7e),showToast(_0x474825(0x31b),_0x474825(0x2c6));}finally{hideLoading();}}async function sendGlobalMsg(_0x32238e=![]){const _0x544e5d=_0x381d2f,_0x2d5f7a=document['getElementById'](_0x544e5d(0x27c));if(!_0x2d5f7a)return;const _0x2b3abd=_0x2d5f7a[_0x544e5d(0x2b4)][_0x544e5d(0x226)]();if(!_0x2b3abd){showToast(_0x544e5d(0x28e),_0x544e5d(0x2c6));return;}if(_0x2b3abd[_0x544e5d(0x29c)]>0xc8){showToast(_0x544e5d(0x225),_0x544e5d(0x2c6));return;}showLoading(_0x32238e?'Pinning\x20message...':_0x544e5d(0x319));try{const _0x276648=await fetchData(!![]);if(_0x32238e){_0x276648[_0x544e5d(0x31f)]={'text':_0x2b3abd,'pinnedBy':getUserIdentifier(),'pinnedAt':Date['now']()};const _0x12eb68=[{'pinned':_0x276648[_0x544e5d(0x31f)]}],_0x122f3b=await batchUpdate(_0x12eb68);_0x122f3b&&_0x122f3b[_0x544e5d(0x2f3)]&&(dataCache=_0x122f3b[_0x544e5d(0x2f3)],lastFetchTime=Date['now']()),showToast(_0x544e5d(0x26a),_0x544e5d(0x207));}else{const _0x2de1e4={'user':_0x544e5d(0x1f7),'txt':_0x2b3abd,'timestamp':Date[_0x544e5d(0x344)]()};!_0x276648[_0x544e5d(0x258)]&&(_0x276648['chats']=[]);_0x276648[_0x544e5d(0x258)][_0x544e5d(0x284)](_0x2de1e4);_0x276648[_0x544e5d(0x258)]['length']>0x64&&(_0x276648['chats']=_0x276648[_0x544e5d(0x258)][_0x544e5d(0x283)](-0x64));const _0x13db44=[{'chats':_0x276648[_0x544e5d(0x258)]}],_0x30e80f=await batchUpdate(_0x13db44);_0x30e80f&&_0x30e80f[_0x544e5d(0x2f3)]&&(dataCache=_0x30e80f['record'],lastFetchTime=Date[_0x544e5d(0x344)]()),showToast('Broadcast\x20sent',_0x544e5d(0x207));}_0x2d5f7a[_0x544e5d(0x2b4)]='',updateChat();}catch(_0x4a348c){console['error'](_0x544e5d(0x31c),_0x4a348c),showToast(_0x544e5d(0x1d7),'error');}finally{hideLoading();}}async function clearGlobals(){const _0x8be25d=_0x381d2f;if(!confirm(_0x8be25d(0x2b2)))return;showLoading('Clearing\x20messages...');try{const _0x56b88f=await fetchData(!![]);_0x56b88f['pinned']=null;_0x56b88f[_0x8be25d(0x258)]&&(_0x56b88f[_0x8be25d(0x258)]=_0x56b88f['chats']['filter'](_0x3a8544=>_0x3a8544[_0x8be25d(0x217)]!=='SYSTEM'));const _0x2d6054=[{'pinned':_0x56b88f['pinned'],'chats':_0x56b88f[_0x8be25d(0x258)]}],_0x1e7fbf=await batchUpdate(_0x2d6054);_0x1e7fbf&&_0x1e7fbf[_0x8be25d(0x2f3)]&&(dataCache=_0x1e7fbf[_0x8be25d(0x2f3)],lastFetchTime=Date['now']()),showToast(_0x8be25d(0x1cd),_0x8be25d(0x207)),updateChat();}catch(_0x2e975e){console[_0x8be25d(0x2c6)](_0x8be25d(0x2ae),_0x2e975e),showToast('Failed\x20to\x20clear\x20messages',_0x8be25d(0x2c6));}finally{hideLoading();}}async function clearAllChat(){const _0x3ce694=_0x381d2f;if(!confirm(_0x3ce694(0x31e)))return;showLoading(_0x3ce694(0x2a7));try{const _0xeb5127=await fetchData(!![]);_0xeb5127['chats']=[];const _0x276ac4=[{'chats':_0xeb5127['chats']}],_0x1b980a=await batchUpdate(_0x276ac4);_0x1b980a&&_0x1b980a['record']&&(dataCache=_0x1b980a['record'],lastFetchTime=Date['now']()),showToast(_0x3ce694(0x2c5),_0x3ce694(0x207)),updateChat();}catch(_0x1f9d54){console[_0x3ce694(0x2c6)](_0x3ce694(0x2f8),_0x1f9d54),showToast(_0x3ce694(0x287),'error');}finally{hideLoading();}}function openAdminFeedbacks(){const _0x2ab8da=_0x381d2f;document[_0x2ab8da(0x203)](_0x2ab8da(0x29d))['classList']['remove'](_0x2ab8da(0x1c2)),renderAdminFeedbacks();}function hideFeedbackModal(){const _0x13bcec=_0x381d2f;document[_0x13bcec(0x203)](_0x13bcec(0x29d))['classList'][_0x13bcec(0x1e0)](_0x13bcec(0x1c2));}async function renderAdminFeedbacks(){const _0x245cc0=_0x381d2f;try{const _0xd2b436=await fetchData(),_0x35ed9b=_0xd2b436[_0x245cc0(0x2b5)]||[],_0x49ccfa=document[_0x245cc0(0x203)](_0x245cc0(0x1c0))?.[_0x245cc0(0x2b4)][_0x245cc0(0x1f6)]()||'',_0x28955c=_0x35ed9b[_0x245cc0(0x20a)](_0x10572f=>_0x10572f[_0x245cc0(0x217)][_0x245cc0(0x1f6)]()[_0x245cc0(0x2ad)](_0x49ccfa)||_0x10572f[_0x245cc0(0x25d)][_0x245cc0(0x1f6)]()[_0x245cc0(0x2ad)](_0x49ccfa)),_0x4e6e44=document[_0x245cc0(0x203)](_0x245cc0(0x222));if(!_0x4e6e44)return;if(_0x28955c[_0x245cc0(0x29c)]===0x0){_0x4e6e44[_0x245cc0(0x26d)]='<div\x20style=\x22text-align:\x20center;\x20padding:\x2040px;\x20color:\x20rgba(255,255,255,0.5);\x22>No\x20feedback\x20submissions</div>';return;}const _0x1675d2=_0x28955c[_0x245cc0(0x28f)]((_0x30b7b7,_0x2dfaca)=>{const _0x41e72e=_0x245cc0,_0x17da8f=new Date(_0x30b7b7[_0x41e72e(0x294)])['toLocaleString']();return _0x41e72e(0x2a5)+_0x30b7b7[_0x41e72e(0x217)]+_0x41e72e(0x233)+_0x30b7b7[_0x41e72e(0x25d)]+_0x41e72e(0x235)+_0x17da8f+_0x41e72e(0x1de)+_0x2dfaca+_0x41e72e(0x2c8)+_0x2dfaca+_0x41e72e(0x2af);})[_0x245cc0(0x2fa)]('');_0x4e6e44[_0x245cc0(0x26d)]=_0x1675d2;}catch(_0x876926){console[_0x245cc0(0x2c6)]('Error\x20rendering\x20feedbacks:',_0x876926),showToast(_0x245cc0(0x2d4),_0x245cc0(0x2c6));}}function viewFeedback(_0x494252){const _0x1f4003=_0x381d2f,_0x194294=dataCache['feedbacks']?.[_0x494252];if(!_0x194294){showToast('Feedback\x20not\x20found','error');return;}const _0x49e21a=new Date(_0x194294[_0x1f4003(0x294)])[_0x1f4003(0x227)](),_0x26ed0d=_0x1f4003(0x311)+_0x194294[_0x1f4003(0x217)]+_0x1f4003(0x25e)+_0x194294[_0x1f4003(0x25d)]+_0x1f4003(0x347)+_0x49e21a+_0x1f4003(0x21b)+(_0x194294[_0x1f4003(0x2cd)]||'pending')+_0x1f4003(0x2df)+_0x194294[_0x1f4003(0x2cb)]+'\x0a\x20\x20\x20\x20';alert(_0x26ed0d);}async function deleteFeedback(_0x2be035){const _0x2e38a0=_0x381d2f;if(!confirm(_0x2e38a0(0x2bc)))return;try{const _0x352d69=await fetchData(!![]);if(!_0x352d69['feedbacks']||!_0x352d69[_0x2e38a0(0x2b5)][_0x2be035])throw new Error(_0x2e38a0(0x1f1));_0x352d69[_0x2e38a0(0x2b5)][_0x2e38a0(0x2d5)](_0x2be035,0x1),_0x352d69[_0x2e38a0(0x28d)][_0x2e38a0(0x2ee)]=Date['now']();const _0x199d83=[{'feedbacks':_0x352d69[_0x2e38a0(0x2b5)],'settings':_0x352d69[_0x2e38a0(0x28d)]}],_0x1c939c=await batchUpdate(_0x199d83);_0x1c939c&&_0x1c939c[_0x2e38a0(0x2f3)]&&(dataCache=_0x1c939c[_0x2e38a0(0x2f3)],lastFetchTime=Date[_0x2e38a0(0x344)]()),showToast('Feedback\x20deleted',_0x2e38a0(0x247)),renderAdminFeedbacks();}catch(_0x10d2e2){console[_0x2e38a0(0x2c6)](_0x2e38a0(0x29f),_0x10d2e2),showToast(_0x2e38a0(0x2f1),_0x2e38a0(0x2c6));}}async function masterReset(){const _0x5b5eab=_0x381d2f,_0x2d0c49=document[_0x5b5eab(0x203)](_0x5b5eab(0x2ef))?.[_0x5b5eab(0x2b4)];if(!_0x2d0c49)return;let _0x160b22='';switch(_0x2d0c49){case _0x5b5eab(0x2ff):_0x160b22=_0x5b5eab(0x326);break;case _0x5b5eab(0x26f):_0x160b22='Clear\x20all\x20bans?';break;case _0x5b5eab(0x21e):_0x160b22=_0x5b5eab(0x320);break;case'all':_0x160b22=_0x5b5eab(0x345);break;default:return;}if(!confirm(_0x160b22))return;showLoading(_0x5b5eab(0x26b));try{const _0x1240c8=await fetchData(!![]);switch(_0x2d0c49){case _0x5b5eab(0x2ff):_0x1240c8[_0x5b5eab(0x258)]=[],_0x1240c8['pinned']=null;break;case'bans':_0x1240c8['bans']={};break;case _0x5b5eab(0x21e):_0x1240c8[_0x5b5eab(0x27b)]={},_0x1240c8['feedbacks']=[];break;case _0x5b5eab(0x33b):const _0x3af129={'users':{[ADMIN_USERNAME]:{'password':ADMIN_PASSWORD,'created':Date['now'](),'role':_0x5b5eab(0x25b)}},'keys':{},'games':[],'bans':{},'feedbacks':[],'chats':[],'pinned':null,'admins':{},'settings':{'version':_0x5b5eab(0x2c9),'created':Date['now'](),'last_updated':Date[_0x5b5eab(0x344)]()}};await makeJsonBinRequest('PUT',_0x3af129),dataCache=_0x3af129,lastFetchTime=Date['now'](),showToast(_0x5b5eab(0x1fa),_0x5b5eab(0x207)),hideLoading(),location['reload']();return;}_0x1240c8[_0x5b5eab(0x28d)]['last_updated']=Date[_0x5b5eab(0x344)]();const _0x46986e=[_0x1240c8],_0x4281f2=await batchUpdate(_0x46986e);_0x4281f2&&_0x4281f2[_0x5b5eab(0x2f3)]&&(dataCache=_0x4281f2[_0x5b5eab(0x2f3)],lastFetchTime=Date[_0x5b5eab(0x344)]()),showToast('Reset\x20complete',_0x5b5eab(0x207)),updateChat(),renderAdminKeys(),renderAdminBans(),loadGamesDashboard();}catch(_0x47a2dc){console['error'](_0x5b5eab(0x239),_0x47a2dc),showToast('Failed\x20to\x20reset\x20system','error');}finally{hideLoading();}}function _0x5391(_0x17502a,_0xf9dc17){_0x17502a=_0x17502a-0x1c0;const _0x24baab=_0x24ba();let _0x5391b2=_0x24baab[_0x17502a];return _0x5391b2;}document[_0x381d2f(0x203)](_0x381d2f(0x2ec))?.[_0x381d2f(0x2a9)](_0x381d2f(0x2be),function(_0x1c369b){const _0x100da9=_0x381d2f,_0x46d450=_0x1c369b[_0x100da9(0x1c7)][_0x100da9(0x20c)][0x0];if(!_0x46d450)return;if(_0x46d450[_0x100da9(0x30c)]>0x2*0x400*0x400){showToast(_0x100da9(0x318),_0x100da9(0x2c6));return;}if(!_0x46d450[_0x100da9(0x293)][_0x100da9(0x21a)](_0x100da9(0x265))){showToast(_0x100da9(0x355),_0x100da9(0x2c6));return;}const _0x29e80e=new FileReader();_0x29e80e[_0x100da9(0x241)]=function(_0x43b262){const _0x3bc6ec=_0x100da9,_0x3bb1dc=document['getElementById'](_0x3bc6ec(0x1c1)),_0x589748=document[_0x3bc6ec(0x203)]('imagePlaceholder');_0x3bb1dc&&_0x589748&&(_0x3bb1dc[_0x3bc6ec(0x313)]=_0x43b262[_0x3bc6ec(0x1c7)][_0x3bc6ec(0x2b6)],_0x3bb1dc[_0x3bc6ec(0x346)][_0x3bc6ec(0x2c4)]=_0x3bc6ec(0x2ac),_0x589748[_0x3bc6ec(0x346)]['display']=_0x3bc6ec(0x332));},_0x29e80e['readAsDataURL'](_0x46d450);}),document[_0x381d2f(0x2a9)](_0x381d2f(0x22f),async()=>{const _0x2f7449=_0x381d2f;updateStatsDisplay(),setInterval(updateStatsDisplay,0xea60),trackViewAndActivity(),setInterval(trackViewAndActivity,0x7530),await initializeDatabase(),checkSession();!currentUser?(document[_0x2f7449(0x203)]('authPanel')['classList']['remove'](_0x2f7449(0x1c2)),document['getElementById']('mainSystem')['classList'][_0x2f7449(0x1e0)](_0x2f7449(0x1c2))):(await fetchData(),updateChat(),setInterval(updateChat,0x1388));const _0x44d265=document[_0x2f7449(0x203)](_0x2f7449(0x1db));_0x44d265&&_0x44d265[_0x2f7449(0x2a9)](_0x2f7449(0x338),_0x27f8d8=>{const _0x330597=_0x2f7449;_0x27f8d8[_0x330597(0x2d0)]===_0x330597(0x295)&&!_0x27f8d8[_0x330597(0x22c)]&&(_0x27f8d8[_0x330597(0x2f9)](),sendChat());});const _0x9e79f3=document[_0x2f7449(0x203)](_0x2f7449(0x224));_0x9e79f3&&_0x9e79f3[_0x2f7449(0x2a9)]('input',async()=>{const _0x5cd8d0=_0x2f7449,_0x51c6f6=_0x9e79f3[_0x5cd8d0(0x2b4)]['trim']();if(_0x51c6f6&&/^\d+$/[_0x5cd8d0(0x2ba)](_0x51c6f6)){const _0x298c31=await checkUserKeyStatus(_0x51c6f6);if(_0x298c31){const _0x319fb2=Date['now'](),_0x4d2511=(_0x319fb2-_0x298c31[_0x5cd8d0(0x294)])/(0x3e8*0x3c*0x3c);if(_0x4d2511<0x18){const _0x20b775=document[_0x5cd8d0(0x203)](_0x5cd8d0(0x312));if(_0x20b775){const _0x117850=Math['ceil'](0x18-_0x4d2511);_0x20b775[_0x5cd8d0(0x26d)]='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20style=\x22color:\x20var(--warning);\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20⏳\x20You\x20can\x20generate\x20a\x20new\x20key\x20for\x20this\x20UserID\x20in\x20'+_0x117850+_0x5cd8d0(0x2eb)+Math[_0x5cd8d0(0x2d8)](0x18*0x3c-_0x4d2511*0x3c)+_0x5cd8d0(0x1fd);}}}}}),showToast(_0x2f7449(0x1fb),_0x2f7449(0x207));});function toggleFeedbackUI(_0x463913){const _0x2f263e=_0x381d2f,_0x5f1b12=document[_0x2f263e(0x203)](_0x2f263e(0x263)),_0x4d97d5=document[_0x2f263e(0x203)]('mainSystem');_0x463913?(_0x4d97d5[_0x2f263e(0x30b)][_0x2f263e(0x1e0)](_0x2f263e(0x1c2)),_0x5f1b12[_0x2f263e(0x30b)]['remove']('hidden')):(_0x5f1b12['classList'][_0x2f263e(0x1e0)]('hidden'),_0x4d97d5['classList'][_0x2f263e(0x1ff)](_0x2f263e(0x1c2)));}async function submitFeedback(){const _0x1a82ee=_0x381d2f,_0x40f26c=document[_0x1a82ee(0x203)]('fb-user')?.[_0x1a82ee(0x2b4)][_0x1a82ee(0x226)](),_0x50e73a=document['getElementById'](_0x1a82ee(0x220))?.[_0x1a82ee(0x2b4)]['trim'](),_0x1dccac=document[_0x1a82ee(0x203)](_0x1a82ee(0x1eb))?.['value'][_0x1a82ee(0x226)](),_0x5ef29c=document[_0x1a82ee(0x203)](_0x1a82ee(0x29b));if(!_0x40f26c||!_0x50e73a||!_0x1dccac){showToast(_0x1a82ee(0x34d),_0x1a82ee(0x2c6));return;}if(_0x5ef29c)_0x5ef29c[_0x1a82ee(0x346)][_0x1a82ee(0x2c4)]=_0x1a82ee(0x274);try{const _0x58cc4c=await fetchData(!![]);!_0x58cc4c['feedbacks']&&(_0x58cc4c[_0x1a82ee(0x2b5)]=[]);const _0x29db6e={'user':_0x40f26c,'userId':_0x50e73a,'message':_0x1dccac,'timestamp':Date['now'](),'status':'pending'};_0x58cc4c[_0x1a82ee(0x2b5)][_0x1a82ee(0x284)](_0x29db6e),_0x58cc4c[_0x1a82ee(0x28d)][_0x1a82ee(0x2ee)]=Date[_0x1a82ee(0x344)]();const _0x35e075=[{'feedbacks':_0x58cc4c[_0x1a82ee(0x2b5)],'settings':_0x58cc4c[_0x1a82ee(0x28d)]}],_0x574c9c=await batchUpdate(_0x35e075);_0x574c9c&&_0x574c9c[_0x1a82ee(0x2f3)]&&(dataCache=_0x574c9c[_0x1a82ee(0x2f3)],lastFetchTime=Date['now']()),document[_0x1a82ee(0x203)](_0x1a82ee(0x259))[_0x1a82ee(0x2b4)]='',document[_0x1a82ee(0x203)](_0x1a82ee(0x220))[_0x1a82ee(0x2b4)]='',document['getElementById'](_0x1a82ee(0x1eb))[_0x1a82ee(0x2b4)]='',showToast(_0x1a82ee(0x327),_0x1a82ee(0x207)),toggleFeedbackUI(![]);}catch(_0xc6a996){console[_0x1a82ee(0x2c6)](_0x1a82ee(0x223),_0xc6a996),showToast(_0x1a82ee(0x1d2),_0x1a82ee(0x2c6));}finally{if(_0x5ef29c)_0x5ef29c[_0x1a82ee(0x346)][_0x1a82ee(0x2c4)]=_0x1a82ee(0x332);}}
+// Firebase Configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyAupBkllyicDPD9O6CmX4mS4sF5z96mqxc",
+    authDomain: "vertexpaste.firebaseapp.com",
+    projectId: "vertexpaste",
+    storageBucket: "vertexpaste.firebasestorage.app",
+    messagingSenderId: "255275350380",
+    appId: "1:255275350380:web:7be4e8add2cb5b04045b49"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+const storage = firebase.storage();
+
+// Enable offline persistence
+db.enablePersistence().catch((err) => {
+    if (err.code == 'failed-precondition') {
+        console.log('Multiple tabs open, persistence enabled in first tab only');
+    } else if (err.code == 'unimplemented') {
+        console.log('Browser doesn\'t support persistence');
+    }
+});
+
+// Global variables
+let dataCache = null;
+let lastFetchTime = 0;
+const CACHE_TTL = 30000; // 30 seconds
+let isAdminAuthenticated = false;
+let currentUser = null;
+const ADMIN_USERNAME = 'plstealme2';
+const ADMIN_PASSWORD = 'Livetopimo';
+let currentGameIndex = -1;
+let lastSeenMessageTime = 0;
+let unreadCount = 0;
+let userKeys = {};
+
+// Initialize database with default structure
+async function initializeDatabase() {
+    showLoading('Initializing database...');
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        
+        if (!doc.exists) {
+            // Create initial database structure
+            const initialData = {
+                users: {},
+                keys: {},
+                games: [],
+                bans: {},
+                feedbacks: [],
+                chats: [],
+                pinned: null,
+                admins: {
+                    [ADMIN_USERNAME]: {
+                        password: ADMIN_PASSWORD,
+                        created: Date.now(),
+                        role: 'SUPER_ADMIN'
+                    }
+                },
+                settings: {
+                    version: '2.0',
+                    created: Date.now(),
+                    last_updated: Date.now()
+                }
+            };
+            
+            await docRef.set(initialData);
+            dataCache = initialData;
+            showToast('✅ New database created with Firebase', 'success');
+        } else {
+            dataCache = doc.data();
+        }
+        
+        // Set up real-time listeners
+        setupRealtimeListeners();
+        
+        hideLoading();
+        return true;
+    } catch (error) {
+        console.error('Database initialization failed:', error);
+        showToast('❌ Failed to initialize database', 'error');
+        hideLoading();
+        return false;
+    }
+}
+
+// Set up real-time Firestore listeners
+function setupRealtimeListeners() {
+    // Listen for chat changes
+    db.collection('system').doc('config')
+        .onSnapshot((doc) => {
+            if (doc.exists) {
+                dataCache = doc.data();
+                lastFetchTime = Date.now();
+                updateConnectionStatus(true);
+                updateChat();
+                if (isAdminAuthenticated) {
+                    renderAdminKeys();
+                    renderAdminBans();
+                    loadGamesDashboard();
+                }
+            }
+        }, (error) => {
+            console.error('Firestore listener error:', error);
+            updateConnectionStatus(false);
+        });
+}
+
+// Update connection status
+function updateConnectionStatus(isConnected) {
+    const statusEl = document.getElementById('connectionStatus');
+    if (!statusEl) return;
+    
+    if (isConnected) {
+        statusEl.className = 'connection-status connected';
+        statusEl.innerHTML = '<div class="status-dot"></div><span>Connected</span>';
+    } else {
+        statusEl.className = 'connection-status disconnected';
+        statusEl.innerHTML = '<div class="status-dot"></div><span>Disconnected</span>';
+    }
+}
+
+// Show loading overlay
+function showLoading(text = 'Loading...') {
+    const overlay = document.getElementById('loadingOverlay');
+    const loadingText = document.getElementById('loadingText');
+    if (overlay && loadingText) {
+        loadingText.textContent = text;
+        overlay.classList.remove('hidden');
+    }
+}
+
+// Hide loading overlay
+function hideLoading() {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+        overlay.classList.add('hidden');
+    }
+}
+
+// Show toast notification
+function showToast(message, type = 'info', duration = 3000) {
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+}
+
+// Moderate message content
+function moderate(text) {
+    if (!text) return false;
+    const blockedWords = ['badword1', 'badword2'];
+    const lowerText = text.toLowerCase();
+    for (const word of blockedWords) {
+        if (lowerText.includes(word)) return true;
+    }
+    return false;
+}
+
+// Get user identifier
+function getUserIdentifier() {
+    return currentUser?.username || 'anonymous';
+}
+
+// Handle authentication
+async function handleAuth(action) {
+    const spinnerId = action === 'login' ? 'loginSpinner' : 'signupSpinner';
+    const spinner = document.getElementById(spinnerId);
+    const authStatus = document.getElementById('authStatus');
+    
+    if (spinner) spinner.style.display = 'inline-block';
+    if (authStatus) authStatus.textContent = '';
+    
+    let username, password;
+    
+    if (action === 'login') {
+        username = document.getElementById('l-user').value.trim();
+        password = document.getElementById('l-pass').value.trim();
+    } else {
+        username = document.getElementById('s-user').value.trim();
+        password = document.getElementById('s-pass').value.trim();
+        
+        if (username.length < 3) {
+            authStatus.textContent = 'Username must be at least 3 characters';
+            authStatus.style.color = 'var(--danger)';
+            if (spinner) spinner.style.display = 'none';
+            return;
+        }
+        
+        if (password.length < 4) {
+            authStatus.textContent = 'Password must be at least 4 characters';
+            authStatus.style.color = 'var(--danger)';
+            if (spinner) spinner.style.display = 'none';
+            return;
+        }
+    }
+    
+    if (!username || !password) {
+        authStatus.textContent = 'Please fill in all fields';
+        authStatus.style.color = 'var(--danger)';
+        if (spinner) spinner.style.display = 'none';
+        return;
+    }
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        if (!data.users) data.users = {};
+        
+        if (action === 'signup') {
+            if (data.users[username]) {
+                authStatus.textContent = 'Username already exists';
+                authStatus.style.color = 'var(--danger)';
+                if (spinner) spinner.style.display = 'none';
+                return;
+            }
+            
+            data.users[username] = {
+                password: password,
+                created: Date.now(),
+                role: username === ADMIN_USERNAME ? 'SUPER_ADMIN' : 'user'
+            };
+            
+            await docRef.update({ users: data.users });
+            authStatus.textContent = 'Account created! Please login.';
+            authStatus.style.color = 'var(--success)';
+            toggleAuth(false);
+        } else {
+            const user = data.users[username];
+            
+            if (!user || user.password !== password) {
+                authStatus.textContent = 'Invalid username or password';
+                authStatus.style.color = 'var(--danger)';
+                if (spinner) spinner.style.display = 'none';
+                return;
+            }
+            
+            currentUser = {
+                username: username,
+                role: user.role || 'user'
+            };
+            
+            localStorage.setItem('RSQ_CURRENT_USER', JSON.stringify(currentUser));
+            
+            if (username === ADMIN_USERNAME) {
+                const adminInput = document.getElementById('adminInput');
+                if (adminInput) adminInput.value = ADMIN_PASSWORD;
+            }
+            
+            document.getElementById('authPanel').classList.add('hidden');
+            document.getElementById('mainSystem').classList.remove('hidden');
+            
+            const welcomeEl = document.getElementById('welcomeUser');
+            if (welcomeEl) welcomeEl.textContent = 'Logged in as: ' + username;
+            
+            const adminBtn = document.getElementById('adminBtn');
+            if (adminBtn) {
+                adminBtn.style.display = username === ADMIN_USERNAME ? 'block' : 'none';
+            }
+            
+            showToast('Welcome ' + username + '!', 'success');
+        }
+    } catch (error) {
+        console.error('Auth error:', error);
+        authStatus.textContent = 'Error: ' + error.message;
+        authStatus.style.color = 'var(--danger)';
+    } finally {
+        if (spinner) spinner.style.display = 'none';
+    }
+}
+
+// Toggle between login and signup views
+function toggleAuth(showSignup) {
+    const loginView = document.getElementById('loginView');
+    const signupView = document.getElementById('signupView');
+    const authStatus = document.getElementById('authStatus');
+    
+    if (authStatus) authStatus.textContent = '';
+    
+    if (showSignup) {
+        loginView.classList.add('hidden');
+        signupView.classList.remove('hidden');
+    } else {
+        signupView.classList.add('hidden');
+        loginView.classList.remove('hidden');
+    }
+}
+
+// Generate access key
+async function generateKey() {
+    if (!currentUser) {
+        showToast('Please login first', 'error');
+        return;
+    }
+    
+    const userIdInput = document.getElementById('userid');
+    const statusEl = document.getElementById('statusMsg');
+    const keyOut = document.getElementById('keyOut');
+    const spinner = document.getElementById('keySpinner');
+    
+    if (!userIdInput || !statusEl || !keyOut) return;
+    
+    const userId = userIdInput.value.trim();
+    
+    if (!userId) {
+        statusEl.textContent = 'Please enter a Roblox UserID';
+        statusEl.style.color = 'var(--danger)';
+        return;
+    }
+    
+    if (!/^\d+$/.test(userId)) {
+        statusEl.textContent = 'Invalid UserID. Must be numeric';
+        statusEl.style.color = 'var(--danger)';
+        return;
+    }
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        const keys = data.keys || {};
+        
+        // Check if user already has a key
+        const existingKey = Object.entries(keys).find(([_, keyData]) => 
+            String(keyData.rbx) === String(userId)
+        );
+        
+        if (existingKey) {
+            const [keyId, keyData] = existingKey;
+            const timeSinceCreation = Date.now() - keyData.created;
+            const hoursSinceCreation = timeSinceCreation / (1000 * 60 * 60);
+            
+            if (keyData.generatedBy === currentUser.username) {
+                if (hoursSinceCreation < 24) {
+                    const hoursLeft = Math.ceil(24 - hoursSinceCreation);
+                    statusEl.innerHTML = `
+                        <span style="color: var(--warning);">
+                            ⏳ You can generate a new key for this UserID in ${hoursLeft} hours ${Math.ceil(24 * 60 - hoursSinceCreation * 60)} minutes
+                        </span>
+                    `;
+                    keyOut.textContent = keyId;
+                    return;
+                }
+            } else {
+                statusEl.textContent = '❌ This UserID already has a key (generated by ' + keyData.generatedBy + ')';
+                statusEl.style.color = 'var(--danger)';
+                keyOut.textContent = keyId;
+                return;
+            }
+        }
+        
+        if (spinner) spinner.style.display = 'inline-block';
+        statusEl.textContent = 'Generating key...';
+        
+        // Generate random key
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+        let newKey = '';
+        for (let i = 0; i < 16; i++) {
+            newKey += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        
+        // Save to Firestore
+        keys[newKey] = {
+            rbx: parseInt(userId, 10),
+            exp: 'INF',
+            created: Date.now(),
+            generatedBy: currentUser.username,
+            userRole: currentUser.role,
+            originalUserId: userId
+        };
+        
+        await docRef.update({ keys: keys });
+        
+        keyOut.textContent = newKey;
+        statusEl.textContent = '✅ Key generated successfully!';
+        statusEl.style.color = 'var(--success)';
+        userIdInput.value = '';
+        
+        showToast('Key generated and saved to database', 'success');
+        
+    } catch (error) {
+        console.error('Error generating key:', error);
+        statusEl.textContent = '❌ Failed to generate key';
+        statusEl.style.color = 'var(--danger)';
+        showToast('Failed to generate key', 'error');
+    } finally {
+        if (spinner) spinner.style.display = 'none';
+    }
+}
+
+// Check session on load
+function checkSession() {
+    const saved = localStorage.getItem('RSQ_CURRENT_USER');
+    if (saved) {
+        try {
+            currentUser = JSON.parse(saved);
+            document.getElementById('authPanel').classList.add('hidden');
+            document.getElementById('mainSystem').classList.remove('hidden');
+            
+            const welcomeEl = document.getElementById('welcomeUser');
+            if (welcomeEl) welcomeEl.textContent = 'Logged in as: ' + currentUser.username;
+            
+            const adminBtn = document.getElementById('adminBtn');
+            if (adminBtn) {
+                adminBtn.style.display = currentUser.username === ADMIN_USERNAME ? 'block' : 'none';
+            }
+            
+            if (currentUser.username === ADMIN_USERNAME) {
+                const adminInput = document.getElementById('adminInput');
+                if (adminInput) adminInput.value = ADMIN_PASSWORD;
+            }
+        } catch (e) {
+            console.error('Session restore error:', e);
+            localStorage.removeItem('RSQ_CURRENT_USER');
+        }
+    }
+}
+
+// Logout function
+function logout() {
+    if (confirm('Logout from the system?')) {
+        currentUser = null;
+        localStorage.removeItem('RSQ_CURRENT_USER');
+        
+        document.getElementById('mainSystem').classList.add('hidden');
+        document.getElementById('authPanel').classList.remove('hidden');
+        
+        // Clear inputs
+        document.getElementById('l-user').value = '';
+        document.getElementById('l-pass').value = '';
+        document.getElementById('s-user').value = '';
+        document.getElementById('s-pass').value = '';
+        document.getElementById('authStatus').textContent = '';
+        
+        toggleAuth(false);
+        
+        const adminInput = document.getElementById('adminInput');
+        if (adminInput) {
+            adminInput.style.display = 'block';
+            adminInput.value = '';
+        }
+        
+        const keyOut = document.getElementById('keyOut');
+        if (keyOut) keyOut.textContent = '';
+        
+        const statusMsg = document.getElementById('statusMsg');
+        if (statusMsg) statusMsg.textContent = '';
+        
+        showToast('Logged out successfully', 'info');
+    }
+}
+
+// Toggle admin panel
+function toggleAdmin() {
+    if (!currentUser || currentUser.username !== ADMIN_USERNAME) {
+        showToast('Admin access denied', 'error');
+        return;
+    }
+    
+    const adminInput = document.getElementById('adminInput');
+    const password = adminInput.value.trim();
+    
+    if (password === ADMIN_PASSWORD) {
+        isAdminAuthenticated = true;
+        adminInput.style.display = 'none';
+        showToast('✅ Admin access granted', 'success');
+        openAdminPanel();
+    } else {
+        showToast('❌ Invalid password', 'error');
+        adminInput.value = '';
+        adminInput.focus();
+    }
+}
+
+// Open admin panel
+function openAdminPanel() {
+    if (!isAdminAuthenticated) {
+        showToast('Admin access required', 'error');
+        return;
+    }
+    
+    const mainSystem = document.getElementById('mainSystem');
+    if (mainSystem) mainSystem.classList.add('hidden');
+    
+    const adminPanel = document.getElementById('adminPanel');
+    if (adminPanel) {
+        adminPanel.classList.remove('hidden');
+        document.getElementById('adminDefaultView').classList.remove('hidden');
+        document.getElementById('gameCreateView').classList.add('hidden');
+        document.getElementById('scriptManagementView').classList.add('hidden');
+        
+        loadGamesDashboard();
+        renderAdminKeys();
+        renderAdminBans();
+        
+        showToast('Admin panel loaded successfully!', 'success');
+    }
+}
+
+// Close admin panel
+function closeAdmin() {
+    const adminPanel = document.getElementById('adminPanel');
+    if (adminPanel) adminPanel.classList.add('hidden');
+    
+    const mainSystem = document.getElementById('mainSystem');
+    if (mainSystem) mainSystem.classList.remove('hidden');
+    
+    const adminInput = document.getElementById('adminInput');
+    if (adminInput) {
+        adminInput.style.display = 'block';
+        adminInput.value = '';
+    }
+    
+    isAdminAuthenticated = false;
+    showToast('Exited admin panel', 'info');
+}
+
+// Show game creation view
+function showGameCreateView() {
+    document.getElementById('adminDefaultView').classList.add('hidden');
+    document.getElementById('gameCreateView').classList.remove('hidden');
+    document.getElementById('scriptManagementView').classList.add('hidden');
+    
+    document.getElementById('gameNameInput').value = '';
+    document.getElementById('gameIdInput').value = '';
+    document.getElementById('gameImagePreview').style.display = 'none';
+    document.getElementById('imagePlaceholder').style.display = 'block';
+    document.getElementById('gameCreateStatus').textContent = '';
+}
+
+// Show games dashboard
+function showGamesDashboard() {
+    document.getElementById('gameCreateView').classList.add('hidden');
+    document.getElementById('scriptManagementView').classList.add('hidden');
+    document.getElementById('adminDefaultView').classList.remove('hidden');
+    loadGamesDashboard();
+}
+
+// Open game scripts management
+function openGameScripts(index) {
+    currentGameIndex = index;
+    
+    if (!dataCache || !dataCache.games || !dataCache.games[index]) {
+        showToast('Game not found', 'error');
+        return;
+    }
+    
+    const game = dataCache.games[index];
+    
+    document.getElementById('adminDefaultView').classList.add('hidden');
+    document.getElementById('gameCreateView').classList.add('hidden');
+    document.getElementById('scriptManagementView').classList.remove('hidden');
+    
+    document.getElementById('currentGameName').textContent = game.name;
+    document.getElementById('currentGameId').textContent = 'ID: ' + game.id;
+    
+    const gameImage = document.getElementById('currentGameImage');
+    if (game.image) {
+        gameImage.src = game.image;
+        gameImage.style.display = 'block';
+    } else {
+        gameImage.style.display = 'none';
+    }
+    
+    renderGameScripts();
+}
+
+// Load games dashboard
+async function loadGamesDashboard() {
+    try {
+        if (!dataCache) return;
+        
+        const games = dataCache.games || [];
+        const dashboard = document.getElementById('gamesDashboard');
+        const noGamesMsg = document.getElementById('noGamesMessage');
+        const totalGamesEl = document.getElementById('totalGames');
+        const totalScriptsEl = document.getElementById('totalScripts');
+        
+        if (totalGamesEl) {
+            totalGamesEl.textContent = games.length + ' game' + (games.length !== 1 ? 's' : '');
+        }
+        
+        let scriptCount = 0;
+        games.forEach(game => {
+            scriptCount += (game.scripts || []).length;
+        });
+        
+        if (totalScriptsEl) {
+            totalScriptsEl.textContent = scriptCount + ' script' + (scriptCount !== 1 ? 's' : '');
+        }
+        
+        if (games.length === 0) {
+            if (dashboard) dashboard.innerHTML = '';
+            if (noGamesMsg) noGamesMsg.classList.remove('hidden');
+            return;
+        }
+        
+        if (noGamesMsg) noGamesMsg.classList.add('hidden');
+        
+        const gamesHtml = games.map((game, index) => {
+            const scriptCount = (game.scripts || []).length;
+            return `
+                <div class="game-card" onclick="openGameScripts(${index})">
+                    ${game.image ? '<img src="' + game.image + '" class="game-card-image" alt="' + game.name + '">' : '<div class="game-card-image"></div>'}
+                    <div class="game-card-title">${game.name}</div>
+                    <div class="game-card-id">ID: ${game.id}</div>
+                    <div class="game-card-scripts">${scriptCount} script${scriptCount !== 1 ? 's' : ''}</div>
+                    <div class="game-actions">
+                        <button class="game-action-btn delete" onclick="event.stopPropagation(); deleteGame(${index})" title="Delete Game">🗑️</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        if (dashboard) dashboard.innerHTML = gamesHtml;
+        
+    } catch (error) {
+        console.error('Error loading games dashboard:', error);
+        showToast('Failed to load games', 'error');
+    }
+}
+
+// Create new game
+async function createGame() {
+    const gameName = document.getElementById('gameNameInput').value.trim();
+    const gameId = document.getElementById('gameIdInput').value.trim();
+    const statusEl = document.getElementById('gameCreateStatus');
+    
+    if (!gameName || !gameId) {
+        if (statusEl) {
+            statusEl.textContent = 'Please fill in all fields';
+            statusEl.style.color = 'var(--danger)';
+        }
+        return;
+    }
+    
+    if (!/^\d+$/.test(gameId)) {
+        if (statusEl) {
+            statusEl.textContent = 'Game ID must be numeric';
+            statusEl.style.color = 'var(--danger)';
+        }
+        return;
+    }
+    
+    showLoading('Creating game...');
+    if (statusEl) statusEl.textContent = '';
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        // Check if game ID already exists
+        if (data.games?.some(g => g.id === gameId)) {
+            throw new Error('Game with this ID already exists');
+        }
+        
+        // Handle image upload if present
+        const imageInput = document.getElementById('gameImageInput');
+        let imageData = '';
+        
+        if (imageInput.files && imageInput.files[0]) {
+            const file = imageInput.files[0];
+            if (file.size > 2 * 1024 * 1024) {
+                throw new Error('Image must be less than 2MB');
+            }
+            
+            // Convert to base64 for storage (Firestore has 1MB document limit)
+            imageData = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        const newGame = {
+            id: gameId,
+            name: gameName,
+            image: imageData,
+            scripts: [],
+            created: Date.now(),
+            createdBy: getUserIdentifier()
+        };
+        
+        if (!data.games) data.games = [];
+        data.games.push(newGame);
+        data.settings.last_updated = Date.now();
+        
+        await docRef.update({
+            games: data.games,
+            settings: data.settings
+        });
+        
+        // Clear form
+        document.getElementById('gameNameInput').value = '';
+        document.getElementById('gameIdInput').value = '';
+        document.getElementById('gameImagePreview').style.display = 'none';
+        document.getElementById('imagePlaceholder').style.display = 'block';
+        imageInput.value = '';
+        
+        if (statusEl) {
+            statusEl.textContent = '✅ Game created successfully!';
+            statusEl.style.color = 'var(--success)';
+        }
+        
+        showToast('Game created successfully!', 'success');
+        
+        setTimeout(() => {
+            showGamesDashboard();
+        }, 1500);
+        
+    } catch (error) {
+        console.error('Error creating game:', error);
+        if (statusEl) {
+            statusEl.textContent = error.message || 'Failed to create game';
+            statusEl.style.color = 'var(--danger)';
+        }
+        showToast(error.message || 'Failed to create game', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Delete game
+async function deleteGame(index) {
+    if (!confirm('Delete this game and all its scripts? This action cannot be undone.')) return;
+    
+    showLoading('Deleting game...');
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        if (!data.games || !data.games[index]) {
+            throw new Error('Game not found');
+        }
+        
+        const gameName = data.games[index].name;
+        data.games.splice(index, 1);
+        data.settings.last_updated = Date.now();
+        
+        await docRef.update({
+            games: data.games,
+            settings: data.settings
+        });
+        
+        showToast('Game "' + gameName + '" deleted', 'warning');
+        loadGamesDashboard();
+        
+    } catch (error) {
+        console.error('Error deleting game:', error);
+        showToast(error.message || 'Failed to delete game', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Render game scripts
+async function renderGameScripts() {
+    if (currentGameIndex === -1) return;
+    
+    try {
+        if (!dataCache) return;
+        
+        const game = dataCache.games[currentGameIndex];
+        const scripts = game.scripts || [];
+        const scriptsList = document.getElementById('scriptsList');
+        
+        if (!scriptsList) return;
+        
+        if (scripts.length === 0) {
+            scriptsList.innerHTML = `
+                <div class="script-empty-state">
+                    <div class="icon">📜</div>
+                    <div>No scripts added yet</div>
+                    <div style="font-size:11px; margin-top:5px;">Add your first script below</div>
+                </div>
+            `;
+            return;
+        }
+        
+        const scriptsHtml = scripts.map((script, index) => {
+            const addedDate = new Date(script.added || Date.now()).toLocaleDateString();
+            return `
+                <div class="script-item">
+                    <div class="script-header">
+                        <div class="script-name">${script.name}</div>
+                        <div class="script-actions">
+                            <button class="mini danger" onclick="deleteScript(${index})">Delete</button>
+                        </div>
+                    </div>
+                    <div class="script-url">${script.url}</div>
+                    <div class="script-meta">
+                        <span>Added: ${addedDate}</span>
+                        <span>By: ${script.addedBy || 'system'}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        scriptsList.innerHTML = scriptsHtml;
+        
+    } catch (error) {
+        console.error('Error rendering scripts:', error);
+        showToast('Failed to load scripts', 'error');
+    }
+}
+
+// Add script to game
+async function addScriptToGame() {
+    if (currentGameIndex === -1) {
+        showToast('No game selected', 'error');
+        return;
+    }
+    
+    const scriptName = document.getElementById('newScriptName').value.trim();
+    const scriptUrl = document.getElementById('newScriptUrl').value.trim();
+    const statusEl = document.getElementById('addScriptStatus');
+    
+    if (!scriptName || !scriptUrl) {
+        if (statusEl) {
+            statusEl.textContent = 'Please fill in all fields';
+            statusEl.style.color = 'var(--danger)';
+        }
+        return;
+    }
+    
+    if (!scriptUrl.startsWith('http://') && !scriptUrl.startsWith('https://')) {
+        if (statusEl) {
+            statusEl.textContent = 'Please enter a valid URL starting with http:// or https://';
+            statusEl.style.color = 'var(--danger)';
+        }
+        return;
+    }
+    
+    showLoading('Adding script...');
+    if (statusEl) statusEl.textContent = '';
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        const game = data.games[currentGameIndex];
+        
+        if (!game.scripts) game.scripts = [];
+        
+        // Check for duplicate URL
+        if (game.scripts.some(s => s.url === scriptUrl)) {
+            throw new Error('Script with this URL already exists');
+        }
+        
+        const newScript = {
+            name: scriptName,
+            url: scriptUrl,
+            added: Date.now(),
+            addedBy: getUserIdentifier()
+        };
+        
+        game.scripts.push(newScript);
+        data.settings.last_updated = Date.now();
+        
+        await docRef.update({
+            games: data.games,
+            settings: data.settings
+        });
+        
+        // Clear form
+        document.getElementById('newScriptName').value = '';
+        document.getElementById('newScriptUrl').value = '';
+        
+        if (statusEl) {
+            statusEl.textContent = '✅ Script added successfully!';
+            statusEl.style.color = 'var(--success)';
+        }
+        
+        showToast('Script added successfully!', 'success');
+        renderGameScripts();
+        
+        setTimeout(() => {
+            if (statusEl) statusEl.textContent = '';
+        }, 3000);
+        
+    } catch (error) {
+        console.error('Error adding script:', error);
+        if (statusEl) {
+            statusEl.textContent = error.message || 'Failed to add script';
+            statusEl.style.color = 'var(--danger)';
+        }
+        showToast(error.message || 'Failed to add script', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Delete script
+async function deleteScript(index) {
+    if (currentGameIndex === -1) return;
+    
+    if (!confirm('Delete this script?')) return;
+    
+    showLoading('Deleting script...');
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        const game = data.games[currentGameIndex];
+        
+        if (!game.scripts || !game.scripts[index]) {
+            throw new Error('Script not found');
+        }
+        
+        const scriptName = game.scripts[index].name;
+        game.scripts.splice(index, 1);
+        data.settings.last_updated = Date.now();
+        
+        await docRef.update({
+            games: data.games,
+            settings: data.settings
+        });
+        
+        showToast('Script "' + scriptName + '" deleted', 'warning');
+        renderGameScripts();
+        
+    } catch (error) {
+        console.error('Error deleting script:', error);
+        showToast(error.message || 'Failed to delete script', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Delete current game
+async function deleteCurrentGame() {
+    if (currentGameIndex === -1) return;
+    
+    if (!confirm('Delete this game and all its scripts? This action cannot be undone.')) return;
+    
+    showLoading('Deleting game...');
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        if (!data.games || !data.games[currentGameIndex]) {
+            throw new Error('Game not found');
+        }
+        
+        const gameName = data.games[currentGameIndex].name;
+        data.games.splice(currentGameIndex, 1);
+        data.settings.last_updated = Date.now();
+        
+        await docRef.update({
+            games: data.games,
+            settings: data.settings
+        });
+        
+        showToast('Game "' + gameName + '" deleted', 'warning');
+        showGamesDashboard();
+        
+    } catch (error) {
+        console.error('Error deleting game:', error);
+        showToast(error.message || 'Failed to delete game', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Update stats display
+function updateStatsDisplay() {
+    const timeEl = document.getElementById('currentTime');
+    if (timeEl) {
+        const now = new Date();
+        timeEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+}
+
+// Track view and activity
+function trackViewAndActivity() {
+    updateStatsDisplay();
+}
+
+// Update chat
+function updateChat() {
+    if (!dataCache || !dataCache.chats) return;
+    
+    const currentUserId = getUserIdentifier();
+    const bans = dataCache.bans || {};
+    
+    // Check if user is banned
+    if (bans[currentUserId]) {
+        document.getElementById('chat-toggle').classList.add('hidden');
+        document.getElementById('chat-window').classList.add('hidden');
+        return;
+    }
+    
+    const chatToggle = document.getElementById('chat-toggle');
+    if (chatToggle) chatToggle.classList.remove('hidden');
+    
+    // Handle pinned message
+    if (dataCache.pinned) {
+        const pinnedArea = document.getElementById('pinned-area');
+        const pinnedText = document.getElementById('pinnedText');
+        if (pinnedArea && pinnedText) {
+            pinnedArea.classList.remove('hidden');
+            pinnedText.textContent = dataCache.pinned.text || dataCache.pinned;
+        }
+    }
+    
+    renderMessages();
+}
+
+// Render chat messages
+function renderMessages() {
+    if (!dataCache || !dataCache.chats) return;
+    
+    const msgsContainer = document.getElementById('chat-msgs');
+    if (!msgsContainer) return;
+    
+    const chats = dataCache.chats;
+    
+    if (chats.length === 0) {
+        msgsContainer.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">💬</div>
+                <div>No messages yet. Be the first to say hello!</div>
+            </div>
+        `;
+        return;
+    }
+    
+    const currentUserId = getUserIdentifier();
+    
+    const messagesHtml = chats.map((msg, index) => {
+        const isSystem = msg.user === 'SYSTEM';
+        const isOwner = msg.user === 'plstealme2';
+        const msgTime = new Date(msg.timestamp || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+        return `
+            <div class="msg-item ${isSystem ? 'system' : ''} ${isOwner ? 'owner-msg' : ''}">
+                <div class="msg-header">
+                    <div class="msg-user">
+                        ${msg.user}
+                        ${isOwner ? '<span class="owner-badge">👑</span>' : ''}
+                    </div>
+                    <div class="msg-time">${msgTime}</div>
+                </div>
+                <div class="msg-content">
+                    ${msg.txt}
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    msgsContainer.innerHTML = messagesHtml;
+    
+    // Scroll to bottom
+    if (msgsContainer.scrollHeight > msgsContainer.clientHeight) {
+        msgsContainer.scrollTop = msgsContainer.scrollHeight;
+    }
+}
+
+// Send chat message
+async function sendChat() {
+    const input = document.getElementById('chat-input');
+    if (!input) return;
+    
+    const message = input.value.trim();
+    if (!message) return;
+    
+    if (moderate(message)) {
+        showToast('Message contains blocked content', 'error');
+        return;
+    }
+    
+    const currentUserId = getUserIdentifier();
+    const bans = dataCache?.bans || {};
+    
+    if (bans[currentUserId]) {
+        showToast('You are banned from chat', 'error', 3000);
+        return;
+    }
+    
+    const newMsg = {
+        user: currentUserId,
+        txt: message,
+        timestamp: Date.now()
+    };
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        
+        if (!dataCache.chats) dataCache.chats = [];
+        dataCache.chats.push(newMsg);
+        
+        // Keep only last 100 messages
+        if (dataCache.chats.length > 100) {
+            dataCache.chats = dataCache.chats.slice(-100);
+        }
+        
+        await docRef.update({ chats: dataCache.chats });
+        
+        input.value = '';
+        renderMessages();
+        
+    } catch (error) {
+        console.error('Error sending message:', error);
+        showToast('Failed to send message', 'error');
+    }
+}
+
+// Toggle chat window
+function toggleChat(show) {
+    const chatWindow = document.getElementById('chat-window');
+    if (!chatWindow) return;
+    
+    if (show) {
+        chatWindow.classList.remove('hidden');
+    } else {
+        chatWindow.classList.add('hidden');
+    }
+}
+
+// Render admin keys
+async function renderAdminKeys() {
+    try {
+        if (!dataCache) return;
+        
+        const keys = dataCache.keys || {};
+        const keyLogs = document.getElementById('keyLogs');
+        const keyCount = document.getElementById('keyCount');
+        
+        if (keyCount) {
+            keyCount.textContent = Object.keys(keys).length + ' key' + (Object.keys(keys).length !== 1 ? 's' : '');
+        }
+        
+        if (!keyLogs) return;
+        
+        if (Object.keys(keys).length === 0) {
+            keyLogs.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.5);">No keys in system</div>';
+            return;
+        }
+        
+        const keysHtml = Object.entries(keys).map(([keyId, keyData]) => {
+            const createdDate = new Date(keyData.created || Date.now()).toLocaleString();
+            return `
+                <div class="fb-item">
+                    <div style="flex:1;">
+                        <div><strong>${keyId.substring(0, 8)}...</strong> (for UserID: ${keyData.rbx})</div>
+                        <div style="font-size:10px; opacity:0.7;">
+                            Generated by: ${keyData.generatedBy || 'system'} • ${createdDate}
+                        </div>
+                    </div>
+                    <button class="mini danger" onclick="deleteAdminKey('${keyId}')">Delete</button>
+                </div>
+            `;
+        }).join('');
+        
+        keyLogs.innerHTML = keysHtml;
+        
+    } catch (error) {
+        console.error('Error rendering admin keys:', error);
+        showToast('Failed to load keys', 'error');
+    }
+}
+
+// Delete admin key
+async function deleteAdminKey(keyId) {
+    if (!confirm('Delete this key?')) return;
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        if (!data.keys || !data.keys[keyId]) {
+            throw new Error('Key not found');
+        }
+        
+        delete data.keys[keyId];
+        data.settings.last_updated = Date.now();
+        
+        await docRef.update({
+            keys: data.keys,
+            settings: data.settings
+        });
+        
+        showToast('Key deleted', 'warning');
+        renderAdminKeys();
+        
+    } catch (error) {
+        console.error('Error deleting key:', error);
+        showToast('Failed to delete key', 'error');
+    }
+}
+
+// Render admin bans
+async function renderAdminBans() {
+    try {
+        if (!dataCache) return;
+        
+        const bans = dataCache.bans || {};
+        const banLogs = document.getElementById('banLogs');
+        const banCount = document.getElementById('banCount');
+        
+        if (banCount) {
+            banCount.textContent = Object.keys(bans).length + ' banned';
+        }
+        
+        if (!banLogs) return;
+        
+        if (Object.keys(bans).length === 0) {
+            banLogs.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.5);">No banned users</div>';
+            return;
+        }
+        
+        const bansHtml = Object.entries(bans).map(([userId, banData]) => {
+            const banTime = new Date(banData.time || Date.now()).toLocaleString();
+            return `
+                <div class="fb-item">
+                    <div style="flex:1;">
+                        <div><strong>${banData.username || userId}</strong> (${userId})</div>
+                        <div style="font-size:10px; opacity:0.7;">
+                            Reason: ${banData.reason || 'No reason provided'}<br>
+                            Banned by: ${banData.banned_by || 'system'} • ${banTime}
+                        </div>
+                    </div>
+                    <button class="mini success" onclick="unbanUser('${userId}')">Unban</button>
+                </div>
+            `;
+        }).join('');
+        
+        banLogs.innerHTML = bansHtml;
+        
+    } catch (error) {
+        console.error('Error rendering bans:', error);
+        showToast('Failed to load bans', 'error');
+    }
+}
+
+// Ban all key holders
+async function banAllKeyHolders() {
+    if (!confirm('Ban all key holders? This will ban every user who has a key.')) return;
+    
+    showLoading('Banning all key holders...');
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        const keys = data.keys || {};
+        
+        if (!data.bans) data.bans = {};
+        
+        let bannedCount = 0;
+        
+        for (const [_, keyData] of Object.entries(keys)) {
+            if (keyData.rbx && !data.bans[keyData.rbx]) {
+                data.bans[keyData.rbx] = {
+                    reason: 'Mass ban of all key holders',
+                    banned_by: getUserIdentifier(),
+                    time: Date.now()
+                };
+                bannedCount++;
+            }
+        }
+        
+        data.settings.last_updated = Date.now();
+        
+        await docRef.update({
+            bans: data.bans,
+            settings: data.settings
+        });
+        
+        showToast('Banned ' + bannedCount + ' key holders', 'warning');
+        renderAdminBans();
+        
+    } catch (error) {
+        console.error('Error banning key holders:', error);
+        showToast('Failed to ban key holders', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Unban all users
+async function unbanEveryone() {
+    if (!confirm('Unban all users?')) return;
+    
+    showLoading('Unbanning all users...');
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        
+        await docRef.update({
+            bans: {}
+        });
+        
+        showToast('All users unbanned', 'success');
+        renderAdminBans();
+        
+    } catch (error) {
+        console.error('Error unbanning users:', error);
+        showToast('Failed to unban users', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Unban user
+async function unbanUser(userId) {
+    if (!confirm('Unban user ' + userId + '?')) return;
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        if (!data.bans || !data.bans[userId]) {
+            throw new Error('User not banned');
+        }
+        
+        delete data.bans[userId];
+        data.settings.last_updated = Date.now();
+        
+        await docRef.update({
+            bans: data.bans,
+            settings: data.settings
+        });
+        
+        showToast('Unbanned user ' + userId, 'success');
+        renderAdminBans();
+        
+    } catch (error) {
+        console.error('Error unbanning user:', error);
+        showToast('Failed to unban user', 'error');
+    }
+}
+
+// Show ban now modal
+function showBanNowModal() {
+    document.getElementById('banNowModal').classList.remove('hidden');
+    document.getElementById('focusBanId').focus();
+}
+
+// Hide ban now modal
+function hideBanNowModal() {
+    document.getElementById('banNowModal').classList.add('hidden');
+    document.getElementById('focusBanId').value = '';
+    document.getElementById('focusBanUser').value = '';
+    document.getElementById('focusBanReason').value = '';
+}
+
+// Execute focus ban
+async function executeFocusBan() {
+    const userId = document.getElementById('focusBanId').value.trim();
+    const username = document.getElementById('focusBanUser').value.trim();
+    const reason = document.getElementById('focusBanReason').value.trim();
+    
+    if (!userId) {
+        showToast('Please enter a UserID', 'error');
+        return;
+    }
+    
+    showLoading('Banning user...');
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        if (!data.bans) data.bans = {};
+        
+        data.bans[userId] = {
+            reason: reason || 'Violation of terms',
+            banned_by: getUserIdentifier(),
+            time: Date.now(),
+            username: username || 'Unknown'
+        };
+        
+        data.settings.last_updated = Date.now();
+        
+        await docRef.update({
+            bans: data.bans,
+            settings: data.settings
+        });
+        
+        hideBanNowModal();
+        showToast('Banned ' + (username || userId), 'success');
+        renderAdminBans();
+        
+    } catch (error) {
+        console.error('Error banning user:', error);
+        showToast('Failed to ban user', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Send global message
+async function sendGlobalMsg(isPin = false) {
+    const input = document.getElementById('globalMsgInput');
+    if (!input) return;
+    
+    const message = input.value.trim();
+    
+    if (!message) {
+        showToast('Please enter a message', 'error');
+        return;
+    }
+    
+    if (message.length > 200) {
+        showToast('Message must be 200 characters or less', 'error');
+        return;
+    }
+    
+    showLoading(isPin ? 'Pinning message...' : 'Sending broadcast...');
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        if (isPin) {
+            data.pinned = {
+                text: message,
+                pinnedBy: getUserIdentifier(),
+                pinnedAt: Date.now()
+            };
+            await docRef.update({ pinned: data.pinned });
+            showToast('Message pinned', 'success');
+        } else {
+            const systemMsg = {
+                user: 'SYSTEM',
+                txt: message,
+                timestamp: Date.now()
+            };
+            
+            if (!data.chats) data.chats = [];
+            data.chats.push(systemMsg);
+            
+            if (data.chats.length > 100) {
+                data.chats = data.chats.slice(-100);
+            }
+            
+            await docRef.update({ chats: data.chats });
+            showToast('Broadcast sent', 'success');
+        }
+        
+        input.value = '';
+        updateChat();
+        
+    } catch (error) {
+        console.error('Error sending message:', error);
+        showToast('Failed to send message', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Clear globals (pinned and system messages)
+async function clearGlobals() {
+    if (!confirm('Clear all pinned and system messages?')) return;
+    
+    showLoading('Clearing messages...');
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        data.pinned = null;
+        
+        if (data.chats) {
+            data.chats = data.chats.filter(msg => msg.user !== 'SYSTEM');
+        }
+        
+        await docRef.update({
+            pinned: data.pinned,
+            chats: data.chats
+        });
+        
+        showToast('Messages cleared', 'success');
+        updateChat();
+        
+    } catch (error) {
+        console.error('Error clearing messages:', error);
+        showToast('Failed to clear messages', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Clear all chat
+async function clearAllChat() {
+    if (!confirm('Clear all chat messages? This cannot be undone.')) return;
+    
+    showLoading('Clearing chat...');
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        
+        await docRef.update({
+            chats: []
+        });
+        
+        showToast('Chat cleared', 'success');
+        updateChat();
+        
+    } catch (error) {
+        console.error('Error clearing chat:', error);
+        showToast('Failed to clear chat', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Open admin feedbacks
+function openAdminFeedbacks() {
+    document.getElementById('feedbackModal').classList.remove('hidden');
+    renderAdminFeedbacks();
+}
+
+// Hide feedback modal
+function hideFeedbackModal() {
+    document.getElementById('feedbackModal').classList.add('hidden');
+}
+
+// Render admin feedbacks
+async function renderAdminFeedbacks() {
+    try {
+        if (!dataCache) return;
+        
+        const feedbacks = dataCache.feedbacks || [];
+        const searchTerm = document.getElementById('fbSearch')?.value.toLowerCase() || '';
+        
+        const filtered = feedbacks.filter(fb => 
+            fb.user.toLowerCase().includes(searchTerm) || 
+            fb.userId.toLowerCase().includes(searchTerm)
+        );
+        
+        const fbLogs = document.getElementById('fbLogs');
+        
+        if (!fbLogs) return;
+        
+        if (filtered.length === 0) {
+            fbLogs.innerHTML = '<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.5);">No feedback submissions</div>';
+            return;
+        }
+        
+        const feedbacksHtml = filtered.map((fb, index) => {
+            const fbDate = new Date(fb.timestamp).toLocaleString();
+            return `
+                <div class="fb-item">
+                    <div style="flex:1;">
+                        <div><strong>${fb.user}</strong> (${fb.userId})</div>
+                        <div style="font-size:11px; margin:5px 0;">${fb.message}</div>
+                        <div style="font-size:10px; opacity:0.7;">${fbDate}</div>
+                    </div>
+                    <div>
+                        <button class="mini danger" onclick="deleteFeedback(${index})">Delete</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        fbLogs.innerHTML = feedbacksHtml;
+        
+    } catch (error) {
+        console.error('Error rendering feedbacks:', error);
+        showToast('Failed to load feedbacks', 'error');
+    }
+}
+
+// Delete feedback
+async function deleteFeedback(index) {
+    if (!confirm('Delete this feedback?')) return;
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        if (!data.feedbacks || !data.feedbacks[index]) {
+            throw new Error('Feedback not found');
+        }
+        
+        data.feedbacks.splice(index, 1);
+        data.settings.last_updated = Date.now();
+        
+        await docRef.update({
+            feedbacks: data.feedbacks,
+            settings: data.settings
+        });
+        
+        showToast('Feedback deleted', 'warning');
+        renderAdminFeedbacks();
+        
+    } catch (error) {
+        console.error('Error deleting feedback:', error);
+        showToast('Failed to delete feedback', 'error');
+    }
+}
+
+// Master reset function
+async function masterReset() {
+    const resetTarget = document.getElementById('resetTarget')?.value;
+    
+    if (!resetTarget) return;
+    
+    let confirmMessage = '';
+    
+    switch(resetTarget) {
+        case 'chat':
+            confirmMessage = 'Clear all chat history?';
+            break;
+        case 'bans':
+            confirmMessage = 'Clear all bans?';
+            break;
+        case 'users':
+            confirmMessage = 'Clear all user accounts? This will remove all user data.';
+            break;
+        case 'all':
+            confirmMessage = 'FACTORY RESET: This will wipe EVERYTHING and cannot be undone. Continue?';
+            break;
+        default:
+            return;
+    }
+    
+    if (!confirm(confirmMessage)) return;
+    
+    showLoading('Resetting system...');
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        
+        if (resetTarget === 'all') {
+            // Factory reset - recreate everything
+            const initialData = {
+                users: {
+                    [ADMIN_USERNAME]: {
+                        password: ADMIN_PASSWORD,
+                        created: Date.now(),
+                        role: 'SUPER_ADMIN'
+                    }
+                },
+                keys: {},
+                games: [],
+                bans: {},
+                feedbacks: [],
+                chats: [],
+                pinned: null,
+                settings: {
+                    version: '2.0',
+                    created: Date.now(),
+                    last_updated: Date.now()
+                }
+            };
+            
+            await docRef.set(initialData);
+            dataCache = initialData;
+            
+            showToast('Factory reset complete', 'success');
+            location.reload();
+            return;
+        }
+        
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        switch(resetTarget) {
+            case 'chat':
+                data.chats = [];
+                data.pinned = null;
+                break;
+            case 'bans':
+                data.bans = {};
+                break;
+            case 'users':
+                data.keys = {};
+                data.feedbacks = [];
+                break;
+        }
+        
+        data.settings.last_updated = Date.now();
+        
+        await docRef.update(data);
+        
+        showToast('Reset complete', 'success');
+        
+        // Refresh views
+        updateChat();
+        renderAdminKeys();
+        renderAdminBans();
+        loadGamesDashboard();
+        
+    } catch (error) {
+        console.error('Error resetting system:', error);
+        showToast('Failed to reset system', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Toggle feedback UI
+function toggleFeedbackUI(show) {
+    const feedbackUI = document.getElementById('userFeedbackUI');
+    const mainSystem = document.getElementById('mainSystem');
+    
+    if (show) {
+        mainSystem.classList.add('hidden');
+        feedbackUI.classList.remove('hidden');
+    } else {
+        feedbackUI.classList.add('hidden');
+        mainSystem.classList.remove('hidden');
+    }
+}
+
+// Submit feedback
+async function submitFeedback() {
+    const username = document.getElementById('fb-user')?.value.trim();
+    const userId = document.getElementById('fb-id')?.value.trim();
+    const message = document.getElementById('fb-msg')?.value.trim();
+    const spinner = document.getElementById('fbSpinner');
+    
+    if (!username || !userId || !message) {
+        showToast('Please fill in all fields', 'error');
+        return;
+    }
+    
+    if (spinner) spinner.style.display = 'inline-block';
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        if (!data.feedbacks) data.feedbacks = [];
+        
+        const newFeedback = {
+            user: username,
+            userId: userId,
+            message: message,
+            timestamp: Date.now(),
+            status: 'pending'
+        };
+        
+        data.feedbacks.push(newFeedback);
+        data.settings.last_updated = Date.now();
+        
+        await docRef.update({
+            feedbacks: data.feedbacks,
+            settings: data.settings
+        });
+        
+        // Clear form
+        document.getElementById('fb-user').value = '';
+        document.getElementById('fb-id').value = '';
+        document.getElementById('fb-msg').value = '';
+        
+        showToast('Feedback submitted successfully!', 'success');
+        toggleFeedbackUI(false);
+        
+    } catch (error) {
+        console.error('Error submitting feedback:', error);
+        showToast('Failed to submit feedback', 'error');
+    } finally {
+        if (spinner) spinner.style.display = 'none';
+    }
+}
+
+// Image preview handler
+document.getElementById('gameImageInput')?.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (file.size > 2 * 1024 * 1024) {
+        showToast('Image must be less than 2MB', 'error');
+        return;
+    }
+    
+    if (!file.type.match('image.*')) {
+        showToast('Please select an image file', 'error');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const preview = document.getElementById('gameImagePreview');
+        const placeholder = document.getElementById('imagePlaceholder');
+        if (preview && placeholder) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            placeholder.style.display = 'none';
+        }
+    };
+    reader.readAsDataURL(file);
+});
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', async () => {
+    updateStatsDisplay();
+    setInterval(updateStatsDisplay, 60000);
+    trackViewAndActivity();
+    setInterval(trackViewAndActivity, 30000);
+    
+    await initializeDatabase();
+    checkSession();
+    
+    if (!currentUser) {
+        document.getElementById('authPanel').classList.remove('hidden');
+        document.getElementById('mainSystem').classList.add('hidden');
+    } else {
+        await fetchData();
+        updateChat();
+        setInterval(updateChat, 5000);
+    }
+    
+    // Chat enter key handler
+    const chatInput = document.getElementById('chat-input');
+    if (chatInput) {
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendChat();
+            }
+        });
+    }
+    
+    // UserID input handler for key cooldown check
+    const userIdInput = document.getElementById('userid');
+    if (userIdInput) {
+        userIdInput.addEventListener('input', async () => {
+            const userId = userIdInput.value.trim();
+            if (userId && /^\d+$/.test(userId)) {
+                // Check if user has a recent key
+                const keys = dataCache?.keys || {};
+                const existingKey = Object.entries(keys).find(([_, keyData]) => 
+                    String(keyData.rbx) === String(userId) && keyData.generatedBy === currentUser?.username
+                );
+                
+                if (existingKey) {
+                    const [keyId, keyData] = existingKey;
+                    const timeSinceCreation = Date.now() - keyData.created;
+                    const hoursSinceCreation = timeSinceCreation / (1000 * 60 * 60);
+                    
+                    if (hoursSinceCreation < 24) {
+                        const statusMsg = document.getElementById('statusMsg');
+                        if (statusMsg) {
+                            const hoursLeft = Math.ceil(24 - hoursSinceCreation);
+                            statusMsg.innerHTML = `
+                                <span style="color: var(--warning);">
+                                    ⏳ You can generate a new key for this UserID in ${hoursLeft} hours ${Math.ceil(24 * 60 - hoursSinceCreation * 60)} minutes
+                                </span>
+                            `;
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    showToast('System initialized', 'success');
+});
 </script>
 </body>
 </html>
