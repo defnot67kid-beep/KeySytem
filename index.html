@@ -15,6 +15,7 @@
     --glass: rgba(15, 20, 30, 0.95);
     --border: rgba(255, 255, 255, 0.08);
     --chat-bg: rgba(10, 12, 18, 0.95);
+    --notification: #ff4d6d;
 }
 
 * {
@@ -36,11 +37,23 @@ body {
 /* Animations */
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 @keyframes spin { to { transform: rotate(360deg); } }
+@keyframes notificationPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+@keyframes glow {
+    0% { box-shadow: 0 0 5px rgba(255, 77, 109, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(255, 77, 109, 0.8); }
+    100% { box-shadow: 0 0 5px rgba(255, 77, 109, 0.5); }
+}
 
 .animate-fade { animation: fadeIn 0.3s ease forwards; }
 .animate-slide { animation: slideIn 0.3s ease forwards; }
+.animate-slide-right { animation: slideInRight 0.3s ease forwards; }
 
 #bg-wrap { 
     position: fixed; 
@@ -122,6 +135,162 @@ body {
 
 .hidden { display: none !important; }
 
+/* Notification Center */
+#notificationCenter {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    width: 350px;
+    max-height: 500px;
+    background: var(--glass);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    z-index: 10001;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.notification-header {
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notification-header h3 {
+    margin: 0;
+    font-size: 14px;
+    color: var(--secondary);
+}
+
+.notification-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.notification-actions button {
+    margin: 0;
+    padding: 4px 10px;
+    font-size: 11px;
+    width: auto;
+}
+
+#notificationsList {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 400px;
+    padding: 10px;
+}
+
+.notification-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    animation: slideInRight 0.3s ease;
+}
+
+.notification-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(-2px);
+}
+
+.notification-item.unread {
+    border-left: 3px solid var(--notification);
+    background: rgba(255, 77, 109, 0.05);
+}
+
+.notification-item.unread:hover {
+    background: rgba(255, 77, 109, 0.08);
+}
+
+.notification-title {
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--secondary);
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.notification-message {
+    font-size: 11px;
+    opacity: 0.9;
+    margin-bottom: 6px;
+    word-break: break-word;
+}
+
+.notification-time {
+    font-size: 9px;
+    opacity: 0.5;
+    font-family: monospace;
+}
+
+.notification-badge {
+    position: fixed;
+    top: 45px;
+    right: 20px;
+    background: var(--notification);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    animation: notificationPulse 2s infinite, glow 2s infinite;
+    z-index: 10002;
+    cursor: pointer;
+}
+
+/* Floating Notification */
+.floating-notification {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    background: var(--glass);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--notification);
+    border-radius: 10px;
+    padding: 12px 15px;
+    z-index: 10003;
+    animation: slideInRight 0.3s ease, fadeOut 5s forwards;
+    max-width: 300px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+.floating-notification .title {
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--secondary);
+    margin-bottom: 4px;
+}
+
+.floating-notification .message {
+    font-size: 11px;
+    opacity: 0.9;
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; transform: translateX(0); }
+    70% { opacity: 1; transform: translateX(0); }
+    100% { opacity: 0; transform: translateX(100%); }
+}
+
 /* Form Elements */
 input, select, textarea {
     width: 100%;
@@ -193,6 +362,36 @@ button.mini {
     margin-top: 0; 
     width: auto; 
     border-radius: 8px; 
+}
+
+/* Notification Toggle Button */
+#notification-toggle {
+    position: fixed;
+    top: 45px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10001;
+    transition: all 0.2s;
+}
+
+#notification-toggle:hover {
+    transform: scale(1.1);
+    border-color: var(--secondary);
+}
+
+#notification-toggle svg {
+    width: 18px;
+    height: 18px;
+    fill: white;
 }
 
 /* Chat Toggle */
@@ -630,21 +829,21 @@ button.mini {
 }
 
 /* Scrollbar Styling */
-#chat-msgs::-webkit-scrollbar {
+#chat-msgs::-webkit-scrollbar, #notificationsList::-webkit-scrollbar {
     width: 6px;
 }
 
-#chat-msgs::-webkit-scrollbar-track {
+#chat-msgs::-webkit-scrollbar-track, #notificationsList::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.02);
     border-radius: 3px;
 }
 
-#chat-msgs::-webkit-scrollbar-thumb {
+#chat-msgs::-webkit-scrollbar-thumb, #notificationsList::-webkit-scrollbar-thumb {
     background: rgba(79, 124, 255, 0.2);
     border-radius: 3px;
 }
 
-#chat-msgs::-webkit-scrollbar-thumb:hover {
+#chat-msgs::-webkit-scrollbar-thumb:hover, #notificationsList::-webkit-scrollbar-thumb:hover {
     background: rgba(79, 124, 255, 0.3);
 }
 
@@ -673,7 +872,7 @@ button.mini {
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Toast Notifications */
+/* Toast Notifications - Admin Only */
 .toast {
     position: fixed;
     top: 50px;
@@ -787,7 +986,7 @@ button.mini {
     animation: pulse 2s infinite;
 }
 
-/* NEW: GAME MANAGEMENT STYLES */
+/* GAME MANAGEMENT STYLES */
 .game-management-section {
     background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
     border-radius: 15px;
@@ -1314,6 +1513,31 @@ button.mini {
     <div class="loading-text" id="loadingText">Loading...</div>
 </div>
 
+<!-- Notification Toggle -->
+<div id="notification-toggle" onclick="toggleNotificationCenter()">
+    <svg viewBox="0 0 24 24">
+        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+    </svg>
+    <div id="notificationBadge" class="hidden">0</div>
+</div>
+
+<!-- Notification Center -->
+<div id="notificationCenter" class="hidden">
+    <div class="notification-header">
+        <h3>🔔 Notifications</h3>
+        <div class="notification-actions">
+            <button class="mini success" onclick="markAllNotificationsRead()">✓ Mark all read</button>
+            <button class="mini" onclick="toggleNotificationCenter()">✕</button>
+        </div>
+    </div>
+    <div id="notificationsList">
+        <div class="empty-state">
+            <div class="empty-state-icon">🔔</div>
+            <div>No notifications</div>
+        </div>
+    </div>
+</div>
+
 <!-- Auth Panel -->
 <div id="authPanel" class="panel animate-fade">
     <div style="text-align:center; margin-bottom:30px;">
@@ -1743,7 +1967,12 @@ const ADMIN_PASSWORD = 'Livetopimo';
 let currentGameIndex = -1;
 let lastSeenMessageTime = 0;
 let unreadCount = 0;
+let chatUnreadCount = 0;
 let userKeys = {};
+
+// Notifications array
+let notifications = [];
+let notificationListeners = [];
 
 // Initialize database with default structure
 async function initializeDatabase() {
@@ -1778,7 +2007,7 @@ async function initializeDatabase() {
             
             await docRef.set(initialData);
             dataCache = initialData;
-            showToast('✅ New database created with Firebase', 'success');
+            addNotification('System', '✅ New database created with Firebase', 'success');
         } else {
             dataCache = doc.data();
         }
@@ -1790,10 +2019,150 @@ async function initializeDatabase() {
         return true;
     } catch (error) {
         console.error('Database initialization failed:', error);
-        showToast('❌ Failed to initialize database', 'error');
+        if (isAdmin()) {
+            showToast('❌ Failed to initialize database', 'error');
+        }
         hideLoading();
         return false;
     }
+}
+
+// Check if current user is admin
+function isAdmin() {
+    return currentUser?.username === ADMIN_USERNAME;
+}
+
+// Add notification
+function addNotification(title, message, type = 'info', data = null) {
+    const notification = {
+        id: Date.now() + Math.random(),
+        title: title,
+        message: message,
+        type: type,
+        timestamp: Date.now(),
+        read: false,
+        data: data
+    };
+    
+    notifications.unshift(notification);
+    
+    // Keep only last 50 notifications
+    if (notifications.length > 50) {
+        notifications = notifications.slice(0, 50);
+    }
+    
+    // Update badge
+    updateNotificationBadge();
+    
+    // Show floating notification for all users
+    showFloatingNotification(notification);
+    
+    // Trigger listeners
+    notificationListeners.forEach(listener => listener(notifications));
+    
+    return notification;
+}
+
+// Show floating notification
+function showFloatingNotification(notification) {
+    const floating = document.createElement('div');
+    floating.className = 'floating-notification';
+    floating.onclick = () => {
+        toggleNotificationCenter();
+        markNotificationRead(notification.id);
+        floating.remove();
+    };
+    
+    floating.innerHTML = `
+        <div class="title">${notification.title}</div>
+        <div class="message">${notification.message}</div>
+    `;
+    
+    document.body.appendChild(floating);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (floating.parentNode) {
+            floating.remove();
+        }
+    }, 5000);
+}
+
+// Update notification badge
+function updateNotificationBadge() {
+    const badge = document.getElementById('notificationBadge');
+    const unreadCount = notifications.filter(n => !n.read).length;
+    
+    if (badge) {
+        if (unreadCount > 0) {
+            badge.textContent = unreadCount;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
+}
+
+// Toggle notification center
+function toggleNotificationCenter() {
+    const center = document.getElementById('notificationCenter');
+    if (center) {
+        center.classList.toggle('hidden');
+        if (!center.classList.contains('hidden')) {
+            renderNotifications();
+        }
+    }
+}
+
+// Render notifications
+function renderNotifications() {
+    const list = document.getElementById('notificationsList');
+    if (!list) return;
+    
+    if (notifications.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">🔔</div>
+                <div>No notifications</div>
+            </div>
+        `;
+        return;
+    }
+    
+    const notificationsHtml = notifications.map(notif => {
+        const time = new Date(notif.timestamp).toLocaleTimeString();
+        const unreadClass = notif.read ? '' : 'unread';
+        
+        return `
+            <div class="notification-item ${unreadClass}" onclick="markNotificationRead(${notif.id})">
+                <div class="notification-title">
+                    <span>${notif.title}</span>
+                    ${!notif.read ? '<span style="color: var(--notification);">●</span>' : ''}
+                </div>
+                <div class="notification-message">${notif.message}</div>
+                <div class="notification-time">${time}</div>
+            </div>
+        `;
+    }).join('');
+    
+    list.innerHTML = notificationsHtml;
+}
+
+// Mark notification as read
+function markNotificationRead(id) {
+    const notification = notifications.find(n => n.id === id);
+    if (notification) {
+        notification.read = true;
+        renderNotifications();
+        updateNotificationBadge();
+    }
+}
+
+// Mark all notifications as read
+function markAllNotificationsRead() {
+    notifications.forEach(n => n.read = true);
+    renderNotifications();
+    updateNotificationBadge();
 }
 
 // Set up real-time Firestore listeners
@@ -1802,11 +2171,42 @@ function setupRealtimeListeners() {
     db.collection('system').doc('config')
         .onSnapshot((doc) => {
             if (doc.exists) {
+                const oldData = dataCache;
                 dataCache = doc.data();
                 lastFetchTime = Date.now();
                 updateConnectionStatus(true);
+                
+                // Check for new messages
+                if (oldData && oldData.chats && dataCache.chats) {
+                    const lastMessage = oldData.chats[oldData.chats.length - 1];
+                    const newMessages = dataCache.chats.filter(msg => 
+                        msg.timestamp > (lastMessage?.timestamp || 0) &&
+                        msg.user !== 'SYSTEM' &&
+                        msg.user !== getUserIdentifier()
+                    );
+                    
+                    if (newMessages.length > 0) {
+                        newMessages.forEach(msg => {
+                            addNotification(
+                                '💬 New Message',
+                                `${msg.user}: ${msg.txt.substring(0, 50)}${msg.txt.length > 50 ? '...' : ''}`,
+                                'chat',
+                                msg
+                            );
+                        });
+                        
+                        // Update chat unread count
+                        if (!document.getElementById('chat-window').classList.contains('hidden')) {
+                            chatUnreadCount = 0;
+                        } else {
+                            chatUnreadCount += newMessages.length;
+                        }
+                        updateUnreadBadge();
+                    }
+                }
+                
                 updateChat();
-                if (isAdminAuthenticated) {
+                if (isAdmin()) {
                     renderAdminKeys();
                     renderAdminBans();
                     loadGamesDashboard();
@@ -1815,7 +2215,23 @@ function setupRealtimeListeners() {
         }, (error) => {
             console.error('Firestore listener error:', error);
             updateConnectionStatus(false);
+            if (isAdmin()) {
+                showToast('⚠️ Connection issues. Using cached data.', 'warning');
+            }
         });
+}
+
+// Update unread badge
+function updateUnreadBadge() {
+    const badge = document.getElementById('unread-badge');
+    if (badge) {
+        if (chatUnreadCount > 0) {
+            badge.textContent = chatUnreadCount;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
 }
 
 // Update connection status
@@ -1829,6 +2245,9 @@ function updateConnectionStatus(isConnected) {
     } else {
         statusEl.className = 'connection-status disconnected';
         statusEl.innerHTML = '<div class="status-dot"></div><span>Disconnected</span>';
+        if (isAdmin()) {
+            addNotification('⚠️ Connection Lost', 'Reconnecting to server...', 'warning');
+        }
     }
 }
 
@@ -1850,8 +2269,10 @@ function hideLoading() {
     }
 }
 
-// Show toast notification
+// Show toast notification (admin only)
 function showToast(message, type = 'info', duration = 3000) {
+    if (!isAdmin()) return; // Only show toasts for admin
+    
     const toast = document.createElement('div');
     toast.className = 'toast ' + type;
     toast.textContent = message;
@@ -1945,6 +2366,7 @@ async function handleAuth(action) {
             authStatus.textContent = 'Account created! Please login.';
             authStatus.style.color = 'var(--success)';
             toggleAuth(false);
+            addNotification('Welcome!', 'Account created successfully. Please login.', 'success');
         } else {
             const user = data.users[username];
             
@@ -1978,12 +2400,16 @@ async function handleAuth(action) {
                 adminBtn.style.display = username === ADMIN_USERNAME ? 'block' : 'none';
             }
             
-            showToast('Welcome ' + username + '!', 'success');
+            addNotification('Welcome!', 'Logged in as ' + username, 'success');
         }
     } catch (error) {
         console.error('Auth error:', error);
         authStatus.textContent = 'Error: ' + error.message;
         authStatus.style.color = 'var(--danger)';
+        if (isAdmin()) {
+            showToast('Authentication failed', 'error');
+        }
+        addNotification('❌ Auth Error', error.message, 'error');
     } finally {
         if (spinner) spinner.style.display = 'none';
     }
@@ -2009,7 +2435,7 @@ function toggleAuth(showSignup) {
 // Generate access key
 async function generateKey() {
     if (!currentUser) {
-        showToast('Please login first', 'error');
+        addNotification('❌ Access Denied', 'Please login first', 'error');
         return;
     }
     
@@ -2096,13 +2522,13 @@ async function generateKey() {
         statusEl.style.color = 'var(--success)';
         userIdInput.value = '';
         
-        showToast('Key generated and saved to database', 'success');
+        addNotification('🔑 Key Generated', `New access key created for UserID ${userId}`, 'success');
         
     } catch (error) {
         console.error('Error generating key:', error);
         statusEl.textContent = '❌ Failed to generate key';
         statusEl.style.color = 'var(--danger)';
-        showToast('Failed to generate key', 'error');
+        addNotification('❌ Key Generation Failed', error.message, 'error');
     } finally {
         if (spinner) spinner.style.display = 'none';
     }
@@ -2129,6 +2555,8 @@ function checkSession() {
                 const adminInput = document.getElementById('adminInput');
                 if (adminInput) adminInput.value = ADMIN_PASSWORD;
             }
+            
+            addNotification('Welcome Back!', 'Session restored for ' + currentUser.username, 'info');
         } catch (e) {
             console.error('Session restore error:', e);
             localStorage.removeItem('RSQ_CURRENT_USER');
@@ -2166,14 +2594,14 @@ function logout() {
         const statusMsg = document.getElementById('statusMsg');
         if (statusMsg) statusMsg.textContent = '';
         
-        showToast('Logged out successfully', 'info');
+        addNotification('👋 Goodbye!', 'Logged out successfully', 'info');
     }
 }
 
 // Toggle admin panel
 function toggleAdmin() {
     if (!currentUser || currentUser.username !== ADMIN_USERNAME) {
-        showToast('Admin access denied', 'error');
+        addNotification('❌ Access Denied', 'Admin access required', 'error');
         return;
     }
     
@@ -2183,10 +2611,10 @@ function toggleAdmin() {
     if (password === ADMIN_PASSWORD) {
         isAdminAuthenticated = true;
         adminInput.style.display = 'none';
-        showToast('✅ Admin access granted', 'success');
+        addNotification('👑 Admin Access', 'Admin panel unlocked', 'success');
         openAdminPanel();
     } else {
-        showToast('❌ Invalid password', 'error');
+        addNotification('❌ Access Denied', 'Invalid admin password', 'error');
         adminInput.value = '';
         adminInput.focus();
     }
@@ -2195,7 +2623,7 @@ function toggleAdmin() {
 // Open admin panel
 function openAdminPanel() {
     if (!isAdminAuthenticated) {
-        showToast('Admin access required', 'error');
+        addNotification('❌ Access Denied', 'Admin authentication required', 'error');
         return;
     }
     
@@ -2213,7 +2641,7 @@ function openAdminPanel() {
         renderAdminKeys();
         renderAdminBans();
         
-        showToast('Admin panel loaded successfully!', 'success');
+        addNotification('👑 Admin Panel', 'Admin panel loaded successfully', 'success');
     }
 }
 
@@ -2232,7 +2660,7 @@ function closeAdmin() {
     }
     
     isAdminAuthenticated = false;
-    showToast('Exited admin panel', 'info');
+    addNotification('👋 Admin Panel', 'Exited admin panel', 'info');
 }
 
 // Show game creation view
@@ -2261,7 +2689,7 @@ function openGameScripts(index) {
     currentGameIndex = index;
     
     if (!dataCache || !dataCache.games || !dataCache.games[index]) {
-        showToast('Game not found', 'error');
+        addNotification('❌ Error', 'Game not found', 'error');
         return;
     }
     
@@ -2336,7 +2764,7 @@ async function loadGamesDashboard() {
         
     } catch (error) {
         console.error('Error loading games dashboard:', error);
-        showToast('Failed to load games', 'error');
+        addNotification('❌ Error', 'Failed to load games', 'error');
     }
 }
 
@@ -2424,7 +2852,7 @@ async function createGame() {
             statusEl.style.color = 'var(--success)';
         }
         
-        showToast('Game created successfully!', 'success');
+        addNotification('🎮 Game Created', `New game "${gameName}" added to database`, 'success');
         
         setTimeout(() => {
             showGamesDashboard();
@@ -2436,7 +2864,7 @@ async function createGame() {
             statusEl.textContent = error.message || 'Failed to create game';
             statusEl.style.color = 'var(--danger)';
         }
-        showToast(error.message || 'Failed to create game', 'error');
+        addNotification('❌ Error', error.message || 'Failed to create game', 'error');
     } finally {
         hideLoading();
     }
@@ -2466,12 +2894,12 @@ async function deleteGame(index) {
             settings: data.settings
         });
         
-        showToast('Game "' + gameName + '" deleted', 'warning');
+        addNotification('🗑️ Game Deleted', `Game "${gameName}" was removed`, 'warning');
         loadGamesDashboard();
         
     } catch (error) {
         console.error('Error deleting game:', error);
-        showToast(error.message || 'Failed to delete game', 'error');
+        addNotification('❌ Error', error.message || 'Failed to delete game', 'error');
     } finally {
         hideLoading();
     }
@@ -2524,14 +2952,14 @@ async function renderGameScripts() {
         
     } catch (error) {
         console.error('Error rendering scripts:', error);
-        showToast('Failed to load scripts', 'error');
+        addNotification('❌ Error', 'Failed to load scripts', 'error');
     }
 }
 
 // Add script to game
 async function addScriptToGame() {
     if (currentGameIndex === -1) {
-        showToast('No game selected', 'error');
+        addNotification('❌ Error', 'No game selected', 'error');
         return;
     }
     
@@ -2596,7 +3024,7 @@ async function addScriptToGame() {
             statusEl.style.color = 'var(--success)';
         }
         
-        showToast('Script added successfully!', 'success');
+        addNotification('📜 Script Added', `New script "${scriptName}" added to ${game.name}`, 'success');
         renderGameScripts();
         
         setTimeout(() => {
@@ -2609,7 +3037,7 @@ async function addScriptToGame() {
             statusEl.textContent = error.message || 'Failed to add script';
             statusEl.style.color = 'var(--danger)';
         }
-        showToast(error.message || 'Failed to add script', 'error');
+        addNotification('❌ Error', error.message || 'Failed to add script', 'error');
     } finally {
         hideLoading();
     }
@@ -2643,12 +3071,12 @@ async function deleteScript(index) {
             settings: data.settings
         });
         
-        showToast('Script "' + scriptName + '" deleted', 'warning');
+        addNotification('🗑️ Script Deleted', `Script "${scriptName}" was removed`, 'warning');
         renderGameScripts();
         
     } catch (error) {
         console.error('Error deleting script:', error);
-        showToast(error.message || 'Failed to delete script', 'error');
+        addNotification('❌ Error', error.message || 'Failed to delete script', 'error');
     } finally {
         hideLoading();
     }
@@ -2680,12 +3108,12 @@ async function deleteCurrentGame() {
             settings: data.settings
         });
         
-        showToast('Game "' + gameName + '" deleted', 'warning');
+        addNotification('🗑️ Game Deleted', `Game "${gameName}" was removed`, 'warning');
         showGamesDashboard();
         
     } catch (error) {
         console.error('Error deleting game:', error);
-        showToast(error.message || 'Failed to delete game', 'error');
+        addNotification('❌ Error', error.message || 'Failed to delete game', 'error');
     } finally {
         hideLoading();
     }
@@ -2794,7 +3222,7 @@ async function sendChat() {
     if (!message) return;
     
     if (moderate(message)) {
-        showToast('Message contains blocked content', 'error');
+        addNotification('⚠️ Message Blocked', 'Message contains blocked content', 'warning');
         return;
     }
     
@@ -2802,7 +3230,7 @@ async function sendChat() {
     const bans = dataCache?.bans || {};
     
     if (bans[currentUserId]) {
-        showToast('You are banned from chat', 'error', 3000);
+        addNotification('❌ Chat Banned', 'You are banned from chat', 'error');
         return;
     }
     
@@ -2830,7 +3258,7 @@ async function sendChat() {
         
     } catch (error) {
         console.error('Error sending message:', error);
-        showToast('Failed to send message', 'error');
+        addNotification('❌ Error', 'Failed to send message', 'error');
     }
 }
 
@@ -2841,6 +3269,8 @@ function toggleChat(show) {
     
     if (show) {
         chatWindow.classList.remove('hidden');
+        chatUnreadCount = 0;
+        updateUnreadBadge();
     } else {
         chatWindow.classList.add('hidden');
     }
@@ -2885,7 +3315,7 @@ async function renderAdminKeys() {
         
     } catch (error) {
         console.error('Error rendering admin keys:', error);
-        showToast('Failed to load keys', 'error');
+        addNotification('❌ Error', 'Failed to load keys', 'error');
     }
 }
 
@@ -2902,6 +3332,7 @@ async function deleteAdminKey(keyId) {
             throw new Error('Key not found');
         }
         
+        const keyData = data.keys[keyId];
         delete data.keys[keyId];
         data.settings.last_updated = Date.now();
         
@@ -2910,12 +3341,12 @@ async function deleteAdminKey(keyId) {
             settings: data.settings
         });
         
-        showToast('Key deleted', 'warning');
+        addNotification('🗑️ Key Deleted', `Key for UserID ${keyData.rbx} was removed`, 'warning');
         renderAdminKeys();
         
     } catch (error) {
         console.error('Error deleting key:', error);
-        showToast('Failed to delete key', 'error');
+        addNotification('❌ Error', 'Failed to delete key', 'error');
     }
 }
 
@@ -2959,7 +3390,7 @@ async function renderAdminBans() {
         
     } catch (error) {
         console.error('Error rendering bans:', error);
-        showToast('Failed to load bans', 'error');
+        addNotification('❌ Error', 'Failed to load bans', 'error');
     }
 }
 
@@ -2998,12 +3429,12 @@ async function banAllKeyHolders() {
             settings: data.settings
         });
         
-        showToast('Banned ' + bannedCount + ' key holders', 'warning');
+        addNotification('⚠️ Mass Ban', `Banned ${bannedCount} key holders`, 'warning');
         renderAdminBans();
         
     } catch (error) {
         console.error('Error banning key holders:', error);
-        showToast('Failed to ban key holders', 'error');
+        addNotification('❌ Error', 'Failed to ban key holders', 'error');
     } finally {
         hideLoading();
     }
@@ -3022,12 +3453,12 @@ async function unbanEveryone() {
             bans: {}
         });
         
-        showToast('All users unbanned', 'success');
+        addNotification('✅ Mass Unban', 'All users have been unbanned', 'success');
         renderAdminBans();
         
     } catch (error) {
         console.error('Error unbanning users:', error);
-        showToast('Failed to unban users', 'error');
+        addNotification('❌ Error', 'Failed to unban users', 'error');
     } finally {
         hideLoading();
     }
@@ -3054,12 +3485,12 @@ async function unbanUser(userId) {
             settings: data.settings
         });
         
-        showToast('Unbanned user ' + userId, 'success');
+        addNotification('✅ User Unbanned', `User ${userId} has been unbanned`, 'success');
         renderAdminBans();
         
     } catch (error) {
         console.error('Error unbanning user:', error);
-        showToast('Failed to unban user', 'error');
+        addNotification('❌ Error', 'Failed to unban user', 'error');
     }
 }
 
@@ -3084,7 +3515,7 @@ async function executeFocusBan() {
     const reason = document.getElementById('focusBanReason').value.trim();
     
     if (!userId) {
-        showToast('Please enter a UserID', 'error');
+        addNotification('❌ Error', 'Please enter a UserID', 'error');
         return;
     }
     
@@ -3112,12 +3543,12 @@ async function executeFocusBan() {
         });
         
         hideBanNowModal();
-        showToast('Banned ' + (username || userId), 'success');
+        addNotification('⛔ User Banned', `User ${username || userId} has been banned`, 'warning');
         renderAdminBans();
         
     } catch (error) {
         console.error('Error banning user:', error);
-        showToast('Failed to ban user', 'error');
+        addNotification('❌ Error', 'Failed to ban user', 'error');
     } finally {
         hideLoading();
     }
@@ -3131,12 +3562,12 @@ async function sendGlobalMsg(isPin = false) {
     const message = input.value.trim();
     
     if (!message) {
-        showToast('Please enter a message', 'error');
+        addNotification('❌ Error', 'Please enter a message', 'error');
         return;
     }
     
     if (message.length > 200) {
-        showToast('Message must be 200 characters or less', 'error');
+        addNotification('❌ Error', 'Message must be 200 characters or less', 'error');
         return;
     }
     
@@ -3154,7 +3585,7 @@ async function sendGlobalMsg(isPin = false) {
                 pinnedAt: Date.now()
             };
             await docRef.update({ pinned: data.pinned });
-            showToast('Message pinned', 'success');
+            addNotification('📌 Message Pinned', 'A new message has been pinned', 'info');
         } else {
             const systemMsg = {
                 user: 'SYSTEM',
@@ -3170,7 +3601,7 @@ async function sendGlobalMsg(isPin = false) {
             }
             
             await docRef.update({ chats: data.chats });
-            showToast('Broadcast sent', 'success');
+            addNotification('📢 Broadcast', 'System announcement sent', 'info');
         }
         
         input.value = '';
@@ -3178,7 +3609,7 @@ async function sendGlobalMsg(isPin = false) {
         
     } catch (error) {
         console.error('Error sending message:', error);
-        showToast('Failed to send message', 'error');
+        addNotification('❌ Error', 'Failed to send message', 'error');
     } finally {
         hideLoading();
     }
@@ -3206,12 +3637,12 @@ async function clearGlobals() {
             chats: data.chats
         });
         
-        showToast('Messages cleared', 'success');
+        addNotification('🧹 Messages Cleared', 'All pinned and system messages removed', 'info');
         updateChat();
         
     } catch (error) {
         console.error('Error clearing messages:', error);
-        showToast('Failed to clear messages', 'error');
+        addNotification('❌ Error', 'Failed to clear messages', 'error');
     } finally {
         hideLoading();
     }
@@ -3230,12 +3661,12 @@ async function clearAllChat() {
             chats: []
         });
         
-        showToast('Chat cleared', 'success');
+        addNotification('💬 Chat Cleared', 'All chat messages have been cleared', 'info');
         updateChat();
         
     } catch (error) {
         console.error('Error clearing chat:', error);
-        showToast('Failed to clear chat', 'error');
+        addNotification('❌ Error', 'Failed to clear chat', 'error');
     } finally {
         hideLoading();
     }
@@ -3294,7 +3725,7 @@ async function renderAdminFeedbacks() {
         
     } catch (error) {
         console.error('Error rendering feedbacks:', error);
-        showToast('Failed to load feedbacks', 'error');
+        addNotification('❌ Error', 'Failed to load feedbacks', 'error');
     }
 }
 
@@ -3311,6 +3742,7 @@ async function deleteFeedback(index) {
             throw new Error('Feedback not found');
         }
         
+        const feedback = data.feedbacks[index];
         data.feedbacks.splice(index, 1);
         data.settings.last_updated = Date.now();
         
@@ -3319,12 +3751,12 @@ async function deleteFeedback(index) {
             settings: data.settings
         });
         
-        showToast('Feedback deleted', 'warning');
+        addNotification('🗑️ Feedback Deleted', `Feedback from ${feedback.user} removed`, 'warning');
         renderAdminFeedbacks();
         
     } catch (error) {
         console.error('Error deleting feedback:', error);
-        showToast('Failed to delete feedback', 'error');
+        addNotification('❌ Error', 'Failed to delete feedback', 'error');
     }
 }
 
@@ -3386,7 +3818,7 @@ async function masterReset() {
             await docRef.set(initialData);
             dataCache = initialData;
             
-            showToast('Factory reset complete', 'success');
+            addNotification('⚠️ Factory Reset', 'System has been completely reset', 'warning');
             location.reload();
             return;
         }
@@ -3412,7 +3844,7 @@ async function masterReset() {
         
         await docRef.update(data);
         
-        showToast('Reset complete', 'success');
+        addNotification('✅ Reset Complete', `System reset: ${resetTarget}`, 'success');
         
         // Refresh views
         updateChat();
@@ -3422,7 +3854,7 @@ async function masterReset() {
         
     } catch (error) {
         console.error('Error resetting system:', error);
-        showToast('Failed to reset system', 'error');
+        addNotification('❌ Error', 'Failed to reset system', 'error');
     } finally {
         hideLoading();
     }
@@ -3450,7 +3882,7 @@ async function submitFeedback() {
     const spinner = document.getElementById('fbSpinner');
     
     if (!username || !userId || !message) {
-        showToast('Please fill in all fields', 'error');
+        addNotification('❌ Error', 'Please fill in all fields', 'error');
         return;
     }
     
@@ -3484,15 +3916,20 @@ async function submitFeedback() {
         document.getElementById('fb-id').value = '';
         document.getElementById('fb-msg').value = '';
         
-        showToast('Feedback submitted successfully!', 'success');
+        addNotification('✅ Feedback Submitted', 'Thank you for your feedback!', 'success');
         toggleFeedbackUI(false);
         
     } catch (error) {
         console.error('Error submitting feedback:', error);
-        showToast('Failed to submit feedback', 'error');
+        addNotification('❌ Error', 'Failed to submit feedback', 'error');
     } finally {
         if (spinner) spinner.style.display = 'none';
     }
+}
+
+// Cancel reply (placeholder function)
+function cancelReply() {
+    document.getElementById('reply-preview').classList.add('hidden');
 }
 
 // Image preview handler
@@ -3501,12 +3938,12 @@ document.getElementById('gameImageInput')?.addEventListener('change', function(e
     if (!file) return;
     
     if (file.size > 2 * 1024 * 1024) {
-        showToast('Image must be less than 2MB', 'error');
+        addNotification('❌ Error', 'Image must be less than 2MB', 'error');
         return;
     }
     
     if (!file.type.match('image.*')) {
-        showToast('Please select an image file', 'error');
+        addNotification('❌ Error', 'Please select an image file', 'error');
         return;
     }
     
@@ -3537,7 +3974,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('authPanel').classList.remove('hidden');
         document.getElementById('mainSystem').classList.add('hidden');
     } else {
-        await fetchData();
         updateChat();
         setInterval(updateChat, 5000);
     }
@@ -3586,7 +4022,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
     
-    showToast('System initialized', 'success');
+    addNotification('🚀 System Ready', 'RSQ Elite System Overseer initialized', 'success');
 });
 </script>
 </body>
