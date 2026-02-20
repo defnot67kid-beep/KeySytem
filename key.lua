@@ -6,10 +6,9 @@
  |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
          \/          \/         \/    \/                \/     \/     \/                   
           \_Welcome to LuaObfuscator.com   (Alpha 0.10.9) ~  Much Love, Ferib 
-
 ]]--
 
--- Firebase Integration for Roblox
+-- Fixed Firebase Integration for Roblox
 local FirebaseService = {}
 FirebaseService.__index = FirebaseService
 
@@ -18,22 +17,45 @@ function FirebaseService.new(apiKey, projectId)
     self.apiKey = apiKey
     self.projectId = projectId
     self.baseUrl = string.format("https://firestore.googleapis.com/v1/projects/%s/databases/(default)/documents", projectId)
+    self.cache = {}
+    self.cacheTimeout = 30 -- seconds
     return self
 end
 
 function FirebaseService:getDocument(collection, document)
+    -- Check cache first
+    local cacheKey = collection .. "/" .. document
+    if self.cache[cacheKey] and (os.time() - self.cache[cacheKey].timestamp) < self.cacheTimeout then
+        return self.cache[cacheKey].data
+    end
+    
     local url = string.format("%s/%s/%s?key=%s", self.baseUrl, collection, document, self.apiKey)
+    
     local success, response = pcall(function()
-        return game:HttpGet(url)
+        return game:HttpGet(url, true) -- Added true for no cache
     end)
     
-    if success and response then
+    if success and response and response ~= "" then
         local success, data = pcall(function()
             return game:GetService("HttpService"):JSONDecode(response)
         end)
+        
         if success and data and data.fields then
-            return self:_convertFromFirestore(data.fields)
+            local converted = self:_convertFromFirestore(data.fields)
+            -- Update cache
+            self.cache[cacheKey] = {
+                data = converted,
+                timestamp = os.time()
+            }
+            return converted
         end
+    else
+        warn("[Firebase] Failed to get document:", collection, document, response)
+    end
+    
+    -- Return cached data if available (even if expired)
+    if self.cache[cacheKey] then
+        return self.cache[cacheKey].data
     end
     return nil
 end
@@ -41,42 +63,62 @@ end
 function FirebaseService:queryCollection(collection, field, operator, value)
     local url = string.format("%s/%s:runQuery?key=%s", self.baseUrl, collection, self.apiKey)
     
+    -- Map operators to Firestore operators
+    local opMap = {
+        ["=="] = "EQUAL",
+        [">"] = "GREATER_THAN",
+        ["<"] = "LESS_THAN",
+        [">="] = "GREATER_THAN_OR_EQUAL",
+        ["<="] = "LESS_THAN_OR_EQUAL",
+        ["!="] = "NOT_EQUAL"
+    }
+    
     local query = {
         structuredQuery = {
             from = {{ collectionId = collection }},
             where = {
                 fieldFilter = {
                     field = { fieldPath = field },
-                    op = operator,
+                    op = opMap[operator] or "EQUAL",
                     value = self:_convertToFirestoreValue(value)
                 }
-            }
+            },
+            limit = 1
         }
     }
     
     local jsonData = game:GetService("HttpService"):JSONEncode(query)
     local success, response = pcall(function()
-        return game:HttpPost(url, jsonData, Enum.HttpContentType.ApplicationJson)
+        return game:HttpPost(url, jsonData, Enum.HttpContentType.ApplicationJson, false, true) -- Added headers
     end)
     
-    if success and response then
+    if success and response and response ~= "" then
         local success, data = pcall(function()
             return game:GetService("HttpService"):JSONDecode(response)
         end)
         if success and data and #data > 0 and data[1].document then
             return self:_convertFromFirestore(data[1].document.fields)
         end
+    else
+        warn("[Firebase] Query failed:", collection, field, operator)
     end
     return nil
 end
 
 function FirebaseService:updateDocument(collection, document, data)
-    local url = string.format("%s/%s/%s?key=%s&updateMask.fieldPaths=", self.baseUrl, collection, document, self.apiKey)
+    local url = string.format("%s/%s/%s?key=%s", self.baseUrl, collection, document, self.apiKey)
     
-    -- Build update mask for all fields
+    -- Build update mask
+    local updateMask = ""
     for field, _ in pairs(data) do
-        url = url .. field .. "&updateMask.fieldPaths="
+        if updateMask == "" then
+            updateMask = "&updateMask.fieldPaths=" .. field
+        else
+            updateMask = updateMask .. "&updateMask.fieldPaths=" .. field
+        end
     end
+    
+    url = url .. updateMask
     
     local firestoreData = {
         fields = self:_convertToFirestore(data)
@@ -84,10 +126,18 @@ function FirebaseService:updateDocument(collection, document, data)
     
     local jsonData = game:GetService("HttpService"):JSONEncode(firestoreData)
     local success, response = pcall(function()
-        return game:HttpPost(url, jsonData, Enum.HttpContentType.ApplicationJson, false)
+        return game:HttpPost(url, jsonData, Enum.HttpContentType.ApplicationJson, false, true)
     end)
     
-    return success
+    if success then
+        -- Invalidate cache
+        local cacheKey = collection .. "/" .. document
+        self.cache[cacheKey] = nil
+        return true
+    else
+        warn("[Firebase] Failed to update document:", collection, document)
+        return false
+    end
 end
 
 function FirebaseService:_convertFromFirestore(fields)
@@ -97,13 +147,15 @@ function FirebaseService:_convertFromFirestore(fields)
             result[key] = value.stringValue
         elseif value.integerValue then
             result[key] = tonumber(value.integerValue)
+        elseif value.doubleValue then
+            result[key] = tonumber(value.doubleValue)
         elseif value.booleanValue then
-            result[key] = value.booleanValue == "true"
+            result[key] = value.booleanValue
         elseif value.arrayValue then
-            result[key] = self:_convertFromFirestoreArray(value.arrayValue.values)
+            result[key] = self:_convertFromFirestoreArray(value.arrayValue.values or {})
         elseif value.mapValue then
-            result[key] = self:_convertFromFirestore(value.mapValue.fields)
-        else
+            result[key] = self:_convertFromFirestore(value.mapValue.fields or {})
+        elseif value.nullValue then
             result[key] = nil
         end
     end
@@ -112,15 +164,17 @@ end
 
 function FirebaseService:_convertFromFirestoreArray(values)
     local result = {}
-    for _, value in ipairs(values) do
+    for _, value in ipairs(values or {}) do
         if value.stringValue then
             table.insert(result, value.stringValue)
         elseif value.integerValue then
             table.insert(result, tonumber(value.integerValue))
+        elseif value.doubleValue then
+            table.insert(result, tonumber(value.doubleValue))
         elseif value.booleanValue then
-            table.insert(result, value.booleanValue == "true")
+            table.insert(result, value.booleanValue)
         elseif value.mapValue then
-            table.insert(result, self:_convertFromFirestore(value.mapValue.fields))
+            table.insert(result, self:_convertFromFirestore(value.mapValue.fields or {}))
         end
     end
     return result
@@ -135,27 +189,31 @@ function FirebaseService:_convertToFirestore(data)
 end
 
 function FirebaseService:_convertToFirestoreValue(value)
-    if type(value) == "string" then
+    if value == nil then
+        return { nullValue = "NULL_VALUE" }
+    elseif type(value) == "string" then
         return { stringValue = value }
     elseif type(value) == "number" then
-        if value % 1 == 0 then
-            return { integerValue = tostring(value) }
+        if value % 1 == 0 and math.abs(value) < 2^53 then
+            return { integerValue = tostring(math.floor(value)) }
         else
             return { doubleValue = value }
         end
     elseif type(value) == "boolean" then
         return { booleanValue = value }
     elseif type(value) == "table" then
-        -- Check if it's an array
+        -- Check if it's an array (sequential numeric keys)
         local isArray = true
-        for i, _ in ipairs(value) do
-            if type(i) ~= "number" then
+        local maxIndex = 0
+        for k, _ in pairs(value) do
+            if type(k) ~= "number" or k <= 0 then
                 isArray = false
                 break
             end
+            maxIndex = math.max(maxIndex, k)
         end
         
-        if isArray then
+        if isArray and maxIndex == #value then
             local arrayValues = {}
             for _, item in ipairs(value) do
                 table.insert(arrayValues, self:_convertToFirestoreValue(item))
@@ -202,26 +260,28 @@ local v18 = tostring(v17.UserId)
 local v19 = v17.Name
 local v20 = game.PlaceId
 
--- Firebase document paths
-local function getSystemDoc()
-    return firebase:getDocument("system", "config")
+-- Firebase document paths with retry logic
+local function getSystemDoc(retryCount)
+    retryCount = retryCount or 0
+    local success, data = pcall(function()
+        return firebase:getDocument("system", "config")
+    end)
+    
+    if success and data then
+        return data
+    elseif retryCount < 3 then
+        warn("[Firebase] Retrying system doc fetch... Attempt " .. (retryCount + 1))
+        task.wait(1)
+        return getSystemDoc(retryCount + 1)
+    else
+        warn("[Firebase] Failed to fetch system doc after 3 attempts")
+        return nil
+    end
 end
 
 local function updateSystemDoc(data)
     return firebase:updateDocument("system", "config", data)
 end
-
-local function getUserKeyDoc(userId)
-    return firebase:getDocument("keys", "user_" .. userId)
-end
-
-local function getUserDataDoc(userId)
-    return firebase:getDocument("users", "user_" .. userId)
-end
-
--- Cache system data
-local systemData = nil
-local userData = nil
 
 local v21 = "https://api.ferib.dev/rsq/db" -- Keeping for compatibility but not used
 local v22 = "RSQ Elite"
@@ -250,7 +310,7 @@ local v40 = true
 local v41 = false
 local v42 = false
 
--- File system functions (keep for local caching)
+-- File system functions
 local function v43()
     if (writefile and isfolder) then
         local v610 = 0
@@ -512,7 +572,7 @@ local function v49(v83, v84)
     end
 end
 
--- Firebase data loader
+-- Firebase data loader with improved error handling
 local function v51()
     local v92 = 0
     while true do
@@ -521,14 +581,14 @@ local function v51()
                 local v663, v664 = pcall(function()
                     -- Try to get from Firebase first
                     local systemDoc = getSystemDoc()
-                    if systemDoc and systemDoc.record then
+                    if systemDoc then
+                        print("[Firebase] Successfully loaded system document")
                         return systemDoc
                     end
                     
                     -- Fallback to old API if Firebase fails
-                    local v692 = game:HttpGet("https://api.ferib.dev/rsq/db", true, {
-                        [v7("\180\72\114\71\247\85\229\158\72\116\67\253", "\128\236\101\63\38\132\33")] = "RSQ Elite"
-                    })
+                    warn("[Firebase] Falling back to backup API")
+                    local v692 = game:HttpGet("https://api.ferib.dev/rsq/db", true)
                     return v9:JSONDecode(v692)
                 end)
                 
