@@ -1,258 +1,3120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RSQ Elite | Advanced System Overseer</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Monaco Editor -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/editor/editor.main.min.css">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSQ Elite | Advanced System Overseer</title>
+
+<!-- Monaco Editor -->
+<link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/editor/editor.main.min.css">
+
+<style>
+:root {
+    --primary: #4f7cff;
+    --secondary: #00d2ff;
+    --danger: #ff3b30;
+    --success: #28cd41;
+    --warning: #ffcc00;
+    --purple: #8a2be2;
+    --glass: rgba(15, 20, 30, 0.95);
+    --border: rgba(255, 255, 255, 0.08);
+    --chat-bg: rgba(10, 12, 18, 0.95);
+    --notification: #ff4d6d;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #05070a;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    color: #f0f0f0;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes notificationPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+@keyframes glow {
+    0% { box-shadow: 0 0 5px rgba(255, 77, 109, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(255, 77, 109, 0.8); }
+    100% { box-shadow: 0 0 5px rgba(255, 77, 109, 0.5); }
+}
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.animate-fade { animation: fadeIn 0.3s ease forwards; }
+.animate-slide { animation: slideIn 0.3s ease forwards; }
+.animate-slide-right { animation: slideInRight 0.3s ease forwards; }
+
+#bg-wrap { 
+    position: fixed; 
+    inset: 0; 
+    background: radial-gradient(ellipse at top, #0a0e1a 0%, #05070a 70%); 
+    z-index: -2; 
+}
+
+/* Particle Background */
+#particles {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Stats Bar */
+.stats-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10, 12, 18, 0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    z-index: 9999;
+    height: 36px;
+}
+
+.stats-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.stats-item:hover { opacity: 1; }
+
+.stats-icon { font-size: 11px; }
+
+.stats-value {
+    font-weight: 600;
+    color: var(--secondary);
+    font-family: 'Monaco', 'Consolas', monospace;
+}
+
+.stats-label {
+    font-size: 10px;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Role Badge */
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.role-badge.unverified { background: rgba(255, 59, 48, 0.2); color: var(--danger); border: 1px solid rgba(255, 59, 48, 0.3); }
+.role-badge.verified { background: rgba(40, 205, 65, 0.2); color: var(--success); border: 1px solid rgba(40, 205, 65, 0.3); }
+.role-badge.trusted { background: rgba(79, 124, 255, 0.2); color: var(--primary); border: 1px solid rgba(79, 124, 255, 0.3); }
+.role-badge.admin { background: linear-gradient(135deg, rgba(255, 204, 0, 0.2), rgba(255, 170, 0, 0.2)); color: var(--warning); border: 1px solid var(--warning); }
+
+/* Progress Bar for Role */
+.role-progress {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.progress-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 8px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 2px;
+    transition: width 1s linear;
+    width: 0%;
+}
+
+.progress-text {
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Panel Styling */
+.panel {
+    position: relative;
+    z-index: 10;
+    width: 480px;
+    max-width: 90vw;
+    background: var(--glass);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.panel-wide {
+    width: 800px;
+    max-width: 95vw;
+}
+
+.hidden { display: none !important; }
+
+/* Games Browser */
+.games-browser {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.game-card-browser {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.game-card-browser:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--primary);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(79, 124, 255, 0.1);
+}
+
+.game-card-image {
+    width: 100%;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-bottom: 10px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.game-card-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: white;
+}
+
+.game-card-id {
+    font-size: 10px;
+    opacity: 0.7;
+    font-family: monospace;
+    margin-bottom: 8px;
+}
+
+.game-card-scripts {
+    font-size: 11px;
+    opacity: 0.8;
+    background: rgba(79, 124, 255, 0.1);
+    padding: 3px 8px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+/* Script Upload Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Script Type Toggle */
+.script-type-toggle {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.toggle-btn {
+    flex: 1;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13px;
+}
+
+.toggle-btn.active {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-color: transparent;
+}
+
+/* Monaco Editor Container */
+.monaco-container {
+    height: 400px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 15px 0;
+}
+
+/* Obfuscation Options */
+.obfuscation-options {
+    background: rgba(79, 124, 255, 0.05);
+    border-radius: 12px;
+    padding: 15px;
+    margin: 15px 0;
+    border: 1px solid rgba(79, 124, 255, 0.1);
+}
+
+.obfuscation-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.obfuscation-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.obfuscation-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.obfuscation-option input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--primary);
+}
+
+/* Form Elements */
+input, select, textarea {
+    width: 100%;
+    padding: 12px 16px;
+    margin-top: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.2s;
+    outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--primary);
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 2px rgba(79, 124, 255, 0.1);
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    padding: 12px 20px;
+    margin-top: 16px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: 0.5s;
+}
+
+button:hover::before { left: 100%; }
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(79, 124, 255, 0.2);
+}
+button:active { transform: translateY(0); }
+
+button.danger { background: linear-gradient(135deg, #ff3b30, #ff6b52); }
+button.warning { background: linear-gradient(135deg, #ffcc00, #ffaa00); color: #000; }
+button.success { background: linear-gradient(135deg, #28cd41, #2ee058); }
+button.purple { background: linear-gradient(135deg, #8a2be2, #a855f7); }
+button.mini { 
+    padding: 4px 10px; 
+    font-size: 11px; 
+    margin-top: 0; 
+    width: auto; 
+    border-radius: 8px; 
+}
+
+/* Home Button */
+.home-btn {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple), var(--primary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 
+        0 6px 20px rgba(0,0,0,0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+}
+
+.home-btn:hover {
+    transform: scale(1.1) rotate(-5deg);
+    box-shadow: 
+        0 10px 30px rgba(138, 43, 226, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.home-btn svg { 
+    width: 24px; 
+    height: 24px; 
+    fill: white; 
+}
+
+/* Games Browser Button */
+.browser-btn {
+    position: fixed;
+    bottom: 25px;
+    left: 100px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--success), #2ee058);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 
+        0 6px 20px rgba(0,0,0,0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+}
+
+.browser-btn:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 
+        0 10px 30px rgba(40, 205, 65, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.browser-btn svg { 
+    width: 24px; 
+    height: 24px; 
+    fill: white; 
+}
+
+/* Notification Center */
+#notificationCenter {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    width: 350px;
+    max-height: 500px;
+    background: var(--glass);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    z-index: 10001;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.notification-header {
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notification-header h3 {
+    margin: 0;
+    font-size: 14px;
+    color: var(--secondary);
+}
+
+#notificationsList {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 400px;
+    padding: 10px;
+}
+
+.notification-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    animation: slideInRight 0.3s ease;
+}
+
+.notification-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(-2px);
+}
+
+.notification-item.unread {
+    border-left: 3px solid var(--notification);
+    background: rgba(255, 77, 109, 0.05);
+}
+
+.notification-title {
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--secondary);
+    margin-bottom: 4px;
+}
+
+.notification-message {
+    font-size: 11px;
+    opacity: 0.9;
+    margin-bottom: 6px;
+}
+
+.notification-time {
+    font-size: 9px;
+    opacity: 0.5;
+    font-family: monospace;
+}
+
+/* Notification Toggle */
+#notification-toggle {
+    position: fixed;
+    top: 45px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10001;
+    transition: all 0.2s;
+}
+
+#notification-toggle:hover {
+    transform: scale(1.1);
+    border-color: var(--secondary);
+}
+
+#notification-toggle svg {
+    width: 18px;
+    height: 18px;
+    fill: white;
+}
+
+#notificationBadge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--notification);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    animation: notificationPulse 2s infinite, glow 2s infinite;
+}
+
+/* Chat Toggle */
+#chat-toggle {
+    position: fixed; 
+    bottom: 25px; 
+    right: 25px; 
+    width: 56px; 
+    height: 56px;
+    border-radius: 50%; 
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer; 
+    z-index: 1000;
+    box-shadow: 
+        0 6px 20px rgba(0,0,0,0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+}
+
+#chat-toggle:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 
+        0 10px 30px rgba(79, 124, 255, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+#chat-toggle svg { 
+    width: 24px; 
+    height: 24px; 
+    fill: white; 
+}
+
+#unread-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--danger);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+}
+
+/* Chat Window */
+#chat-window {
+    position: fixed;
+    bottom: 100px;
+    right: 25px;
+    width: 380px;
+    height: 520px;
+    background: var(--chat-bg);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+    overflow: hidden;
+    box-shadow: 
+        0 25px 80px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.chat-header {
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.chat-header-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+#chat-msgs {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    background: rgba(5, 7, 10, 0.4);
+}
+
+.msg-item {
+    margin-bottom: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    animation: fadeIn 0.2s ease forwards;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.msg-item.system {
+    background: rgba(79, 124, 255, 0.08);
+    border-color: rgba(79, 124, 255, 0.2);
+    border-left: 3px solid var(--primary);
+}
+
+.msg-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.msg-user {
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--secondary);
+}
+
+.msg-time {
+    font-size: 10px;
+    opacity: 0.5;
+    font-family: 'Monaco', 'Consolas', monospace;
+}
+
+.msg-content {
+    font-size: 13px;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.chat-input-area {
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+#chat-input {
+    flex: 1;
+    margin: 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    resize: none;
+}
+
+#send-chat-btn {
+    margin: 0;
+    width: 80px;
+    padding: 10px;
+}
+
+/* Connection Status */
+.connection-status {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 10000;
+    opacity: 0.7;
+}
+
+.connection-status.connected .status-dot {
+    background: var(--success);
+    box-shadow: 0 0 8px var(--success);
+}
+
+.connection-status.disconnected .status-dot {
+    background: var(--danger);
+    box-shadow: 0 0 8px var(--danger);
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 7, 10, 0.9);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.loading-spinner-large {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary);
+    animation: spin 1s linear infinite;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: rgba(79, 124, 255, 0.2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(79, 124, 255, 0.3); }
+
+/* Gradient Text */
+.gradient-text {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Toast */
+.toast {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    background: rgba(20, 25, 35, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    z-index: 10000;
+    animation: slideIn 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    border-left: 3px solid var(--primary);
+}
+
+.toast.success { border-left-color: var(--success); }
+.toast.warning { border-left-color: var(--warning); }
+.toast.error { border-left-color: var(--danger); }
+
+/* Floating Notification */
+.floating-notification {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    background: var(--glass);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--notification);
+    border-radius: 10px;
+    padding: 12px 15px;
+    z-index: 10003;
+    animation: slideInRight 0.3s ease, fadeOut 5s forwards;
+    max-width: 300px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; transform: translateX(0); }
+    70% { opacity: 1; transform: translateX(0); }
+    100% { opacity: 0; transform: translateX(100%); }
+}
+
+/* Script Display */
+.script-display {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 10px 0;
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/* Copy Button */
+.copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: auto;
+    padding: 4px 8px;
+    margin: 0;
+    font-size: 10px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Admin Panel */
+.adminFull {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 7, 10, 0.98);
+    backdrop-filter: blur(30px);
+    padding: 20px;
+    z-index: 20000;
+    overflow-y: auto;
+}
+
+.adminFull.hidden { display: none !important; }
+
+/* Game Management Styles */
+.game-management-section {
+    background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.games-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.game-card {
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.game-card:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: var(--primary);
+    transform: translateY(-3px);
+}
+
+/* User Scripts Section */
+.user-scripts-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.user-script-item {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-script-info {
+    flex: 1;
+}
+
+.user-script-name {
+    font-weight: 600;
+    color: var(--secondary);
+    font-size: 13px;
+}
+
+.user-script-game {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-top: 4px;
+}
+
+.user-script-status {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.user-script-status.pending {
+    background: rgba(255, 204, 0, 0.2);
+    color: var(--warning);
+}
+
+.user-script-status.approved {
+    background: rgba(40, 205, 65, 0.2);
+    color: var(--success);
+}
+
+/* Back Navigation */
+.back-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    color: var(--secondary);
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.back-nav:hover {
+    color: white;
+    transform: translateX(-3px);
+}
+</style>
 </head>
 <body>
-    <!-- Particle Background -->
-    <canvas id="particles"></canvas>
-    <div id="bg-wrap"></div>
 
-    <!-- Stats Bar -->
-    <div class="stats-bar">
-        <div class="stats-item">
-            <span class="stats-icon">👁️</span>
-            <span class="stats-label">Views:</span>
-            <span class="stats-value" id="viewCount">0</span>
-        </div>
-        <div class="stats-item">
-            <span class="stats-icon">⚡</span>
-            <span class="stats-label">Live Active:</span>
-            <span class="stats-value" id="activeCount">0</span>
-        </div>
-        <div class="stats-item">
-            <span class="stats-icon">🔑</span>
-            <span class="stats-label">Live Keys:</span>
-            <span class="stats-value" id="liveKeyCount">0</span>
-        </div>
-        <div class="stats-item">
-            <span class="stats-icon">🎮</span>
-            <span class="stats-label">Games:</span>
-            <span class="stats-value" id="gameCount">0</span>
-        </div>
-        <div class="stats-item">
-            <span class="stats-icon">🕒</span>
-            <span class="stats-label" id="currentTime">00:00</span>
+<!-- Particle Background -->
+<canvas id="particles"></canvas>
+<div id="bg-wrap"></div>
+
+<!-- Connection Status -->
+<div class="connection-status connected" id="connectionStatus">
+    <div class="status-dot"></div>
+    <span>Connected</span>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-spinner-large"></div>
+    <div class="loading-text" id="loadingText">Loading...</div>
+</div>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+    <div class="stats-item">
+        <span class="stats-icon">👁️</span>
+        <span class="stats-label">Views:</span>
+        <span class="stats-value" id="viewCount">0</span>
+    </div>
+    <div class="stats-item">
+        <span class="stats-icon">⚡</span>
+        <span class="stats-label">Live Active:</span>
+        <span class="stats-value" id="activeCount">0</span>
+    </div>
+    <div class="stats-item">
+        <span class="stats-icon">🔑</span>
+        <span class="stats-label">Live Keys:</span>
+        <span class="stats-value" id="liveKeyCount">0</span>
+    </div>
+    <div class="stats-item">
+        <span class="stats-icon">🕒</span>
+        <span class="stats-label" id="currentTime">00:00</span>
+    </div>
+</div>
+
+<!-- Notification Toggle -->
+<div id="notification-toggle" onclick="toggleNotificationCenter()">
+    <svg viewBox="0 0 24 24">
+        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+    </svg>
+    <div id="notificationBadge" class="hidden">0</div>
+</div>
+
+<!-- Notification Center -->
+<div id="notificationCenter" class="hidden">
+    <div class="notification-header">
+        <h3>🔔 Notifications</h3>
+        <div class="notification-actions">
+            <button class="mini success" onclick="markAllNotificationsRead()">✓ Mark all read</button>
+            <button class="mini" onclick="toggleNotificationCenter()">✕</button>
         </div>
     </div>
-
-    <!-- Connection Status -->
-    <div class="connection-status connected" id="connectionStatus">
-        <div class="status-dot"></div>
-        <span>Connected</span>
-    </div>
-
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay hidden">
-        <div class="loading-spinner-large"></div>
-        <div class="loading-text" id="loadingText">Loading...</div>
-    </div>
-
-    <!-- Notification System -->
-    <div id="notification-toggle" onclick="window.toggleNotificationCenter()">
-        <svg viewBox="0 0 24 24">
-            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-        </svg>
-        <div id="notificationBadge" class="hidden">0</div>
-    </div>
-
-    <div id="notificationCenter" class="hidden">
-        <div class="notification-header">
-            <h3>🔔 Notifications</h3>
-            <div class="notification-actions">
-                <button class="mini success" onclick="window.markAllNotificationsRead()">✓ Mark all read</button>
-                <button class="mini" onclick="window.toggleNotificationCenter()">✕</button>
-            </div>
-        </div>
-        <div id="notificationsList"></div>
-    </div>
-
-    <!-- Auth Panel -->
-    <div id="authPanel" class="panel animate-fade">
-        <div style="text-align:center; margin-bottom:30px;">
-            <h1 style="margin:0; font-size:32px;" class="gradient-text">RSQ GATE</h1>
-            <p style="font-size:12px; opacity:0.7; margin-top:8px;">Advanced Secure Access System</p>
-        </div>
-        
-        <div id="loginView">
-            <input id="l-user" placeholder="Username" autocomplete="username">
-            <input id="l-pass" type="password" placeholder="Password" autocomplete="current-password">
-            <button onclick="window.handleAuth('login')">
-                <span>Sign In</span>
-                <span class="spinner" style="display:none; margin-left:10px;" id="loginSpinner"></span>
-            </button>
-            <p style="text-align:center; font-size:12px; margin-top:20px; opacity:0.7;">
-                New here? <a href="#" onclick="window.toggleAuth(true)" style="color:var(--secondary); text-decoration:none; font-weight:600;">Create Account</a>
-            </p>
-        </div>
-        
-        <div id="signupView" class="hidden">
-            <input id="s-user" placeholder="Choose Username" autocomplete="username">
-            <input id="s-pass" type="password" placeholder="Choose Password" autocomplete="new-password">
-            <button onclick="window.handleAuth('signup')">
-                <span>Sign Up</span>
-                <span class="spinner" style="display:none; margin-left:10px;" id="signupSpinner"></span>
-            </button>
-            <p style="text-align:center; font-size:12px; margin-top:20px; opacity:0.7;">
-                Have account? <a href="#" onclick="window.toggleAuth(false)" style="color:var(--secondary); text-decoration:none; font-weight:600;">Sign In</a>
-            </p>
-        </div>
-        
-        <div id="authStatus" style="text-align:center; color:var(--danger); font-size:12px; margin-top:15px; min-height:18px;"></div>
-    </div>
-
-    <!-- User Role & Verification Display -->
-    <div id="roleDisplay" class="role-display hidden">
-        <div class="role-badge" id="userRoleBadge">Unverified</div>
-        <div class="verification-progress" id="verificationProgress"></div>
-    </div>
-
-    <!-- Main System -->
-    <div id="mainSystem" class="hidden">
-        <!-- Games Browser View -->
-        <div id="gamesBrowserView" class="games-browser-container">
-            <div class="games-browser-header">
-                <h2 class="gradient-text">🎮 Game Hub</h2>
-                <div class="header-actions">
-                    <button class="success" onclick="window.toggleFeedbackUI(true)">💬 Feedback</button>
-                    <button class="warning" onclick="window.logout()">🚪 Logout</button>
-                </div>
-            </div>
-            
-            <div class="games-grid" id="gamesGrid">
-                <!-- Games will be loaded here -->
-            </div>
-        </div>
-
-        <!-- Game Detail View -->
-        <div id="gameDetailView" class="game-detail-container hidden">
-            <div class="back-nav" onclick="window.showGamesBrowser()">
-                <span class="icon">←</span>
-                <span>Back to Games</span>
-            </div>
-            
-            <div id="gameDetailContent">
-                <!-- Dynamic content -->
-            </div>
-        </div>
-
-        <!-- Script Editor Modal -->
-        <div id="scriptEditorModal" class="modal-overlay hidden">
-            <div class="modal-content script-editor-modal">
-                <div class="modal-header">
-                    <h3>📝 Script Editor</h3>
-                    <button onclick="window.closeScriptEditor()" class="close-btn">✕</button>
-                </div>
-                
-                <div class="script-type-selector">
-                    <button class="type-btn active" onclick="window.setScriptType('link')">🔗 Link</button>
-                    <button class="type-btn" onclick="window.setScriptType('editor')">📝 Lua Editor</button>
-                </div>
-                
-                <div id="scriptLinkInput">
-                    <input type="text" id="scriptName" placeholder="Script Name">
-                    <input type="url" id="scriptUrl" placeholder="Script URL (https://...)">
-                    <div class="obfuscation-options">
-                        <label>
-                            <input type="checkbox" id="enableObfuscation"> Enable Auto-Obfuscation
-                        </label>
-                        <select id="obfuscationLevel">
-                            <option value="low">Low (Fast)</option>
-                            <option value="medium" selected>Medium (Balanced)</option>
-                            <option value="high">High (Maximum)</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div id="scriptEditorContainer" class="hidden">
-                    <div id="monacoEditor" style="height: 400px; border: 1px solid var(--border);"></div>
-                    <div class="editor-toolbar">
-                        <button onclick="window.formatCode()">🎨 Format</button>
-                        <button onclick="window.obfuscateCode()">🔒 Obfuscate</button>
-                        <button onclick="window.testScript()">🧪 Test</button>
-                    </div>
-                </div>
-                
-                <div class="modal-actions">
-                    <button class="success" onclick="window.saveScript()">💾 Save Script</button>
-                    <button onclick="window.closeScriptEditor()">Cancel</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Chat System -->
-        <div id="chat-toggle" onclick="window.toggleChat(true)">
-            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-            <div id="unread-badge" class="hidden">0</div>
-        </div>
-
-        <div id="chat-window" class="hidden">
-            <div class="chat-header">
-                <div class="chat-header-title">NETWORK CHAT</div>
-                <div class="chat-header-stats">
-                    <span><span class="stats-icon">👤</span> <span id="chatOnlineCount">0</span></span>
-                    <span><span class="stats-icon">💬</span> <span id="chatMessageCount">0</span></span>
-                </div>
-            </div>
-            
-            <div id="pinned-area" class="hidden">
-                <span class="pin-icon">📌</span>
-                <span class="pin-text" id="pinnedText"></span>
-            </div>
-            
-            <div id="chat-msgs"></div>
-            
-            <div id="typingIndicator" class="typing-indicator hidden">
-                <span id="typingUsers"></span>
-                <span class="typing-dots">
-                    <span>.</span><span>.</span><span>.</span>
-                </span>
-            </div>
-            
-            <div class="chat-input-area">
-                <textarea id="chat-input" placeholder="Type a message..." rows="1"></textarea>
-                <button id="send-chat-btn" onclick="window.sendChat()">SEND</button>
-            </div>
-            <button onclick="window.toggleChat(false)" class="mini danger close-chat">✕ Close</button>
+    <div id="notificationsList">
+        <div class="empty-state">
+            <div class="empty-state-icon">🔔</div>
+            <div>No notifications</div>
         </div>
     </div>
+</div>
 
-    <!-- Admin Panel -->
-    <div id="adminPanel" class="adminFull hidden">
-        <!-- Admin content will be dynamically loaded -->
+<!-- Auth Panel -->
+<div id="authPanel" class="panel animate-fade">
+    <div style="text-align:center; margin-bottom:30px;">
+        <h1 style="margin:0; font-size:32px;" class="gradient-text">RSQ GATE</h1>
+        <p style="font-size:12px; opacity:0.7; margin-top:8px;">Secure Access System</p>
     </div>
-
-    <!-- Feedback UI -->
-    <div id="userFeedbackUI" class="panel animate-fade hidden">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 style="margin:0;" class="gradient-text">📝 FEEDBACK</h2>
-            <button class="mini danger" onclick="window.toggleFeedbackUI(false)">✕ Exit</button>
-        </div>
-        
-        <input id="fb-user" placeholder="Roblox Username">
-        <input id="fb-id" placeholder="Roblox UserID">
-        <textarea id="fb-msg" placeholder="Write your feedback here..."></textarea>
-        <div id="fbCharCount">0/500</div>
-        
-        <button onclick="window.submitFeedback()">
-            <span>Submit Feedback</span>
-            <span class="spinner" style="display:none" id="fbSpinner"></span>
+    
+    <div id="loginView">
+        <input id="l-user" placeholder="Username" autocomplete="username">
+        <input id="l-pass" type="password" placeholder="Password" autocomplete="current-password">
+        <button onclick="handleAuth('login')">
+            <span>Sign In</span>
+            <span class="spinner" style="display:none; margin-left:10px;" id="loginSpinner"></span>
         </button>
+        <p style="text-align:center; font-size:12px; margin-top:20px; opacity:0.7;">
+            New here? <a href="#" onclick="toggleAuth(true)" style="color:var(--secondary); text-decoration:none; font-weight:600;">Create Account</a>
+        </p>
+    </div>
+    
+    <div id="signupView" class="hidden">
+        <input id="s-user" placeholder="Choose Username" autocomplete="username">
+        <input id="s-pass" type="password" placeholder="Choose Password" autocomplete="new-password">
+        <button onclick="handleAuth('signup')">
+            <span>Sign Up</span>
+            <span class="spinner" style="display:none; margin-left:10px;" id="signupSpinner"></span>
+        </button>
+        <p style="text-align:center; font-size:12px; margin-top:20px; opacity:0.7;">
+            Have account? <a href="#" onclick="toggleAuth(false)" style="color:var(--secondary); text-decoration:none; font-weight:600;">Sign In</a>
+        </p>
+    </div>
+    
+    <div id="authStatus" style="text-align:center; color:var(--danger); font-size:12px; margin-top:15px; min-height:18px;"></div>
+</div>
+
+<!-- Main System -->
+<div id="mainSystem" class="hidden">
+    <!-- Home Button -->
+    <div class="home-btn" onclick="showHomePanel()" title="Home">
+        <svg viewBox="0 0 24 24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+    </div>
+    
+    <!-- Games Browser Button -->
+    <div class="browser-btn" onclick="showGamesBrowser()" title="Browse Games">
+        <svg viewBox="0 0 24 24">
+            <path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/>
+        </svg>
     </div>
 
-    <!-- Monaco Editor Loader -->
-    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
-    <script src="script.js"></script>
+    <!-- User Panel (Home) -->
+    <div id="homePanel" class="panel animate-fade">
+        <div style="text-align:center; margin-bottom:25px;">
+            <h1 style="margin:0; font-size:28px;" class="gradient-text">RSQ ELITE</h1>
+            <p id="welcomeUser" style="font-size:11px; opacity:0.5; margin-top:5px;"></p>
+        </div>
+        
+        <!-- Role Display -->
+        <div id="roleDisplay" style="margin-bottom:20px; text-align:center;">
+            <span id="roleBadge" class="role-badge unverified">UNVERIFIED</span>
+        </div>
+        
+        <!-- Role Progress -->
+        <div id="roleProgress" class="role-progress">
+            <div class="progress-text">
+                <span>Progress to Verified</span>
+                <span id="progressPercentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill" style="width:0%"></div>
+            </div>
+            <div class="progress-text">
+                <span id="timeRemaining">5:00 remaining</span>
+                <span id="nextRole">Next: Verified</span>
+            </div>
+        </div>
+        
+        <input id="userid" placeholder="Roblox UserID">
+        <button id="genBtn" onclick="generateKey()">
+            <span>Generate Access Key</span>
+            <span class="spinner" style="display:none; margin-left:10px;" id="keySpinner"></span>
+        </button>
+        
+        <div id="statusMsg" style="text-align:center; margin-top:15px; font-size:12px; min-height:18px;"></div>
+        
+        <div id="keyOut" style="text-align:center; margin-top:15px; color:var(--secondary); font-family:monospace; font-weight:bold; font-size:16px; padding:12px; background:rgba(0,0,0,0.3); border-radius:10px; border:1px solid rgba(79, 124, 255, 0.3); word-break: break-all;"></div>
+
+        <div id="loadstringOut" style="text-align:center; margin-top:10px; color:var(--success); font-family:monospace; font-size:12px; padding:8px; background:rgba(40, 205, 65, 0.1); border-radius:8px; border:1px solid rgba(40, 205, 65, 0.3); word-break: break-all; cursor: pointer;" onclick="copyLoadstring()"></div>
+
+        <!-- User's Submitted Scripts -->
+        <div id="userScriptsSection" class="user-scripts-section hidden">
+            <h4 style="margin-bottom:15px; font-size:14px; color:var(--secondary);">📜 Your Submitted Scripts</h4>
+            <div id="userScriptsList"></div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:25px;">
+            <button id="adminBtn" class="danger" onclick="toggleAdmin()" style="display:none;">👑 Admin</button>
+            <div style="display:flex; gap:10px;">
+                <button onclick="toggleFeedbackUI(true)" style="background:linear-gradient(135deg, #8a2be2, #4f7cff);">💬 Feedback</button>
+                <button onclick="logout()" style="background:rgba(255,255,255,0.05); border:1px solid var(--border);">🚪 Logout</button>
+            </div>
+        </div>
+        
+        <input id="adminInput" type="password" placeholder="Enter Admin Password" style="margin-top:15px;">
+    </div>
+
+    <!-- Games Browser Panel -->
+    <div id="gamesBrowserPanel" class="panel panel-wide animate-fade hidden">
+        <div class="back-nav" onclick="showHomePanel()">
+            <span>← Back to Home</span>
+        </div>
+        <h2 style="margin-top:0;" class="gradient-text">🎮 GAMES BROWSER</h2>
+        <p style="font-size:12px; opacity:0.7; margin-bottom:20px;">Browse available games and scripts</p>
+        
+        <div id="gamesBrowserList" class="games-browser">
+            <div style="text-align:center; padding:40px; color:rgba(255,255,255,0.5); grid-column:1/-1;">
+                Loading games...
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Scripts View -->
+    <div id="gameScriptsView" class="panel panel-wide animate-fade hidden">
+        <div class="back-nav" onclick="showGamesBrowser()">
+            <span>← Back to Games</span>
+        </div>
+        <div id="gameScriptsHeader" style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
+            <img id="viewGameImage" style="width:60px; height:60px; border-radius:10px; object-fit:cover;">
+            <div>
+                <h2 id="viewGameName" style="margin:0;" class="gradient-text">Game Name</h2>
+                <p id="viewGameId" style="margin:5px 0 0; font-size:12px; opacity:0.7;"></p>
+            </div>
+        </div>
+        
+        <h3 style="margin-bottom:15px;">📜 Available Scripts</h3>
+        <div id="gameScriptsList"></div>
+        
+        <!-- Upload Script Button (shown only for Verified+ users) -->
+        <div id="uploadScriptSection" class="hidden" style="margin-top:25px; padding-top:20px; border-top:1px solid var(--border);">
+            <button class="purple" onclick="showScriptUploadModal()">
+                <span>📤 Upload Your Script</span>
+            </button>
+            <p style="font-size:11px; opacity:0.7; text-align:center; margin-top:10px;">
+                Scripts will be reviewed before being publicly available
+            </p>
+        </div>
+    </div>
+
+    <!-- Chat Toggle -->
+    <div id="chat-toggle" onclick="toggleChat(true)">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        <div id="unread-badge" class="hidden">0</div>
+    </div>
+
+    <!-- Chat Window -->
+    <div id="chat-window" class="hidden">
+        <div class="back-btn-container">
+            <button onclick="toggleChat(false)" class="mini danger" style="background:rgba(255,59,48,0.2); border:1px solid var(--danger);">← BACK</button>
+        </div>
+        
+        <div class="chat-header">
+            <div class="chat-header-title">NETWORK CHAT</div>
+            <div class="chat-header-stats">
+                <span><span class="stats-icon">👤</span> <span id="chatOnlineCount">0</span></span>
+            </div>
+        </div>
+        
+        <div id="chat-msgs"></div>
+        
+        <div class="chat-input-area">
+            <textarea id="chat-input" placeholder="Type a message..." rows="1"></textarea>
+            <button id="send-chat-btn" onclick="sendChat()">SEND</button>
+        </div>
+    </div>
+</div>
+
+<!-- User Feedback UI -->
+<div id="userFeedbackUI" class="panel animate-fade hidden">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h2 style="margin:0;" class="gradient-text">📝 FEEDBACK</h2>
+        <button class="mini danger" onclick="toggleFeedbackUI(false)">✕ Exit</button>
+    </div>
+    
+    <input id="fb-user" placeholder="Roblox Username">
+    <input id="fb-id" placeholder="Roblox UserID">
+    
+    <div style="position:relative;">
+        <textarea id="fb-msg" placeholder="Write your feedback here..." style="height:120px; resize:none;"></textarea>
+        <div style="position:absolute; right:12px; bottom:12px; font-size:10px; opacity:0.5;" id="fbCharCount">0/500</div>
+    </div>
+    
+    <button onclick="submitFeedback()">
+        <span>Submit Feedback</span>
+        <span class="spinner" style="display:none; margin-left:10px;" id="fbSpinner"></span>
+    </button>
+</div>
+
+<!-- Script Upload Modal -->
+<div id="scriptUploadModal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">📤 Upload Script</h2>
+            <button class="mini danger" onclick="hideScriptUploadModal()" style="width:auto; margin:0;">✕</button>
+        </div>
+        
+        <div id="uploadGameInfo" style="margin-bottom:15px; padding:10px; background:rgba(79,124,255,0.1); border-radius:8px;">
+            Uploading to: <span id="uploadGameName"></span>
+        </div>
+        
+        <!-- Script Type Toggle -->
+        <div class="script-type-toggle">
+            <button class="toggle-btn active" onclick="setScriptType('link')">🔗 Script URL</button>
+            <button class="toggle-btn" onclick="setScriptType('editor')">📝 Lua Editor</button>
+        </div>
+        
+        <!-- URL Input -->
+        <div id="urlInputSection">
+            <input type="text" id="scriptUrlInput" placeholder="Enter raw script URL (http:// or https://)">
+        </div>
+        
+        <!-- Monaco Editor -->
+        <div id="editorSection" class="hidden">
+            <div class="monaco-container" id="monacoEditor"></div>
+        </div>
+        
+        <input type="text" id="scriptNameInput" placeholder="Script Name">
+        
+        <!-- Obfuscation Options -->
+        <div class="obfuscation-options">
+            <div class="obfuscation-title">
+                <span>🔒 Obfuscation Options</span>
+                <span style="font-size:10px; opacity:0.7;">(Protect your script)</span>
+            </div>
+            <div class="obfuscation-grid">
+                <label class="obfuscation-option">
+                    <input type="checkbox" id="obfMinify" checked> Minify
+                </label>
+                <label class="obfuscation-option">
+                    <input type="checkbox" id="obfStringEnc" checked> String Encryption
+                </label>
+                <label class="obfuscation-option">
+                    <input type="checkbox" id="obfVarRename" checked> Variable Renaming
+                </label>
+                <label class="obfuscation-option">
+                    <input type="checkbox" id="obfAntiDebug"> Anti-Debug
+                </label>
+                <label class="obfuscation-option">
+                    <input type="checkbox" id="obfControlFlow"> Control Flow
+                </label>
+                <label class="obfuscation-option">
+                    <input type="checkbox" id="obfWatermark" checked> Add Watermark
+                </label>
+            </div>
+        </div>
+        
+        <!-- Preview Section -->
+        <div id="obfuscatedPreview" class="hidden">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin:10px 0;">
+                <span style="font-size:12px; opacity:0.7;">Obfuscated Preview:</span>
+                <button class="mini" onclick="copyObfuscatedScript()">📋 Copy</button>
+            </div>
+            <div id="scriptPreview" class="script-display"></div>
+        </div>
+        
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="purple" onclick="previewObfuscation()" style="flex:1;">
+                <span>🔍 Preview Obfuscation</span>
+            </button>
+            <button class="success" onclick="submitScript()" style="flex:1;">
+                <span>📤 Submit Script</span>
+                <span class="spinner" style="display:none; margin-left:10px;" id="uploadSpinner"></span>
+            </button>
+        </div>
+        
+        <div id="uploadStatus" style="text-align:center; margin-top:15px; font-size:12px; color:var(--danger); min-height:18px;"></div>
+    </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel" class="adminFull hidden">
+    <div id="adminDefaultView">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; padding:20px; background:rgba(255,255,255,0.03); border-radius:12px;">
+            <div>
+                <h2 style="margin:0; font-size:24px;" class="gradient-text">👑 ADMIN CONTROL PANEL</h2>
+                <p style="font-size:11px; opacity:0.7; margin-top:5px;">Full System Access</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="success" onclick="showGameCreateView()" style="width:auto; margin:0; padding:10px 20px;">
+                    🎮 Create Game
+                </button>
+                <button class="purple" onclick="showScriptReviewPanel()" style="width:auto; margin:0; padding:10px 20px;">
+                    📜 Review Scripts
+                </button>
+                <button class="danger" onclick="showBanNowModal()" style="width:auto; margin:0; padding:10px 20px;">
+                    ⚡ BAN NOW
+                </button>
+                <button onclick="closeAdmin()" style="width:auto; margin:0; background:#444; padding:10px 20px;">
+                    🚪 Exit Admin
+                </button>
+            </div>
+        </div>
+
+        <!-- Script Review Section -->
+        <div class="game-management-section">
+            <h3 style="margin-top:0;">📜 Pending Script Reviews</h3>
+            <div id="pendingScriptsList">
+                <div style="text-align:center; padding:20px; color:rgba(255,255,255,0.5);">Loading pending scripts...</div>
+            </div>
+        </div>
+
+        <!-- Games Dashboard -->
+        <div class="game-management-section">
+            <div class="dashboard-header">
+                <h3>🎮 Game Management</h3>
+            </div>
+            <div id="gamesDashboard" class="games-dashboard">
+                <div style="text-align:center; padding:40px; color:rgba(255,255,255,0.5); grid-column:1/-1;">
+                    Loading games database...
+                </div>
+            </div>
+        </div>
+
+        <!-- System Controls -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+            <div class="game-management-section">
+                <h3 style="margin-top:0;">🔑 System Keys</h3>
+                <div id="keyLogs" class="log-box" style="height:200px; overflow-y:auto;"></div>
+            </div>
+            <div class="game-management-section">
+                <h3 style="margin-top:0;">🚫 Blacklist</h3>
+                <div id="banLogs" class="log-box" style="height:200px; overflow-y:auto;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Creation View -->
+    <div id="gameCreateView" class="hidden">
+        <div class="back-nav" onclick="showGamesDashboard()">
+            <span>← Back to Dashboard</span>
+        </div>
+        
+        <div class="game-create-container" style="max-width:500px; margin:0 auto;">
+            <h2 style="margin-top:0; text-align:center;">🎮 Create New Game</h2>
+            
+            <div class="image-preview-container" onclick="document.getElementById('gameImageInput').click()" style="width:120px; height:120px; border-radius:12px; border:2px dashed var(--border); display:flex; align-items:center; justify-content:center; margin:15px auto; cursor:pointer;">
+                <img id="gameImagePreview" style="width:100%; height:100%; object-fit:cover; display:none;">
+                <div class="image-placeholder" id="imagePlaceholder">📁 Click to upload</div>
+            </div>
+            
+            <input type="file" id="gameImageInput" accept="image/*" class="hidden">
+            
+            <input type="text" id="gameNameInput" placeholder="Game Name">
+            <input type="text" id="gameIdInput" placeholder="Roblox Place ID">
+            
+            <button class="success" onclick="createGame()">🎮 Create Game</button>
+            <div id="gameCreateStatus" style="text-align:center; margin-top:15px; font-size:12px; color:var(--danger);"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Ban Now Modal -->
+<div id="banNowModal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width:500px;">
+        <h2 style="color:var(--danger); margin-top:0;">🔨 RESTRICT USER</h2>
+        <input id="focusBanId" placeholder="Roblox UserID">
+        <input id="focusBanUser" placeholder="Username to Ban">
+        <textarea id="focusBanReason" placeholder="Reason..." style="height:100px;"></textarea>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <button class="danger" onclick="executeFocusBan()">⚡ BAN USER</button>
+            <button onclick="hideBanNowModal()" style="background:#444;">CANCEL</button>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+<!-- Monaco Editor -->
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+
+<script>
+// Firebase Configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyAupBkllyicDPD9O6CmX4mS4sF5z96mqxc",
+    authDomain: "vertexpaste.firebaseapp.com",
+    projectId: "vertexpaste",
+    storageBucket: "vertexpaste.firebasestorage.app",
+    messagingSenderId: "255275350380",
+    appId: "1:255275350380:web:7be4e8add2cb5b04045b49"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+const storage = firebase.storage();
+
+db.enablePersistence().catch((err) => console.log('Persistence error:', err));
+
+// Global variables
+let dataCache = null;
+let currentUser = null;
+let isAdminAuthenticated = false;
+let monacoEditor = null;
+let currentScriptType = 'link';
+let currentObfuscatedScript = '';
+let selectedGameForUpload = null;
+let sessionStartTime = Date.now();
+let roleUpdateInterval = null;
+
+const ADMIN_USERNAME = 'plstealme2';
+const ADMIN_PASSWORD = 'Livetopimo';
+
+// Role definitions
+const ROLES = {
+    UNVERIFIED: { name: 'Unverified', timeRequired: 0, canUpload: false },
+    VERIFIED: { name: 'Verified', timeRequired: 5 * 60 * 1000, canUpload: false }, // 5 mins
+    TRUSTED: { name: 'Trusted', timeRequired: 10 * 60 * 1000, canUpload: true }, // 10 mins
+    ADMIN: { name: 'Admin', timeRequired: 0, canUpload: true }
+};
+
+// Notifications array
+let notifications = [];
+
+// ==================== LUA OBFUSCATOR ====================
+class LuaObfuscator {
+    constructor(code, options = {}) {
+        this.code = code;
+        this.options = {
+            minify: options.minify !== false,
+            encryptStrings: options.encryptStrings !== false,
+            renameVariables: options.renameVariables !== false,
+            antiDebug: options.antiDebug || false,
+            controlFlow: options.controlFlow || false,
+            watermark: options.watermark !== false
+        };
+        this.varMap = new Map();
+        this.varCounter = 0;
+    }
+
+    obfuscate() {
+        let result = this.code;
+        
+        if (this.options.watermark) {
+            result = this.addWatermark(result);
+        }
+        
+        if (this.options.encryptStrings) {
+            result = this.encryptStrings(result);
+        }
+        
+        if (this.options.renameVariables) {
+            result = this.renameVariables(result);
+        }
+        
+        if (this.options.controlFlow) {
+            result = this.obfuscateControlFlow(result);
+        }
+        
+        if (this.options.antiDebug) {
+            result = this.addAntiDebug(result);
+        }
+        
+        if (this.options.minify) {
+            result = this.minify(result);
+        }
+        
+        return result;
+    }
+
+    addWatermark(code) {
+        const watermark = `--[[\n\tProtected by RSQ Elite Obfuscator\n\tUser: ${currentUser?.username || 'Unknown'}\n\tTime: ${new Date().toISOString()}\n--]]\n`;
+        return watermark + code;
+    }
+
+    encryptStrings(code) {
+        // Find all string literals and encrypt them
+        const stringRegex = /(["'])(?:(?=(\\?))\2.)*?\1/g;
+        const strings = [];
+        let encrypted = code.replace(stringRegex, (match) => {
+            const str = match.slice(1, -1);
+            const key = this.generateRandomKey();
+            const encryptedStr = this.xorEncrypt(str, key);
+            strings.push({ encrypted: encryptedStr, key });
+            return `_G["${this.generateVarName()}"]("${encryptedStr}", "${key}")`;
+        });
+        
+        if (strings.length > 0) {
+            const decryptFunc = `
+local function _G["${this.generateVarName()}"](str, key)
+    local result = {}
+    for i = 1, #str do
+        local b = string.byte(str, i)
+        local k = string.byte(key, ((i-1) % #key) + 1)
+        table.insert(result, string.char(bit32.bxor(b, k)))
+    end
+    return table.concat(result)
+end
+`;
+            encrypted = decryptFunc + encrypted;
+        }
+        
+        return encrypted;
+    }
+
+    xorEncrypt(str, key) {
+        let result = [];
+        for (let i = 0; i < str.length; i++) {
+            const charCode = str.charCodeAt(i) ^ key.charCodeAt(i % key.length);
+            result.push(String.fromCharCode(charCode));
+        }
+        return btoa(result.join(''));
+    }
+
+    generateRandomKey() {
+        return Math.random().toString(36).substring(2, 10);
+    }
+
+    renameVariables(code) {
+        // Find local variable declarations
+        const localRegex = /local\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*=/g;
+        let match;
+        
+        while ((match = localRegex.exec(code)) !== null) {
+            const varName = match[1];
+            if (!this.isReservedWord(varName) && !this.varMap.has(varName)) {
+                this.varMap.set(varName, this.generateVarName());
+            }
+        }
+        
+        // Find function parameters
+        const funcRegex = /function\s*\(([^)]*)\)/g;
+        while ((match = funcRegex.exec(code)) !== null) {
+            const params = match[1].split(',').map(p => p.trim());
+            params.forEach(param => {
+                if (param && !this.isReservedWord(param) && !this.varMap.has(param)) {
+                    this.varMap.set(param, this.generateVarName());
+                }
+            });
+        }
+        
+        // Replace variables
+        let result = code;
+        for (const [oldName, newName] of this.varMap) {
+            const regex = new RegExp(`\\b${oldName}\\b`, 'g');
+            result = result.replace(regex, newName);
+        }
+        
+        return result;
+    }
+
+    generateVarName() {
+        const chars = 'abcdefghijklmnopqrstuvwxyz';
+        let name = '';
+        const len = 8 + Math.floor(Math.random() * 8);
+        for (let i = 0; i < len; i++) {
+            name += chars[Math.floor(Math.random() * chars.length)];
+        }
+        return '_' + name;
+    }
+
+    isReservedWord(word) {
+        const reserved = ['and', 'break', 'do', 'else', 'elseif', 'end', 'false', 'for', 
+            'function', 'if', 'in', 'local', 'nil', 'not', 'or', 'repeat', 'return', 
+            'then', 'true', 'until', 'while', 'print', 'require', 'pairs', 'ipairs'];
+        return reserved.includes(word.toLowerCase());
+    }
+
+    obfuscateControlFlow(code) {
+        // Add junk code and control flow flattening
+        const junkCode = `
+do
+    local _ = {}
+    for _ = 1, math.random(1, 3) do end
+end
+`;
+        return junkCode + code;
+    }
+
+    addAntiDebug(code) {
+        const antiDebug = `
+-- Anti-Debug Protection
+local function _G["${this.generateVarName()}"]()
+    if debug and debug.getinfo then
+        local info = debug.getinfo(1, "S")
+        if info and info.source and info.source:find("^@") then
+            return true
+        end
+    end
+    return false
+end
+
+if _G["${this.generateVarName()}"]() then
+    while true do end
+end
+`;
+        return antiDebug + code;
+    }
+
+    minify(code) {
+        // Remove comments
+        code = code.replace(/--\[\[[\s\S]*?\]\]/g, '');
+        code = code.replace(/--.*$/gm, '');
+        
+        // Remove extra whitespace
+        code = code.replace(/\s+/g, ' ');
+        code = code.replace(/\s*([=+*\/%<>!&|^~:,;(){}[\]])\s*/g, '$1');
+        
+        return code.trim();
+    }
+}
+
+// ==================== ROLE SYSTEM ====================
+function getUserRole() {
+    if (!currentUser) return ROLES.UNVERIFIED;
+    if (currentUser.username === ADMIN_USERNAME) return ROLES.ADMIN;
+    
+    const userData = dataCache?.users?.[currentUser.username];
+    if (!userData) return ROLES.UNVERIFIED;
+    
+    return userData.role || ROLES.UNVERIFIED;
+}
+
+function updateRoleProgress() {
+    if (!currentUser || currentUser.username === ADMIN_USERNAME) {
+        document.getElementById('roleProgress')?.classList.add('hidden');
+        return;
+    }
+    
+    const userData = dataCache?.users?.[currentUser.username];
+    const joinTime = userData?.joinTime || sessionStartTime;
+    const timeElapsed = Date.now() - joinTime;
+    
+    const progressFill = document.getElementById('progressFill');
+    const progressPercentage = document.getElementById('progressPercentage');
+    const timeRemaining = document.getElementById('timeRemaining');
+    const nextRole = document.getElementById('nextRole');
+    const roleBadge = document.getElementById('roleBadge');
+    
+    if (!progressFill) return;
+    
+    let targetTime, targetRole, currentRoleName;
+    
+    if (timeElapsed < ROLES.VERIFIED.timeRequired) {
+        targetTime = ROLES.VERIFIED.timeRequired;
+        targetRole = 'Verified';
+        currentRoleName = 'UNVERIFIED';
+        roleBadge.className = 'role-badge unverified';
+        roleBadge.textContent = '🔴 UNVERIFIED';
+    } else if (timeElapsed < ROLES.TRUSTED.timeRequired) {
+        targetTime = ROLES.TRUSTED.timeRequired;
+        targetRole = 'Trusted';
+        currentRoleName = 'VERIFIED';
+        roleBadge.className = 'role-badge verified';
+        roleBadge.textContent = '🟡 VERIFIED';
+    } else {
+        targetTime = ROLES.TRUSTED.timeRequired;
+        targetRole = 'Trusted';
+        currentRoleName = 'TRUSTED';
+        roleBadge.className = 'role-badge trusted';
+        roleBadge.textContent = '🟢 TRUSTED';
+        progressFill.style.width = '100%';
+        progressPercentage.textContent = '100%';
+        timeRemaining.textContent = 'Max rank reached!';
+        nextRole.textContent = 'Current: Trusted';
+        return;
+    }
+    
+    const progress = Math.min(100, (timeElapsed / targetTime) * 100);
+    progressFill.style.width = progress + '%';
+    progressPercentage.textContent = Math.round(progress) + '%';
+    
+    const remaining = targetTime - timeElapsed;
+    const minutes = Math.floor(remaining / 60000);
+    const seconds = Math.floor((remaining % 60000) / 1000);
+    timeRemaining.textContent = `${minutes}:${seconds.toString().padStart(2, '0')} remaining`;
+    nextRole.textContent = `Next: ${targetRole}`;
+    
+    // Check if role needs to be updated in database
+    checkAndUpdateRole();
+}
+
+async function checkAndUpdateRole() {
+    if (!currentUser || currentUser.username === ADMIN_USERNAME) return;
+    
+    const userData = dataCache?.users?.[currentUser.username];
+    const joinTime = userData?.joinTime || sessionStartTime;
+    const timeElapsed = Date.now() - joinTime;
+    
+    let newRole = null;
+    
+    if (timeElapsed >= ROLES.TRUSTED.timeRequired && (!userData?.role || userData.role.name !== 'TRUSTED')) {
+        newRole = { name: 'TRUSTED', ...ROLES.TRUSTED };
+    } else if (timeElapsed >= ROLES.VERIFIED.timeRequired && (!userData?.role || userData.role.name === 'UNVERIFIED')) {
+        newRole = { name: 'VERIFIED', ...ROLES.VERIFIED };
+    }
+    
+    if (newRole) {
+        try {
+            const docRef = db.collection('system').doc('config');
+            const doc = await docRef.get();
+            const data = doc.data();
+            
+            if (!data.users) data.users = {};
+            if (!data.users[currentUser.username]) {
+                data.users[currentUser.username] = { joinTime };
+            }
+            data.users[currentUser.username].role = newRole;
+            
+            await docRef.update({ users: data.users });
+            
+            addNotification('🎉 Role Upgraded!', `You are now ${newRole.name}!`, 'success');
+            updateRoleDisplay();
+        } catch (error) {
+            console.error('Error updating role:', error);
+        }
+    }
+}
+
+function updateRoleDisplay() {
+    const role = getUserRole();
+    const roleBadge = document.getElementById('roleBadge');
+    const uploadBtn = document.getElementById('uploadScriptSection');
+    
+    if (roleBadge) {
+        if (role.name === 'UNVERIFIED') {
+            roleBadge.className = 'role-badge unverified';
+            roleBadge.textContent = '🔴 UNVERIFIED';
+        } else if (role.name === 'VERIFIED') {
+            roleBadge.className = 'role-badge verified';
+            roleBadge.textContent = '🟡 VERIFIED';
+        } else if (role.name === 'TRUSTED') {
+            roleBadge.className = 'role-badge trusted';
+            roleBadge.textContent = '🟢 TRUSTED';
+        } else if (role.name === 'Admin') {
+            roleBadge.className = 'role-badge admin';
+            roleBadge.textContent = '👑 ADMIN';
+        }
+    }
+    
+    // Show upload section for trusted+ users
+    if (uploadBtn) {
+        if (role.canUpload) {
+            uploadBtn.classList.remove('hidden');
+        } else {
+            uploadBtn.classList.add('hidden');
+        }
+    }
+}
+
+// ==================== GAMES BROWSER ====================
+function showHomePanel() {
+    document.getElementById('homePanel').classList.remove('hidden');
+    document.getElementById('gamesBrowserPanel').classList.add('hidden');
+    document.getElementById('gameScriptsView').classList.add('hidden');
+    loadUserScripts();
+}
+
+function showGamesBrowser() {
+    document.getElementById('homePanel').classList.add('hidden');
+    document.getElementById('gamesBrowserPanel').classList.remove('hidden');
+    document.getElementById('gameScriptsView').classList.add('hidden');
+    loadGamesBrowser();
+}
+
+async function loadGamesBrowser() {
+    try {
+        if (!dataCache?.games) {
+            document.getElementById('gamesBrowserList').innerHTML = 
+                '<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.5); grid-column:1/-1;">No games available</div>';
+            return;
+        }
+        
+        const games = dataCache.games;
+        const container = document.getElementById('gamesBrowserList');
+        
+        const gamesHtml = games.map((game, index) => {
+            const scriptCount = (game.scripts || []).filter(s => s.approved !== false).length;
+            return `
+                <div class="game-card-browser" onclick="viewGameScripts(${index})">
+                    ${game.image ? `<img src="${game.image}" class="game-card-image">` : '<div class="game-card-image"></div>'}
+                    <div class="game-card-title">${game.name}</div>
+                    <div class="game-card-id">ID: ${game.id}</div>
+                    <div class="game-card-scripts">${scriptCount} script${scriptCount !== 1 ? 's' : ''}</div>
+                </div>
+            `;
+        }).join('');
+        
+        container.innerHTML = gamesHtml || '<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.5); grid-column:1/-1;">No games available</div>';
+    } catch (error) {
+        console.error('Error loading games browser:', error);
+    }
+}
+
+function viewGameScripts(gameIndex) {
+    selectedGameForUpload = gameIndex;
+    const game = dataCache.games[gameIndex];
+    
+    document.getElementById('homePanel').classList.add('hidden');
+    document.getElementById('gamesBrowserPanel').classList.add('hidden');
+    document.getElementById('gameScriptsView').classList.remove('hidden');
+    
+    document.getElementById('viewGameName').textContent = game.name;
+    document.getElementById('viewGameId').textContent = `ID: ${game.id}`;
+    
+    const gameImage = document.getElementById('viewGameImage');
+    if (game.image) {
+        gameImage.src = game.image;
+        gameImage.style.display = 'block';
+    } else {
+        gameImage.style.display = 'none';
+    }
+    
+    document.getElementById('uploadGameName').textContent = game.name;
+    
+    // Show/hide upload button based on role
+    const role = getUserRole();
+    const uploadSection = document.getElementById('uploadScriptSection');
+    if (role.canUpload) {
+        uploadSection.classList.remove('hidden');
+    } else {
+        uploadSection.classList.add('hidden');
+    }
+    
+    renderGameScriptsList(gameIndex);
+}
+
+function renderGameScriptsList(gameIndex) {
+    const game = dataCache.games[gameIndex];
+    const scripts = (game.scripts || []).filter(s => s.approved !== false);
+    const container = document.getElementById('gameScriptsList');
+    
+    if (scripts.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.5);">No scripts available for this game</div>';
+        return;
+    }
+    
+    const scriptsHtml = scripts.map((script, index) => {
+        return `
+            <div style="background:rgba(255,255,255,0.03); border-radius:10px; padding:15px; margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <div style="font-weight:600; color:var(--secondary);">${script.name}</div>
+                        <div style="font-size:11px; opacity:0.7; margin-top:5px;">
+                            Added by: ${script.addedBy || 'System'}
+                        </div>
+                    </div>
+                    <button class="mini success" onclick="copyScriptToClipboard('${script.url || script.code}')">📋 Copy Script</button>
+                </div>
+                ${script.obfuscated ? '<span style="font-size:10px; background:rgba(138,43,226,0.2); padding:2px 6px; border-radius:4px; margin-left:10px;">🔒 Obfuscated</span>' : ''}
+            </div>
+        `;
+    }).join('');
+    
+    container.innerHTML = scriptsHtml;
+}
+
+function copyScriptToClipboard(content) {
+    navigator.clipboard.writeText(content).then(() => {
+        addNotification('📋 Copied!', 'Script copied to clipboard', 'success');
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+        addNotification('❌ Error', 'Failed to copy script', 'error');
+    });
+}
+
+// ==================== SCRIPT UPLOAD WITH MONACO ====================
+function showScriptUploadModal() {
+    if (!selectedGameForUpload && selectedGameForUpload !== 0) {
+        addNotification('❌ Error', 'Please select a game first', 'error');
+        return;
+    }
+    
+    const role = getUserRole();
+    if (!role.canUpload) {
+        addNotification('❌ Access Denied', 'You need Trusted role to upload scripts', 'error');
+        return;
+    }
+    
+    document.getElementById('scriptUploadModal').classList.remove('hidden');
+    
+    // Initialize Monaco if not already
+    if (!monacoEditor) {
+        require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
+        require(['vs/editor/editor.main'], function() {
+            monacoEditor = monaco.editor.create(document.getElementById('monacoEditor'), {
+                value: '-- Write your Lua script here\n\nprint("Hello, RSQ Elite!")',
+                language: 'lua',
+                theme: 'vs-dark',
+                minimap: { enabled: false },
+                fontSize: 13,
+                lineNumbers: 'on',
+                automaticLayout: true
+            });
+        });
+    }
+}
+
+function hideScriptUploadModal() {
+    document.getElementById('scriptUploadModal').classList.add('hidden');
+    document.getElementById('scriptNameInput').value = '';
+    document.getElementById('scriptUrlInput').value = '';
+    document.getElementById('uploadStatus').textContent = '';
+    document.getElementById('obfuscatedPreview').classList.add('hidden');
+    if (monacoEditor) {
+        monacoEditor.setValue('-- Write your Lua script here\n\nprint("Hello, RSQ Elite!")');
+    }
+}
+
+function setScriptType(type) {
+    currentScriptType = type;
+    
+    document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    if (type === 'link') {
+        document.getElementById('urlInputSection').classList.remove('hidden');
+        document.getElementById('editorSection').classList.add('hidden');
+    } else {
+        document.getElementById('urlInputSection').classList.add('hidden');
+        document.getElementById('editorSection').classList.remove('hidden');
+    }
+}
+
+function previewObfuscation() {
+    let code;
+    
+    if (currentScriptType === 'link') {
+        const url = document.getElementById('scriptUrlInput').value.trim();
+        if (!url) {
+            addNotification('❌ Error', 'Please enter a script URL', 'error');
+            return;
+        }
+        // For preview, we'll use a placeholder since we can't fetch cross-origin
+        code = '-- Script will be fetched from: ' + url + '\n\nlocal function example()\n    print("Hello World")\nend\n\nexample()';
+    } else {
+        if (!monacoEditor) {
+            addNotification('❌ Error', 'Editor not initialized', 'error');
+            return;
+        }
+        code = monacoEditor.getValue();
+        if (!code.trim()) {
+            addNotification('❌ Error', 'Please enter a script', 'error');
+            return;
+        }
+    }
+    
+    const options = {
+        minify: document.getElementById('obfMinify').checked,
+        encryptStrings: document.getElementById('obfStringEnc').checked,
+        renameVariables: document.getElementById('obfVarRename').checked,
+        antiDebug: document.getElementById('obfAntiDebug').checked,
+        controlFlow: document.getElementById('obfControlFlow').checked,
+        watermark: document.getElementById('obfWatermark').checked
+    };
+    
+    try {
+        const obfuscator = new LuaObfuscator(code, options);
+        currentObfuscatedScript = obfuscator.obfuscate();
+        
+        const preview = document.getElementById('scriptPreview');
+        const previewLines = currentObfuscatedScript.split('\n');
+        const previewText = previewLines.slice(0, 20).join('\n');
+        
+        preview.textContent = previewText + (previewLines.length > 20 ? '\n-- ... (truncated)' : '');
+        document.getElementById('obfuscatedPreview').classList.remove('hidden');
+        
+        addNotification('✅ Preview Ready', 'Obfuscation preview generated', 'success');
+    } catch (error) {
+        console.error('Obfuscation error:', error);
+        addNotification('❌ Error', 'Failed to obfuscate script', 'error');
+    }
+}
+
+function copyObfuscatedScript() {
+    if (!currentObfuscatedScript) {
+        addNotification('❌ Error', 'No obfuscated script to copy', 'error');
+        return;
+    }
+    
+    navigator.clipboard.writeText(currentObfuscatedScript).then(() => {
+        addNotification('📋 Copied!', 'Obfuscated script copied to clipboard', 'success');
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+        addNotification('❌ Error', 'Failed to copy script', 'error');
+    });
+}
+
+async function submitScript() {
+    const scriptName = document.getElementById('scriptNameInput').value.trim();
+    const uploadStatus = document.getElementById('uploadStatus');
+    const spinner = document.getElementById('uploadSpinner');
+    
+    if (!scriptName) {
+        uploadStatus.textContent = 'Please enter a script name';
+        return;
+    }
+    
+    if (selectedGameForUpload === null) {
+        uploadStatus.textContent = 'No game selected';
+        return;
+    }
+    
+    spinner.style.display = 'inline-block';
+    uploadStatus.textContent = '';
+    
+    try {
+        let scriptContent;
+        
+        if (currentScriptType === 'link') {
+            scriptContent = document.getElementById('scriptUrlInput').value.trim();
+            if (!scriptContent) throw new Error('Please enter a script URL');
+            if (!scriptContent.startsWith('http://') && !scriptContent.startsWith('https://')) {
+                throw new Error('Invalid URL format');
+            }
+        } else {
+            if (!monacoEditor) throw new Error('Editor not initialized');
+            scriptContent = monacoEditor.getValue();
+            if (!scriptContent.trim()) throw new Error('Please enter a script');
+        }
+        
+        // Apply obfuscation
+        const options = {
+            minify: document.getElementById('obfMinify').checked,
+            encryptStrings: document.getElementById('obfStringEnc').checked,
+            renameVariables: document.getElementById('obfVarRename').checked,
+            antiDebug: document.getElementById('obfAntiDebug').checked,
+            controlFlow: document.getElementById('obfControlFlow').checked,
+            watermark: document.getElementById('obfWatermark').checked
+        };
+        
+        const obfuscator = new LuaObfuscator(
+            currentScriptType === 'link' ? '-- Script URL: ' + scriptContent : scriptContent, 
+            options
+        );
+        const obfuscatedCode = obfuscator.obfuscate();
+        
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        const game = data.games[selectedGameForUpload];
+        
+        if (!game.userScripts) game.userScripts = [];
+        
+        const newScript = {
+            name: scriptName,
+            url: currentScriptType === 'link' ? scriptContent : null,
+            code: currentScriptType === 'editor' ? obfuscatedCode : null,
+            obfuscated: true,
+            obfuscationOptions: options,
+            submittedBy: currentUser.username,
+            submittedAt: Date.now(),
+            approved: false,
+            gameId: game.id,
+            gameName: game.name
+        };
+        
+        game.userScripts.push(newScript);
+        data.settings.last_updated = Date.now();
+        
+        await docRef.update({
+            games: data.games,
+            settings: data.settings
+        });
+        
+        hideScriptUploadModal();
+        addNotification('✅ Script Submitted', 'Your script has been submitted for review', 'success');
+        loadUserScripts();
+        
+    } catch (error) {
+        console.error('Error submitting script:', error);
+        uploadStatus.textContent = error.message || 'Failed to submit script';
+    } finally {
+        spinner.style.display = 'none';
+    }
+}
+
+async function loadUserScripts() {
+    if (!currentUser) return;
+    
+    try {
+        const userScripts = [];
+        
+        if (dataCache?.games) {
+            dataCache.games.forEach(game => {
+                if (game.userScripts) {
+                    game.userScripts.forEach(script => {
+                        if (script.submittedBy === currentUser.username) {
+                            userScripts.push({ ...script, gameName: game.name });
+                        }
+                    });
+                }
+            });
+        }
+        
+        const container = document.getElementById('userScriptsList');
+        const section = document.getElementById('userScriptsSection');
+        
+        if (userScripts.length === 0) {
+            section.classList.add('hidden');
+            return;
+        }
+        
+        section.classList.remove('hidden');
+        
+        const scriptsHtml = userScripts.map(script => {
+            const statusClass = script.approved ? 'approved' : 'pending';
+            const statusText = script.approved ? 'Approved' : 'Pending Review';
+            
+            return `
+                <div class="user-script-item">
+                    <div class="user-script-info">
+                        <div class="user-script-name">${script.name}</div>
+                        <div class="user-script-game">Game: ${script.gameName}</div>
+                    </div>
+                    <span class="user-script-status ${statusClass}">${statusText}</span>
+                </div>
+            `;
+        }).join('');
+        
+        container.innerHTML = scriptsHtml;
+    } catch (error) {
+        console.error('Error loading user scripts:', error);
+    }
+}
+
+// ==================== ADMIN SCRIPT REVIEW ====================
+function showScriptReviewPanel() {
+    const pendingScripts = [];
+    
+    if (dataCache?.games) {
+        dataCache.games.forEach((game, gameIndex) => {
+            if (game.userScripts) {
+                game.userScripts.forEach((script, scriptIndex) => {
+                    if (!script.approved) {
+                        pendingScripts.push({
+                            ...script,
+                            gameIndex,
+                            scriptIndex,
+                            gameName: game.name
+                        });
+                    }
+                });
+            }
+        });
+    }
+    
+    const container = document.getElementById('pendingScriptsList');
+    
+    if (pendingScripts.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:20px; color:rgba(255,255,255,0.5);">No pending scripts to review</div>';
+        return;
+    }
+    
+    const scriptsHtml = pendingScripts.map(item => `
+        <div style="background:rgba(255,255,255,0.03); border-radius:10px; padding:15px; margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+                <div style="flex:1;">
+                    <div style="font-weight:600; color:var(--secondary);">${item.name}</div>
+                    <div style="font-size:11px; opacity:0.7; margin-top:5px;">
+                        Game: ${item.gameName} | Submitted by: ${item.submittedBy}
+                    </div>
+                    <div style="font-size:10px; opacity:0.5; margin-top:5px;">
+                        ${new Date(item.submittedAt).toLocaleString()}
+                    </div>
+                </div>
+                <div style="display:flex; gap:5px;">
+                    <button class="mini success" onclick="approveScript(${item.gameIndex}, ${item.scriptIndex})">✓ Approve</button>
+                    <button class="mini danger" onclick="rejectScript(${item.gameIndex}, ${item.scriptIndex})">✕ Reject</button>
+                    <button class="mini" onclick="viewScriptContent('${item.code || item.url}')">👁️ View</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    container.innerHTML = scriptsHtml;
+}
+
+async function approveScript(gameIndex, scriptIndex) {
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        const script = data.games[gameIndex].userScripts[scriptIndex];
+        script.approved = true;
+        script.approvedBy = currentUser.username;
+        script.approvedAt = Date.now();
+        
+        // Add to main scripts list
+        if (!data.games[gameIndex].scripts) data.games[gameIndex].scripts = [];
+        data.games[gameIndex].scripts.push({
+            name: script.name,
+            url: script.url,
+            code: script.code,
+            obfuscated: script.obfuscated,
+            addedBy: script.submittedBy,
+            added: Date.now()
+        });
+        
+        await docRef.update({ games: data.games });
+        
+        addNotification('✅ Script Approved', `"${script.name}" has been approved`, 'success');
+        showScriptReviewPanel();
+    } catch (error) {
+        console.error('Error approving script:', error);
+        addNotification('❌ Error', 'Failed to approve script', 'error');
+    }
+}
+
+async function rejectScript(gameIndex, scriptIndex) {
+    if (!confirm('Reject this script? It will be permanently removed.')) return;
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        const script = data.games[gameIndex].userScripts[scriptIndex];
+        data.games[gameIndex].userScripts.splice(scriptIndex, 1);
+        
+        await docRef.update({ games: data.games });
+        
+        addNotification('🗑️ Script Rejected', `"${script.name}" has been rejected`, 'warning');
+        showScriptReviewPanel();
+    } catch (error) {
+        console.error('Error rejecting script:', error);
+        addNotification('❌ Error', 'Failed to reject script', 'error');
+    }
+}
+
+function viewScriptContent(content) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+    
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:700px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                <h3>Script Content</h3>
+                <button onclick="this.closest('.modal-overlay').remove()" style="width:auto; margin:0;">✕</button>
+            </div>
+            <div class="script-display" style="max-height:400px;">${escapeHtml(content || 'No content available')}</div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// ==================== NOTIFICATION SYSTEM ====================
+function addNotification(title, message, type = 'info') {
+    const notification = {
+        id: Date.now() + Math.random(),
+        title, message, type,
+        timestamp: Date.now(),
+        read: false
+    };
+    
+    notifications.unshift(notification);
+    if (notifications.length > 50) notifications = notifications.slice(0, 50);
+    
+    updateNotificationBadge();
+    showFloatingNotification(notification);
+}
+
+function showFloatingNotification(notification) {
+    const floating = document.createElement('div');
+    floating.className = 'floating-notification';
+    floating.onclick = () => {
+        toggleNotificationCenter();
+        floating.remove();
+    };
+    
+    floating.innerHTML = `
+        <div class="title">${notification.title}</div>
+        <div class="message">${notification.message}</div>
+    `;
+    
+    document.body.appendChild(floating);
+    setTimeout(() => floating.remove(), 5000);
+}
+
+function toggleNotificationCenter() {
+    const center = document.getElementById('notificationCenter');
+    center.classList.toggle('hidden');
+    if (!center.classList.contains('hidden')) renderNotifications();
+}
+
+function renderNotifications() {
+    const list = document.getElementById('notificationsList');
+    
+    if (notifications.length === 0) {
+        list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔔</div><div>No notifications</div></div>';
+        return;
+    }
+    
+    list.innerHTML = notifications.map(n => `
+        <div class="notification-item ${n.read ? '' : 'unread'}" onclick="markNotificationRead(${n.id})">
+            <div class="notification-title">${n.title}</div>
+            <div class="notification-message">${n.message}</div>
+            <div class="notification-time">${new Date(n.timestamp).toLocaleTimeString()}</div>
+        </div>
+    `).join('');
+}
+
+function markNotificationRead(id) {
+    const notification = notifications.find(n => n.id === id);
+    if (notification) notification.read = true;
+    renderNotifications();
+    updateNotificationBadge();
+}
+
+function markAllNotificationsRead() {
+    notifications.forEach(n => n.read = true);
+    renderNotifications();
+    updateNotificationBadge();
+}
+
+function updateNotificationBadge() {
+    const badge = document.getElementById('notificationBadge');
+    const unread = notifications.filter(n => !n.read).length;
+    if (unread > 0) {
+        badge.textContent = unread;
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+}
+
+// ==================== AUTHENTICATION ====================
+async function handleAuth(action) {
+    const spinnerId = action === 'login' ? 'loginSpinner' : 'signupSpinner';
+    const spinner = document.getElementById(spinnerId);
+    const authStatus = document.getElementById('authStatus');
+    
+    spinner.style.display = 'inline-block';
+    authStatus.textContent = '';
+    
+    let username, password;
+    
+    if (action === 'login') {
+        username = document.getElementById('l-user').value.trim();
+        password = document.getElementById('l-pass').value.trim();
+    } else {
+        username = document.getElementById('s-user').value.trim();
+        password = document.getElementById('s-pass').value.trim();
+    }
+    
+    if (!username || !password) {
+        authStatus.textContent = 'Please fill in all fields';
+        spinner.style.display = 'none';
+        return;
+    }
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        if (!data.users) data.users = {};
+        
+        if (action === 'signup') {
+            if (data.users[username]) {
+                authStatus.textContent = 'Username already exists';
+                spinner.style.display = 'none';
+                return;
+            }
+            
+            data.users[username] = {
+                password,
+                joinTime: Date.now(),
+                role: ROLES.UNVERIFIED
+            };
+            
+            await docRef.update({ users: data.users });
+            authStatus.textContent = 'Account created! Please login.';
+            authStatus.style.color = 'var(--success)';
+            toggleAuth(false);
+            addNotification('Welcome!', 'Account created successfully', 'success');
+        } else {
+            const user = data.users[username];
+            
+            if (!user || user.password !== password) {
+                authStatus.textContent = 'Invalid username or password';
+                spinner.style.display = 'none';
+                return;
+            }
+            
+            currentUser = { username, role: user.role || ROLES.UNVERIFIED };
+            sessionStartTime = user.joinTime || Date.now();
+            
+            localStorage.setItem('RSQ_CURRENT_USER', JSON.stringify(currentUser));
+            
+            document.getElementById('authPanel').classList.add('hidden');
+            document.getElementById('mainSystem').classList.remove('hidden');
+            document.getElementById('welcomeUser').textContent = 'Logged in as: ' + username;
+            
+            const adminBtn = document.getElementById('adminBtn');
+            adminBtn.style.display = username === ADMIN_USERNAME ? 'block' : 'none';
+            
+            if (username === ADMIN_USERNAME) {
+                document.getElementById('adminInput').value = ADMIN_PASSWORD;
+            }
+            
+            updateRoleDisplay();
+            startRoleTimer();
+            
+            addNotification('Welcome!', 'Logged in as ' + username, 'success');
+        }
+    } catch (error) {
+        console.error('Auth error:', error);
+        authStatus.textContent = 'Error: ' + error.message;
+    } finally {
+        spinner.style.display = 'none';
+    }
+}
+
+function startRoleTimer() {
+    if (roleUpdateInterval) clearInterval(roleUpdateInterval);
+    roleUpdateInterval = setInterval(updateRoleProgress, 1000);
+    updateRoleProgress();
+}
+
+function toggleAuth(showSignup) {
+    document.getElementById('loginView').classList.toggle('hidden', showSignup);
+    document.getElementById('signupView').classList.toggle('hidden', !showSignup);
+    document.getElementById('authStatus').textContent = '';
+}
+
+function logout() {
+    if (confirm('Logout from the system?')) {
+        currentUser = null;
+        localStorage.removeItem('RSQ_CURRENT_USER');
+        if (roleUpdateInterval) clearInterval(roleUpdateInterval);
+        
+        document.getElementById('mainSystem').classList.add('hidden');
+        document.getElementById('authPanel').classList.remove('hidden');
+        document.getElementById('l-user').value = '';
+        document.getElementById('l-pass').value = '';
+        
+        toggleAuth(false);
+    }
+}
+
+// ==================== KEY GENERATION ====================
+async function generateKey() {
+    if (!currentUser) return;
+    
+    const userIdInput = document.getElementById('userid');
+    const statusEl = document.getElementById('statusMsg');
+    const keyOut = document.getElementById('keyOut');
+    const loadstringOut = document.getElementById('loadstringOut');
+    const spinner = document.getElementById('keySpinner');
+    
+    const userId = userIdInput.value.trim();
+    
+    if (!userId || !/^\d+$/.test(userId)) {
+        statusEl.textContent = 'Please enter a valid Roblox UserID';
+        return;
+    }
+    
+    spinner.style.display = 'inline-block';
+    statusEl.textContent = 'Generating key...';
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        const keys = data.keys || {};
+        
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+        let newKey = '';
+        for (let i = 0; i < 16; i++) {
+            newKey += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        
+        keys[newKey] = {
+            rbx: parseInt(userId),
+            exp: 'INF',
+            created: Date.now(),
+            generatedBy: currentUser.username
+        };
+        
+        await docRef.update({ keys });
+        
+        keyOut.textContent = newKey;
+        const loadstring = `loadstring(game:HttpGet("https://raw.githubusercontent.com/defnot67kid-beep/KeySytem/refs/heads/main/key.lua"))()`;
+        loadstringOut.innerHTML = `📋 ${loadstring} (click to copy)`;
+        
+        statusEl.textContent = '✅ Key generated successfully!';
+        statusEl.style.color = 'var(--success)';
+        userIdInput.value = '';
+        
+        navigator.clipboard.writeText(loadstring);
+        addNotification('🔑 Key Generated', `New key for UserID ${userId}`, 'success');
+        
+    } catch (error) {
+        console.error('Error generating key:', error);
+        statusEl.textContent = '❌ Failed to generate key';
+    } finally {
+        spinner.style.display = 'none';
+    }
+}
+
+function copyLoadstring() {
+    const text = document.getElementById('loadstringOut').textContent.replace('📋 ', '').replace(' (click to copy)', '');
+    navigator.clipboard.writeText(text).then(() => {
+        addNotification('📋 Copied!', 'Loadstring copied to clipboard', 'success');
+    });
+}
+
+// ==================== CHAT SYSTEM ====================
+async function sendChat() {
+    const input = document.getElementById('chat-input');
+    const message = input.value.trim();
+    if (!message) return;
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        
+        if (!dataCache.chats) dataCache.chats = [];
+        dataCache.chats.push({
+            user: currentUser.username,
+            txt: message,
+            timestamp: Date.now()
+        });
+        
+        if (dataCache.chats.length > 100) dataCache.chats = dataCache.chats.slice(-100);
+        
+        await docRef.update({ chats: dataCache.chats });
+        input.value = '';
+        renderMessages();
+    } catch (error) {
+        console.error('Error sending message:', error);
+    }
+}
+
+function renderMessages() {
+    const container = document.getElementById('chat-msgs');
+    if (!dataCache?.chats) return;
+    
+    const chats = dataCache.chats;
+    
+    container.innerHTML = chats.map(msg => `
+        <div class="msg-item ${msg.user === 'SYSTEM' ? 'system' : ''}">
+            <div class="msg-header">
+                <div class="msg-user">${msg.user}</div>
+                <div class="msg-time">${new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+            </div>
+            <div class="msg-content">${msg.txt}</div>
+        </div>
+    `).join('');
+    
+    container.scrollTop = container.scrollHeight;
+}
+
+function toggleChat(show) {
+    document.getElementById('chat-window').classList.toggle('hidden', !show);
+    if (show) renderMessages();
+}
+
+// ==================== ADMIN FUNCTIONS ====================
+function toggleAdmin() {
+    const password = document.getElementById('adminInput').value.trim();
+    
+    if (password === ADMIN_PASSWORD) {
+        isAdminAuthenticated = true;
+        document.getElementById('adminInput').style.display = 'none';
+        openAdminPanel();
+    } else {
+        addNotification('❌ Access Denied', 'Invalid admin password', 'error');
+    }
+}
+
+function openAdminPanel() {
+    document.getElementById('mainSystem').classList.add('hidden');
+    document.getElementById('adminPanel').classList.remove('hidden');
+    loadGamesDashboard();
+    renderAdminKeys();
+    renderAdminBans();
+    showScriptReviewPanel();
+}
+
+function closeAdmin() {
+    document.getElementById('adminPanel').classList.add('hidden');
+    document.getElementById('mainSystem').classList.remove('hidden');
+    isAdminAuthenticated = false;
+}
+
+function showGameCreateView() {
+    document.getElementById('adminDefaultView').classList.add('hidden');
+    document.getElementById('gameCreateView').classList.remove('hidden');
+}
+
+function showGamesDashboard() {
+    document.getElementById('gameCreateView').classList.add('hidden');
+    document.getElementById('adminDefaultView').classList.remove('hidden');
+    loadGamesDashboard();
+}
+
+async function loadGamesDashboard() {
+    const games = dataCache?.games || [];
+    const container = document.getElementById('gamesDashboard');
+    
+    if (games.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.5); grid-column:1/-1;">No games created yet</div>';
+        return;
+    }
+    
+    container.innerHTML = games.map((game, i) => `
+        <div class="game-card">
+            ${game.image ? `<img src="${game.image}" class="game-card-image">` : '<div class="game-card-image"></div>'}
+            <div class="game-card-title">${game.name}</div>
+            <div class="game-card-id">ID: ${game.id}</div>
+            <div class="game-card-scripts">${(game.scripts || []).length} scripts</div>
+            <button class="mini danger" onclick="deleteGame(${i})" style="position:absolute; top:5px; right:5px;">🗑️</button>
+        </div>
+    `).join('');
+}
+
+async function createGame() {
+    const name = document.getElementById('gameNameInput').value.trim();
+    const id = document.getElementById('gameIdInput').value.trim();
+    const status = document.getElementById('gameCreateStatus');
+    
+    if (!name || !id) {
+        status.textContent = 'Please fill in all fields';
+        return;
+    }
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        if (!data.games) data.games = [];
+        
+        const imageInput = document.getElementById('gameImageInput');
+        let imageData = '';
+        
+        if (imageInput.files?.[0]) {
+            imageData = await new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = e => resolve(e.target.result);
+                reader.readAsDataURL(imageInput.files[0]);
+            });
+        }
+        
+        data.games.push({
+            id, name,
+            image: imageData,
+            scripts: [],
+            userScripts: [],
+            created: Date.now()
+        });
+        
+        await docRef.update({ games: data.games });
+        
+        status.textContent = '✅ Game created!';
+        status.style.color = 'var(--success)';
+        
+        setTimeout(showGamesDashboard, 1500);
+    } catch (error) {
+        console.error('Error creating game:', error);
+        status.textContent = 'Failed to create game';
+    }
+}
+
+async function deleteGame(index) {
+    if (!confirm('Delete this game?')) return;
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        data.games.splice(index, 1);
+        await docRef.update({ games: data.games });
+        
+        loadGamesDashboard();
+        addNotification('🗑️ Game Deleted', 'Game removed successfully', 'warning');
+    } catch (error) {
+        console.error('Error deleting game:', error);
+    }
+}
+
+async function renderAdminKeys() {
+    const keys = dataCache?.keys || {};
+    const container = document.getElementById('keyLogs');
+    
+    if (Object.keys(keys).length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:20px; color:rgba(255,255,255,0.5);">No keys in system</div>';
+        return;
+    }
+    
+    container.innerHTML = Object.entries(keys).map(([key, data]) => `
+        <div style="padding:8px; border-bottom:1px solid var(--border);">
+            <div><strong>${key.substring(0, 8)}...</strong> (UserID: ${data.rbx})</div>
+            <div style="font-size:10px; opacity:0.7;">By: ${data.generatedBy}</div>
+        </div>
+    `).join('');
+}
+
+async function renderAdminBans() {
+    const bans = dataCache?.bans || {};
+    const container = document.getElementById('banLogs');
+    
+    if (Object.keys(bans).length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:20px; color:rgba(255,255,255,0.5);">No banned users</div>';
+        return;
+    }
+    
+    container.innerHTML = Object.entries(bans).map(([id, data]) => `
+        <div style="padding:8px; border-bottom:1px solid var(--border);">
+            <div><strong>${data.username || id}</strong></div>
+            <div style="font-size:10px; opacity:0.7;">${data.reason}</div>
+        </div>
+    `).join('');
+}
+
+function showBanNowModal() {
+    document.getElementById('banNowModal').classList.remove('hidden');
+}
+
+function hideBanNowModal() {
+    document.getElementById('banNowModal').classList.add('hidden');
+}
+
+async function executeFocusBan() {
+    const userId = document.getElementById('focusBanId').value.trim();
+    const username = document.getElementById('focusBanUser').value.trim();
+    const reason = document.getElementById('focusBanReason').value.trim();
+    
+    if (!userId) return;
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        if (!data.bans) data.bans = {};
+        
+        data.bans[userId] = {
+            username: username || 'Unknown',
+            reason: reason || 'Violation of terms',
+            banned_by: currentUser.username,
+            time: Date.now()
+        };
+        
+        await docRef.update({ bans: data.bans });
+        
+        hideBanNowModal();
+        renderAdminBans();
+        addNotification('⛔ User Banned', `${username || userId} has been banned`, 'warning');
+    } catch (error) {
+        console.error('Error banning user:', error);
+    }
+}
+
+// ==================== FEEDBACK SYSTEM ====================
+function toggleFeedbackUI(show) {
+    document.getElementById('mainSystem').classList.toggle('hidden', show);
+    document.getElementById('userFeedbackUI').classList.toggle('hidden', !show);
+}
+
+async function submitFeedback() {
+    const username = document.getElementById('fb-user').value.trim();
+    const userId = document.getElementById('fb-id').value.trim();
+    const message = document.getElementById('fb-msg').value.trim();
+    const spinner = document.getElementById('fbSpinner');
+    
+    if (!username || !userId || !message) return;
+    
+    spinner.style.display = 'inline-block';
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        if (!data.feedbacks) data.feedbacks = [];
+        
+        data.feedbacks.push({ username, userId, message, timestamp: Date.now() });
+        await docRef.update({ feedbacks: data.feedbacks });
+        
+        document.getElementById('fb-user').value = '';
+        document.getElementById('fb-id').value = '';
+        document.getElementById('fb-msg').value = '';
+        
+        toggleFeedbackUI(false);
+        addNotification('✅ Feedback Submitted', 'Thank you for your feedback!', 'success');
+    } catch (error) {
+        console.error('Error submitting feedback:', error);
+    } finally {
+        spinner.style.display = 'none';
+    }
+}
+
+// ==================== FIREBASE LISTENER ====================
+function setupRealtimeListeners() {
+    db.collection('system').doc('config').onSnapshot((doc) => {
+        if (doc.exists) {
+            dataCache = doc.data();
+            updateConnectionStatus(true);
+            updateLiveKeyCounter();
+            renderMessages();
+            if (isAdminAuthenticated) {
+                renderAdminKeys();
+                renderAdminBans();
+            }
+        }
+    }, (error) => {
+        console.error('Firestore error:', error);
+        updateConnectionStatus(false);
+    });
+}
+
+function updateConnectionStatus(connected) {
+    const status = document.getElementById('connectionStatus');
+    status.className = `connection-status ${connected ? 'connected' : 'disconnected'}`;
+    status.innerHTML = `<div class="status-dot"></div><span>${connected ? 'Connected' : 'Disconnected'}</span>`;
+}
+
+function updateLiveKeyCounter() {
+    const count = Object.keys(dataCache?.keys || {}).length;
+    document.getElementById('liveKeyCount').textContent = count;
+}
+
+// ==================== UTILITIES ====================
+function showLoading(text) {
+    document.getElementById('loadingText').textContent = text;
+    document.getElementById('loadingOverlay').classList.remove('hidden');
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.add('hidden');
+}
+
+function updateStatsDisplay() {
+    document.getElementById('currentTime').textContent = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+}
+
+function checkSession() {
+    const saved = localStorage.getItem('RSQ_CURRENT_USER');
+    if (saved) {
+        try {
+            currentUser = JSON.parse(saved);
+            document.getElementById('authPanel').classList.add('hidden');
+            document.getElementById('mainSystem').classList.remove('hidden');
+            document.getElementById('welcomeUser').textContent = 'Logged in as: ' + currentUser.username;
+            document.getElementById('adminBtn').style.display = currentUser.username === ADMIN_USERNAME ? 'block' : 'none';
+            
+            updateRoleDisplay();
+            startRoleTimer();
+        } catch (e) {
+            localStorage.removeItem('RSQ_CURRENT_USER');
+        }
+    }
+}
+
+// Image preview handler
+document.getElementById('gameImageInput')?.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            document.getElementById('gameImagePreview').src = e.target.result;
+            document.getElementById('gameImagePreview').style.display = 'block';
+            document.getElementById('imagePlaceholder').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Chat enter key
+document.getElementById('chat-input')?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendChat();
+    }
+});
+
+// Feedback char count
+document.getElementById('fb-msg')?.addEventListener('input', function() {
+    document.getElementById('fbCharCount').textContent = this.value.length + '/500';
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', async () => {
+    // Particle background
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    
+    for (let i = 0; i < 50; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            size: Math.random() * 2 + 1
+        });
+    }
+    
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'rgba(79, 124, 255, 0.5)';
+        
+        particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            
+            if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+            if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+        });
+        
+        // Draw connections
+        ctx.strokeStyle = 'rgba(79, 124, 255, 0.1)';
+        ctx.lineWidth = 0.5;
+        particles.forEach((p1, i) => {
+            particles.slice(i + 1).forEach(p2 => {
+                const dx = p1.x - p2.x;
+                const dy = p1.y - p2.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 100) {
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    ctx.stroke();
+                }
+            });
+        });
+        
+        requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+    
+    updateStatsDisplay();
+    setInterval(updateStatsDisplay, 60000);
+    
+    await initializeDatabase();
+    setupRealtimeListeners();
+    checkSession();
+    
+    addNotification('🚀 System Ready', 'RSQ Elite Advanced System initialized', 'success');
+});
+
+async function initializeDatabase() {
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        
+        if (!doc.exists) {
+            await docRef.set({
+                users: {
+                    [ADMIN_USERNAME]: {
+                        password: ADMIN_PASSWORD,
+                        joinTime: Date.now(),
+                        role: ROLES.ADMIN
+                    }
+                },
+                keys: {},
+                games: [],
+                bans: {},
+                feedbacks: [],
+                chats: [],
+                settings: { version: '3.0', created: Date.now() }
+            });
+            dataCache = (await docRef.get()).data();
+        } else {
+            dataCache = doc.data();
+        }
+        return true;
+    } catch (error) {
+        console.error('DB init error:', error);
+        return false;
+    }
+}
+</script>
 </body>
 </html>
