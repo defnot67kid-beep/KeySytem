@@ -2,83 +2,257 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>RSQ Elite | System Overseer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSQ Elite | Advanced System Overseer</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Monaco Editor CSS -->
-    <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/editor/editor.main.min.css">
-    <!-- Firebase SDKs -->
+    <!-- Monaco Editor -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/editor/editor.main.min.css">
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-    <!-- Monaco Editor Loader -->
-    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
 </head>
 <body>
+    <!-- Particle Background -->
+    <canvas id="particles"></canvas>
+    <div id="bg-wrap"></div>
 
-<!-- Stats Bar -->
-<div class="stats-bar">
-    <div class="stats-item"><span class="stats-icon">👁️</span><span class="stats-label">Views:</span><span class="stats-value" id="viewCount">0</span></div>
-    <div class="stats-item"><span class="stats-icon">⚡</span><span class="stats-label">Live Active:</span><span class="stats-value" id="activeCount">0</span></div>
-    <div class="stats-item"><span class="stats-icon">🔑</span><span class="stats-label">Live Keys:</span><span class="stats-value" id="liveKeyCount">0</span></div>
-    <div class="stats-item"><span class="stats-icon">🕒</span><span class="stats-label" id="currentTime">00:00</span></div>
-</div>
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stats-item">
+            <span class="stats-icon">👁️</span>
+            <span class="stats-label">Views:</span>
+            <span class="stats-value" id="viewCount">0</span>
+        </div>
+        <div class="stats-item">
+            <span class="stats-icon">⚡</span>
+            <span class="stats-label">Live Active:</span>
+            <span class="stats-value" id="activeCount">0</span>
+        </div>
+        <div class="stats-item">
+            <span class="stats-icon">🔑</span>
+            <span class="stats-label">Live Keys:</span>
+            <span class="stats-value" id="liveKeyCount">0</span>
+        </div>
+        <div class="stats-item">
+            <span class="stats-icon">🎮</span>
+            <span class="stats-label">Games:</span>
+            <span class="stats-value" id="gameCount">0</span>
+        </div>
+        <div class="stats-item">
+            <span class="stats-icon">🕒</span>
+            <span class="stats-label" id="currentTime">00:00</span>
+        </div>
+    </div>
 
-<canvas id="particles"></canvas>
-<div id="bg-wrap"></div>
+    <!-- Connection Status -->
+    <div class="connection-status connected" id="connectionStatus">
+        <div class="status-dot"></div>
+        <span>Connected</span>
+    </div>
 
-<!-- Connection Status -->
-<div class="connection-status connected" id="connectionStatus"><div class="status-dot"></div><span>Connected</span></div>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-spinner-large"></div>
+        <div class="loading-text" id="loadingText">Loading...</div>
+    </div>
 
-<!-- Loading Overlay -->
-<div id="loadingOverlay" class="loading-overlay hidden"><div class="loading-spinner-large"></div><div class="loading-text" id="loadingText">Loading...</div></div>
+    <!-- Notification System -->
+    <div id="notification-toggle" onclick="window.toggleNotificationCenter()">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+        </svg>
+        <div id="notificationBadge" class="hidden">0</div>
+    </div>
 
-<!-- Notification Toggle & Center -->
-<div id="notification-toggle" onclick="toggleNotificationCenter()"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg><div id="notificationBadge" class="hidden">0</div></div>
-<div id="notificationCenter" class="hidden"><div class="notification-header"><h3>🔔 Notifications</h3><div class="notification-actions"><button class="mini success" onclick="markAllNotificationsRead()">✓ Mark all read</button><button class="mini" onclick="toggleNotificationCenter()">✕</button></div></div><div id="notificationsList"><div class="empty-state"><div class="empty-state-icon">🔔</div><div>No notifications</div></div></div></div>
+    <div id="notificationCenter" class="hidden">
+        <div class="notification-header">
+            <h3>🔔 Notifications</h3>
+            <div class="notification-actions">
+                <button class="mini success" onclick="window.markAllNotificationsRead()">✓ Mark all read</button>
+                <button class="mini" onclick="window.toggleNotificationCenter()">✕</button>
+            </div>
+        </div>
+        <div id="notificationsList"></div>
+    </div>
 
-<!-- Auth Panel -->
-<div id="authPanel" class="panel animate-fade"><div style="text-align:center; margin-bottom:30px;"><h1 style="margin:0; font-size:32px;" class="gradient-text">RSQ GATE</h1><p style="font-size:12px; opacity:0.7; margin-top:8px;">Secure Access System</p></div><div id="loginView"><input id="l-user" placeholder="Username"><input id="l-pass" type="password" placeholder="Password"><button onclick="handleAuth('login')"><span>Sign In</span><span class="spinner" style="display:none;" id="loginSpinner"></span></button><p style="text-align:center; font-size:12px; margin-top:20px;">New here? <a href="#" onclick="toggleAuth(true)" style="color:var(--secondary);">Create Account</a></p></div><div id="signupView" class="hidden"><input id="s-user" placeholder="Choose Username"><input id="s-pass" type="password" placeholder="Choose Password"><button onclick="handleAuth('signup')"><span>Sign Up</span><span class="spinner" style="display:none;" id="signupSpinner"></span></button><p style="text-align:center;">Have account? <a href="#" onclick="toggleAuth(false)" style="color:var(--secondary);">Sign In</a></p></div><div id="authStatus" style="text-align:center; color:var(--danger); font-size:12px; margin-top:15px;"></div></div>
+    <!-- Auth Panel -->
+    <div id="authPanel" class="panel animate-fade">
+        <div style="text-align:center; margin-bottom:30px;">
+            <h1 style="margin:0; font-size:32px;" class="gradient-text">RSQ GATE</h1>
+            <p style="font-size:12px; opacity:0.7; margin-top:8px;">Advanced Secure Access System</p>
+        </div>
+        
+        <div id="loginView">
+            <input id="l-user" placeholder="Username" autocomplete="username">
+            <input id="l-pass" type="password" placeholder="Password" autocomplete="current-password">
+            <button onclick="window.handleAuth('login')">
+                <span>Sign In</span>
+                <span class="spinner" style="display:none; margin-left:10px;" id="loginSpinner"></span>
+            </button>
+            <p style="text-align:center; font-size:12px; margin-top:20px; opacity:0.7;">
+                New here? <a href="#" onclick="window.toggleAuth(true)" style="color:var(--secondary); text-decoration:none; font-weight:600;">Create Account</a>
+            </p>
+        </div>
+        
+        <div id="signupView" class="hidden">
+            <input id="s-user" placeholder="Choose Username" autocomplete="username">
+            <input id="s-pass" type="password" placeholder="Choose Password" autocomplete="new-password">
+            <button onclick="window.handleAuth('signup')">
+                <span>Sign Up</span>
+                <span class="spinner" style="display:none; margin-left:10px;" id="signupSpinner"></span>
+            </button>
+            <p style="text-align:center; font-size:12px; margin-top:20px; opacity:0.7;">
+                Have account? <a href="#" onclick="window.toggleAuth(false)" style="color:var(--secondary); text-decoration:none; font-weight:600;">Sign In</a>
+            </p>
+        </div>
+        
+        <div id="authStatus" style="text-align:center; color:var(--danger); font-size:12px; margin-top:15px; min-height:18px;"></div>
+    </div>
 
-<!-- User Feedback UI -->
-<div id="userFeedbackUI" class="panel animate-fade hidden"><div style="display:flex; justify-content:space-between;"><h2 class="gradient-text">📝 FEEDBACK</h2><button class="mini danger" onclick="toggleFeedbackUI(false)">✕ Exit</button></div><input id="fb-user" placeholder="Roblox Username"><input id="fb-id" placeholder="Roblox UserID"><textarea id="fb-msg" placeholder="Write your feedback here..." style="height:120px;"></textarea><button onclick="submitFeedback()"><span>Submit Feedback</span><span class="spinner" style="display:none;" id="fbSpinner"></span></button></div>
+    <!-- User Role & Verification Display -->
+    <div id="roleDisplay" class="role-display hidden">
+        <div class="role-badge" id="userRoleBadge">Unverified</div>
+        <div class="verification-progress" id="verificationProgress"></div>
+    </div>
 
-<!-- Main System -->
-<div id="mainSystem" class="hidden"><div id="mainContentWrapper"><div id="userPanel" class="panel animate-fade"><div style="text-align:center;"><h1 class="gradient-text">RSQ ELITE</h1><p id="welcomeUser" style="font-size:11px; opacity:0.5;"></p></div><input id="userid" placeholder="Roblox UserID"><button id="genBtn" onclick="generateKey()"><span>Generate Access Key</span><span class="spinner" style="display:none;" id="keySpinner"></span></button><div id="statusMsg" style="text-align:center; margin-top:15px; font-size:12px;"></div><div id="keyOut" style="text-align:center; margin-top:15px; color:var(--secondary); font-family:monospace; font-weight:bold; padding:12px; background:rgba(0,0,0,0.3); border-radius:10px; word-break:break-all;"></div><div id="loadstringOut" style="text-align:center; margin-top:10px; color:var(--success); font-family:monospace; font-size:12px; padding:8px; background:rgba(40,205,65,0.1); border-radius:8px; cursor:pointer;" onclick="copyLoadstring()"></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:25px;"><button id="adminBtn" class="danger" onclick="toggleAdmin()" style="display:none;">👑 Admin</button><div style="display:flex; gap:10px;"><button onclick="toggleFeedbackUI(true)" style="background:linear-gradient(135deg,#8a2be2,#4f7cff);">💬 Feedback</button><button onclick="logout()" style="background:rgba(255,255,255,0.05);">🚪 Logout</button></div></div><input id="adminInput" type="password" placeholder="Enter Admin Password"></div></div>
+    <!-- Main System -->
+    <div id="mainSystem" class="hidden">
+        <!-- Games Browser View -->
+        <div id="gamesBrowserView" class="games-browser-container">
+            <div class="games-browser-header">
+                <h2 class="gradient-text">🎮 Game Hub</h2>
+                <div class="header-actions">
+                    <button class="success" onclick="window.toggleFeedbackUI(true)">💬 Feedback</button>
+                    <button class="warning" onclick="window.logout()">🚪 Logout</button>
+                </div>
+            </div>
+            
+            <div class="games-grid" id="gamesGrid">
+                <!-- Games will be loaded here -->
+            </div>
+        </div>
 
-<!-- Chat Toggle & Window -->
-<div id="chat-toggle" onclick="toggleChat(true)"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><div id="unread-badge" class="hidden">0</div></div>
-<div id="chat-window" class="hidden"><div class="back-btn-container"><button onclick="toggleChat(false)" class="mini danger" style="background:rgba(255,59,48,0.2);">← BACK</button></div><div class="chat-header"><div class="chat-header-title">NETWORK CHAT</div><div class="chat-header-stats"><span>👤 <span id="chatOnlineCount">0</span></span><span>💬 <span id="chatMessageCount">0</span></span></div></div><div id="pinned-area" class="hidden"><span class="pin-icon">📌</span><span class="pin-text" id="pinnedText"></span></div><div id="chat-msgs"></div><div class="chat-input-area"><textarea id="chat-input" placeholder="Type a message..." rows="1"></textarea><button id="send-chat-btn" onclick="sendChat()">SEND</button></div></div></div>
+        <!-- Game Detail View -->
+        <div id="gameDetailView" class="game-detail-container hidden">
+            <div class="back-nav" onclick="window.showGamesBrowser()">
+                <span class="icon">←</span>
+                <span>Back to Games</span>
+            </div>
+            
+            <div id="gameDetailContent">
+                <!-- Dynamic content -->
+            </div>
+        </div>
 
-<!-- ADMIN PANEL -->
-<div id="adminPanel" class="adminFull hidden"><div id="adminDefaultView"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; padding:20px; background:rgba(255,255,255,0.03); border-radius:12px;"><div><h2 class="gradient-text">👑 ADMIN CONTROL PANEL</h2><p style="font-size:11px;">Welcome back, plstealme2 | Full System Access</p></div><div style="display:flex; gap:10px;"><button class="success" onclick="showGameCreateView()">🎮 Create Game</button><button class="danger" onclick="showBanNowModal()">⚡ BAN NOW</button><button class="warning" onclick="openAdminFeedbacks()">📩 Feedbacks</button><button onclick="closeAdmin()" style="background:#444;">🚪 Exit</button></div></div>
+        <!-- Script Editor Modal -->
+        <div id="scriptEditorModal" class="modal-overlay hidden">
+            <div class="modal-content script-editor-modal">
+                <div class="modal-header">
+                    <h3>📝 Script Editor</h3>
+                    <button onclick="window.closeScriptEditor()" class="close-btn">✕</button>
+                </div>
+                
+                <div class="script-type-selector">
+                    <button class="type-btn active" onclick="window.setScriptType('link')">🔗 Link</button>
+                    <button class="type-btn" onclick="window.setScriptType('editor')">📝 Lua Editor</button>
+                </div>
+                
+                <div id="scriptLinkInput">
+                    <input type="text" id="scriptName" placeholder="Script Name">
+                    <input type="url" id="scriptUrl" placeholder="Script URL (https://...)">
+                    <div class="obfuscation-options">
+                        <label>
+                            <input type="checkbox" id="enableObfuscation"> Enable Auto-Obfuscation
+                        </label>
+                        <select id="obfuscationLevel">
+                            <option value="low">Low (Fast)</option>
+                            <option value="medium" selected>Medium (Balanced)</option>
+                            <option value="high">High (Maximum)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="scriptEditorContainer" class="hidden">
+                    <div id="monacoEditor" style="height: 400px; border: 1px solid var(--border);"></div>
+                    <div class="editor-toolbar">
+                        <button onclick="window.formatCode()">🎨 Format</button>
+                        <button onclick="window.obfuscateCode()">🔒 Obfuscate</button>
+                        <button onclick="window.testScript()">🧪 Test</button>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="success" onclick="window.saveScript()">💾 Save Script</button>
+                    <button onclick="window.closeScriptEditor()">Cancel</button>
+                </div>
+            </div>
+        </div>
 
-<!-- Games Dashboard -->
-<div class="game-management-section"><div class="dashboard-header"><h3>🎮 Game Management</h3><div class="dashboard-stats"><span>📁 <span id="totalGames">0 games</span></span><span>📜 <span id="totalScripts">0 scripts</span></span></div></div><div id="gamesDashboard" class="games-dashboard"><div style="text-align:center; padding:40px;">Loading games...</div></div><div id="noGamesMessage" class="hidden" style="text-align:center; padding:40px;"><div style="font-size:48px;">🎮</div><p>No games created yet.</p><button class="success" onclick="showGameCreateView()">Create First Game</button></div></div>
+        <!-- Chat System -->
+        <div id="chat-toggle" onclick="window.toggleChat(true)">
+            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+            <div id="unread-badge" class="hidden">0</div>
+        </div>
 
-<!-- Broadcast & Controls -->
-<div class="game-management-section"><h3>🔨 Broadcast & Chat Controls</h3><div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;"><div><input id="globalMsgInput" placeholder="Broadcast Text"></div><div style="display:flex; gap:10px;"><button class="warning" onclick="sendGlobalMsg(true)">📌 PIN LIVE</button><button class="warning" onclick="sendGlobalMsg(false)">📢 ANNOUNCE</button></div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px;"><button class="danger" onclick="clearGlobals()">🧹 PURGE GLOBALS</button><button class="danger" onclick="clearAllChat()">💥 WIPE CHAT</button></div></div>
+        <div id="chat-window" class="hidden">
+            <div class="chat-header">
+                <div class="chat-header-title">NETWORK CHAT</div>
+                <div class="chat-header-stats">
+                    <span><span class="stats-icon">👤</span> <span id="chatOnlineCount">0</span></span>
+                    <span><span class="stats-icon">💬</span> <span id="chatMessageCount">0</span></span>
+                </div>
+            </div>
+            
+            <div id="pinned-area" class="hidden">
+                <span class="pin-icon">📌</span>
+                <span class="pin-text" id="pinnedText"></span>
+            </div>
+            
+            <div id="chat-msgs"></div>
+            
+            <div id="typingIndicator" class="typing-indicator hidden">
+                <span id="typingUsers"></span>
+                <span class="typing-dots">
+                    <span>.</span><span>.</span><span>.</span>
+                </span>
+            </div>
+            
+            <div class="chat-input-area">
+                <textarea id="chat-input" placeholder="Type a message..." rows="1"></textarea>
+                <button id="send-chat-btn" onclick="window.sendChat()">SEND</button>
+            </div>
+            <button onclick="window.toggleChat(false)" class="mini danger close-chat">✕ Close</button>
+        </div>
+    </div>
 
-<!-- Global Access Control -->
-<div class="game-management-section" style="border-color:var(--danger);"><h3 style="color:var(--danger);">⚠️ GLOBAL ACCESS CONTROL</h3><div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;"><button class="danger" onclick="banAllKeyHolders()">⛔ BAN ALL KEY HOLDERS</button><button class="success" onclick="unbanEveryone()">✅ UNBAN ALL USERS</button></div></div>
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="adminFull hidden">
+        <!-- Admin content will be dynamically loaded -->
+    </div>
 
-<!-- System Reset -->
-<div class="game-management-section" style="border-color:var(--danger);"><h3 style="color:var(--danger);">☢️ SYSTEM RESET</h3><div style="display:grid; grid-template-columns:2fr 1fr; gap:15px;"><select id="resetTarget"><option value="chat">🗑️ Clear Chat History</option><option value="bans">🚫 Clear All Blacklists</option><option value="users">👥 Clear All User Accounts</option><option value="all">💣 FACTORY RESET</option></select><button class="danger" onclick="masterReset()">🚀 EXECUTE</button></div></div>
+    <!-- Feedback UI -->
+    <div id="userFeedbackUI" class="panel animate-fade hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="margin:0;" class="gradient-text">📝 FEEDBACK</h2>
+            <button class="mini danger" onclick="window.toggleFeedbackUI(false)">✕ Exit</button>
+        </div>
+        
+        <input id="fb-user" placeholder="Roblox Username">
+        <input id="fb-id" placeholder="Roblox UserID">
+        <textarea id="fb-msg" placeholder="Write your feedback here..."></textarea>
+        <div id="fbCharCount">0/500</div>
+        
+        <button onclick="window.submitFeedback()">
+            <span>Submit Feedback</span>
+            <span class="spinner" style="display:none" id="fbSpinner"></span>
+        </button>
+    </div>
 
-<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;"><div class="game-management-section"><h3>🚫 Active Blacklist</h3><div id="banLogs" class="log-box"></div></div><div class="game-management-section"><h3>🔑 System Keys</h3><div id="keyLogs" class="log-box"></div></div></div></div>
-
-<!-- Game Creation View -->
-<div id="gameCreateView" class="hidden"><div class="back-nav" onclick="showGamesDashboard()"><span>← Back to Dashboard</span></div><div class="game-create-container"><h2>🎮 Create New Game</h2><div class="image-preview-container" onclick="document.getElementById('gameImageInput').click()"><img id="gameImagePreview" class="image-preview"><div class="image-placeholder" id="imagePlaceholder">📁 Click to upload image<br><small>Max 2MB</small></div></div><input type="file" id="gameImageInput" accept="image/*" class="hidden"><input id="gameNameInput" placeholder="Game Name"><input id="gameIdInput" placeholder="Roblox Place ID"><button class="success" onclick="createGame()">🎮 Create Game</button><div id="gameCreateStatus"></div></div></div>
-
-<!-- Script Management View with Monaco Editor & Obfuscator -->
-<div id="scriptManagementView" class="hidden"><div class="back-nav" onclick="showGamesDashboard()"><span>← Back to Dashboard</span></div><div id="currentGameInfo" class="current-game-header"><img id="currentGameImage" class="current-game-image"><div><h3 id="currentGameName"></h3><p id="currentGameId"></p></div></div><div class="script-management-view"><div class="script-management-section"><h3>📜 Current Scripts</h3><div id="scriptsList" class="scripts-list"></div><div class="add-script-form"><h4>➕ Add New Script (Link or Code Editor)</h4><div style="display:flex; gap:10px; margin-bottom:15px;"><button id="modeLinkBtn" class="mini" onclick="setScriptInputMode('link')">🔗 Link Mode</button><button id="modeEditorBtn" class="mini" onclick="setScriptInputMode('editor')">✏️ Monaco Editor</button></div><div id="linkInputDiv"><input id="newScriptName" placeholder="Script Name"><textarea id="newScriptUrl" placeholder="Paste raw script URL (http:// or https://)" rows="2"></textarea></div><div id="editorInputDiv" class="hidden"><input id="editorScriptName" placeholder="Script Name"><div id="monacoEditorContainer" style="height: 300px; border: 1px solid var(--border); margin-top: 10px; border-radius: 8px; overflow: hidden;"></div><button id="obfuscateBtn" class="warning" style="margin-top: 10px;" onclick="obfuscateScript()">🔒 Auto Obfuscate Lua</button></div><button class="success" onclick="addScriptViaMethod()" style="margin-top:15px;">➕ Add Script</button><div id="addScriptStatus"></div></div></div><div style="display:flex; gap:15px; margin-top:30px;"><button onclick="showGamesDashboard()" style="background:#444;">← Back to Games</button><button class="danger" onclick="deleteCurrentGame()">🗑️ Delete Game</button></div></div></div>
-
-<!-- Ban Modal -->
-<div id="banNowModal" class="modal-overlay hidden"><div class="ban-modal-content"><h2 style="color:var(--danger);">🔨 RESTRICT USER</h2><input id="focusBanId" placeholder="Roblox UserID"><input id="focusBanUser" placeholder="Username"><textarea id="focusBanReason" placeholder="Reason..."></textarea><div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;"><button class="danger" onclick="executeFocusBan()">⚡ BAN USER</button><button onclick="hideBanNowModal()" style="background:#444;">CANCEL</button></div></div></div>
-
-<!-- Feedback Modal -->
-<div id="feedbackModal" class="modal-overlay hidden"><div class="modal-content"><h2 class="gradient-text">📩 USER FEEDBACKS</h2><input id="fbSearch" placeholder="Search..."><div id="fbLogs" class="log-box"></div><button onclick="hideFeedbackModal()">Close</button></div></div>
-
-<script src="script.js"></script>
+    <!-- Monaco Editor Loader -->
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
