@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RSQ Elite | Advanced System Overseer</title>
+<title>RSQ Elite | Protected Script System</title>
 
 <!-- Monaco Editor -->
 <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/editor/editor.main.min.css">
@@ -34,9 +34,8 @@ body {
     justify-content: center;
 }
 
-/* Animations */
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1); } }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
@@ -56,7 +55,6 @@ body {
     pointer-events: none;
 }
 
-/* Stats Bar */
 .stats-bar {
     position: fixed;
     top: 0;
@@ -87,7 +85,6 @@ body {
     font-family: 'Monaco', 'Consolas', monospace;
 }
 
-/* Panel Styling */
 .panel {
     position: relative;
     z-index: 10;
@@ -110,7 +107,6 @@ body {
 
 .hidden { display: none !important; }
 
-/* Form Elements */
 input, select, textarea {
     width: 100%;
     padding: 12px 16px;
@@ -131,7 +127,6 @@ input:focus, select:focus, textarea:focus {
     box-shadow: 0 0 0 2px rgba(79, 124, 255, 0.1);
 }
 
-/* Buttons */
 button {
     width: 100%;
     padding: 12px 20px;
@@ -155,15 +150,8 @@ button.danger { background: linear-gradient(135deg, #ff3b30, #ff6b52); }
 button.warning { background: linear-gradient(135deg, #ffcc00, #ffaa00); color: #000; }
 button.success { background: linear-gradient(135deg, #28cd41, #2ee058); }
 button.purple { background: linear-gradient(135deg, #8a2be2, #a855f7); }
-button.mini { 
-    padding: 4px 10px; 
-    font-size: 11px; 
-    margin-top: 0; 
-    width: auto; 
-    border-radius: 8px; 
-}
+button.mini { padding: 4px 10px; font-size: 11px; margin-top: 0; width: auto; border-radius: 8px; }
 
-/* Modal Overlay */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -204,7 +192,6 @@ button.mini {
     -webkit-text-fill-color: transparent;
 }
 
-/* Script Type Toggle */
 .script-type-toggle {
     display: flex;
     gap: 10px;
@@ -227,7 +214,6 @@ button.mini {
     border-color: transparent;
 }
 
-/* Game ID Verification Options */
 .verification-options {
     background: rgba(79, 124, 255, 0.05);
     border-radius: 12px;
@@ -276,7 +262,6 @@ button.mini {
     border: 1px solid var(--primary);
 }
 
-/* Monaco Editor Container */
 .monaco-container {
     height: 400px;
     border: 1px solid var(--border);
@@ -285,61 +270,26 @@ button.mini {
     margin: 15px 0;
 }
 
-/* Obfuscation Options */
-.obfuscation-options {
-    background: rgba(138, 43, 226, 0.05);
-    border-radius: 12px;
-    padding: 15px;
+.protected-notice {
+    background: rgba(138, 43, 226, 0.1);
+    border: 1px solid var(--purple);
+    border-radius: 8px;
+    padding: 12px;
     margin: 15px 0;
-    border: 1px solid rgba(138, 43, 226, 0.2);
-}
-
-.obfuscation-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--purple);
-    margin-bottom: 12px;
     display: flex;
     align-items: center;
-    gap: 8px;
-}
-
-.obfuscation-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
 }
 
-.obfuscation-option {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.protected-notice .icon {
+    font-size: 20px;
+}
+
+.protected-notice .text {
     font-size: 12px;
+    opacity: 0.9;
 }
 
-.obfuscation-option input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    margin: 0;
-    accent-color: var(--purple);
-}
-
-/* Script Preview */
-.script-preview {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px;
-    margin: 10px 0;
-    font-family: 'Monaco', 'Consolas', monospace;
-    font-size: 11px;
-    max-height: 200px;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    word-break: break-all;
-}
-
-/* Games Browser */
 .games-browser {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -407,7 +357,6 @@ button.mini {
     text-transform: uppercase;
 }
 
-/* Role Badge */
 .role-badge {
     display: inline-flex;
     align-items: center;
@@ -423,7 +372,6 @@ button.mini {
 .role-badge.verified { background: rgba(40, 205, 65, 0.2); color: var(--success); }
 .role-badge.trusted { background: rgba(79, 124, 255, 0.2); color: var(--primary); }
 
-/* Progress Bar */
 .progress-bar {
     height: 4px;
     background: rgba(255, 255, 255, 0.1);
@@ -439,7 +387,6 @@ button.mini {
     transition: width 1s linear;
 }
 
-/* Toast Notifications */
 .toast {
     position: fixed;
     top: 50px;
@@ -460,7 +407,6 @@ button.mini {
 .toast.warning { border-left-color: var(--warning); }
 .toast.error { border-left-color: var(--danger); }
 
-/* Loading Overlay */
 .loading-overlay {
     position: fixed;
     inset: 0;
@@ -483,19 +429,16 @@ button.mini {
     animation: spin 1s linear infinite;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
 ::-webkit-scrollbar-thumb { background: rgba(79, 124, 255, 0.2); border-radius: 3px; }
 
-/* Gradient Text */
 .gradient-text {
     background: linear-gradient(90deg, var(--primary), var(--secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-/* Admin Panel */
 .adminFull {
     position: fixed;
     inset: 0;
@@ -508,7 +451,6 @@ button.mini {
 
 .adminFull.hidden { display: none !important; }
 
-/* Home/Browser Buttons */
 .home-btn, .browser-btn {
     position: fixed;
     bottom: 25px;
@@ -539,7 +481,6 @@ button.mini {
     transform: scale(1.1);
 }
 
-/* Connection Status */
 .connection-status {
     position: fixed;
     bottom: 10px;
@@ -566,7 +507,6 @@ button.mini {
     box-shadow: 0 0 8px var(--success);
 }
 
-/* Game Management */
 .game-management-section {
     background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
     border-radius: 15px;
@@ -596,7 +536,6 @@ button.mini {
     border-color: var(--primary);
 }
 
-/* Back Navigation */
 .back-nav {
     display: flex;
     align-items: center;
@@ -612,7 +551,6 @@ button.mini {
     transform: translateX(-3px);
 }
 
-/* Script Item */
 .script-item {
     background: rgba(255,255,255,0.03);
     border-radius: 10px;
@@ -666,27 +604,54 @@ button.mini {
 .verification-tag.manual { background: rgba(255, 204, 0, 0.2); color: var(--warning); }
 .verification-tag.auto { background: rgba(40, 205, 65, 0.2); color: var(--success); }
 .verification-tag.universal { background: rgba(138, 43, 226, 0.2); color: var(--purple); }
+
+.protected-badge {
+    background: rgba(255, 59, 48, 0.2);
+    color: var(--danger);
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+}
+
+.view-script-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    font-size: 10px;
+    margin-left: 8px;
+}
+
+.script-content-viewer {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 10px;
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 11px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 300px;
+    overflow-y: auto;
+}
 </style>
 </head>
 <body>
 
-<!-- Particle Background -->
 <canvas id="particles"></canvas>
 <div id="bg-wrap"></div>
 
-<!-- Connection Status -->
 <div class="connection-status connected" id="connectionStatus">
     <div class="status-dot"></div>
     <span>Connected</span>
 </div>
 
-<!-- Loading Overlay -->
 <div id="loadingOverlay" class="loading-overlay hidden">
     <div class="loading-spinner"></div>
     <div class="loading-text" id="loadingText">Loading...</div>
 </div>
 
-<!-- Stats Bar -->
 <div class="stats-bar">
     <div class="stats-item"><span>👁️ Views:</span><span class="stats-value" id="viewCount">0</span></div>
     <div class="stats-item"><span>⚡ Active:</span><span class="stats-value" id="activeCount">0</span></div>
@@ -765,7 +730,7 @@ button.mini {
         <div id="loadstringOut" style="text-align:center; margin-top:10px; color:var(--success); font-family:monospace; font-size:12px; padding:8px; background:rgba(40,205,65,0.1); border-radius:8px; cursor:pointer;" onclick="copyLoadstring()"></div>
 
         <div id="userScriptsSection" class="hidden" style="margin-top:25px; padding-top:20px; border-top:1px solid var(--border);">
-            <h4 style="margin-bottom:15px; color:var(--secondary);">📜 Your Submitted Scripts</h4>
+            <h4 style="margin-bottom:15px; color:var(--secondary);">📜 Your Scripts</h4>
             <div id="userScriptsList"></div>
         </div>
 
@@ -784,7 +749,7 @@ button.mini {
     <div id="gamesBrowserPanel" class="panel panel-wide animate-fade hidden">
         <div class="back-nav" onclick="showHomePanel()"><span>← Back to Home</span></div>
         <h2 style="margin-top:0;" class="gradient-text">🎮 GAMES BROWSER</h2>
-        <p style="font-size:12px; opacity:0.7; margin-bottom:20px;">Browse games and universal scripts</p>
+        <p style="font-size:12px; opacity:0.7; margin-bottom:20px;">Browse games and scripts</p>
         <div id="gamesBrowserList" class="games-browser"></div>
     </div>
 
@@ -803,8 +768,8 @@ button.mini {
         <div id="gameScriptsList"></div>
         
         <div id="uploadScriptSection" class="hidden" style="margin-top:25px; padding-top:20px; border-top:1px solid var(--border);">
-            <button class="purple" onclick="showScriptUploadModal()">📤 Upload Your Script</button>
-            <p style="font-size:11px; opacity:0.7; text-align:center; margin-top:10px;">Scripts are auto-approved and will be publicly available</p>
+            <button class="purple" onclick="showScriptUploadModal()">📤 Upload Script</button>
+            <p style="font-size:11px; opacity:0.7; text-align:center; margin-top:10px;">Your script will be protected and hidden from other users</p>
         </div>
     </div>
 </div>
@@ -813,8 +778,13 @@ button.mini {
 <div id="scriptUploadModal" class="modal-overlay hidden">
     <div class="modal-content">
         <div class="modal-header">
-            <h2 class="modal-title">📤 Upload Script</h2>
+            <h2 class="modal-title">📤 Upload Protected Script</h2>
             <button class="mini danger" onclick="hideScriptUploadModal()" style="width:auto;">✕</button>
+        </div>
+        
+        <div class="protected-notice">
+            <span class="icon">🔒</span>
+            <span class="text">Your script will be stored securely. Only you and admins can view/edit it. Other users can only execute it.</span>
         </div>
         
         <div id="uploadGameInfo" style="margin-bottom:15px; padding:10px; background:rgba(79,124,255,0.1); border-radius:8px;">
@@ -827,7 +797,7 @@ button.mini {
         </div>
         
         <div id="urlInputSection">
-            <input type="text" id="scriptUrlInput" placeholder="Enter raw script URL">
+            <input type="text" id="scriptUrlInput" placeholder="Enter raw script URL (will be hidden)">
         </div>
         
         <div id="editorSection" class="hidden">
@@ -835,8 +805,8 @@ button.mini {
         </div>
         
         <input type="text" id="scriptNameInput" placeholder="Script Name">
+        <textarea id="scriptDescriptionInput" placeholder="Script Description (optional)" style="height:60px; resize:none;"></textarea>
         
-        <!-- Game ID Verification Options -->
         <div class="verification-options">
             <div class="verification-title">🔐 Game ID Verification</div>
             <div class="verification-grid">
@@ -855,44 +825,8 @@ button.mini {
             </div>
         </div>
         
-        <!-- Obfuscation Options -->
-        <div class="obfuscation-options">
-            <div class="obfuscation-title">
-                <span>🔒 Lua Obfuscation (Roblox Compatible)</span>
-            </div>
-            <div class="obfuscation-grid">
-                <label class="obfuscation-option">
-                    <input type="checkbox" id="obfMinify" checked> Minify Code
-                </label>
-                <label class="obfuscation-option">
-                    <input type="checkbox" id="obfStringEnc" checked> String Encryption
-                </label>
-                <label class="obfuscation-option">
-                    <input type="checkbox" id="obfVarRename" checked> Variable Renaming
-                </label>
-                <label class="obfuscation-option">
-                    <input type="checkbox" id="obfAntiDebug"> Anti-Debug
-                </label>
-                <label class="obfuscation-option">
-                    <input type="checkbox" id="obfControlFlow"> Control Flow Obfuscation
-                </label>
-                <label class="obfuscation-option">
-                    <input type="checkbox" id="obfWatermark" checked> Add Watermark
-                </label>
-            </div>
-        </div>
-        
-        <div id="obfuscatedPreview" class="hidden">
-            <div style="display:flex; justify-content:space-between; margin:10px 0;">
-                <span style="font-size:12px;">Obfuscated Preview:</span>
-                <button class="mini" onclick="copyObfuscatedScript()">📋 Copy</button>
-            </div>
-            <div id="scriptPreview" class="script-preview"></div>
-        </div>
-        
         <div style="display:flex; gap:10px; margin-top:20px;">
-            <button class="purple" onclick="previewObfuscation()" style="flex:1;">🔍 Preview</button>
-            <button class="success" onclick="submitScript()" style="flex:1;">📤 Submit & Auto-Approve</button>
+            <button class="success" onclick="submitScript()" style="flex:1;">📤 Upload Protected Script</button>
         </div>
         
         <div id="uploadStatus" style="text-align:center; margin-top:15px; font-size:12px; color:var(--danger);"></div>
@@ -905,7 +839,7 @@ button.mini {
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; padding:20px; background:rgba(255,255,255,0.03); border-radius:12px;">
             <div>
                 <h2 style="margin:0; font-size:24px;" class="gradient-text">👑 ADMIN CONTROL PANEL</h2>
-                <p style="font-size:11px; opacity:0.7;">Full System Access | Auto-Approve Enabled</p>
+                <p style="font-size:11px; opacity:0.7;">Full System Access | Protected Scripts Enabled</p>
             </div>
             <div style="display:flex; gap:10px;">
                 <button class="success" onclick="showGameCreateView()" style="width:auto; padding:10px 20px;">🎮 Create Game</button>
@@ -916,7 +850,8 @@ button.mini {
         </div>
 
         <div class="game-management-section">
-            <h3>📜 All Scripts (Auto-Approved)</h3>
+            <h3>📜 All Scripts (Protected)</h3>
+            <p style="font-size:11px; opacity:0.7; margin-bottom:15px;">Admins can view all script content. Regular users can only see names and execute.</p>
             <div id="allScriptsList"></div>
         </div>
 
@@ -1009,10 +944,10 @@ let currentUser = null;
 let isAdminAuthenticated = false;
 let monacoEditor = null;
 let currentScriptType = 'link';
-let currentObfuscatedScript = '';
 let selectedGameForUpload = null;
 let sessionStartTime = Date.now();
 let roleUpdateInterval = null;
+let expandedScripts = new Set();
 
 const ADMIN_USERNAME = 'plstealme2';
 const ADMIN_PASSWORD = 'Livetopimo';
@@ -1023,187 +958,6 @@ const ROLES = {
     TRUSTED: { name: 'Trusted', timeRequired: 10 * 60 * 1000, canUpload: true },
     ADMIN: { name: 'Admin', timeRequired: 0, canUpload: true }
 };
-
-// ==================== ROBLOX-COMPATIBLE LUA OBFUSCATOR ====================
-class LuaObfuscator {
-    constructor(code, options = {}) {
-        this.code = code;
-        this.options = {
-            minify: options.minify !== false,
-            encryptStrings: options.encryptStrings !== false,
-            renameVariables: options.renameVariables !== false,
-            antiDebug: options.antiDebug || false,
-            controlFlow: options.controlFlow || false,
-            watermark: options.watermark !== false
-        };
-        this.varMap = new Map();
-        this.varCounter = 0;
-        this.reservedWords = new Set([
-            'and', 'break', 'do', 'else', 'elseif', 'end', 'false', 'for', 'function',
-            'if', 'in', 'local', 'nil', 'not', 'or', 'repeat', 'return', 'then', 'true',
-            'until', 'while', 'print', 'require', 'pairs', 'ipairs', 'next', 'tonumber',
-            'tostring', 'type', 'assert', 'error', 'getmetatable', 'setmetatable',
-            'rawget', 'rawset', 'rawequal', 'select', 'unpack', 'pcall', 'xpcall',
-            'math', 'string', 'table', 'bit32', 'game', 'workspace', 'script', 'wait',
-            'spawn', 'delay', 'tick', 'time', 'Instance', 'Vector3', 'CFrame', 'Color3',
-            'BrickColor', 'Enum', 'task', 'coroutine', 'debug', 'os', 'io'
-        ]);
-    }
-
-    obfuscate() {
-        let result = this.code;
-        
-        if (this.options.watermark) {
-            result = this.addWatermark(result);
-        }
-        
-        if (this.options.encryptStrings) {
-            result = this.encryptStrings(result);
-        }
-        
-        if (this.options.renameVariables) {
-            result = this.renameVariables(result);
-        }
-        
-        if (this.options.controlFlow) {
-            result = this.obfuscateControlFlow(result);
-        }
-        
-        if (this.options.antiDebug) {
-            result = this.addAntiDebug(result);
-        }
-        
-        if (this.options.minify) {
-            result = this.minify(result);
-        }
-        
-        return result;
-    }
-
-    addWatermark(code) {
-        return `--[[ RSQ Elite Protected | ${currentUser?.username || 'User'} | ${new Date().toISOString()} ]]\n${code}`;
-    }
-
-    encryptStrings(code) {
-        // Roblox-compatible string encryption using string.byte and string.char
-        const stringRegex = /(["'])((?:(?=(\\?))\3.)*?)\1/g;
-        const strings = [];
-        
-        let encrypted = code.replace(stringRegex, (match, quote, content) => {
-            if (content.length === 0) return match;
-            
-            const key = Math.floor(Math.random() * 255) + 1;
-            const encryptedChars = [];
-            
-            for (let i = 0; i < content.length; i++) {
-                const charCode = content.charCodeAt(i);
-                encryptedChars.push(charCode + key);
-            }
-            
-            const encryptedStr = encryptedChars.join(',');
-            strings.push({ encrypted: encryptedStr, key, quote });
-            
-            return `_G["decrypt_${this.generateVarName()}"]({${encryptedStr}}, ${key})`;
-        });
-        
-        if (strings.length > 0) {
-            const decryptFunc = `
-local function _G["decrypt_${this.generateVarName()}"](t, k)
-    local r = {}
-    for i = 1, #t do
-        r[i] = string.char(t[i] - k)
-    end
-    return table.concat(r)
-end
-`;
-            encrypted = decryptFunc + encrypted;
-        }
-        
-        return encrypted;
-    }
-
-    renameVariables(code) {
-        // Find local variable declarations
-        const localRegex = /local\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=[,=\s])/g;
-        let match;
-        
-        while ((match = localRegex.exec(code)) !== null) {
-            const varName = match[1];
-            if (!this.reservedWords.has(varName) && !this.varMap.has(varName)) {
-                this.varMap.set(varName, this.generateVarName());
-            }
-        }
-        
-        // Find function parameters
-        const funcRegex = /function\s*\(([^)]*)\)/g;
-        while ((match = funcRegex.exec(code)) !== null) {
-            const params = match[1].split(',').map(p => p.trim());
-            params.forEach(param => {
-                if (param && !this.reservedWords.has(param) && !this.varMap.has(param)) {
-                    this.varMap.set(param, this.generateVarName());
-                }
-            });
-        }
-        
-        // Replace variables (word boundaries)
-        let result = code;
-        for (const [oldName, newName] of this.varMap) {
-            const regex = new RegExp(`(?<![a-zA-Z0-9_])${oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![a-zA-Z0-9_])`, 'g');
-            result = result.replace(regex, newName);
-        }
-        
-        return result;
-    }
-
-    generateVarName() {
-        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        let name = '_';
-        const len = 6 + Math.floor(Math.random() * 8);
-        for (let i = 0; i < len; i++) {
-            name += chars[Math.floor(Math.random() * chars.length)];
-        }
-        return name;
-    }
-
-    obfuscateControlFlow(code) {
-        // Add junk code that doesn't affect execution
-        const junk = `
-do
-    local _ = {${Array(5).fill(0).map(() => Math.floor(Math.random() * 100)).join(',')}}
-    for _ = 1, math.random(1, 3) do end
-end
-`;
-        return junk + code;
-    }
-
-    addAntiDebug(code) {
-        const antiDebug = `
--- Anti-Debug Protection
-if debug and debug.getinfo then
-    local info = debug.getinfo(1, "S")
-    if info and info.source and info.source:find("^@") then
-        local function _()
-            while true do end
-        end
-    end
-end
-`;
-        return antiDebug + code;
-    }
-
-    minify(code) {
-        // Remove comments
-        code = code.replace(/--\[\[[\s\S]*?\]\]/g, '');
-        code = code.replace(/--.*$/gm, '');
-        
-        // Remove extra whitespace
-        code = code.replace(/[ \t]+/g, ' ');
-        code = code.replace(/\n\s*\n/g, '\n');
-        code = code.replace(/[ \t]*([=+*\/%<>!&|^~:,;(){}[\]])[ \t]*/g, '$1');
-        
-        return code.trim();
-    }
-}
 
 // ==================== UTILITY FUNCTIONS ====================
 function showLoading(text = 'Loading...') {
@@ -1476,7 +1230,6 @@ async function loadGamesBrowser() {
     const games = dataCache.games;
     let html = '';
     
-    // Universal folder first
     const universalGame = games.find(g => g.universal === true);
     if (universalGame) {
         html += `
@@ -1490,7 +1243,6 @@ async function loadGamesBrowser() {
         `;
     }
     
-    // Regular games
     games.forEach((game, index) => {
         if (game.universal) return;
         const scriptCount = (game.scripts || []).filter(s => s.approved !== false).length;
@@ -1544,7 +1296,7 @@ function renderGameScriptsList(gameIndex) {
         return;
     }
     
-    container.innerHTML = scripts.map(script => {
+    container.innerHTML = scripts.map((script, idx) => {
         let verificationBadge = '';
         if (script.universal) {
             verificationBadge = '<span class="verification-tag universal">🌐 Universal</span>';
@@ -1554,26 +1306,89 @@ function renderGameScriptsList(gameIndex) {
             verificationBadge = '<span class="verification-tag manual">✏️ Manual ID</span>';
         }
         
+        const isOwner = script.submittedBy === currentUser?.username || script.addedBy === currentUser?.username;
+        const isAdmin = currentUser?.username === ADMIN_USERNAME;
+        const canView = isOwner || isAdmin;
+        const scriptId = `${gameIndex}-${idx}`;
+        const isExpanded = expandedScripts.has(scriptId);
+        
         return `
             <div class="script-item">
                 <div class="script-info">
-                    <div class="script-name">${script.name} ${verificationBadge}</div>
+                    <div class="script-name">
+                        ${script.name} 
+                        ${verificationBadge}
+                        <span class="protected-badge">🔒 Protected</span>
+                    </div>
                     <div class="script-meta">
-                        👤 ${script.addedBy || script.submittedBy || 'System'} 
-                        ${script.obfuscated ? '• 🔒 Obfuscated' : ''}
-                        ${!game.universal && script.gameId ? `• 🎮 Game ID: ${script.gameId}` : ''}
+                        👤 ${script.submittedBy || script.addedBy || 'System'} 
+                        ${script.description ? '• 📝 ' + script.description.substring(0, 50) + (script.description.length > 50 ? '...' : '') : ''}
                     </div>
                 </div>
-                <button class="mini success" onclick="copyScriptContent('${btoa(script.code || script.url || '')}')">📋 Copy</button>
+                <div style="display:flex; gap:5px;">
+                    <button class="mini success" onclick="copyScriptForExecution('${btoa(JSON.stringify({gameIndex, scriptIndex: idx}))}')">▶ Run</button>
+                    ${canView ? `<button class="mini view-script-btn" onclick="toggleScriptView('${scriptId}', ${gameIndex}, ${idx})">${isExpanded ? '👁️ Hide' : '👁️ View'}</button>` : ''}
+                </div>
             </div>
+            <div id="script-content-${scriptId}" class="script-content-viewer" style="display:${isExpanded ? 'block' : 'none'}; margin-top:-5px; margin-bottom:10px;"></div>
         `;
     }).join('');
 }
 
-function copyScriptContent(encoded) {
+function toggleScriptView(scriptId, gameIndex, scriptIndex) {
+    const contentDiv = document.getElementById(`script-content-${scriptId}`);
+    const script = dataCache.games[gameIndex].scripts[scriptIndex];
+    
+    if (expandedScripts.has(scriptId)) {
+        expandedScripts.delete(scriptId);
+        contentDiv.style.display = 'none';
+        contentDiv.innerHTML = '';
+    } else {
+        expandedScripts.add(scriptId);
+        const content = script.code || script.url || 'No content available';
+        contentDiv.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                <span style="color:var(--secondary);">Script Content:</span>
+                <button class="mini" onclick="copyRawScript('${btoa(content)}')">📋 Copy</button>
+            </div>
+            <pre style="margin:0; white-space:pre-wrap; word-break:break-all;">${escapeHtml(content)}</pre>
+        `;
+        contentDiv.style.display = 'block';
+    }
+    
+    renderGameScriptsList(gameIndex);
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function copyRawScript(encoded) {
     const content = atob(encoded);
     navigator.clipboard.writeText(content).then(() => {
         showToast('Script copied!', 'success');
+    });
+}
+
+function copyScriptForExecution(encoded) {
+    const { gameIndex, scriptIndex } = JSON.parse(atob(encoded));
+    const script = dataCache.games[gameIndex].scripts[scriptIndex];
+    
+    // Create execution payload (only pass what's needed for execution)
+    const executionPayload = {
+        type: script.code ? 'code' : 'url',
+        content: script.code || script.url,
+        name: script.name,
+        gameId: script.gameId || dataCache.games[gameIndex].id,
+        gameName: dataCache.games[gameIndex].name,
+        universal: script.universal || dataCache.games[gameIndex].universal,
+        requireExactGame: script.requireExactGame
+    };
+    
+    navigator.clipboard.writeText(JSON.stringify(executionPayload)).then(() => {
+        showToast('Execution payload copied! Paste in executor.', 'success');
     });
 }
 
@@ -1592,12 +1407,11 @@ function showScriptUploadModal() {
     
     document.getElementById('scriptUploadModal').classList.remove('hidden');
     
-    // Initialize Monaco
     if (!monacoEditor) {
         require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
         require(['vs/editor/editor.main'], function() {
             monacoEditor = monaco.editor.create(document.getElementById('monacoEditor'), {
-                value: '-- Write your Lua script here\n\nprint("Hello, RSQ Elite!")',
+                value: '-- Write your Lua script here\n-- This script will be protected and hidden\n\nprint("Hello, RSQ Elite!")',
                 language: 'lua',
                 theme: 'vs-dark',
                 minimap: { enabled: false },
@@ -1607,18 +1421,13 @@ function showScriptUploadModal() {
         });
     }
     
-    // Set up verification option listeners
     document.querySelectorAll('input[name="verification"]').forEach(radio => {
         radio.addEventListener('change', function() {
             document.querySelectorAll('.verification-option').forEach(opt => opt.classList.remove('selected'));
             this.closest('.verification-option').classList.add('selected');
             
             const manualSection = document.getElementById('manualGameIdSection');
-            if (this.value === 'manual') {
-                manualSection.classList.remove('hidden');
-            } else {
-                manualSection.classList.add('hidden');
-            }
+            manualSection.classList.toggle('hidden', this.value !== 'manual');
         });
     });
 }
@@ -1626,11 +1435,11 @@ function showScriptUploadModal() {
 function hideScriptUploadModal() {
     document.getElementById('scriptUploadModal').classList.add('hidden');
     document.getElementById('scriptNameInput').value = '';
+    document.getElementById('scriptDescriptionInput').value = '';
     document.getElementById('scriptUrlInput').value = '';
     document.getElementById('uploadStatus').textContent = '';
-    document.getElementById('obfuscatedPreview').classList.add('hidden');
     if (monacoEditor) {
-        monacoEditor.setValue('-- Write your Lua script here\n\nprint("Hello, RSQ Elite!")');
+        monacoEditor.setValue('-- Write your Lua script here\n-- This script will be protected and hidden\n\nprint("Hello, RSQ Elite!")');
     }
 }
 
@@ -1643,58 +1452,9 @@ function setScriptType(type) {
     document.getElementById('editorSection').classList.toggle('hidden', type !== 'editor');
 }
 
-function previewObfuscation() {
-    let code;
-    
-    if (currentScriptType === 'link') {
-        const url = document.getElementById('scriptUrlInput').value.trim();
-        if (!url) {
-            showToast('Enter a script URL', 'error');
-            return;
-        }
-        code = `-- Script URL: ${url}\n-- Preview only - actual script will be fetched\n\nlocal function example()\n    print("Hello World")\nend\n\nexample()`;
-    } else {
-        if (!monacoEditor) return;
-        code = monacoEditor.getValue();
-        if (!code.trim()) {
-            showToast('Enter a script', 'error');
-            return;
-        }
-    }
-    
-    const options = {
-        minify: document.getElementById('obfMinify').checked,
-        encryptStrings: document.getElementById('obfStringEnc').checked,
-        renameVariables: document.getElementById('obfVarRename').checked,
-        antiDebug: document.getElementById('obfAntiDebug').checked,
-        controlFlow: document.getElementById('obfControlFlow').checked,
-        watermark: document.getElementById('obfWatermark').checked
-    };
-    
-    try {
-        const obfuscator = new LuaObfuscator(code, options);
-        currentObfuscatedScript = obfuscator.obfuscate();
-        
-        const preview = document.getElementById('scriptPreview');
-        const lines = currentObfuscatedScript.split('\n');
-        preview.textContent = lines.slice(0, 15).join('\n') + (lines.length > 15 ? '\n-- ...' : '');
-        document.getElementById('obfuscatedPreview').classList.remove('hidden');
-        
-        showToast('Preview ready!', 'success');
-    } catch (error) {
-        showToast('Obfuscation error: ' + error.message, 'error');
-    }
-}
-
-function copyObfuscatedScript() {
-    if (!currentObfuscatedScript) return;
-    navigator.clipboard.writeText(currentObfuscatedScript).then(() => {
-        showToast('Copied!', 'success');
-    });
-}
-
 async function submitScript() {
     const scriptName = document.getElementById('scriptNameInput').value.trim();
+    const scriptDescription = document.getElementById('scriptDescriptionInput').value.trim();
     const uploadStatus = document.getElementById('uploadStatus');
     
     if (!scriptName) {
@@ -1707,7 +1467,7 @@ async function submitScript() {
         return;
     }
     
-    showLoading('Processing script...');
+    showLoading('Uploading protected script...');
     uploadStatus.textContent = '';
     
     try {
@@ -1722,23 +1482,6 @@ async function submitScript() {
             if (!scriptContent.trim()) throw new Error('Enter script');
         }
         
-        // Apply obfuscation
-        const options = {
-            minify: document.getElementById('obfMinify').checked,
-            encryptStrings: document.getElementById('obfStringEnc').checked,
-            renameVariables: document.getElementById('obfVarRename').checked,
-            antiDebug: document.getElementById('obfAntiDebug').checked,
-            controlFlow: document.getElementById('obfControlFlow').checked,
-            watermark: document.getElementById('obfWatermark').checked
-        };
-        
-        const obfuscator = new LuaObfuscator(
-            currentScriptType === 'link' ? `-- Script URL: ${scriptContent}` : scriptContent,
-            options
-        );
-        const obfuscatedCode = obfuscator.obfuscate();
-        
-        // Get verification type
         const verificationType = document.querySelector('input[name="verification"]:checked').value;
         let gameId = null;
         let universal = false;
@@ -1761,23 +1504,23 @@ async function submitScript() {
         const game = data.games[selectedGameForUpload];
         if (!game.scripts) game.scripts = [];
         
-        // Auto-approve the script
+        // Store script WITHOUT obfuscation - just protected by Firebase rules
         const newScript = {
             name: scriptName,
+            description: scriptDescription,
             url: currentScriptType === 'link' ? scriptContent : null,
-            code: currentScriptType === 'editor' ? obfuscatedCode : null,
-            obfuscated: true,
-            obfuscationOptions: options,
+            code: currentScriptType === 'editor' ? scriptContent : null,
             submittedBy: currentUser.username,
             addedBy: currentUser.username,
             submittedAt: Date.now(),
             added: Date.now(),
-            approved: true, // AUTO-APPROVE
+            approved: true,
             approvedBy: 'auto',
             approvedAt: Date.now(),
             universal: universal,
             requireExactGame: requireExactGame,
-            gameId: gameId
+            gameId: gameId,
+            protected: true
         };
         
         game.scripts.push(newScript);
@@ -1790,7 +1533,7 @@ async function submitScript() {
         });
         
         hideScriptUploadModal();
-        showToast('✅ Script uploaded and auto-approved!', 'success');
+        showToast('✅ Script uploaded and protected!', 'success');
         loadUserScripts();
         
         if (!document.getElementById('gameScriptsView').classList.contains('hidden')) {
@@ -1834,7 +1577,7 @@ async function loadUserScripts() {
     container.innerHTML = userScripts.map(script => `
         <div class="script-item">
             <div class="script-info">
-                <div class="script-name">${script.name}</div>
+                <div class="script-name">${script.name} <span class="protected-badge">🔒 Protected</span></div>
                 <div class="script-meta">Game: ${script.gameName}</div>
             </div>
             <span class="script-status approved">✓ Approved</span>
@@ -1891,7 +1634,6 @@ async function createUniversalFolder() {
         
         if (!data.games) data.games = [];
         
-        // Check if universal already exists
         if (data.games.some(g => g.universal)) {
             showToast('Universal folder already exists', 'warning');
             hideLoading();
@@ -2011,10 +1753,10 @@ async function deleteGame(index) {
 function renderAllScripts() {
     const allScripts = [];
     if (dataCache?.games) {
-        dataCache.games.forEach(game => {
+        dataCache.games.forEach((game, gameIndex) => {
             if (game.scripts) {
-                game.scripts.forEach(script => {
-                    allScripts.push({ ...script, gameName: game.name });
+                game.scripts.forEach((script, scriptIndex) => {
+                    allScripts.push({ ...script, gameName: game.name, gameIndex, scriptIndex });
                 });
             }
         });
@@ -2027,18 +1769,111 @@ function renderAllScripts() {
         return;
     }
     
-    container.innerHTML = allScripts.map(script => `
-        <div class="script-item">
-            <div class="script-info">
-                <div class="script-name">${script.name}</div>
-                <div class="script-meta">
-                    Game: ${script.gameName} | By: ${script.submittedBy || script.addedBy} | 
-                    ${script.universal ? '🌐 Universal' : `Game ID: ${script.gameId || 'N/A'}`}
+    container.innerHTML = allScripts.map(script => {
+        const scriptId = `admin-${script.gameIndex}-${script.scriptIndex}`;
+        const isExpanded = expandedScripts.has(scriptId);
+        
+        return `
+            <div class="script-item">
+                <div class="script-info">
+                    <div class="script-name">
+                        ${script.name}
+                        <span class="protected-badge">🔒 Protected</span>
+                    </div>
+                    <div class="script-meta">
+                        Game: ${script.gameName} | By: ${script.submittedBy || script.addedBy} | 
+                        ${script.universal ? '🌐 Universal' : `Game ID: ${script.gameId || 'N/A'}`}
+                    </div>
+                </div>
+                <div style="display:flex; gap:5px;">
+                    <span class="script-status approved">✓ Approved</span>
+                    <button class="mini view-script-btn" onclick="toggleAdminScriptView('${scriptId}', ${script.gameIndex}, ${script.scriptIndex})">${isExpanded ? '👁️ Hide' : '👁️ View'}</button>
+                    <button class="mini danger" onclick="deleteScript(${script.gameIndex}, ${script.scriptIndex})">🗑️</button>
                 </div>
             </div>
-            <span class="script-status approved">✓ Auto-Approved</span>
-        </div>
-    `).join('');
+            <div id="script-content-${scriptId}" class="script-content-viewer" style="display:${isExpanded ? 'block' : 'none'}; margin-top:-5px; margin-bottom:10px;"></div>
+        `;
+    }).join('');
+}
+
+function toggleAdminScriptView(scriptId, gameIndex, scriptIndex) {
+    const contentDiv = document.getElementById(`script-content-${scriptId}`);
+    const script = dataCache.games[gameIndex].scripts[scriptIndex];
+    
+    if (expandedScripts.has(scriptId)) {
+        expandedScripts.delete(scriptId);
+        contentDiv.style.display = 'none';
+        contentDiv.innerHTML = '';
+    } else {
+        expandedScripts.add(scriptId);
+        const content = script.code || script.url || 'No content available';
+        contentDiv.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                <span style="color:var(--secondary);">Script Content:</span>
+                <div>
+                    <button class="mini" onclick="copyRawScript('${btoa(content)}')">📋 Copy</button>
+                    <button class="mini" onclick="editScript(${gameIndex}, ${scriptIndex})">✏️ Edit</button>
+                </div>
+            </div>
+            <pre style="margin:0; white-space:pre-wrap; word-break:break-all;">${escapeHtml(content)}</pre>
+        `;
+        contentDiv.style.display = 'block';
+    }
+    
+    renderAllScripts();
+}
+
+async function deleteScript(gameIndex, scriptIndex) {
+    if (!confirm('Delete this script? This cannot be undone.')) return;
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        data.games[gameIndex].scripts.splice(scriptIndex, 1);
+        await docRef.update({ games: data.games });
+        
+        showToast('Script deleted', 'warning');
+        renderAllScripts();
+        loadGamesDashboard();
+    } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+    }
+}
+
+function editScript(gameIndex, scriptIndex) {
+    const script = dataCache.games[gameIndex].scripts[scriptIndex];
+    const content = script.code || script.url;
+    const type = script.code ? 'editor' : 'link';
+    
+    selectedGameForUpload = gameIndex;
+    showScriptUploadModal();
+    
+    setTimeout(() => {
+        document.getElementById('scriptNameInput').value = script.name;
+        document.getElementById('scriptDescriptionInput').value = script.description || '';
+        
+        if (type === 'link') {
+            setScriptType('link');
+            document.getElementById('scriptUrlInput').value = content;
+        } else {
+            setScriptType('editor');
+            if (monacoEditor) {
+                monacoEditor.setValue(content);
+            }
+        }
+        
+        // Set verification
+        if (script.universal) {
+            document.querySelector('input[value="universal"]').checked = true;
+        } else if (script.requireExactGame) {
+            document.querySelector('input[value="auto"]').checked = true;
+        } else {
+            document.querySelector('input[value="manual"]').checked = true;
+            document.getElementById('manualGameIdInput').value = script.gameId || '';
+        }
+    }, 500);
 }
 
 async function renderAdminKeys() {
@@ -2239,7 +2074,7 @@ async function initializeDatabase() {
                 games: [],
                 bans: {},
                 feedbacks: [],
-                settings: { version: '4.0', created: Date.now() }
+                settings: { version: '5.0', created: Date.now(), protectedScripts: true }
             });
             dataCache = (await docRef.get()).data();
         } else {
@@ -2272,7 +2107,6 @@ function checkSession() {
     }
 }
 
-// Particle background
 function initParticles() {
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
@@ -2331,7 +2165,6 @@ function initParticles() {
     animate();
 }
 
-// Image preview
 document.getElementById('gameImageInput')?.addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -2345,7 +2178,6 @@ document.getElementById('gameImageInput')?.addEventListener('change', function(e
     }
 });
 
-// Start
 document.addEventListener('DOMContentLoaded', async () => {
     initParticles();
     updateStatsDisplay();
@@ -2355,7 +2187,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupRealtimeListeners();
     checkSession();
 });
-
 </script>
 </body>
-    </html>
+</html>
