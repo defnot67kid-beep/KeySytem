@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RSQ Elite | Private Script System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>RSQ Elite | Script Creator</title>
 
 <!-- Monaco Editor -->
 <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/editor/editor.main.min.css">
@@ -19,6 +19,8 @@
     --premium: #ffd700;
     --glass: rgba(15, 20, 30, 0.95);
     --border: rgba(255, 255, 255, 0.08);
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,17 +28,39 @@
 body {
     margin: 0;
     background: #05070a;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: #f0f0f0;
-    overflow: hidden;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+}
+
+body.is-mobile {
+    --panel-padding: 20px;
+}
+
+body.is-mobile .panel {
+    max-height: calc(100vh - 100px);
+}
+
+body.is-mobile .stats-bar {
+    padding: 8px 12px;
+    font-size: 10px;
+}
+
+body.is-mobile button {
+    padding: 14px 20px;
+    font-size: 16px;
+}
+
+body.is-mobile input,
+body.is-mobile select,
+body.is-mobile textarea {
+    font-size: 16px;
+    padding: 14px 16px;
 }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1); } }
+@keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
@@ -56,104 +80,367 @@ body {
     pointer-events: none;
 }
 
-.stats-bar {
-    position: fixed;
+/* Header */
+.header {
+    position: sticky;
     top: 0;
-    left: 0;
-    right: 0;
-    background: rgba(10, 12, 18, 0.9);
+    background: rgba(10, 12, 18, 0.95);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
-    padding: 8px 20px;
+    padding: 0 20px;
+    height: 60px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 12px;
-    z-index: 9999;
-    height: 36px;
+    z-index: 100;
 }
 
-.stats-item {
+.logo {
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-tabs {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-tab {
+    padding: 8px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.nav-tab:hover, .nav-tab.active {
+    color: white;
+    border-bottom-color: var(--primary);
+}
+
+.user-section {
     display: flex;
     align-items: center;
-    gap: 6px;
-    opacity: 0.8;
+    gap: 15px;
 }
 
-.stats-value {
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.user-name {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.role-badge {
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.role-badge.unverified { background: rgba(255, 59, 48, 0.2); color: var(--danger); }
+.role-badge.verified { background: rgba(40, 205, 65, 0.2); color: var(--success); }
+.role-badge.trusted { background: rgba(79, 124, 255, 0.2); color: var(--primary); }
+.role-badge.premium { background: rgba(255, 215, 0, 0.2); color: var(--premium); }
+.role-badge.admin { background: rgba(255, 215, 0, 0.3); color: var(--premium); }
+
+.premium-badge {
+    background: linear-gradient(135deg, var(--premium), #ffaa00);
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-left: 6px;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Stats Bar */
+.stats-bar {
+    display: flex;
+    gap: 20px;
+    padding: 10px 0;
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Page System */
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+/* Key Section */
+.key-section {
+    background: linear-gradient(145deg, rgba(79, 124, 255, 0.05), rgba(0, 210, 255, 0.05));
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(79, 124, 255, 0.1);
+}
+
+.key-display {
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 22px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    text-align: center;
+    color: var(--secondary);
+    margin: 16px 0;
+    word-break: break-all;
+}
+
+/* Progress Bar */
+.progress-container {
+    margin-top: 20px;
+}
+
+.progress-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 3px;
+    transition: width 1s linear;
+}
+
+/* Games Grid */
+.section-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+.game-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.game-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 30px rgba(79, 124, 255, 0.1);
+}
+
+.game-card.premium-game {
+    border: 2px solid var(--premium);
+}
+
+.game-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    z-index: 1;
+    background: var(--premium);
+    color: #000;
+}
+
+.game-image {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.game-info {
+    padding: 16px;
+}
+
+.game-name {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+.game-id {
+    font-size: 11px;
+    opacity: 0.6;
+    font-family: monospace;
+}
+
+.game-meta {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Script Item */
+.script-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: all 0.2s;
+}
+
+.script-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.script-item.premium-script {
+    border-left: 3px solid var(--premium);
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.05), rgba(255, 255, 255, 0.02));
+}
+
+.script-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 8px;
+}
+
+.script-name {
     font-weight: 600;
     color: var(--secondary);
-    font-family: 'Monaco', 'Consolas', monospace;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
-.panel {
-    position: relative;
-    z-index: 10;
-    width: 480px;
-    max-width: 90vw;
-    background: var(--glass);
-    backdrop-filter: blur(30px);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-    max-height: 90vh;
-    overflow-y: auto;
+.script-description {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-bottom: 12px;
 }
 
-.panel-wide {
-    width: 800px;
-    max-width: 95vw;
+.script-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 10px;
+    opacity: 0.5;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
 }
 
-.hidden { display: none !important; }
-
-input, select, textarea {
-    width: 100%;
-    padding: 12px 16px;
-    margin-top: 12px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: white;
-    font-size: 14px;
-    font-family: inherit;
-    transition: all 0.2s;
-    outline: none;
+.script-actions {
+    display: flex;
+    gap: 8px;
 }
 
-input:focus, select:focus, textarea:focus {
-    border-color: var(--primary);
-    background: rgba(0, 0, 0, 0.4);
-    box-shadow: 0 0 0 2px rgba(79, 124, 255, 0.1);
-}
-
+/* Buttons */
 button {
-    width: 100%;
-    padding: 12px 20px;
-    margin-top: 16px;
-    border-radius: 10px;
+    padding: 10px 20px;
+    border-radius: 8px;
     border: none;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: white;
     transition: all 0.2s;
 }
 
-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 20px rgba(79, 124, 255, 0.2);
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
 }
 
-button.danger { background: linear-gradient(135deg, #ff3b30, #ff6b52); }
-button.warning { background: linear-gradient(135deg, #ffcc00, #ffaa00); color: #000; }
-button.success { background: linear-gradient(135deg, #28cd41, #2ee058); }
-button.purple { background: linear-gradient(135deg, #8a2be2, #a855f7); }
-button.premium { background: linear-gradient(135deg, #ffd700, #ffaa00); color: #000; }
-button.mini { padding: 4px 10px; font-size: 11px; margin-top: 0; width: auto; border-radius: 8px; }
+.btn-success {
+    background: linear-gradient(135deg, var(--success), #2ee058);
+    color: white;
+}
 
+.btn-danger {
+    background: linear-gradient(135deg, #ff3b30, #ff6b52);
+    color: white;
+}
+
+.btn-premium {
+    background: linear-gradient(135deg, var(--premium), #ffaa00);
+    color: #000;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.btn-icon {
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    color: white;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.btn-icon:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-icon.danger:hover {
+    background: var(--danger);
+    border-color: var(--danger);
+}
+
+/* Modals */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -162,19 +449,21 @@ button.mini { padding: 4px 10px; font-size: 11px; margin-top: 0; width: auto; bo
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
-    z-index: 10000;
+    z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+.modal-overlay.hidden { display: none; }
+
 .modal-content {
     background: var(--glass);
     border: 1px solid var(--border);
     border-radius: 20px;
-    padding: 30px;
+    padding: 25px;
     width: 90%;
-    max-width: 900px;
+    max-width: 700px;
     max-height: 90vh;
     overflow-y: auto;
 }
@@ -187,224 +476,169 @@ button.mini { padding: 4px 10px; font-size: 11px; margin-top: 0; width: auto; bo
 }
 
 .modal-title {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
+    color: var(--secondary);
+}
+
+.close-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.close-btn:hover {
+    background: rgba(255, 59, 48, 0.2);
+    color: var(--danger);
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.2s;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--primary);
+    background: rgba(0, 0, 0, 0.4);
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+    opacity: 0.8;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: var(--primary);
+}
+
+.monaco-container {
+    height: 350px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+/* Premium Section */
+.premium-section {
+    background: linear-gradient(145deg, rgba(255, 215, 0, 0.1), rgba(255, 170, 0, 0.05));
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px 0;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.premium-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.premium-header h4 {
+    color: var(--premium);
+    margin: 0;
+}
+
+.premium-locked {
+    text-align: center;
+    padding: 40px;
+    background: rgba(255, 215, 0, 0.05);
+    border-radius: 12px;
+    border: 1px dashed var(--premium);
+}
+
+/* Auth Panel */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.auth-panel {
+    width: 380px;
+    max-width: 100%;
+    background: var(--glass);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 35px;
+}
+
+.auth-title {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 8px;
     background: linear-gradient(90deg, var(--primary), var(--secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-.script-type-toggle {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+.auth-subtitle {
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.7;
+    margin-bottom: 25px;
 }
 
-.toggle-btn {
+.tab-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.tab {
     flex: 1;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.05);
+    background: transparent;
     border: 1px solid var(--border);
     border-radius: 8px;
     color: white;
     cursor: pointer;
-    transition: all 0.2s;
+    text-align: center;
 }
 
-.toggle-btn.active {
+.tab.active {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     border-color: transparent;
 }
 
-.verification-options {
-    background: rgba(79, 124, 255, 0.05);
-    border-radius: 12px;
-    padding: 15px;
-    margin: 15px 0;
-    border: 1px solid rgba(79, 124, 255, 0.1);
-}
-
-.verification-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--secondary);
-    margin-bottom: 12px;
-}
-
-.verification-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-}
-
-.verification-option {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 6px;
-    transition: all 0.2s;
-}
-
-.verification-option:hover {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.verification-option input[type="radio"] {
-    width: 16px;
-    height: 16px;
-    margin: 0;
-    accent-color: var(--primary);
-}
-
-.verification-option.selected {
-    background: rgba(79, 124, 255, 0.1);
-    border: 1px solid var(--primary);
-}
-
-.monaco-container {
-    height: 400px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    margin: 15px 0;
-}
-
-.private-notice {
-    background: rgba(138, 43, 226, 0.1);
-    border: 1px solid var(--purple);
-    border-radius: 8px;
-    padding: 12px;
-    margin: 15px 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.private-notice .icon {
-    font-size: 20px;
-}
-
-.private-notice .text {
-    font-size: 12px;
-    opacity: 0.9;
-}
-
-.game-id-search {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.game-id-search h3 {
-    margin-bottom: 15px;
-    color: var(--secondary);
-}
-
-.game-id-input-group {
-    display: flex;
-    gap: 10px;
-}
-
-.game-id-input-group input {
-    flex: 1;
-    margin: 0;
-}
-
-.game-id-input-group button {
-    width: auto;
-    margin: 0;
-    padding: 12px 25px;
-}
-
-.games-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
-    max-height: 400px;
-    overflow-y: auto;
-    padding-right: 10px;
-}
-
-.game-card-browser {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 12px;
-    padding: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all 0.3s ease;
-    cursor: pointer;
-    position: relative;
-}
-
-.game-card-browser:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: var(--primary);
-    transform: translateY(-3px);
-}
-
-.game-card-image {
-    width: 100%;
-    height: 100px;
-    border-radius: 8px;
-    object-fit: cover;
-    margin-bottom: 10px;
-    background: rgba(0, 0, 0, 0.3);
-}
-
-.game-card-title {
-    font-weight: 600;
-    font-size: 14px;
-    margin-bottom: 5px;
-    color: white;
-}
-
-.game-card-id {
-    font-size: 10px;
-    opacity: 0.7;
-    font-family: monospace;
-    margin-bottom: 8px;
-}
-
-.role-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.role-badge.unverified { background: rgba(255, 59, 48, 0.2); color: var(--danger); }
-.role-badge.verified { background: rgba(40, 205, 65, 0.2); color: var(--success); }
-.role-badge.trusted { background: rgba(79, 124, 255, 0.2); color: var(--primary); }
-.role-badge.admin { background: rgba(255, 215, 0, 0.2); color: var(--premium); }
-
-.progress-bar {
-    height: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
-    overflow: hidden;
-    margin: 8px 0;
-}
-
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    border-radius: 2px;
-    transition: width 1s linear;
-}
-
+/* Toast */
 .toast {
     position: fixed;
-    top: 50px;
-    right: 20px;
+    bottom: 30px;
+    right: 30px;
     background: rgba(20, 25, 35, 0.95);
     backdrop-filter: blur(20px);
     border: 1px solid var(--border);
@@ -412,15 +646,14 @@ button.mini { padding: 4px 10px; font-size: 11px; margin-top: 0; width: auto; bo
     padding: 12px 18px;
     z-index: 10000;
     animation: slideIn 0.3s ease;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    max-width: 300px;
     border-left: 3px solid var(--primary);
 }
 
 .toast.success { border-left-color: var(--success); }
-.toast.warning { border-left-color: var(--warning); }
 .toast.error { border-left-color: var(--danger); }
+.toast.warning { border-left-color: var(--warning); }
 
+/* Loading */
 .loading-overlay {
     position: fixed;
     inset: 0;
@@ -434,6 +667,8 @@ button.mini { padding: 4px 10px; font-size: 11px; margin-top: 0; width: auto; bo
     gap: 20px;
 }
 
+.loading-overlay.hidden { display: none; }
+
 .loading-spinner {
     width: 40px;
     height: 40px;
@@ -443,225 +678,124 @@ button.mini { padding: 4px 10px; font-size: 11px; margin-top: 0; width: auto; bo
     animation: spin 1s linear infinite;
 }
 
+/* Admin Panel */
+.admin-panel {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 30px;
+}
+
+.admin-section {
+    margin-bottom: 25px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--border);
+}
+
+.admin-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+}
+
+.admin-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+/* Misc */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
 ::-webkit-scrollbar-thumb { background: rgba(79, 124, 255, 0.2); border-radius: 3px; }
 
-.gradient-text {
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.hidden { display: none !important; }
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: rgba(255, 255, 255, 0.4);
 }
 
-.adminFull {
-    position: fixed;
-    inset: 0;
-    background: rgba(5, 7, 10, 0.98);
-    backdrop-filter: blur(30px);
-    padding: 20px;
-    z-index: 20000;
-    overflow-y: auto;
+.empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
 }
 
-.adminFull.hidden { display: none !important; }
-
-.home-btn, .browser-btn, .my-scripts-btn {
-    position: fixed;
-    bottom: 25px;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 1000;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-    transition: all 0.3s;
-    border: none;
-}
-
-.home-btn {
-    left: 25px;
-    background: linear-gradient(135deg, var(--purple), var(--primary));
-}
-
-.browser-btn {
-    left: 100px;
-    background: linear-gradient(135deg, var(--success), #2ee058);
-}
-
-.my-scripts-btn {
-    left: 175px;
-    background: linear-gradient(135deg, var(--warning), #ffaa00);
-}
-
-.home-btn:hover, .browser-btn:hover, .my-scripts-btn:hover {
-    transform: scale(1.1);
-}
-
-.connection-status {
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 4px 10px;
-    border-radius: 10px;
-    font-size: 10px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    z-index: 10000;
-}
-
-.status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-}
-
-.connection-status.connected .status-dot {
-    background: var(--success);
-    box-shadow: 0 0 8px var(--success);
-}
-
-.game-management-section {
-    background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-    border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-.game-section {
-    margin-bottom: 25px;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-.game-section-header {
-    background: rgba(30, 35, 45, 0.8);
-    padding: 12px 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-}
-
-.game-section-header:hover {
-    background: rgba(40, 45, 55, 0.8);
-}
-
-.game-section-header h4 {
-    margin: 0;
-    font-size: 14px;
-    color: var(--secondary);
-}
-
-.game-section-content {
-    padding: 15px;
-    background: rgba(0, 0, 0, 0.2);
-}
-
-.game-section-content.collapsed {
-    display: none;
-}
-
-.script-item {
-    background: rgba(255,255,255,0.03);
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 8px;
+.my-scripts-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 25px;
 }
 
-.script-item.private-script {
-    border-left: 3px solid var(--purple);
-    background: linear-gradient(90deg, rgba(138, 43, 226, 0.05), rgba(255, 255, 255, 0.03));
-}
-
-.script-item.admin-script {
-    border-left: 3px solid var(--primary);
-}
-
-.script-info {
-    flex: 1;
-}
-
-.script-name {
-    font-weight: 600;
-    color: var(--secondary);
-    font-size: 13px;
-}
-
-.script-meta {
-    font-size: 11px;
-    opacity: 0.7;
-    margin-top: 4px;
-}
-
-.script-status {
-    font-size: 10px;
-    padding: 2px 8px;
-    border-radius: 10px;
-}
-
-.script-status.approved {
-    background: rgba(40, 205, 65, 0.2);
-    color: var(--success);
-}
-
-.script-status.pending {
-    background: rgba(255, 204, 0, 0.2);
-    color: var(--warning);
-}
-
-.verification-tag {
-    display: inline-block;
-    font-size: 9px;
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-left: 8px;
-}
-
-.private-badge {
-    background: rgba(138, 43, 226, 0.2);
-    color: var(--purple);
-    font-size: 9px;
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-left: 8px;
-}
-
-.back-nav {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    cursor: pointer;
-    color: var(--secondary);
-    font-weight: 500;
-}
-
-.back-nav:hover {
+.tab-btn {
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
     color: white;
-    transform: translateX(-3px);
+    cursor: pointer;
+    margin-right: 8px;
 }
 
-.expand-icon {
-    margin-left: auto;
-    font-size: 12px;
-    transition: transform 0.2s;
+.tab-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
 }
 
-.expand-icon.expanded {
-    transform: rotate(90deg);
+/* Mobile */
+@media (max-width: 600px) {
+    .header {
+        padding: 0 15px;
+        height: 55px;
+    }
+    
+    .logo {
+        font-size: 18px;
+    }
+    
+    .nav-tabs {
+        gap: 12px;
+    }
+    
+    .nav-tab {
+        font-size: 12px;
+    }
+    
+    .user-name {
+        display: none;
+    }
+    
+    .container {
+        padding: 15px;
+    }
+    
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        padding: 20px;
+    }
 }
 
+/* Visibility badges */
 .visibility-badge {
     display: inline-block;
     font-size: 9px;
@@ -670,14 +804,18 @@ button.mini { padding: 4px 10px; font-size: 11px; margin-top: 0; width: auto; bo
     margin-left: 8px;
 }
 
-.visibility-badge.public {
-    background: rgba(40, 205, 65, 0.2);
-    color: var(--success);
-}
-
 .visibility-badge.private {
     background: rgba(138, 43, 226, 0.2);
     color: var(--purple);
+}
+
+.owner-badge {
+    background: rgba(40, 205, 65, 0.2);
+    color: var(--success);
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
 }
 </style>
 </head>
@@ -686,326 +824,348 @@ button.mini { padding: 4px 10px; font-size: 11px; margin-top: 0; width: auto; bo
 <canvas id="particles"></canvas>
 <div id="bg-wrap"></div>
 
-<div class="connection-status connected" id="connectionStatus">
-    <div class="status-dot"></div>
-    <span>Connected</span>
-</div>
-
 <div id="loadingOverlay" class="loading-overlay hidden">
     <div class="loading-spinner"></div>
-    <div class="loading-text" id="loadingText">Loading...</div>
+    <div id="loadingText">Loading...</div>
 </div>
 
-<div class="stats-bar">
-    <div class="stats-item"><span>👁️ Views:</span><span class="stats-value" id="viewCount">0</span></div>
-    <div class="stats-item"><span>⚡ Active:</span><span class="stats-value" id="activeCount">0</span></div>
-    <div class="stats-item"><span>🔑 Keys:</span><span class="stats-value" id="liveKeyCount">0</span></div>
-    <div class="stats-item"><span>🕒</span><span id="currentTime">00:00</span></div>
+<!-- Auth Screen -->
+<div id="authScreen" class="auth-container">
+    <div class="auth-panel animate-fade">
+        <h1 class="auth-title">RSQ ELITE</h1>
+        <p class="auth-subtitle">Script Creator</p>
+        
+        <div class="tab-container">
+            <button class="tab active" onclick="switchAuthTab('login')">Sign In</button>
+            <button class="tab" onclick="switchAuthTab('signup')">Sign Up</button>
+        </div>
+        
+        <div id="loginForm">
+            <input type="text" id="loginUsername" placeholder="Username">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button class="btn-primary" onclick="handleLogin()">Sign In</button>
+        </div>
+        
+        <div id="signupForm" class="hidden">
+            <input type="text" id="signupUsername" placeholder="Choose Username">
+            <input type="password" id="signupPassword" placeholder="Choose Password">
+            <button class="btn-primary" onclick="handleSignup()">Create Account</button>
+        </div>
+        
+        <div id="authError" style="color: var(--danger); font-size: 12px; text-align: center; margin-top: 16px;"></div>
+    </div>
 </div>
 
-<!-- Auth Panel -->
-<div id="authPanel" class="panel animate-fade">
-    <div style="text-align:center; margin-bottom:30px;">
-        <h1 style="margin:0; font-size:32px;" class="gradient-text">RSQ GATE</h1>
-        <p style="font-size:12px; opacity:0.7; margin-top:8px;">Secure Access System</p>
-    </div>
-    
-    <div id="loginView">
-        <input id="l-user" placeholder="Username" autocomplete="username">
-        <input id="l-pass" type="password" placeholder="Password" autocomplete="current-password">
-        <button onclick="handleAuth('login')">Sign In</button>
-        <p style="text-align:center; font-size:12px; margin-top:20px; opacity:0.7;">
-            New here? <a href="#" onclick="toggleAuth(true)" style="color:var(--secondary);">Create Account</a>
-        </p>
-    </div>
-    
-    <div id="signupView" class="hidden">
-        <input id="s-user" placeholder="Choose Username">
-        <input id="s-pass" type="password" placeholder="Choose Password">
-        <button onclick="handleAuth('signup')">Sign Up</button>
-        <p style="text-align:center; font-size:12px; margin-top:20px; opacity:0.7;">
-            Have account? <a href="#" onclick="toggleAuth(false)" style="color:var(--secondary);">Sign In</a>
-        </p>
-    </div>
-    
-    <div id="authStatus" style="text-align:center; color:var(--danger); font-size:12px; margin-top:15px;"></div>
-</div>
-
-<!-- Main System -->
-<div id="mainSystem" class="hidden">
-    <div class="home-btn" onclick="showHomePanel()" title="Home">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-    </div>
-    
-    <div class="browser-btn" onclick="showGamesBrowser()" title="Browse Games">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg>
-    </div>
-    
-    <div class="my-scripts-btn" onclick="showMyScripts()" title="My Private Scripts">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-    </div>
-
-    <!-- Home Panel -->
-    <div id="homePanel" class="panel animate-fade">
-        <div style="text-align:center; margin-bottom:25px;">
-            <h1 style="margin:0; font-size:28px;" class="gradient-text">RSQ ELITE</h1>
-            <p id="welcomeUser" style="font-size:11px; opacity:0.5;"></p>
+<!-- Main App -->
+<div id="mainApp" class="hidden">
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">RSQ ELITE</div>
+        
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="switchPage('home')">Home</div>
+            <div class="nav-tab" onclick="switchPage('games')">Games</div>
+            <div class="nav-tab" onclick="switchPage('myScripts')">My Scripts</div>
         </div>
         
-        <div id="roleDisplay" style="margin-bottom:20px; text-align:center;">
-            <span id="roleBadge" class="role-badge unverified">UNVERIFIED</span>
+        <div class="user-section">
+            <div class="user-info">
+                <div class="user-avatar" id="userInitial">U</div>
+                <div>
+                    <div class="user-name" id="displayUsername">User</div>
+                    <div style="display: flex; gap: 5px; margin-top: 2px;">
+                        <span id="roleBadge" class="role-badge unverified">UNVERIFIED</span>
+                        <span id="premiumBadge" class="role-badge premium hidden">👑 PREMIUM</span>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-icon" onclick="logout()">🚪</button>
         </div>
-        
-        <div id="roleProgress">
-            <div style="display:flex; justify-content:space-between; font-size:11px;">
-                <span>Progress to Verified</span>
-                <span id="progressPercentage">0%</span>
+    </header>
+    
+    <!-- Home Page -->
+    <div id="homePage" class="page active">
+        <div class="container">
+            <!-- Key Generation -->
+            <div class="key-section">
+                <h3 style="margin-bottom: 16px;">🔑 Generate Access Key</h3>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <input type="text" id="robloxUserId" placeholder="Enter your Roblox User ID" style="flex: 1; min-width: 200px; margin: 0;">
+                    <button class="btn-primary" onclick="generateKey()" style="width: auto;">Generate Key</button>
+                </div>
+                <div id="keyResult" class="hidden">
+                    <div class="key-display" id="generatedKey"></div>
+                    <div style="font-family: monospace; font-size: 12px; padding: 12px; background: rgba(40, 205, 65, 0.1); border-radius: 8px; color: var(--success); cursor: pointer; text-align: center;" id="loadstringDisplay" onclick="copyLoadstring()">
+                        📋 Click to copy loadstring
+                    </div>
+                </div>
+                
+                <!-- Role Progress -->
+                <div style="margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                        <span>Progress to Verified</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; opacity: 0.6; margin-top: 6px;">
+                        <span id="timeRemaining">5:00 remaining</span>
+                        <span id="nextRole">Next: Verified</span>
+                    </div>
+                </div>
+                
+                <!-- Premium Status -->
+                <div id="premiumTimerSection" class="premium-section hidden" style="margin-top: 20px;">
+                    <div class="premium-header">
+                        <span>👑</span>
+                        <h4>Premium Unlock Progress</h4>
+                    </div>
+                    <p style="font-size: 13px; margin-bottom: 12px;">Wait 5 minutes to unlock premium script creation!</p>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                        <span>Premium Timer</span>
+                        <span id="premiumTimerPercent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="premiumTimerFill" class="progress-fill" style="width: 0%; background: linear-gradient(90deg, var(--premium), #ffaa00);"></div>
+                    </div>
+                    <div style="font-size: 11px; opacity: 0.6; margin-top: 6px;" id="premiumTimeRemaining">5:00 remaining</div>
+                </div>
             </div>
-            <div class="progress-bar">
-                <div id="progressFill" class="progress-fill" style="width:0%"></div>
-            </div>
-            <div style="display:flex; justify-content:space-between; font-size:10px; opacity:0.7;">
-                <span id="timeRemaining">5:00 remaining</span>
-                <span id="nextRole">Next: Verified</span>
+            
+            <!-- Stats -->
+            <div class="stats-bar">
+                <div class="stat-item">👥 Users: <span id="userCount">0</span></div>
+                <div class="stat-item">🎮 Games: <span id="gameCount">0</span></div>
+                <div class="stat-item">📜 Scripts: <span id="scriptCount">0</span></div>
             </div>
         </div>
-        
-        <input id="userid" placeholder="Roblox UserID">
-        <button id="genBtn" onclick="generateKey()">Generate Access Key</button>
-        
-        <div id="statusMsg" style="text-align:center; margin-top:15px; font-size:12px;"></div>
-        <div id="keyOut" style="text-align:center; margin-top:15px; color:var(--secondary); font-family:monospace; font-size:16px; padding:12px; background:rgba(0,0,0,0.3); border-radius:10px; word-break:break-all;"></div>
-        <div id="loadstringOut" style="text-align:center; margin-top:10px; color:var(--success); font-family:monospace; font-size:12px; padding:8px; background:rgba(40,205,65,0.1); border-radius:8px; cursor:pointer;" onclick="copyLoadstring()"></div>
-
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:25px;">
-            <button id="adminBtn" class="danger" onclick="toggleAdmin()" style="display:none;">👑 Admin</button>
-            <div style="display:flex; gap:10px;">
-                <button onclick="toggleFeedbackUI(true)" style="background:linear-gradient(135deg, #8a2be2, #4f7cff);">💬 Feedback</button>
-                <button onclick="logout()" style="background:rgba(255,255,255,0.05);">🚪 Logout</button>
-            </div>
-        </div>
-        
-        <input id="adminInput" type="password" placeholder="Admin Password" style="margin-top:15px;">
     </div>
-
-    <!-- Games Browser Panel -->
-    <div id="gamesBrowserPanel" class="panel panel-wide animate-fade hidden">
-        <div class="back-nav" onclick="showHomePanel()"><span>← Back to Home</span></div>
-        <h2 style="margin-top:0;" class="gradient-text">🎮 ALL GAMES</h2>
-        <p style="font-size:12px; opacity:0.7; margin-bottom:20px;">Browse all available games</p>
-        
-        <div id="allGamesList" class="games-grid"></div>
+    
+    <!-- Games Page -->
+    <div id="gamesPage" class="page">
+        <div class="container">
+            <h2 style="margin-bottom: 20px;">🎮 Browse Games</h2>
+            <p style="font-size: 13px; opacity: 0.7; margin-bottom: 20px;">Select a game to create your own scripts</p>
+            
+            <div class="games-grid" id="gamesGrid"></div>
+        </div>
     </div>
-
+    
     <!-- Game Scripts View -->
-    <div id="gameScriptsView" class="panel panel-wide animate-fade hidden">
-        <div class="back-nav" onclick="showGamesBrowser()"><span>← Back to Games</span></div>
-        <div id="gameScriptsHeader" style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
-            <img id="viewGameImage" style="width:60px; height:60px; border-radius:10px; object-fit:cover;">
-            <div>
-                <h2 id="viewGameName" style="margin:0;" class="gradient-text"></h2>
-                <p id="viewGameId" style="margin:5px 0 0; font-size:12px; opacity:0.7;"></p>
+    <div id="gameScriptsView" class="page">
+        <div class="container">
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                <button class="btn-secondary" onclick="switchPage('games')" style="width: auto;">← Back</button>
+                <img id="viewGameImage" style="width: 50px; height: 50px; border-radius: 10px; object-fit: cover;">
+                <div>
+                    <h2 id="viewGameName"></h2>
+                    <p id="viewGameId" style="font-size: 12px; opacity: 0.7;"></p>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>📜 Your Scripts for this Game</h3>
+                <button class="btn-primary" onclick="openCreateScriptModal()" style="width: auto;">+ Create Script</button>
+            </div>
+            
+            <div id="gameScriptsList"></div>
+        </div>
+    </div>
+    
+    <!-- My Scripts Page -->
+    <div id="myScriptsPage" class="page">
+        <div class="container">
+            <div class="my-scripts-header">
+                <h2>📜 My Scripts</h2>
+                <button class="btn-primary" onclick="switchPage('games')" style="width: auto;">Browse Games</button>
+            </div>
+            
+            <div id="myScriptsList"></div>
+        </div>
+    </div>
+    
+    <!-- Admin Panel (Admin Only) -->
+    <div id="adminPanel" class="admin-panel hidden">
+        <h2 style="margin-bottom: 20px; color: var(--premium);">👑 Admin Control Panel</h2>
+        
+        <div class="admin-section">
+            <div class="admin-header">
+                <h3>🎮 Game Management</h3>
+                <button class="btn-success" onclick="openCreateGameModal()" style="width: auto;">+ Create Game</button>
+            </div>
+            <div id="adminGamesList" class="admin-grid"></div>
+        </div>
+        
+        <div class="admin-section">
+            <div class="admin-header">
+                <h3>👑 Premium Settings</h3>
+            </div>
+            <div style="display: grid; gap: 15px; max-width: 400px;">
+                <label>Default Premium GamePass ID</label>
+                <input type="text" id="premiumGamepassIdInput" placeholder="GamePass ID">
+                <button class="btn-premium" onclick="savePremiumSettings()">Save Settings</button>
             </div>
         </div>
         
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 style="margin:0;">📜 Scripts</h3>
-            <button class="mini purple" onclick="showPrivateScriptUploadModal()" id="uploadPrivateScriptBtn">🔒 Upload Private Script</button>
+        <div class="admin-section">
+            <div class="admin-header">
+                <h3>📊 All Scripts Monitor</h3>
+            </div>
+            <div id="allScriptsMonitor"></div>
         </div>
-        <div id="gameScriptsList"></div>
-    </div>
-
-    <!-- My Private Scripts Panel -->
-    <div id="myScriptsPanel" class="panel panel-wide animate-fade hidden">
-        <div class="back-nav" onclick="showHomePanel()"><span>← Back to Home</span></div>
-        <h2 style="margin-top:0;" class="gradient-text">🔒 MY PRIVATE SCRIPTS</h2>
-        <p style="font-size:12px; opacity:0.7; margin-bottom:20px;">Your private scripts - only you can see these</p>
-        
-        <div id="myPrivateScriptsList"></div>
     </div>
 </div>
 
-<!-- Private Script Upload Modal -->
-<div id="privateScriptUploadModal" class="modal-overlay hidden">
+<!-- Create Script Modal -->
+<div id="createScriptModal" class="modal-overlay hidden">
     <div class="modal-content">
         <div class="modal-header">
-            <h2 class="modal-title">🔒 Upload Private Script</h2>
-            <button class="mini danger" onclick="hidePrivateScriptUploadModal()" style="width:auto;">✕</button>
+            <h2 class="modal-title">📝 Create Script</h2>
+            <button class="close-btn" onclick="closeCreateScriptModal()">✕</button>
         </div>
         
-        <div class="private-notice">
-            <span class="icon">🔒</span>
-            <span class="text">This script will be PRIVATE. Only YOU can see, edit, or copy it. Other users cannot view it at all.</span>
+        <div id="scriptGameInfo" style="margin-bottom: 15px; padding: 10px; background: rgba(79,124,255,0.1); border-radius: 8px;">
+            Game: <span id="selectedGameName"></span>
         </div>
         
-        <div id="privateUploadGameInfo" style="margin-bottom:15px; padding:10px; background:rgba(138,43,226,0.1); border-radius:8px;">
-            Uploading to: <span id="privateUploadGameName"></span>
+        <label>Script Name</label>
+        <input type="text" id="scriptNameInput" placeholder="My Script">
+        
+        <label>Description (optional)</label>
+        <textarea id="scriptDescInput" placeholder="What does this script do?" rows="2"></textarea>
+        
+        <!-- Premium Option (only shows after 5 min wait) -->
+        <div id="premiumScriptOption" class="premium-section hidden">
+            <div class="premium-header">
+                <span>👑</span>
+                <h4>Premium Script</h4>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="scriptPremiumCheck" onchange="togglePremiumOptions()">
+                <label>Mark as Premium Script</label>
+            </div>
+            <div id="premiumOptions" class="hidden">
+                <label>GamePass ID (optional - uses default if empty)</label>
+                <input type="text" id="scriptGamepassId" placeholder="GamePass ID">
+                <label>Price (Robux)</label>
+                <input type="number" id="scriptPrice" placeholder="Price" min="0" value="0">
+            </div>
         </div>
         
-        <div class="script-type-toggle">
-            <button class="toggle-btn active" onclick="setPrivateScriptType('link')">🔗 Script URL</button>
-            <button class="toggle-btn" onclick="setPrivateScriptType('editor')">📝 Lua Editor</button>
-        </div>
-        
-        <div id="privateUrlInputSection">
-            <input type="text" id="privateScriptUrlInput" placeholder="Enter raw script URL">
-        </div>
-        
-        <div id="privateEditorSection" class="hidden">
-            <div class="monaco-container" id="privateMonacoEditor"></div>
-        </div>
-        
-        <input type="text" id="privateScriptNameInput" placeholder="Script Name">
-        <textarea id="privateScriptDescriptionInput" placeholder="Script Description (optional)" style="height:60px; resize:none;"></textarea>
-        
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button class="purple" onclick="submitPrivateScript()" style="flex:1;">🔒 Upload Private Script</button>
-        </div>
-        
-        <div id="privateUploadStatus" style="text-align:center; margin-top:15px; font-size:12px; color:var(--danger);"></div>
-    </div>
-</div>
-
-<!-- Admin Script Upload Modal -->
-<div id="scriptUploadModal" class="modal-overlay hidden">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 class="modal-title">📤 Upload Script (Admin)</h2>
-            <button class="mini danger" onclick="hideScriptUploadModal()" style="width:auto;">✕</button>
-        </div>
-        
-        <div id="uploadGameInfo" style="margin-bottom:15px; padding:10px; background:rgba(79,124,255,0.1); border-radius:8px;">
-            Uploading to: <span id="uploadGameName"></span>
-        </div>
-        
-        <div class="script-type-toggle">
-            <button class="toggle-btn active" onclick="setScriptType('link')">🔗 Script URL</button>
-            <button class="toggle-btn" onclick="setScriptType('editor')">📝 Lua Editor</button>
+        <label>Script Type</label>
+        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+            <button class="tab-btn active" onclick="setScriptType('url')">🔗 URL</button>
+            <button class="tab-btn" onclick="setScriptType('editor')">📝 Lua Editor</button>
         </div>
         
         <div id="urlInputSection">
-            <input type="text" id="scriptUrlInput" placeholder="Enter raw script URL">
+            <label>Script URL (raw GitHub link)</label>
+            <input type="text" id="scriptUrlInput" placeholder="https://raw.githubusercontent.com/...">
         </div>
         
         <div id="editorSection" class="hidden">
+            <label>Lua Script</label>
             <div class="monaco-container" id="monacoEditor"></div>
         </div>
         
-        <input type="text" id="scriptNameInput" placeholder="Script Name">
-        <textarea id="scriptDescriptionInput" placeholder="Script Description (optional)" style="height:60px; resize:none;"></textarea>
-        
-        <div class="verification-options">
-            <div class="verification-title">🔐 Script Visibility</div>
-            <div class="verification-grid">
-                <label class="verification-option selected">
-                    <input type="radio" name="visibility" value="public" checked> 🌐 Public (Everyone can see)
-                </label>
-                <label class="verification-option">
-                    <input type="radio" name="visibility" value="private"> 🔒 Private (Admin only)
-                </label>
-            </div>
+        <div class="private-notice" style="background: rgba(138, 43, 226, 0.1); border: 1px solid var(--purple); border-radius: 8px; padding: 12px; margin: 15px 0; display: flex; align-items: center; gap: 10px;">
+            <span>🔒</span>
+            <span style="font-size: 12px;">Your script is PRIVATE. Only YOU can see, edit, or delete it.</span>
         </div>
         
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button class="success" onclick="submitScript()" style="flex:1;">📤 Upload Script</button>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button class="btn-primary" onclick="saveScript()">💾 Save Script</button>
+            <button class="btn-secondary" onclick="closeCreateScriptModal()">Cancel</button>
         </div>
-        
-        <div id="uploadStatus" style="text-align:center; margin-top:15px; font-size:12px; color:var(--danger);"></div>
     </div>
 </div>
 
-<!-- Admin Panel -->
-<div id="adminPanel" class="adminFull hidden">
-    <div id="adminDefaultView">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; padding:20px; background:rgba(255,255,255,0.03); border-radius:12px;">
-            <div>
-                <h2 style="margin:0; font-size:24px;" class="gradient-text">👑 ADMIN CONTROL PANEL</h2>
-                <p style="font-size:11px; opacity:0.7;">Full System Access | Game Management</p>
-            </div>
-            <div style="display:flex; gap:10px;">
-                <button class="success" onclick="showGameCreateView()" style="width:auto; padding:10px 20px;">🎮 Create Game</button>
-                <button class="danger" onclick="showBanNowModal()" style="width:auto; padding:10px 20px;">⚡ BAN NOW</button>
-                <button onclick="closeAdmin()" style="width:auto; background:#444; padding:10px 20px;">🚪 Exit</button>
-            </div>
+<!-- Edit Script Modal -->
+<div id="editScriptModal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">✏️ Edit Script</h2>
+            <button class="close-btn" onclick="closeEditScriptModal()">✕</button>
         </div>
-
-        <div class="game-management-section">
-            <h3>🎮 Game Management (All Public)</h3>
-            <p style="font-size:11px; opacity:0.7; margin-bottom:15px;">All games created here are public and visible to all users</p>
-            
-            <div style="margin-bottom:20px;">
-                <button class="success" onclick="showGameCreateView()" style="width:auto;">➕ Create New Game</button>
-            </div>
-            
-            <div id="adminGamesList"></div>
+        
+        <label>Script Name</label>
+        <input type="text" id="editScriptNameInput">
+        
+        <label>Description (optional)</label>
+        <textarea id="editScriptDescInput" rows="2"></textarea>
+        
+        <label>Script Type</label>
+        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+            <button class="tab-btn active" id="editUrlTab" onclick="setEditScriptType('url')">🔗 URL</button>
+            <button class="tab-btn" id="editEditorTab" onclick="setEditScriptType('editor')">📝 Lua Editor</button>
         </div>
-
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-            <div class="game-management-section">
-                <h3>🔑 System Keys</h3>
-                <div id="keyLogs" style="max-height:200px; overflow-y:auto;"></div>
-            </div>
-            <div class="game-management-section">
-                <h3>🚫 Blacklist</h3>
-                <div id="banLogs" style="max-height:200px; overflow-y:auto;"></div>
-            </div>
+        
+        <div id="editUrlInputSection">
+            <label>Script URL</label>
+            <input type="text" id="editScriptUrlInput">
+        </div>
+        
+        <div id="editEditorSection" class="hidden">
+            <label>Lua Script</label>
+            <div class="monaco-container" id="editMonacoEditor"></div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button class="btn-primary" onclick="updateScript()">💾 Update Script</button>
+            <button class="btn-secondary" onclick="closeEditScriptModal()">Cancel</button>
         </div>
     </div>
+</div>
 
-    <div id="gameCreateView" class="hidden">
-        <div class="back-nav" onclick="showAdminDefaultView()"><span>← Back</span></div>
-        <div style="max-width:500px; margin:0 auto;">
-            <h2 style="text-align:center;">🎮 Create Game</h2>
-            <p style="text-align:center; font-size:12px; opacity:0.7; margin-bottom:20px;">This game will be PUBLIC and visible to all users</p>
-            <div style="width:120px; height:120px; border:2px dashed var(--border); border-radius:12px; margin:15px auto; cursor:pointer;" onclick="document.getElementById('gameImageInput').click()">
-                <img id="gameImagePreview" style="width:100%; height:100%; object-fit:cover; display:none;">
-                <div id="imagePlaceholder" style="text-align:center; padding:40px 0;">📁 Click</div>
+<!-- Create Game Modal (Admin) -->
+<div id="createGameModal" class="modal-overlay hidden">
+    <div class="modal-content" style="max-width: 450px;">
+        <div class="modal-header">
+            <h2 class="modal-title">🎮 Create Game</h2>
+            <button class="close-btn" onclick="closeCreateGameModal()">✕</button>
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 20px;">
+            <div style="width: 120px; height: 120px; border: 2px dashed var(--border); border-radius: 12px; margin: 0 auto; cursor: pointer;" onclick="document.getElementById('gameImageInput').click()">
+                <img id="gameImagePreview" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                <div id="imagePlaceholder" style="padding: 45px 0;">📁 Click</div>
             </div>
             <input type="file" id="gameImageInput" accept="image/*" class="hidden">
-            <input type="text" id="gameNameInput" placeholder="Game Name">
-            <input type="text" id="gameIdInput" placeholder="Roblox Place ID">
-            <button class="success" onclick="createGame()">Create Public Game</button>
-            <div id="gameCreateStatus" style="text-align:center; margin-top:15px;"></div>
         </div>
-    </div>
-</div>
-
-<!-- Ban Modal -->
-<div id="banNowModal" class="modal-overlay hidden">
-    <div class="modal-content" style="max-width:500px;">
-        <h2 style="color:var(--danger);">🔨 Restrict User</h2>
-        <input id="focusBanId" placeholder="Roblox UserID">
-        <input id="focusBanUser" placeholder="Username">
-        <textarea id="focusBanReason" placeholder="Reason..." style="height:100px;"></textarea>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <button class="danger" onclick="executeFocusBan()">Ban User</button>
-            <button onclick="hideBanNowModal()" style="background:#444;">Cancel</button>
+        
+        <label>Game Name</label>
+        <input type="text" id="newGameName" placeholder="Game Name">
+        
+        <label>Roblox Place ID</label>
+        <input type="text" id="newGameId" placeholder="Place ID">
+        
+        <div class="checkbox-group">
+            <input type="checkbox" id="newGamePremium" checked>
+            <label>Premium Game (requires premium to create scripts)</label>
         </div>
+        
+        <button class="btn-success" onclick="createGame()">Create Game</button>
     </div>
-</div>
-
-<!-- Feedback Modal -->
-<div id="feedbackUI" class="panel animate-fade hidden">
-    <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-        <h2 class="gradient-text">📝 Feedback</h2>
-        <button class="mini danger" onclick="toggleFeedbackUI(false)">✕</button>
-    </div>
-    <input id="fb-user" placeholder="Roblox Username">
-    <input id="fb-id" placeholder="Roblox UserID">
-    <textarea id="fb-msg" placeholder="Your feedback..." style="height:120px;"></textarea>
-    <button onclick="submitFeedback()">Submit</button>
 </div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
 <!-- Monaco Editor -->
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
 
 <script>
-// Firebase Configuration
+// Mobile Detection
+function detectMobile() {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 600;
+    if (isMobile) document.body.classList.add('is-mobile');
+    return isMobile;
+}
+detectMobile();
+
+// Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyAupBkllyicDPD9O6CmX4mS4sF5z96mqxc",
     authDomain: "vertexpaste.firebaseapp.com",
@@ -1017,30 +1177,29 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-db.enablePersistence().catch(err => console.log('Persistence error:', err));
 
 // Global Variables
-let dataCache = null;
 let currentUser = null;
-let isAdminAuthenticated = false;
+let dataCache = null;
 let monacoEditor = null;
-let privateMonacoEditor = null;
-let currentScriptType = 'link';
-let currentPrivateScriptType = 'link';
-let selectedGameForUpload = null;
-let selectedGameForPrivateUpload = null;
-let sessionStartTime = Date.now();
+let editMonacoEditor = null;
+let currentScriptType = 'url';
+let currentEditScriptType = 'url';
+let selectedGameId = null;
+let selectedGameData = null;
+let editingScriptId = null;
 let roleUpdateInterval = null;
-let expandedGames = new Set();
+let isAdmin = false;
+let canCreatePremium = false;
+let premiumUnlocked = false;
 
 const ADMIN_USERNAME = 'plstealme2';
-const ADMIN_PASSWORD = 'Livetopimo';
+const PREMIUM_WAIT_TIME = 5 * 60 * 1000; // 5 minutes
 
 const ROLES = {
-    UNVERIFIED: { name: 'Unverified', timeRequired: 0, canUpload: false },
-    VERIFIED: { name: 'Verified', timeRequired: 5 * 60 * 1000, canUpload: false },
-    TRUSTED: { name: 'Trusted', timeRequired: 10 * 60 * 1000, canUpload: true },
-    ADMIN: { name: 'Admin', timeRequired: 0, canUpload: true }
+    UNVERIFIED: { name: 'Unverified', timeRequired: 0 },
+    VERIFIED: { name: 'Verified', timeRequired: 5 * 60 * 1000 },
+    TRUSTED: { name: 'Trusted', timeRequired: 10 * 60 * 1000 }
 };
 
 // ==================== UTILITY FUNCTIONS ====================
@@ -1061,148 +1220,80 @@ function showToast(message, type = 'info') {
     setTimeout(() => toast.remove(), 3000);
 }
 
-function updateStatsDisplay() {
-    document.getElementById('currentTime').textContent = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    if (dataCache?.keys) {
-        document.getElementById('liveKeyCount').textContent = Object.keys(dataCache.keys).length;
-    }
-}
-
-// ==================== ROLE SYSTEM ====================
-function getUserRole() {
-    if (!currentUser) return ROLES.UNVERIFIED;
-    if (currentUser.username === ADMIN_USERNAME) return ROLES.ADMIN;
-    
-    const userData = dataCache?.users?.[currentUser.username];
-    return userData?.role || ROLES.UNVERIFIED;
-}
-
-function updateRoleProgress() {
-    if (!currentUser || currentUser.username === ADMIN_USERNAME) return;
-    
-    const userData = dataCache?.users?.[currentUser.username];
-    const joinTime = userData?.joinTime || sessionStartTime;
-    const timeElapsed = Date.now() - joinTime;
-    
-    const progressFill = document.getElementById('progressFill');
-    const progressPercentage = document.getElementById('progressPercentage');
-    const timeRemaining = document.getElementById('timeRemaining');
-    const nextRole = document.getElementById('nextRole');
-    const roleBadge = document.getElementById('roleBadge');
-    
-    if (!progressFill) return;
-    
-    let targetTime, targetRole;
-    
-    if (timeElapsed < ROLES.VERIFIED.timeRequired) {
-        targetTime = ROLES.VERIFIED.timeRequired;
-        targetRole = 'Verified';
-        roleBadge.className = 'role-badge unverified';
-        roleBadge.textContent = '🔴 UNVERIFIED';
-    } else if (timeElapsed < ROLES.TRUSTED.timeRequired) {
-        targetTime = ROLES.TRUSTED.timeRequired;
-        targetRole = 'Trusted';
-        roleBadge.className = 'role-badge verified';
-        roleBadge.textContent = '🟡 VERIFIED';
-    } else {
-        roleBadge.className = 'role-badge trusted';
-        roleBadge.textContent = '🟢 TRUSTED';
-        progressFill.style.width = '100%';
-        progressPercentage.textContent = '100%';
-        timeRemaining.textContent = 'Max rank!';
-        nextRole.textContent = 'Current: Trusted';
-        return;
-    }
-    
-    const progress = Math.min(100, (timeElapsed / targetTime) * 100);
-    progressFill.style.width = progress + '%';
-    progressPercentage.textContent = Math.round(progress) + '%';
-    
-    const remaining = targetTime - timeElapsed;
-    const minutes = Math.floor(remaining / 60000);
-    const seconds = Math.floor((remaining % 60000) / 1000);
-    timeRemaining.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    nextRole.textContent = `Next: ${targetRole}`;
-    
-    checkAndUpdateRole();
-}
-
-async function checkAndUpdateRole() {
-    if (!currentUser || currentUser.username === ADMIN_USERNAME) return;
-    
-    const userData = dataCache?.users?.[currentUser.username];
-    const joinTime = userData?.joinTime || sessionStartTime;
-    const timeElapsed = Date.now() - joinTime;
-    
-    let newRole = null;
-    
-    if (timeElapsed >= ROLES.TRUSTED.timeRequired && (!userData?.role || userData.role.name !== 'TRUSTED')) {
-        newRole = { name: 'TRUSTED', ...ROLES.TRUSTED };
-    } else if (timeElapsed >= ROLES.VERIFIED.timeRequired && (!userData?.role || userData.role.name === 'UNVERIFIED')) {
-        newRole = { name: 'VERIFIED', ...ROLES.VERIFIED };
-    }
-    
-    if (newRole) {
-        try {
-            const docRef = db.collection('system').doc('config');
-            const doc = await docRef.get();
-            const data = doc.data();
-            
-            if (!data.users) data.users = {};
-            if (!data.users[currentUser.username]) {
-                data.users[currentUser.username] = { joinTime };
-            }
-            data.users[currentUser.username].role = newRole;
-            
-            await docRef.update({ users: data.users });
-            showToast('Role upgraded to ' + newRole.name + '!', 'success');
-            updateRoleDisplay();
-        } catch (error) {
-            console.error('Error updating role:', error);
-        }
-    }
-}
-
-function updateRoleDisplay() {
-    const role = getUserRole();
-    const roleBadge = document.getElementById('roleBadge');
-    
-    if (roleBadge) {
-        if (role.name === 'UNVERIFIED') {
-            roleBadge.className = 'role-badge unverified';
-            roleBadge.textContent = '🔴 UNVERIFIED';
-        } else if (role.name === 'VERIFIED') {
-            roleBadge.className = 'role-badge verified';
-            roleBadge.textContent = '🟡 VERIFIED';
-        } else if (role.name === 'TRUSTED') {
-            roleBadge.className = 'role-badge trusted';
-            roleBadge.textContent = '🟢 TRUSTED';
-        } else if (role.name === 'Admin') {
-            roleBadge.className = 'role-badge admin';
-            roleBadge.textContent = '👑 ADMIN';
-        }
-    }
-}
-
 // ==================== AUTHENTICATION ====================
-async function handleAuth(action) {
-    const authStatus = document.getElementById('authStatus');
-    let username, password;
-    
-    if (action === 'login') {
-        username = document.getElementById('l-user').value.trim();
-        password = document.getElementById('l-pass').value.trim();
-    } else {
-        username = document.getElementById('s-user').value.trim();
-        password = document.getElementById('s-pass').value.trim();
-    }
+function switchAuthTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+    document.getElementById('signupForm').classList.toggle('hidden', tab !== 'signup');
+    document.getElementById('authError').textContent = '';
+}
+
+async function handleLogin() {
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    const errorEl = document.getElementById('authError');
     
     if (!username || !password) {
-        authStatus.textContent = 'Please fill in all fields';
+        errorEl.textContent = 'Please fill in all fields';
         return;
     }
     
-    showLoading('Authenticating...');
+    showLoading('Signing in...');
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        const user = data.users?.[username];
+        
+        if (!user || user.password !== password) {
+            errorEl.textContent = 'Invalid username or password';
+            hideLoading();
+            return;
+        }
+        
+        currentUser = { 
+            username, 
+            role: user.role || ROLES.UNVERIFIED,
+            joinTime: user.joinTime || Date.now(),
+            isPremium: user.isPremium || false
+        };
+        
+        isAdmin = (username === ADMIN_USERNAME);
+        
+        localStorage.setItem('RSQ_CREATOR_USER', JSON.stringify(currentUser));
+        
+        document.getElementById('authScreen').classList.add('hidden');
+        document.getElementById('mainApp').classList.remove('hidden');
+        document.getElementById('displayUsername').textContent = username;
+        document.getElementById('userInitial').textContent = username[0].toUpperCase();
+        
+        initializeApp();
+    } catch (error) {
+        errorEl.textContent = 'Error: ' + error.message;
+    } finally {
+        hideLoading();
+    }
+}
+
+async function handleSignup() {
+    const username = document.getElementById('signupUsername').value.trim();
+    const password = document.getElementById('signupPassword').value.trim();
+    const errorEl = document.getElementById('authError');
+    
+    if (!username || !password) {
+        errorEl.textContent = 'Please fill in all fields';
+        return;
+    }
+    
+    if (username.length < 3) {
+        errorEl.textContent = 'Username must be at least 3 characters';
+        return;
+    }
+    
+    showLoading('Creating account...');
     
     try {
         const docRef = db.collection('system').doc('config');
@@ -1211,131 +1302,352 @@ async function handleAuth(action) {
         
         if (!data.users) data.users = {};
         
-        if (action === 'signup') {
-            if (data.users[username]) {
-                authStatus.textContent = 'Username already exists';
-                hideLoading();
-                return;
-            }
-            
-            data.users[username] = {
-                password,
-                joinTime: Date.now(),
-                role: ROLES.UNVERIFIED
-            };
-            
-            await docRef.update({ users: data.users });
-            authStatus.textContent = 'Account created! Please login.';
-            authStatus.style.color = 'var(--success)';
-            toggleAuth(false);
-        } else {
-            const user = data.users[username];
-            
-            if (!user || user.password !== password) {
-                authStatus.textContent = 'Invalid credentials';
-                hideLoading();
-                return;
-            }
-            
-            currentUser = { username, role: user.role || ROLES.UNVERIFIED };
-            sessionStartTime = user.joinTime || Date.now();
-            
-            localStorage.setItem('RSQ_CURRENT_USER', JSON.stringify(currentUser));
-            
-            document.getElementById('authPanel').classList.add('hidden');
-            document.getElementById('mainSystem').classList.remove('hidden');
-            document.getElementById('welcomeUser').textContent = 'Logged in as: ' + username;
-            
-            document.getElementById('adminBtn').style.display = username === ADMIN_USERNAME ? 'block' : 'none';
-            if (username === ADMIN_USERNAME) {
-                document.getElementById('adminInput').value = ADMIN_PASSWORD;
-            }
-            
-            updateRoleDisplay();
-            if (roleUpdateInterval) clearInterval(roleUpdateInterval);
-            roleUpdateInterval = setInterval(updateRoleProgress, 1000);
-            updateRoleProgress();
+        if (data.users[username]) {
+            errorEl.textContent = 'Username already exists';
+            hideLoading();
+            return;
         }
+        
+        data.users[username] = {
+            password,
+            joinTime: Date.now(),
+            role: ROLES.UNVERIFIED,
+            isPremium: false
+        };
+        
+        await docRef.update({ users: data.users });
+        
+        errorEl.style.color = 'var(--success)';
+        errorEl.textContent = 'Account created! Please sign in.';
+        
+        setTimeout(() => {
+            switchAuthTab('login');
+            errorEl.style.color = 'var(--danger)';
+            errorEl.textContent = '';
+        }, 1500);
     } catch (error) {
-        authStatus.textContent = 'Error: ' + error.message;
+        errorEl.textContent = 'Error: ' + error.message;
     } finally {
         hideLoading();
     }
 }
 
-function toggleAuth(showSignup) {
-    document.getElementById('loginView').classList.toggle('hidden', showSignup);
-    document.getElementById('signupView').classList.toggle('hidden', !showSignup);
-    document.getElementById('authStatus').textContent = '';
-}
-
 function logout() {
     if (confirm('Logout?')) {
         currentUser = null;
-        localStorage.removeItem('RSQ_CURRENT_USER');
+        localStorage.removeItem('RSQ_CREATOR_USER');
         if (roleUpdateInterval) clearInterval(roleUpdateInterval);
         location.reload();
     }
 }
 
-// ==================== GAMES BROWSER ====================
-function showHomePanel() {
-    document.getElementById('homePanel').classList.remove('hidden');
-    document.getElementById('gamesBrowserPanel').classList.add('hidden');
-    document.getElementById('gameScriptsView').classList.add('hidden');
-    document.getElementById('myScriptsPanel').classList.add('hidden');
+// ==================== APP INITIALIZATION ====================
+async function initializeApp() {
+    await loadData();
+    setupRealtimeListener();
+    renderGames();
+    updateRoleDisplay();
+    startRoleProgress();
+    updateStats();
+    updateAdminPanel();
 }
 
-function showGamesBrowser() {
-    document.getElementById('homePanel').classList.add('hidden');
-    document.getElementById('gamesBrowserPanel').classList.remove('hidden');
-    document.getElementById('gameScriptsView').classList.add('hidden');
-    document.getElementById('myScriptsPanel').classList.add('hidden');
-    loadAllGames();
+async function loadData() {
+    try {
+        const doc = await db.collection('system').doc('config').get();
+        dataCache = doc.data() || {};
+        
+        if (!dataCache.games) {
+            dataCache.games = [];
+            await db.collection('system').doc('config').update({ games: [] });
+        }
+        if (!dataCache.settings) {
+            dataCache.settings = { premiumGamepassId: '' };
+        }
+    } catch (error) {
+        console.error('Error loading data:', error);
+    }
 }
 
-function showMyScripts() {
-    document.getElementById('homePanel').classList.add('hidden');
-    document.getElementById('gamesBrowserPanel').classList.add('hidden');
-    document.getElementById('gameScriptsView').classList.add('hidden');
-    document.getElementById('myScriptsPanel').classList.remove('hidden');
-    loadMyPrivateScripts();
+function setupRealtimeListener() {
+    db.collection('system').doc('config').onSnapshot((doc) => {
+        if (doc.exists) {
+            dataCache = doc.data();
+            if (document.getElementById('gamesPage').classList.contains('active')) {
+                renderGames();
+            }
+            if (document.getElementById('myScriptsPage').classList.contains('active')) {
+                renderMyScripts();
+            }
+            if (selectedGameId && document.getElementById('gameScriptsView').classList.contains('active')) {
+                renderGameScripts();
+            }
+            updateStats();
+            updateAdminPanel();
+        }
+    });
 }
 
-function loadAllGames() {
-    const games = dataCache?.games || [];
-    const container = document.getElementById('allGamesList');
+// ==================== ROLE & PREMIUM SYSTEM ====================
+function getUserRole() {
+    if (!currentUser) return ROLES.UNVERIFIED;
+    if (currentUser.username === ADMIN_USERNAME) return { name: 'Admin' };
+    const userData = dataCache?.users?.[currentUser.username];
+    return userData?.role || ROLES.UNVERIFIED;
+}
+
+function updateRoleDisplay() {
+    const role = getUserRole();
+    const badge = document.getElementById('roleBadge');
     
-    // Filter out games without ID (like universal if it exists)
-    const publicGames = games.filter(g => g.id && g.id !== 'UNIVERSAL');
+    if (role.name === 'UNVERIFIED') {
+        badge.className = 'role-badge unverified';
+        badge.textContent = '🔴 UNVERIFIED';
+    } else if (role.name === 'VERIFIED') {
+        badge.className = 'role-badge verified';
+        badge.textContent = '🟡 VERIFIED';
+    } else if (role.name === 'TRUSTED') {
+        badge.className = 'role-badge trusted';
+        badge.textContent = '🟢 TRUSTED';
+    } else if (role.name === 'Admin') {
+        badge.className = 'role-badge admin';
+        badge.textContent = '👑 ADMIN';
+    }
     
-    if (publicGames.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:40px; grid-column:1/-1;">No games available</div>';
+    if (currentUser?.isPremium) {
+        document.getElementById('premiumBadge').classList.remove('hidden');
+    }
+}
+
+function startRoleProgress() {
+    if (roleUpdateInterval) clearInterval(roleUpdateInterval);
+    updateRoleProgress();
+    roleUpdateInterval = setInterval(updateRoleProgress, 1000);
+}
+
+async function updateRoleProgress() {
+    if (!currentUser || currentUser.username === ADMIN_USERNAME) return;
+    
+    const userData = dataCache?.users?.[currentUser.username];
+    const joinTime = userData?.joinTime || currentUser.joinTime;
+    const timeElapsed = Date.now() - joinTime;
+    
+    // Regular role progress
+    const progressFill = document.getElementById('progressFill');
+    const progressPercent = document.getElementById('progressPercent');
+    const timeRemaining = document.getElementById('timeRemaining');
+    const nextRole = document.getElementById('nextRole');
+    const roleBadge = document.getElementById('roleBadge');
+    
+    if (progressFill) {
+        let targetTime, targetRoleName;
+        
+        if (timeElapsed < ROLES.VERIFIED.timeRequired) {
+            targetTime = ROLES.VERIFIED.timeRequired;
+            targetRoleName = 'Verified';
+            roleBadge.className = 'role-badge unverified';
+            roleBadge.textContent = '🔴 UNVERIFIED';
+        } else if (timeElapsed < ROLES.TRUSTED.timeRequired) {
+            targetTime = ROLES.TRUSTED.timeRequired;
+            targetRoleName = 'Trusted';
+            roleBadge.className = 'role-badge verified';
+            roleBadge.textContent = '🟡 VERIFIED';
+        } else {
+            roleBadge.className = 'role-badge trusted';
+            roleBadge.textContent = '🟢 TRUSTED';
+            progressFill.style.width = '100%';
+            progressPercent.textContent = '100%';
+            timeRemaining.textContent = 'Max rank!';
+            nextRole.textContent = 'Current: Trusted';
+        }
+        
+        if (timeElapsed < ROLES.TRUSTED.timeRequired) {
+            const progress = Math.min(100, (timeElapsed / targetTime) * 100);
+            progressFill.style.width = progress + '%';
+            progressPercent.textContent = Math.round(progress) + '%';
+            
+            const remaining = targetTime - timeElapsed;
+            const minutes = Math.floor(remaining / 60000);
+            const seconds = Math.floor((remaining % 60000) / 1000);
+            timeRemaining.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            nextRole.textContent = `Next: ${targetRoleName}`;
+        }
+    }
+    
+    // Premium timer (5 minutes)
+    const premiumTimerSection = document.getElementById('premiumTimerSection');
+    const premiumTimerFill = document.getElementById('premiumTimerFill');
+    const premiumTimerPercent = document.getElementById('premiumTimerPercent');
+    const premiumTimeRemaining = document.getElementById('premiumTimeRemaining');
+    
+    if (premiumTimerSection) {
+        if (!currentUser.isPremium && !isAdmin) {
+            premiumTimerSection.classList.remove('hidden');
+            
+            if (timeElapsed < PREMIUM_WAIT_TIME) {
+                const progress = (timeElapsed / PREMIUM_WAIT_TIME) * 100;
+                premiumTimerFill.style.width = progress + '%';
+                premiumTimerPercent.textContent = Math.round(progress) + '%';
+                
+                const remaining = PREMIUM_WAIT_TIME - timeElapsed;
+                const minutes = Math.floor(remaining / 60000);
+                const seconds = Math.floor((remaining % 60000) / 1000);
+                premiumTimeRemaining.textContent = `${minutes}:${seconds.toString().padStart(2, '0')} remaining`;
+                
+                canCreatePremium = false;
+                premiumUnlocked = false;
+            } else {
+                premiumTimerFill.style.width = '100%';
+                premiumTimerPercent.textContent = '100%';
+                premiumTimeRemaining.textContent = '✅ Premium unlocked!';
+                canCreatePremium = true;
+                premiumUnlocked = true;
+            }
+        } else {
+            premiumTimerSection.classList.add('hidden');
+            canCreatePremium = true;
+            premiumUnlocked = true;
+        }
+    }
+    
+    // Auto-update role
+    const currentRole = getUserRole();
+    if (timeElapsed >= ROLES.TRUSTED.timeRequired && currentRole.name !== 'TRUSTED' && currentRole.name !== 'Admin') {
+        await updateUserRole('TRUSTED');
+    } else if (timeElapsed >= ROLES.VERIFIED.timeRequired && currentRole.name === 'UNVERIFIED') {
+        await updateUserRole('VERIFIED');
+    }
+}
+
+async function updateUserRole(roleName) {
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        if (!data.users[currentUser.username]) return;
+        
+        data.users[currentUser.username].role = ROLES[roleName];
+        await docRef.update({ users: data.users });
+        
+        currentUser.role = ROLES[roleName];
+        updateRoleDisplay();
+        showToast(`Role upgraded to ${roleName}!`, 'success');
+    } catch (error) {
+        console.error('Error updating role:', error);
+    }
+}
+
+// ==================== KEY GENERATION ====================
+async function generateKey() {
+    const userId = document.getElementById('robloxUserId').value.trim();
+    
+    if (!userId || !/^\d+$/.test(userId)) {
+        showToast('Please enter a valid Roblox User ID', 'error');
         return;
     }
     
-    container.innerHTML = publicGames.map((game, index) => {
-        const originalIndex = games.indexOf(game);
+    showLoading('Generating key...');
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        if (!data.keys) data.keys = {};
+        
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let newKey = '';
+        for (let i = 0; i < 16; i++) {
+            newKey += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        
+        data.keys[newKey] = {
+            userId: parseInt(userId),
+            created: Date.now(),
+            createdBy: currentUser.username
+        };
+        
+        await docRef.update({ keys: data.keys });
+        
+        document.getElementById('generatedKey').textContent = newKey;
+        document.getElementById('keyResult').classList.remove('hidden');
+        
+        const loadstring = `loadstring(game:HttpGet("https://raw.githubusercontent.com/defnot67kid-beep/KeySytem/refs/heads/main/key.lua"))()`;
+        document.getElementById('loadstringDisplay').innerHTML = `📋 ${loadstring} (click to copy)`;
+        
+        showToast('Key generated!', 'success');
+    } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+function copyLoadstring() {
+    const text = document.getElementById('loadstringDisplay').textContent.replace('📋 ', '').replace(' (click to copy)', '');
+    navigator.clipboard.writeText(text).then(() => showToast('Copied!', 'success'));
+}
+
+// ==================== STATS ====================
+function updateStats() {
+    const users = dataCache?.users || {};
+    const games = dataCache?.games || [];
+    let totalScripts = 0;
+    games.forEach(g => totalScripts += (g.scripts || []).length);
+    
+    document.getElementById('userCount').textContent = Object.keys(users).length;
+    document.getElementById('gameCount').textContent = games.filter(g => g.id && g.id !== 'UNIVERSAL').length;
+    document.getElementById('scriptCount').textContent = totalScripts;
+}
+
+// ==================== GAMES ====================
+function renderGames() {
+    const games = dataCache?.games || [];
+    const publicGames = games.filter(g => g.id && g.id !== 'UNIVERSAL');
+    const container = document.getElementById('gamesGrid');
+    
+    if (publicGames.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state" style="grid-column: 1/-1;">
+                <div class="empty-state-icon">🎮</div>
+                <p>No games available yet</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = publicGames.map(game => {
+        const userScriptCount = (game.scripts || []).filter(s => s.createdBy === currentUser?.username).length;
         return `
-            <div class="game-card-browser" onclick="viewGameScripts(${originalIndex})">
-                ${game.image ? `<img src="${game.image}" class="game-card-image">` : '<div class="game-card-image"></div>'}
-                <div class="game-card-title">${game.name}</div>
-                <div class="game-card-id">ID: ${game.id}</div>
-                <div style="font-size:11px; opacity:0.8;">${(game.scripts || []).filter(s => s.visibility !== 'private' || s.owner === currentUser?.username).length} scripts</div>
+            <div class="game-card ${game.premium ? 'premium-game' : ''}" onclick="selectGame('${game.id}')">
+                ${game.premium ? '<span class="game-badge">👑 PREMIUM</span>' : ''}
+                ${game.image ? `<img src="${game.image}" class="game-image" alt="${game.name}">` : 
+                  `<div class="game-image" style="display: flex; align-items: center; justify-content: center; font-size: 48px;">🎮</div>`}
+                <div class="game-info">
+                    <div class="game-name">${game.name}</div>
+                    <div class="game-id">ID: ${game.id}</div>
+                    <div class="game-meta">
+                        <span>📜</span> ${userScriptCount} your script${userScriptCount !== 1 ? 's' : ''}
+                    </div>
+                </div>
             </div>
         `;
     }).join('');
 }
 
-function viewGameScripts(gameIndex) {
-    selectedGameForUpload = gameIndex;
-    selectedGameForPrivateUpload = gameIndex;
-    const game = dataCache.games[gameIndex];
+function selectGame(gameId) {
+    const game = dataCache?.games?.find(g => g.id === gameId);
+    if (!game) return;
     
-    document.getElementById('homePanel').classList.add('hidden');
-    document.getElementById('gamesBrowserPanel').classList.add('hidden');
-    document.getElementById('gameScriptsView').classList.remove('hidden');
-    document.getElementById('myScriptsPanel').classList.add('hidden');
+    // Check premium game access
+    if (game.premium && !premiumUnlocked && !isAdmin) {
+        showToast('This game requires premium access (5 minute wait)', 'error');
+        return;
+    }
+    
+    selectedGameId = gameId;
+    selectedGameData = game;
     
     document.getElementById('viewGameName').textContent = game.name;
     document.getElementById('viewGameId').textContent = `ID: ${game.id}`;
@@ -1348,124 +1660,493 @@ function viewGameScripts(gameIndex) {
         gameImage.style.display = 'none';
     }
     
-    document.getElementById('privateUploadGameName').textContent = game.name;
+    document.getElementById('selectedGameName').textContent = game.name;
     
-    renderGameScriptsList(gameIndex);
+    renderGameScripts();
+    
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('gameScriptsView').classList.add('active');
 }
 
-function renderGameScriptsList(gameIndex) {
-    const game = dataCache.games[gameIndex];
-    // Show public scripts + user's own private scripts
-    const scripts = (game.scripts || []).filter(s => 
-        s.approved !== false && (s.visibility !== 'private' || s.owner === currentUser?.username)
-    );
+function renderGameScripts() {
+    const game = selectedGameData;
+    const userScripts = (game.scripts || []).filter(s => s.createdBy === currentUser?.username);
     const container = document.getElementById('gameScriptsList');
     
-    if (scripts.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.5);">No scripts available</div>';
-        return;
-    }
-    
-    container.innerHTML = scripts.map((script, idx) => {
-        const isOwner = script.owner === currentUser?.username;
-        const isPrivate = script.visibility === 'private';
-        
-        return `
-            <div class="script-item ${isPrivate ? 'private-script' : 'admin-script'}">
-                <div class="script-info">
-                    <div class="script-name">
-                        ${script.name}
-                        ${isPrivate ? '<span class="private-badge">🔒 Private</span>' : '<span class="visibility-badge public">🌐 Public</span>'}
-                    </div>
-                    <div class="script-meta">
-                        👤 ${script.owner || script.addedBy || 'System'}
-                    </div>
-                </div>
-                <button class="mini success" onclick="copyScriptForExecution('${btoa(JSON.stringify({...script, gameName: game.name, gameId: game.id}))}')">📋 Copy</button>
+    if (userScripts.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <p>You haven't created any scripts for this game yet</p>
             </div>
         `;
-    }).join('');
-}
-
-function copyScriptForExecution(encoded) {
-    const script = JSON.parse(atob(encoded));
-    
-    const executionPayload = {
-        type: script.code ? 'code' : 'url',
-        content: script.code || script.url,
-        name: script.name,
-        gameId: script.gameId,
-        gameName: script.gameName
-    };
-    
-    navigator.clipboard.writeText(JSON.stringify(executionPayload)).then(() => {
-        showToast('Script payload copied!', 'success');
-    });
-}
-
-// ==================== MY PRIVATE SCRIPTS ====================
-function loadMyPrivateScripts() {
-    if (!currentUser) return;
-    
-    const myScripts = [];
-    if (dataCache?.games) {
-        dataCache.games.forEach(game => {
-            if (game.scripts) {
-                game.scripts.forEach(script => {
-                    if (script.owner === currentUser.username) {
-                        myScripts.push({ ...script, gameName: game.name, gameId: game.id });
-                    }
-                });
-            }
-        });
-    }
-    
-    const container = document.getElementById('myPrivateScriptsList');
-    
-    if (myScripts.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.5);">You haven\'t uploaded any private scripts yet.<br>Go to a game and click "Upload Private Script" to add one.</div>';
         return;
     }
     
-    container.innerHTML = myScripts.map(script => `
-        <div class="script-item private-script">
-            <div class="script-info">
-                <div class="script-name">
+    container.innerHTML = userScripts.map(script => `
+        <div class="script-item ${script.premium ? 'premium-script' : ''}">
+            <div class="script-header">
+                <span class="script-name">
                     ${script.name}
-                    <span class="private-badge">🔒 Private</span>
-                </div>
-                <div class="script-meta">
-                    🎮 ${script.gameName} • Game ID: ${script.gameId}
+                    ${script.premium ? '<span class="premium-badge">👑 PREMIUM</span>' : ''}
+                    <span class="owner-badge">🔒 YOURS</span>
+                </span>
+                <div class="script-actions">
+                    <button class="btn-icon" onclick="openEditScriptModal('${script.id}')">✏️ Edit</button>
+                    <button class="btn-icon danger" onclick="deleteScript('${script.id}')">🗑️ Delete</button>
                 </div>
             </div>
-            <div style="display:flex; gap:5px;">
-                <button class="mini success" onclick="copyPrivateScript('${btoa(JSON.stringify(script))}')">📋 Copy</button>
-                <button class="mini danger" onclick="deletePrivateScript('${script.gameId}', '${script.name}')">🗑️</button>
+            ${script.description ? `<div class="script-description">${script.description}</div>` : ''}
+            <div class="script-meta">
+                <span>📅 ${new Date(script.createdAt).toLocaleDateString()}</span>
+                <span>🔧 ${script.type === 'url' ? 'URL' : 'Lua Script'}</span>
+                ${script.premium ? `<span>💰 ${script.price || 0} R$</span>` : ''}
             </div>
         </div>
     `).join('');
 }
 
-function copyPrivateScript(encoded) {
-    const script = JSON.parse(atob(encoded));
+// ==================== MY SCRIPTS ====================
+function renderMyScripts() {
+    const myScripts = [];
     
-    const executionPayload = {
-        type: script.code ? 'code' : 'url',
-        content: script.code || script.url,
-        name: script.name,
-        gameId: script.gameId,
-        gameName: script.gameName
-    };
+    for (const game of dataCache?.games || []) {
+        for (const script of game.scripts || []) {
+            if (script.createdBy === currentUser?.username) {
+                myScripts.push({ ...script, gameName: game.name, gameId: game.id });
+            }
+        }
+    }
     
-    navigator.clipboard.writeText(JSON.stringify(executionPayload)).then(() => {
-        showToast('Private script copied!', 'success');
+    const container = document.getElementById('myScriptsList');
+    
+    if (myScripts.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📜</div>
+                <p>You haven't created any scripts yet</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // Group by game
+    const scriptsByGame = {};
+    myScripts.forEach(script => {
+        if (!scriptsByGame[script.gameId]) {
+            scriptsByGame[script.gameId] = { gameName: script.gameName, scripts: [] };
+        }
+        scriptsByGame[script.gameId].scripts.push(script);
     });
+    
+    container.innerHTML = Object.entries(scriptsByGame).map(([gameId, data]) => `
+        <div style="margin-bottom: 25px;">
+            <h3 style="margin-bottom: 15px; color: var(--secondary);">🎮 ${data.gameName}</h3>
+            ${data.scripts.map(script => `
+                <div class="script-item ${script.premium ? 'premium-script' : ''}">
+                    <div class="script-header">
+                        <span class="script-name">
+                            ${script.name}
+                            ${script.premium ? '<span class="premium-badge">👑 PREMIUM</span>' : ''}
+                            <span class="owner-badge">🔒 YOURS</span>
+                        </span>
+                        <div class="script-actions">
+                            <button class="btn-icon" onclick="openEditScriptModal('${script.id}')">✏️ Edit</button>
+                            <button class="btn-icon danger" onclick="deleteScript('${script.id}')">🗑️ Delete</button>
+                        </div>
+                    </div>
+                    ${script.description ? `<div class="script-description">${script.description}</div>` : ''}
+                    <div class="script-meta">
+                        <span>📅 ${new Date(script.createdAt).toLocaleDateString()}</span>
+                        <span>🔧 ${script.type === 'url' ? 'URL' : 'Lua Script'}</span>
+                        ${script.premium ? `<span>💰 ${script.price || 0} R$</span>` : ''}
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `).join('');
 }
 
-async function deletePrivateScript(gameId, scriptName) {
-    if (!confirm(`Delete "${scriptName}"? This cannot be undone.`)) return;
+// ==================== SCRIPT MANAGEMENT ====================
+function openCreateScriptModal() {
+    if (!selectedGameId) {
+        showToast('Select a game first', 'error');
+        return;
+    }
     
-    showLoading('Deleting script...');
+    // Check if premium option should be shown
+    if (premiumUnlocked || isAdmin) {
+        document.getElementById('premiumScriptOption').classList.remove('hidden');
+    } else {
+        document.getElementById('premiumScriptOption').classList.add('hidden');
+    }
+    
+    document.getElementById('createScriptModal').classList.remove('hidden');
+    
+    if (!monacoEditor) {
+        require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
+        require(['vs/editor/editor.main'], function() {
+            monacoEditor = monaco.editor.create(document.getElementById('monacoEditor'), {
+                value: '-- Write your Lua script here\n-- Only YOU can see this script\n\nprint("Hello!")',
+                language: 'lua',
+                theme: 'vs-dark',
+                minimap: { enabled: false },
+                fontSize: 13,
+                automaticLayout: true
+            });
+        });
+    }
+}
+
+function closeCreateScriptModal() {
+    document.getElementById('createScriptModal').classList.add('hidden');
+    document.getElementById('scriptNameInput').value = '';
+    document.getElementById('scriptDescInput').value = '';
+    document.getElementById('scriptUrlInput').value = '';
+    document.getElementById('scriptPremiumCheck').checked = false;
+    document.getElementById('premiumOptions').classList.add('hidden');
+}
+
+function setScriptType(type) {
+    currentScriptType = type;
+    document.querySelectorAll('#createScriptModal .tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('urlInputSection').classList.toggle('hidden', type !== 'url');
+    document.getElementById('editorSection').classList.toggle('hidden', type !== 'editor');
+}
+
+function togglePremiumOptions() {
+    document.getElementById('premiumOptions').classList.toggle('hidden', !document.getElementById('scriptPremiumCheck').checked);
+}
+
+async function saveScript() {
+    const name = document.getElementById('scriptNameInput').value.trim();
+    const description = document.getElementById('scriptDescInput').value.trim();
+    const isPremium = document.getElementById('scriptPremiumCheck').checked;
+    
+    if (!name) {
+        showToast('Enter script name', 'error');
+        return;
+    }
+    
+    if (!selectedGameId) {
+        showToast('No game selected', 'error');
+        return;
+    }
+    
+    let content;
+    if (currentScriptType === 'url') {
+        content = document.getElementById('scriptUrlInput').value.trim();
+        if (!content) {
+            showToast('Enter script URL', 'error');
+            return;
+        }
+    } else {
+        if (!monacoEditor) {
+            showToast('Editor not initialized', 'error');
+            return;
+        }
+        content = monacoEditor.getValue();
+        if (!content.trim()) {
+            showToast('Write your script', 'error');
+            return;
+        }
+    }
+    
+    showLoading('Saving script...');
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        const gameIndex = data.games.findIndex(g => g.id === selectedGameId);
+        if (gameIndex === -1) throw new Error('Game not found');
+        
+        if (!data.games[gameIndex].scripts) data.games[gameIndex].scripts = [];
+        
+        const scriptId = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        
+        const scriptData = {
+            id: scriptId,
+            name,
+            description,
+            type: currentScriptType,
+            content: content,
+            createdBy: currentUser.username,
+            createdAt: Date.now(),
+            gameId: selectedGameId,
+            visibility: 'private'
+        };
+        
+        if (isPremium && (premiumUnlocked || isAdmin)) {
+            scriptData.premium = true;
+            scriptData.gamepassId = document.getElementById('scriptGamepassId').value.trim() || dataCache.settings?.premiumGamepassId;
+            scriptData.price = parseInt(document.getElementById('scriptPrice').value) || 0;
+        }
+        
+        data.games[gameIndex].scripts.push(scriptData);
+        
+        await docRef.update({ games: data.games });
+        
+        closeCreateScriptModal();
+        showToast('Script saved!', 'success');
+        renderGameScripts();
+    } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+let currentEditingScript = null;
+
+function openEditScriptModal(scriptId) {
+    const script = findScript(scriptId);
+    if (!script || script.createdBy !== currentUser?.username) {
+        showToast('You can only edit your own scripts', 'error');
+        return;
+    }
+    
+    currentEditingScript = script;
+    
+    document.getElementById('editScriptNameInput').value = script.name || '';
+    document.getElementById('editScriptDescInput').value = script.description || '';
+    
+    if (script.type === 'url') {
+        document.getElementById('editScriptUrlInput').value = script.content || '';
+        setEditScriptType('url');
+    } else {
+        setEditScriptType('editor');
+        setTimeout(() => {
+            if (editMonacoEditor) {
+                editMonacoEditor.setValue(script.content || '');
+            }
+        }, 100);
+    }
+    
+    document.getElementById('editScriptModal').classList.remove('hidden');
+    
+    if (!editMonacoEditor) {
+        require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
+        require(['vs/editor/editor.main'], function() {
+            editMonacoEditor = monaco.editor.create(document.getElementById('editMonacoEditor'), {
+                value: script.content || '',
+                language: 'lua',
+                theme: 'vs-dark',
+                minimap: { enabled: false },
+                fontSize: 13,
+                automaticLayout: true
+            });
+        });
+    }
+}
+
+function closeEditScriptModal() {
+    document.getElementById('editScriptModal').classList.add('hidden');
+    currentEditingScript = null;
+}
+
+function setEditScriptType(type) {
+    currentEditScriptType = type;
+    document.querySelectorAll('#editScriptModal .tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('editUrlInputSection').classList.toggle('hidden', type !== 'url');
+    document.getElementById('editEditorSection').classList.toggle('hidden', type !== 'editor');
+}
+
+async function updateScript() {
+    if (!currentEditingScript) return;
+    
+    const name = document.getElementById('editScriptNameInput').value.trim();
+    const description = document.getElementById('editScriptDescInput').value.trim();
+    
+    if (!name) {
+        showToast('Enter script name', 'error');
+        return;
+    }
+    
+    let content;
+    if (currentEditScriptType === 'url') {
+        content = document.getElementById('editScriptUrlInput').value.trim();
+        if (!content) {
+            showToast('Enter script URL', 'error');
+            return;
+        }
+    } else {
+        if (!editMonacoEditor) {
+            showToast('Editor not initialized', 'error');
+            return;
+        }
+        content = editMonacoEditor.getValue();
+        if (!content.trim()) {
+            showToast('Write your script', 'error');
+            return;
+        }
+    }
+    
+    showLoading('Updating script...');
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        for (const game of data.games) {
+            const scriptIndex = game.scripts?.findIndex(s => s.id === currentEditingScript.id);
+            if (scriptIndex !== -1) {
+                game.scripts[scriptIndex].name = name;
+                game.scripts[scriptIndex].description = description;
+                game.scripts[scriptIndex].type = currentEditScriptType;
+                game.scripts[scriptIndex].content = content;
+                break;
+            }
+        }
+        
+        await docRef.update({ games: data.games });
+        
+        closeEditScriptModal();
+        showToast('Script updated!', 'success');
+        
+        if (document.getElementById('gameScriptsView').classList.contains('active')) {
+            renderGameScripts();
+        }
+        if (document.getElementById('myScriptsPage').classList.contains('active')) {
+            renderMyScripts();
+        }
+    } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function deleteScript(scriptId) {
+    if (!confirm('Delete this script? This cannot be undone.')) return;
+    
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data();
+        
+        for (const game of data.games) {
+            if (game.scripts) {
+                const script = game.scripts.find(s => s.id === scriptId);
+                if (script && script.createdBy !== currentUser?.username && !isAdmin) {
+                    showToast('You can only delete your own scripts', 'error');
+                    return;
+                }
+                game.scripts = game.scripts.filter(s => s.id !== scriptId);
+            }
+        }
+        
+        await docRef.update({ games: data.games });
+        
+        showToast('Script deleted', 'success');
+        
+        if (document.getElementById('gameScriptsView').classList.contains('active')) {
+            renderGameScripts();
+        }
+        if (document.getElementById('myScriptsPage').classList.contains('active')) {
+            renderMyScripts();
+        }
+    } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+    }
+}
+
+function findScript(scriptId) {
+    for (const game of dataCache?.games || []) {
+        const script = game.scripts?.find(s => s.id === scriptId);
+        if (script) return script;
+    }
+    return null;
+}
+
+// ==================== ADMIN FUNCTIONS ====================
+function updateAdminPanel() {
+    if (!isAdmin) {
+        document.getElementById('adminPanel').classList.add('hidden');
+        return;
+    }
+    
+    document.getElementById('adminPanel').classList.remove('hidden');
+    document.getElementById('premiumGamepassIdInput').value = dataCache?.settings?.premiumGamepassId || '';
+    
+    renderAdminGamesList();
+    renderAllScriptsMonitor();
+}
+
+function renderAdminGamesList() {
+    const games = dataCache?.games || [];
+    const publicGames = games.filter(g => g.id && g.id !== 'UNIVERSAL');
+    const container = document.getElementById('adminGamesList');
+    
+    if (publicGames.length === 0) {
+        container.innerHTML = '<div class="empty-state">No games created</div>';
+        return;
+    }
+    
+    container.innerHTML = publicGames.map(game => `
+        <div class="admin-card">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                ${game.image ? `<img src="${game.image}" style="width: 40px; height: 40px; border-radius: 6px; object-fit: cover;">` : ''}
+                <div style="flex: 1;">
+                    <div style="font-weight: 600;">${game.name}</div>
+                    <div style="font-size: 10px; opacity: 0.6;">ID: ${game.id}</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 5px; font-size: 10px; margin-bottom: 10px;">
+                <span style="background: ${game.premium ? 'var(--premium)' : 'var(--success)'}; color: ${game.premium ? '#000' : '#fff'}; padding: 2px 6px; border-radius: 4px;">
+                    ${game.premium ? 'PREMIUM' : 'PUBLIC'}
+                </span>
+                <span style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">
+                    ${(game.scripts || []).length} scripts
+                </span>
+            </div>
+            <button class="btn-icon danger" onclick="adminDeleteGame('${game.id}')" style="width: 100%;">Delete Game</button>
+        </div>
+    `).join('');
+}
+
+function renderAllScriptsMonitor() {
+    const allScripts = [];
+    
+    for (const game of dataCache?.games || []) {
+        for (const script of game.scripts || []) {
+            allScripts.push({ ...script, gameName: game.name, gameId: game.id });
+        }
+    }
+    
+    const container = document.getElementById('allScriptsMonitor');
+    
+    if (allScripts.length === 0) {
+        container.innerHTML = '<div style="opacity: 0.6; padding: 20px; text-align: center;">No scripts</div>';
+        return;
+    }
+    
+    container.innerHTML = allScripts.slice(0, 20).map(script => `
+        <div style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; margin-bottom: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>${script.name}</strong> by ${script.createdBy || 'Unknown'}
+                    ${script.premium ? '<span class="premium-badge">👑 PREMIUM</span>' : ''}
+                </div>
+                <button class="btn-icon danger" onclick="adminDeleteScript('${script.gameId}', '${script.id}')">Delete</button>
+            </div>
+            <div style="font-size: 11px; opacity: 0.6; margin-top: 5px;">
+                Game: ${script.gameName} | ${script.type === 'url' ? 'URL' : 'Lua'}
+            </div>
+        </div>
+    `).join('');
+    
+    if (allScripts.length > 20) {
+        container.innerHTML += `<div style="text-align: center; opacity: 0.6; padding: 10px;">+ ${allScripts.length - 20} more scripts</div>`;
+    }
+}
+
+async function adminDeleteScript(gameId, scriptId) {
+    if (!confirm('Admin: Delete this script?')) return;
     
     try {
         const docRef = db.collection('system').doc('config');
@@ -1474,299 +2155,54 @@ async function deletePrivateScript(gameId, scriptName) {
         
         const game = data.games.find(g => g.id === gameId);
         if (game) {
-            game.scripts = game.scripts.filter(s => !(s.owner === currentUser.username && s.name === scriptName));
-            await docRef.update({ games: data.games });
-            showToast('Script deleted', 'success');
-            loadMyPrivateScripts();
+            game.scripts = game.scripts.filter(s => s.id !== scriptId);
         }
+        
+        await docRef.update({ games: data.games });
+        showToast('Script deleted', 'success');
+        renderAllScriptsMonitor();
     } catch (error) {
         showToast('Error: ' + error.message, 'error');
-    } finally {
-        hideLoading();
     }
 }
 
-// ==================== PRIVATE SCRIPT UPLOAD ====================
-function showPrivateScriptUploadModal() {
-    if (!currentUser) {
-        showToast('Please login first', 'error');
-        return;
-    }
-    
-    if (selectedGameForPrivateUpload === null) {
-        showToast('No game selected', 'error');
-        return;
-    }
-    
-    document.getElementById('privateScriptUploadModal').classList.remove('hidden');
-    
-    if (!privateMonacoEditor) {
-        require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
-        require(['vs/editor/editor.main'], function() {
-            privateMonacoEditor = monaco.editor.create(document.getElementById('privateMonacoEditor'), {
-                value: '-- Write your private Lua script here\n-- Only YOU can see this script\n\nprint("Hello!")',
-                language: 'lua',
-                theme: 'vs-dark',
-                minimap: { enabled: false },
-                fontSize: 13,
-                automaticLayout: true
-            });
-        });
-    }
-}
-
-function hidePrivateScriptUploadModal() {
-    document.getElementById('privateScriptUploadModal').classList.add('hidden');
-    document.getElementById('privateScriptNameInput').value = '';
-    document.getElementById('privateScriptDescriptionInput').value = '';
-    document.getElementById('privateScriptUrlInput').value = '';
-    document.getElementById('privateUploadStatus').textContent = '';
-    if (privateMonacoEditor) {
-        privateMonacoEditor.setValue('-- Write your private Lua script here\n-- Only YOU can see this script\n\nprint("Hello!")');
-    }
-}
-
-function setPrivateScriptType(type) {
-    currentPrivateScriptType = type;
-    document.querySelectorAll('#privateScriptUploadModal .toggle-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    document.getElementById('privateUrlInputSection').classList.toggle('hidden', type !== 'link');
-    document.getElementById('privateEditorSection').classList.toggle('hidden', type !== 'editor');
-}
-
-async function submitPrivateScript() {
-    const scriptName = document.getElementById('privateScriptNameInput').value.trim();
-    const scriptDescription = document.getElementById('privateScriptDescriptionInput').value.trim();
-    const uploadStatus = document.getElementById('privateUploadStatus');
-    
-    if (!scriptName) {
-        uploadStatus.textContent = 'Enter script name';
-        return;
-    }
-    
-    if (selectedGameForPrivateUpload === null) {
-        uploadStatus.textContent = 'No game selected';
-        return;
-    }
-    
-    showLoading('Uploading private script...');
+async function adminDeleteGame(gameId) {
+    if (!confirm('Admin: Delete this game and ALL its scripts?')) return;
     
     try {
-        let scriptContent;
-        
-        if (currentPrivateScriptType === 'link') {
-            scriptContent = document.getElementById('privateScriptUrlInput').value.trim();
-            if (!scriptContent) throw new Error('Enter script URL');
-        } else {
-            if (!privateMonacoEditor) throw new Error('Editor not initialized');
-            scriptContent = privateMonacoEditor.getValue();
-            if (!scriptContent.trim()) throw new Error('Enter script');
-        }
-        
         const docRef = db.collection('system').doc('config');
         const doc = await docRef.get();
         const data = doc.data();
         
-        const game = data.games[selectedGameForPrivateUpload];
-        if (!game.scripts) game.scripts = [];
-        
-        const newScript = {
-            name: scriptName,
-            description: scriptDescription,
-            url: currentPrivateScriptType === 'link' ? scriptContent : null,
-            code: currentPrivateScriptType === 'editor' ? scriptContent : null,
-            owner: currentUser.username,
-            submittedAt: Date.now(),
-            approved: true,
-            visibility: 'private',
-            gameId: game.id
-        };
-        
-        game.scripts.push(newScript);
-        
+        data.games = data.games.filter(g => g.id !== gameId);
         await docRef.update({ games: data.games });
         
-        hidePrivateScriptUploadModal();
-        showToast('✅ Private script uploaded! Only you can see it.', 'success');
-        
-        if (!document.getElementById('gameScriptsView').classList.contains('hidden')) {
-            renderGameScriptsList(selectedGameForPrivateUpload);
-        }
-        
+        showToast('Game deleted', 'success');
+        renderAdminGamesList();
     } catch (error) {
-        uploadStatus.textContent = error.message;
         showToast('Error: ' + error.message, 'error');
-    } finally {
-        hideLoading();
     }
 }
 
-// ==================== ADMIN SCRIPT UPLOAD ====================
-function showScriptUploadModal() {
-    if (!currentUser || currentUser.username !== ADMIN_USERNAME) {
-        showToast('Only admins can upload public scripts', 'error');
-        return;
-    }
-    
-    if (selectedGameForUpload === null) {
-        showToast('Select a game first', 'error');
-        return;
-    }
-    
-    document.getElementById('scriptUploadModal').classList.remove('hidden');
-    
-    if (!monacoEditor) {
-        require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
-        require(['vs/editor/editor.main'], function() {
-            monacoEditor = monaco.editor.create(document.getElementById('monacoEditor'), {
-                value: '-- Write your Lua script here\n-- Public script - everyone can see\n\nprint("Hello, RSQ Elite!")',
-                language: 'lua',
-                theme: 'vs-dark',
-                minimap: { enabled: false },
-                fontSize: 13,
-                automaticLayout: true
-            });
-        });
-    }
+function openCreateGameModal() {
+    document.getElementById('createGameModal').classList.remove('hidden');
 }
 
-function hideScriptUploadModal() {
-    document.getElementById('scriptUploadModal').classList.add('hidden');
-    document.getElementById('scriptNameInput').value = '';
-    document.getElementById('scriptDescriptionInput').value = '';
-    document.getElementById('scriptUrlInput').value = '';
-    document.getElementById('uploadStatus').textContent = '';
-    if (monacoEditor) {
-        monacoEditor.setValue('-- Write your Lua script here\n-- Public script - everyone can see\n\nprint("Hello, RSQ Elite!")');
-    }
-}
-
-function setScriptType(type) {
-    currentScriptType = type;
-    document.querySelectorAll('#scriptUploadModal .toggle-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    document.getElementById('urlInputSection').classList.toggle('hidden', type !== 'link');
-    document.getElementById('editorSection').classList.toggle('hidden', type !== 'editor');
-}
-
-async function submitScript() {
-    const scriptName = document.getElementById('scriptNameInput').value.trim();
-    const scriptDescription = document.getElementById('scriptDescriptionInput').value.trim();
-    const visibility = document.querySelector('input[name="visibility"]:checked').value;
-    const uploadStatus = document.getElementById('uploadStatus');
-    
-    if (!scriptName) {
-        uploadStatus.textContent = 'Enter script name';
-        return;
-    }
-    
-    if (selectedGameForUpload === null) {
-        uploadStatus.textContent = 'No game selected';
-        return;
-    }
-    
-    showLoading('Uploading script...');
-    
-    try {
-        let scriptContent;
-        
-        if (currentScriptType === 'link') {
-            scriptContent = document.getElementById('scriptUrlInput').value.trim();
-            if (!scriptContent) throw new Error('Enter script URL');
-        } else {
-            if (!monacoEditor) throw new Error('Editor not initialized');
-            scriptContent = monacoEditor.getValue();
-            if (!scriptContent.trim()) throw new Error('Enter script');
-        }
-        
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data();
-        
-        const game = data.games[selectedGameForUpload];
-        if (!game.scripts) game.scripts = [];
-        
-        const newScript = {
-            name: scriptName,
-            description: scriptDescription,
-            url: currentScriptType === 'link' ? scriptContent : null,
-            code: currentScriptType === 'editor' ? scriptContent : null,
-            addedBy: currentUser.username,
-            owner: currentUser.username,
-            added: Date.now(),
-            approved: true,
-            visibility: visibility,
-            gameId: game.id
-        };
-        
-        game.scripts.push(newScript);
-        
-        await docRef.update({ games: data.games });
-        
-        hideScriptUploadModal();
-        showToast(`✅ ${visibility === 'public' ? 'Public' : 'Private'} script uploaded!`, 'success');
-        
-    } catch (error) {
-        uploadStatus.textContent = error.message;
-        showToast('Error: ' + error.message, 'error');
-    } finally {
-        hideLoading();
-    }
-}
-
-// ==================== ADMIN FUNCTIONS ====================
-function toggleAdmin() {
-    const password = document.getElementById('adminInput').value.trim();
-    
-    if (password === ADMIN_PASSWORD) {
-        isAdminAuthenticated = true;
-        document.getElementById('adminInput').style.display = 'none';
-        openAdminPanel();
-    } else {
-        showToast('Invalid admin password', 'error');
-    }
-}
-
-function openAdminPanel() {
-    document.getElementById('mainSystem').classList.add('hidden');
-    document.getElementById('adminPanel').classList.remove('hidden');
-    
-    renderAdminGamesList();
-    renderAdminKeys();
-    renderAdminBans();
-}
-
-function closeAdmin() {
-    document.getElementById('adminPanel').classList.add('hidden');
-    document.getElementById('mainSystem').classList.remove('hidden');
-    isAdminAuthenticated = false;
-}
-
-function showGameCreateView() {
-    document.getElementById('adminDefaultView').classList.add('hidden');
-    document.getElementById('gameCreateView').classList.remove('hidden');
-}
-
-function showAdminDefaultView() {
-    document.getElementById('adminDefaultView').classList.remove('hidden');
-    document.getElementById('gameCreateView').classList.add('hidden');
-    renderAdminGamesList();
+function closeCreateGameModal() {
+    document.getElementById('createGameModal').classList.add('hidden');
+    document.getElementById('newGameName').value = '';
+    document.getElementById('newGameId').value = '';
+    document.getElementById('gameImagePreview').style.display = 'none';
+    document.getElementById('imagePlaceholder').style.display = 'block';
 }
 
 async function createGame() {
-    const name = document.getElementById('gameNameInput').value.trim();
-    const id = document.getElementById('gameIdInput').value.trim();
-    const status = document.getElementById('gameCreateStatus');
+    const name = document.getElementById('newGameName').value.trim();
+    const id = document.getElementById('newGameId').value.trim();
+    const isPremium = document.getElementById('newGamePremium').checked;
     
-    if (!name) {
-        status.textContent = 'Enter game name';
-        return;
-    }
-    
-    if (!id) {
-        status.textContent = 'Enter Roblox Place ID';
+    if (!name || !id) {
+        showToast('Enter game name and ID', 'error');
         return;
     }
     
@@ -1778,13 +2214,6 @@ async function createGame() {
         const data = doc.data();
         
         if (!data.games) data.games = [];
-        
-        // Check if game ID already exists
-        if (data.games.some(g => g.id === id)) {
-            status.textContent = 'Game with this ID already exists';
-            hideLoading();
-            return;
-        }
         
         const imageInput = document.getElementById('gameImageInput');
         let imageData = '';
@@ -1801,6 +2230,8 @@ async function createGame() {
             id: id,
             name,
             image: imageData,
+            premium: isPremium,
+            public: true,
             scripts: [],
             created: Date.now(),
             createdBy: currentUser.username
@@ -1808,264 +2239,10 @@ async function createGame() {
         
         await docRef.update({ games: data.games });
         
-        status.textContent = '✅ Game created!';
-        status.style.color = 'var(--success)';
-        
-        setTimeout(() => {
-            showAdminDefaultView();
-        }, 1500);
-    } catch (error) {
-        status.textContent = 'Error: ' + error.message;
-    } finally {
-        hideLoading();
-    }
-}
-
-function renderAdminGamesList() {
-    const games = dataCache?.games || [];
-    const container = document.getElementById('adminGamesList');
-    
-    // Filter out universal if it exists
-    const publicGames = games.filter(g => g.id && g.id !== 'UNIVERSAL');
-    
-    if (publicGames.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:40px;">No games created yet</div>';
-        return;
-    }
-    
-    container.innerHTML = publicGames.map((game) => {
-        const originalIndex = games.indexOf(game);
-        const isExpanded = expandedGames.has(originalIndex);
-        
-        return `
-            <div class="game-section">
-                <div class="game-section-header" onclick="toggleGameSection(${originalIndex})">
-                    ${game.image ? `<img src="${game.image}" style="width:30px; height:30px; border-radius:6px; object-fit:cover;">` : ''}
-                    <h4>${game.name}</h4>
-                    <span style="margin-left:10px; font-size:11px; opacity:0.7;">ID: ${game.id} • ${(game.scripts || []).length} scripts</span>
-                    <span class="expand-icon ${isExpanded ? 'expanded' : ''}" id="expand-${originalIndex}">▶</span>
-                    <div style="margin-left:auto; display:flex; gap:5px;" onclick="event.stopPropagation()">
-                        <button class="mini success" onclick="selectedGameForUpload=${originalIndex}; showScriptUploadModal()">➕ Add Script</button>
-                        <button class="mini danger" onclick="deleteGame(${originalIndex})">🗑️</button>
-                    </div>
-                </div>
-                <div class="game-section-content ${isExpanded ? '' : 'collapsed'}" id="content-${originalIndex}">
-                    ${renderAdminGameScripts(game, originalIndex)}
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-function toggleGameSection(gameIndex) {
-    const content = document.getElementById(`content-${gameIndex}`);
-    const icon = document.getElementById(`expand-${gameIndex}`);
-    
-    if (expandedGames.has(gameIndex)) {
-        expandedGames.delete(gameIndex);
-        content.classList.add('collapsed');
-        icon.classList.remove('expanded');
-    } else {
-        expandedGames.add(gameIndex);
-        content.classList.remove('collapsed');
-        icon.classList.add('expanded');
-    }
-}
-
-function renderAdminGameScripts(game, gameIndex) {
-    const scripts = game.scripts || [];
-    
-    if (scripts.length === 0) {
-        return '<div style="text-align:center; padding:20px; color:rgba(255,255,255,0.5);">No scripts in this game</div>';
-    }
-    
-    return scripts.map((script, scriptIndex) => `
-        <div class="script-item ${script.visibility === 'private' ? 'private-script' : 'admin-script'}">
-            <div class="script-info">
-                <div class="script-name">
-                    ${script.name}
-                    ${script.visibility === 'private' ? '<span class="private-badge">🔒 Private</span>' : '<span class="visibility-badge public">🌐 Public</span>'}
-                </div>
-                <div class="script-meta">
-                    👤 ${script.owner || script.addedBy || 'System'}
-                </div>
-            </div>
-            <div style="display:flex; gap:5px;">
-                <button class="mini" onclick="editScript(${gameIndex}, ${scriptIndex})">✏️</button>
-                <button class="mini danger" onclick="deleteScript(${gameIndex}, ${scriptIndex})">🗑️</button>
-            </div>
-        </div>
-    `).join('');
-}
-
-function editScript(gameIndex, scriptIndex) {
-    const script = dataCache.games[gameIndex].scripts[scriptIndex];
-    selectedGameForUpload = gameIndex;
-    
-    showScriptUploadModal();
-    
-    setTimeout(() => {
-        document.getElementById('scriptNameInput').value = script.name;
-        document.getElementById('scriptDescriptionInput').value = script.description || '';
-        
-        // Set visibility radio
-        const visibility = script.visibility || 'public';
-        document.querySelector(`input[name="visibility"][value="${visibility}"]`).checked = true;
-        
-        if (script.code) {
-            setScriptType('editor');
-            if (monacoEditor) monacoEditor.setValue(script.code);
-        } else {
-            setScriptType('link');
-            document.getElementById('scriptUrlInput').value = script.url || '';
-        }
-    }, 500);
-}
-
-async function deleteScript(gameIndex, scriptIndex) {
-    if (!confirm('Delete this script?')) return;
-    
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data();
-        
-        data.games[gameIndex].scripts.splice(scriptIndex, 1);
-        await docRef.update({ games: data.games });
-        
-        showToast('Script deleted', 'warning');
+        closeCreateGameModal();
+        showToast('Game created!', 'success');
         renderAdminGamesList();
-    } catch (error) {
-        showToast('Error: ' + error.message, 'error');
-    }
-}
-
-async function deleteGame(index) {
-    if (!confirm('Delete this game and all its scripts?')) return;
-    
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data();
-        
-        data.games.splice(index, 1);
-        await docRef.update({ games: data.games });
-        
-        showToast('Game deleted', 'warning');
-        renderAdminGamesList();
-    } catch (error) {
-        showToast('Error: ' + error.message, 'error');
-    }
-}
-
-async function renderAdminKeys() {
-    const keys = dataCache?.keys || {};
-    const container = document.getElementById('keyLogs');
-    
-    if (Object.keys(keys).length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:20px;">No keys</div>';
-        return;
-    }
-    
-    container.innerHTML = Object.entries(keys).map(([key, data]) => `
-        <div style="padding:8px; border-bottom:1px solid var(--border);">
-            <div><strong>${key.substring(0, 8)}...</strong> (UserID: ${data.rbx})</div>
-            <div style="font-size:10px; opacity:0.7;">By: ${data.generatedBy}</div>
-            <button class="mini danger" onclick="deleteKey('${key}')" style="margin-top:5px;">Delete</button>
-        </div>
-    `).join('');
-}
-
-async function deleteKey(key) {
-    if (!confirm('Delete this key?')) return;
-    
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data();
-        
-        delete data.keys[key];
-        await docRef.update({ keys: data.keys });
-        
-        renderAdminKeys();
-        showToast('Key deleted', 'success');
-    } catch (error) {
-        showToast('Error: ' + error.message, 'error');
-    }
-}
-
-async function renderAdminBans() {
-    const bans = dataCache?.bans || {};
-    const container = document.getElementById('banLogs');
-    
-    if (Object.keys(bans).length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:20px;">No bans</div>';
-        return;
-    }
-    
-    container.innerHTML = Object.entries(bans).map(([id, data]) => `
-        <div style="padding:8px; border-bottom:1px solid var(--border);">
-            <div><strong>${data.username || id}</strong></div>
-            <div style="font-size:10px; opacity:0.7;">${data.reason}</div>
-            <button class="mini success" onclick="unbanUser('${id}')" style="margin-top:5px;">Unban</button>
-        </div>
-    `).join('');
-}
-
-async function unbanUser(userId) {
-    if (!confirm('Unban this user?')) return;
-    
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data();
-        
-        delete data.bans[userId];
-        await docRef.update({ bans: data.bans });
-        
-        renderAdminBans();
-        showToast('User unbanned', 'success');
-    } catch (error) {
-        showToast('Error: ' + error.message, 'error');
-    }
-}
-
-function showBanNowModal() {
-    document.getElementById('banNowModal').classList.remove('hidden');
-}
-
-function hideBanNowModal() {
-    document.getElementById('banNowModal').classList.add('hidden');
-}
-
-async function executeFocusBan() {
-    const userId = document.getElementById('focusBanId').value.trim();
-    const username = document.getElementById('focusBanUser').value.trim();
-    const reason = document.getElementById('focusBanReason').value.trim();
-    
-    if (!userId) return;
-    
-    showLoading('Banning user...');
-    
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data();
-        
-        if (!data.bans) data.bans = {};
-        
-        data.bans[userId] = {
-            username: username || 'Unknown',
-            reason: reason || 'Violation',
-            banned_by: currentUser.username,
-            time: Date.now()
-        };
-        
-        await docRef.update({ bans: data.bans });
-        
-        hideBanNowModal();
-        renderAdminBans();
-        showToast('User banned', 'warning');
+        renderGames();
     } catch (error) {
         showToast('Error: ' + error.message, 'error');
     } finally {
@@ -2073,164 +2250,39 @@ async function executeFocusBan() {
     }
 }
 
-// ==================== FEEDBACK ====================
-function toggleFeedbackUI(show) {
-    document.getElementById('homePanel').classList.toggle('hidden', show);
-    document.getElementById('feedbackUI').classList.toggle('hidden', !show);
-}
-
-async function submitFeedback() {
-    const username = document.getElementById('fb-user').value.trim();
-    const userId = document.getElementById('fb-id').value.trim();
-    const message = document.getElementById('fb-msg').value.trim();
-    
-    if (!username || !userId || !message) return;
+async function savePremiumSettings() {
+    const gamepassId = document.getElementById('premiumGamepassIdInput').value.trim();
     
     try {
         const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data();
-        
-        if (!data.feedbacks) data.feedbacks = [];
-        
-        data.feedbacks.push({ username, userId, message, timestamp: Date.now() });
-        await docRef.update({ feedbacks: data.feedbacks });
-        
-        document.getElementById('fb-user').value = '';
-        document.getElementById('fb-id').value = '';
-        document.getElementById('fb-msg').value = '';
-        
-        toggleFeedbackUI(false);
-        showToast('Feedback submitted!', 'success');
+        await docRef.update({ 'settings.premiumGamepassId': gamepassId });
+        showToast('Premium settings saved!', 'success');
     } catch (error) {
         showToast('Error: ' + error.message, 'error');
     }
 }
 
-// ==================== KEY GENERATION ====================
-async function generateKey() {
-    if (!currentUser) return;
+// ==================== NAVIGATION ====================
+function switchPage(page) {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     
-    const userId = document.getElementById('userid').value.trim();
-    const statusEl = document.getElementById('statusMsg');
-    
-    if (!userId || !/^\d+$/.test(userId)) {
-        statusEl.textContent = 'Enter valid UserID';
-        return;
-    }
-    
-    showLoading('Generating key...');
-    
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data();
-        const keys = data.keys || {};
-        
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-        let newKey = '';
-        for (let i = 0; i < 16; i++) {
-            newKey += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        
-        keys[newKey] = {
-            rbx: parseInt(userId),
-            exp: 'INF',
-            created: Date.now(),
-            generatedBy: currentUser.username
-        };
-        
-        await docRef.update({ keys });
-        
-        document.getElementById('keyOut').textContent = newKey;
-        document.getElementById('loadstringOut').innerHTML = `📋 loadstring(game:HttpGet("https://raw.githubusercontent.com/defnot67kid-beep/KeySytem/refs/heads/main/key.lua"))() (click to copy)`;
-        
-        statusEl.textContent = '✅ Key generated!';
-        statusEl.style.color = 'var(--success)';
-        document.getElementById('userid').value = '';
-        
-        showToast('Key generated!', 'success');
-    } catch (error) {
-        statusEl.textContent = 'Error: ' + error.message;
-    } finally {
-        hideLoading();
+    const tabs = document.querySelectorAll('.nav-tab');
+    if (page === 'home') {
+        tabs[0].classList.add('active');
+        document.getElementById('homePage').classList.add('active');
+    } else if (page === 'games') {
+        tabs[1].classList.add('active');
+        document.getElementById('gamesPage').classList.add('active');
+        renderGames();
+    } else if (page === 'myScripts') {
+        tabs[2].classList.add('active');
+        document.getElementById('myScriptsPage').classList.add('active');
+        renderMyScripts();
     }
 }
 
-function copyLoadstring() {
-    const text = document.getElementById('loadstringOut').textContent.replace('📋 ', '').replace(' (click to copy)', '');
-    navigator.clipboard.writeText(text).then(() => showToast('Copied!', 'success'));
-}
-
-// ==================== FIREBASE LISTENER ====================
-function setupRealtimeListeners() {
-    db.collection('system').doc('config').onSnapshot((doc) => {
-        if (doc.exists) {
-            dataCache = doc.data();
-            updateStatsDisplay();
-        }
-    }, (error) => {
-        console.error('Firestore error:', error);
-        document.getElementById('connectionStatus').className = 'connection-status disconnected';
-    });
-}
-
-// ==================== INITIALIZATION ====================
-async function initializeDatabase() {
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        
-        if (!doc.exists) {
-            await docRef.set({
-                users: {
-                    [ADMIN_USERNAME]: {
-                        password: ADMIN_PASSWORD,
-                        joinTime: Date.now(),
-                        role: ROLES.ADMIN
-                    }
-                },
-                keys: {},
-                games: [],
-                bans: {},
-                feedbacks: [],
-                settings: { 
-                    version: '7.0', 
-                    created: Date.now()
-                }
-            });
-            dataCache = (await docRef.get()).data();
-        } else {
-            dataCache = doc.data();
-        }
-        
-        return true;
-    } catch (error) {
-        console.error('DB init error:', error);
-        return false;
-    }
-}
-
-function checkSession() {
-    const saved = localStorage.getItem('RSQ_CURRENT_USER');
-    if (saved) {
-        try {
-            currentUser = JSON.parse(saved);
-            document.getElementById('authPanel').classList.add('hidden');
-            document.getElementById('mainSystem').classList.remove('hidden');
-            document.getElementById('welcomeUser').textContent = 'Logged in as: ' + currentUser.username;
-            document.getElementById('adminBtn').style.display = currentUser.username === ADMIN_USERNAME ? 'block' : 'none';
-            
-            updateRoleDisplay();
-            if (roleUpdateInterval) clearInterval(roleUpdateInterval);
-            roleUpdateInterval = setInterval(updateRoleProgress, 1000);
-            updateRoleProgress();
-        } catch (e) {
-            localStorage.removeItem('RSQ_CURRENT_USER');
-        }
-    }
-}
-
+// ==================== PARTICLE BACKGROUND ====================
 function initParticles() {
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
@@ -2269,26 +2321,12 @@ function initParticles() {
             ctx.fill();
         });
         
-        ctx.strokeStyle = 'rgba(79, 124, 255, 0.1)';
-        ctx.lineWidth = 0.5;
-        particles.forEach((p1, i) => {
-            particles.slice(i + 1).forEach(p2 => {
-                const dx = p1.x - p2.x;
-                const dy = p1.y - p2.y;
-                if (Math.sqrt(dx * dx + dy * dy) < 100) {
-                    ctx.beginPath();
-                    ctx.moveTo(p1.x, p1.y);
-                    ctx.lineTo(p2.x, p2.y);
-                    ctx.stroke();
-                }
-            });
-        });
-        
         requestAnimationFrame(animate);
     }
     animate();
 }
 
+// ==================== IMAGE UPLOAD ====================
 document.getElementById('gameImageInput')?.addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -2302,14 +2340,40 @@ document.getElementById('gameImageInput')?.addEventListener('change', function(e
     }
 });
 
-document.addEventListener('DOMContentLoaded', async () => {
+// ==================== CHECK SESSION ====================
+function checkSession() {
+    const saved = localStorage.getItem('RSQ_CREATOR_USER');
+    if (saved) {
+        try {
+            currentUser = JSON.parse(saved);
+            isAdmin = (currentUser.username === ADMIN_USERNAME);
+            
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('displayUsername').textContent = currentUser.username;
+            document.getElementById('userInitial').textContent = currentUser.username[0].toUpperCase();
+            
+            initializeApp();
+        } catch (e) {
+            localStorage.removeItem('RSQ_CREATOR_USER');
+        }
+    }
+}
+
+// ==================== INITIALIZATION ====================
+document.addEventListener('DOMContentLoaded', () => {
     initParticles();
-    updateStatsDisplay();
-    setInterval(updateStatsDisplay, 60000);
-    
-    await initializeDatabase();
-    setupRealtimeListeners();
     checkSession();
+});
+
+document.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !document.getElementById('authScreen').classList.contains('hidden')) {
+        if (!document.getElementById('loginForm').classList.contains('hidden')) {
+            handleLogin();
+        } else {
+            handleSignup();
+        }
+    }
 });
 </script>
 </body>
