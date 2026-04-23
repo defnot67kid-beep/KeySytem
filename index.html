@@ -67,7 +67,6 @@ body {
     line-height: 1.5;
 }
 
-/* ==================== PARTICLES BACKGROUND ==================== */
 #particles-js {
     position: fixed;
     inset: 0;
@@ -199,13 +198,6 @@ body {
     background: rgba(255, 255, 255, 0.04);
     border-radius: var(--radius-xl);
     border: 1px solid var(--border);
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.user-info:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: var(--border-light);
 }
 
 .user-avatar {
@@ -307,10 +299,6 @@ body {
     padding: 8px 12px;
 }
 
-.sidebar-section {
-    margin-bottom: 8px;
-}
-
 .sidebar-title {
     font-size: 10px;
     text-transform: uppercase;
@@ -352,28 +340,15 @@ body {
     color: #fff;
 }
 
-.sidebar-item:hover i {
-    transform: translateX(2px);
-}
-
 .sidebar-item.active {
     background: linear-gradient(135deg, rgba(108, 92, 231, 0.2), rgba(168, 85, 247, 0.1));
     color: #fff;
     border-left: 3px solid var(--primary);
-    box-shadow: inset 0 0 20px rgba(108, 92, 231, 0.05);
-}
-
-.sidebar-item.active i {
-    color: var(--primary-light);
 }
 
 .sidebar-item.premium-item.active {
     background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 170, 0, 0.08));
     border-left-color: var(--premium);
-}
-
-.sidebar-item.premium-item.active i {
-    color: var(--premium);
 }
 
 .sidebar-divider {
@@ -472,7 +447,6 @@ body {
     transition: var(--transition);
     position: relative;
     overflow: hidden;
-    cursor: default;
 }
 
 .stat-card::before {
@@ -493,9 +467,7 @@ body {
     box-shadow: var(--shadow-md);
 }
 
-.stat-card:hover::before {
-    opacity: 1;
-}
+.stat-card:hover::before { opacity: 1; }
 
 .stat-card.premium-card::before {
     background: linear-gradient(90deg, var(--premium), #ffaa00);
@@ -530,17 +502,6 @@ body {
     font-weight: 500;
 }
 
-.stat-card .stat-change {
-    font-size: 11px;
-    margin-top: 6px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.stat-change.up { color: var(--success); }
-.stat-change.down { color: var(--danger); }
-
 /* ==================== CARDS & GRIDS ==================== */
 .games-grid {
     display: grid;
@@ -555,6 +516,7 @@ body {
     overflow: hidden;
     cursor: pointer;
     transition: var(--transition);
+    position: relative;
 }
 
 .game-card:hover {
@@ -565,11 +527,6 @@ body {
 
 .game-card.premium-game {
     border-color: rgba(255, 215, 0, 0.2);
-}
-
-.game-card.premium-game:hover {
-    border-color: rgba(255, 215, 0, 0.5);
-    box-shadow: 0 8px 32px rgba(255, 215, 0, 0.15);
 }
 
 .game-card-image {
@@ -584,28 +541,10 @@ body {
     color: rgba(255,255,255,0.1);
 }
 
-.game-card-body {
-    padding: 16px;
-}
-
-.game-card-name {
-    font-weight: 700;
-    font-size: 15px;
-    margin-bottom: 4px;
-}
-
-.game-card-id {
-    font-size: 11px;
-    color: rgba(255,255,255,0.4);
-    margin-bottom: 8px;
-}
-
-.game-card-meta {
-    display: flex;
-    gap: 12px;
-    font-size: 11px;
-    color: rgba(255,255,255,0.5);
-}
+.game-card-body { padding: 16px; }
+.game-card-name { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+.game-card-id { font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 8px; }
+.game-card-meta { display: flex; gap: 12px; font-size: 11px; color: rgba(255,255,255,0.5); }
 
 .game-badge {
     position: absolute;
@@ -620,6 +559,7 @@ body {
     display: flex;
     align-items: center;
     gap: 4px;
+    z-index: 1;
 }
 
 /* ==================== SCRIPT CARDS ==================== */
@@ -677,10 +617,7 @@ body {
     flex-wrap: wrap;
 }
 
-.script-actions {
-    display: flex;
-    gap: 6px;
-}
+.script-actions { display: flex; gap: 6px; }
 
 .visibility-badge {
     padding: 2px 8px;
@@ -691,27 +628,8 @@ body {
 
 .visibility-badge.public { background: rgba(46,213,115,0.15); color: var(--success); }
 .visibility-badge.private { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
-
-.owner-badge {
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 10px;
-    font-weight: 600;
-    background: rgba(108,92,231,0.15);
-    color: var(--primary-light);
-}
-
-.premium-script-badge {
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 10px;
-    font-weight: 700;
-    background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,170,0,0.1));
-    color: var(--premium);
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
+.owner-badge { padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; background: rgba(108,92,231,0.15); color: var(--primary-light); }
+.premium-script-badge { padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,170,0,0.1)); color: var(--premium); display: inline-flex; align-items: center; gap: 4px; }
 
 /* ==================== PUBLIC SCRIPTS GRID ==================== */
 .public-scripts-grid {
@@ -869,22 +787,6 @@ body {
     background: rgba(255, 215, 0, 0.05);
 }
 
-.premium-plan.recommended::after {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border-radius: inherit;
-    background: linear-gradient(135deg, var(--premium), transparent, var(--premium));
-    z-index: -1;
-    opacity: 0.3;
-    animation: borderGlow 3s linear infinite;
-}
-
-@keyframes borderGlow {
-    0%, 100% { opacity: 0.2; }
-    50% { opacity: 0.5; }
-}
-
 .recommended-badge {
     position: absolute;
     top: -14px;
@@ -900,22 +802,9 @@ body {
     box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
 }
 
-.plan-icon {
-    font-size: 40px;
-    margin-bottom: 16px;
-}
-
-.plan-name {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 6px;
-}
-
-.plan-duration {
-    font-size: 11px;
-    color: rgba(255,255,255,0.5);
-    margin-bottom: 16px;
-}
+.plan-icon { font-size: 40px; margin-bottom: 16px; }
+.plan-name { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.plan-duration { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
 
 .plan-price {
     font-size: 42px;
@@ -925,11 +814,7 @@ body {
     letter-spacing: -1px;
 }
 
-.plan-price small {
-    font-size: 14px;
-    color: rgba(255,255,255,0.5);
-    font-weight: 400;
-}
+.plan-price small { font-size: 14px; color: rgba(255,255,255,0.5); font-weight: 400; }
 
 .plan-features {
     list-style: none;
@@ -947,65 +832,91 @@ body {
     color: rgba(255,255,255,0.7);
 }
 
-.plan-features li i {
-    color: var(--success);
-    font-size: 13px;
-    width: 16px;
-}
+.plan-features li i { color: var(--success); font-size: 13px; width: 16px; }
 
-.plan-features li.disabled {
-    color: rgba(255,255,255,0.3);
-}
-
-.plan-features li.disabled i {
-    color: rgba(255,255,255,0.2);
-}
-
-/* ==================== PREMIUM OWNED STATE ==================== */
-.premium-owned-section {
-    text-align: center;
-    padding: 40px;
-    position: relative;
-    z-index: 1;
-}
-
-.premium-owned-icon {
-    font-size: 72px;
-    color: var(--premium);
-    margin-bottom: 20px;
-    animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
-.premium-owned-title {
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--premium);
-    margin-bottom: 8px;
-}
-
-.premium-owned-plan {
-    font-size: 14px;
-    color: rgba(255,255,255,0.7);
-    margin-bottom: 24px;
-}
-
-.premium-owned-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-/* ==================== SECRET CODE MODAL ==================== */
-.secret-code-modal {
+/* ==================== VERIFICATION MODAL ==================== */
+.verification-modal {
     max-width: 520px;
 }
 
+.verification-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.verification-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+    background: rgba(255,255,255,0.02);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+}
+
+.verification-step .step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--purple));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.verification-step .step-content h4 {
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.verification-step .step-content p {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+}
+
+.verification-input-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.verification-input-group input {
+    flex: 1;
+}
+
+.verification-status {
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 12px;
+}
+
+.verification-status.pending {
+    background: rgba(255, 165, 2, 0.1);
+    border: 1px solid rgba(255, 165, 2, 0.3);
+    color: var(--warning);
+}
+
+.verification-status.success {
+    background: rgba(46, 213, 115, 0.1);
+    border: 1px solid rgba(46, 213, 115, 0.3);
+    color: var(--success);
+}
+
+.verification-status.error {
+    background: rgba(255, 71, 87, 0.1);
+    border: 1px solid rgba(255, 71, 87, 0.3);
+    color: var(--danger);
+}
+
+/* ==================== SECRET CODE DISPLAY ==================== */
 .secret-code-container {
     background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(108,92,231,0.08));
     border-radius: var(--radius-xl);
@@ -1064,117 +975,45 @@ body {
     display: inline-block;
 }
 
-.verification-section {
-    background: rgba(46, 213, 115, 0.06);
-    border-radius: var(--radius-lg);
-    padding: 18px;
-    margin: 20px 0;
-    border: 1px solid rgba(46, 213, 115, 0.2);
+/* ==================== PREMIUM OWNED STATE ==================== */
+.premium-owned-section {
+    text-align: center;
+    padding: 40px;
+    position: relative;
+    z-index: 1;
+    grid-column: 1 / -1;
 }
 
-.verify-input {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
+.premium-owned-icon {
+    font-size: 72px;
+    color: var(--premium);
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
 }
 
-.verify-input input {
-    flex: 1;
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
 }
 
-/* ==================== KEY SECTION ==================== */
-.key-section {
-    background: linear-gradient(135deg, rgba(108,92,231,0.06), rgba(0,206,201,0.04));
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
-    padding: 24px;
+.premium-owned-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--premium);
+    margin-bottom: 8px;
+}
+
+.premium-owned-plan {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
     margin-bottom: 24px;
 }
 
-.key-section-title {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.key-input-row {
+.premium-owned-actions {
     display: flex;
     gap: 12px;
+    justify-content: center;
     flex-wrap: wrap;
-}
-
-.key-result {
-    margin-top: 16px;
-    padding: 16px;
-    background: rgba(46,213,115,0.08);
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(46,213,115,0.2);
-}
-
-.key-display {
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 14px;
-    color: var(--success);
-    word-break: break-all;
-    margin-bottom: 8px;
-}
-
-.key-loadstring {
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 11px;
-    padding: 10px 14px;
-    background: rgba(0,0,0,0.3);
-    border-radius: var(--radius-sm);
-    color: var(--secondary);
-    cursor: pointer;
-    word-break: break-all;
-    transition: var(--transition);
-}
-
-.key-loadstring:hover {
-    background: rgba(0,206,201,0.1);
-}
-
-/* ==================== PROGRESS BAR ==================== */
-.progress-container {
-    margin-top: 20px;
-}
-
-.progress-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    margin-bottom: 8px;
-    color: rgba(255,255,255,0.6);
-}
-
-.progress-bar {
-    height: 8px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    border-radius: 10px;
-    transition: width 1s ease;
-}
-
-.progress-fill.premium-fill {
-    background: linear-gradient(90deg, var(--premium), #ffaa00);
-}
-
-.progress-footer {
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
-    margin-top: 6px;
-    color: rgba(255,255,255,0.3);
 }
 
 /* ==================== BUTTONS ==================== */
@@ -1194,9 +1033,7 @@ button {
     white-space: nowrap;
 }
 
-button:active {
-    transform: scale(0.97);
-}
+button:active { transform: scale(0.97); }
 
 .btn-primary {
     background: linear-gradient(135deg, var(--primary), var(--purple));
@@ -1226,11 +1063,6 @@ button:active {
     box-shadow: 0 4px 15px rgba(255, 71, 87, 0.2);
 }
 
-.btn-danger:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(255, 71, 87, 0.35);
-}
-
 .btn-premium {
     background: linear-gradient(135deg, var(--premium), #ffaa00);
     color: #000;
@@ -1252,18 +1084,12 @@ button:active {
 .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: var(--border-light);
-    transform: translateY(-2px);
 }
 
 .btn-ghost {
     background: transparent;
     color: rgba(255,255,255,0.6);
     border: 1px solid transparent;
-}
-
-.btn-ghost:hover {
-    background: rgba(255,255,255,0.04);
-    color: white;
 }
 
 .btn-icon {
@@ -1285,26 +1111,15 @@ button:active {
 .btn-icon:hover {
     background: rgba(255,255,255,0.1);
     color: white;
-    border-color: var(--border-light);
 }
 
 .btn-icon.danger:hover {
     background: rgba(255,71,87,0.15);
     color: var(--danger-light);
-    border-color: rgba(255,71,87,0.3);
 }
 
-.btn-sm {
-    padding: 7px 14px;
-    font-size: 11px;
-    border-radius: var(--radius-sm);
-}
-
-.btn-lg {
-    padding: 14px 28px;
-    font-size: 15px;
-    border-radius: var(--radius-lg);
-}
+.btn-sm { padding: 7px 14px; font-size: 11px; border-radius: var(--radius-sm); }
+.btn-lg { padding: 14px 28px; font-size: 15px; border-radius: var(--radius-lg); }
 
 /* ==================== FORMS ==================== */
 input, textarea, select {
@@ -1338,69 +1153,19 @@ label {
     gap: 6px;
 }
 
-.radio-group {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 14px;
-}
-
-.radio-group label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    font-weight: 400;
-}
-
-.radio-group input[type="radio"] {
-    width: auto;
-    margin: 0;
-}
-
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 14px;
-}
-
-.checkbox-group input[type="checkbox"] {
-    width: auto;
-    margin: 0;
-}
-
-.checkbox-group label {
-    margin: 0;
-    cursor: pointer;
-}
+.radio-group { display: flex; gap: 20px; margin-bottom: 14px; }
+.radio-group label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 400; }
+.radio-group input[type="radio"] { width: auto; margin: 0; }
+.checkbox-group { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.checkbox-group input[type="checkbox"] { width: auto; margin: 0; }
+.checkbox-group label { margin: 0; cursor: pointer; }
 
 /* ==================== SEARCH & FILTER ==================== */
-.search-bar {
-    position: relative;
-    margin-bottom: 16px;
-}
+.search-bar { position: relative; margin-bottom: 16px; }
+.search-bar i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.3); font-size: 14px; }
+.search-bar input { padding-left: 40px; margin: 0; }
 
-.search-bar i {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgba(255,255,255,0.3);
-    font-size: 14px;
-}
-
-.search-bar input {
-    padding-left: 40px;
-    margin: 0;
-}
-
-.filter-tabs {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
+.filter-tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
 .filter-btn {
     padding: 7px 16px;
     font-size: 11px;
@@ -1412,17 +1177,8 @@ label {
     cursor: pointer;
     transition: var(--transition);
 }
-
-.filter-btn:hover {
-    background: rgba(255,255,255,0.07);
-    color: white;
-}
-
-.filter-btn.active {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: white;
-}
+.filter-btn:hover { background: rgba(255,255,255,0.07); color: white; }
+.filter-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
 
 /* ==================== MODALS ==================== */
 .modal-overlay {
@@ -1440,7 +1196,6 @@ label {
     justify-content: center;
     animation: fadeIn 0.2s ease;
 }
-
 .modal-overlay.hidden { display: none; }
 
 .modal-content {
@@ -1491,7 +1246,6 @@ label {
     font-size: 16px;
     transition: var(--transition);
 }
-
 .close-btn:hover {
     background: rgba(255, 71, 87, 0.15);
     color: var(--danger-light);
@@ -1509,38 +1263,21 @@ label {
 }
 
 /* ==================== ADMIN PANEL ==================== */
-.admin-panel {
-    padding: 8px 0;
-}
-
 .admin-stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 14px;
     margin-bottom: 28px;
 }
-
 .admin-stat-card {
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 20px;
 }
-
-.admin-stat-card .stat-icon {
-    font-size: 24px;
-    margin-bottom: 8px;
-}
-
-.admin-stat-card .stat-value {
-    font-size: 28px;
-    font-weight: 800;
-}
-
-.admin-stat-card .stat-label {
-    font-size: 11px;
-    color: rgba(255,255,255,0.5);
-}
+.admin-stat-card .stat-icon { font-size: 24px; margin-bottom: 8px; }
+.admin-stat-card .stat-value { font-size: 28px; font-weight: 800; }
+.admin-stat-card .stat-label { font-size: 11px; color: rgba(255,255,255,0.5); }
 
 .admin-section {
     background: var(--card-bg);
@@ -1549,7 +1286,6 @@ label {
     padding: 24px;
     margin-bottom: 20px;
 }
-
 .admin-header {
     display: flex;
     justify-content: space-between;
@@ -1558,28 +1294,14 @@ label {
     flex-wrap: wrap;
     gap: 12px;
 }
-
-.admin-header h3 {
-    font-size: 17px;
-    font-weight: 700;
-}
-
-.admin-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 14px;
-}
-
+.admin-header h3 { font-size: 17px; font-weight: 700; }
+.admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
 .admin-card {
     background: rgba(0,0,0,0.2);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     padding: 16px;
     transition: var(--transition);
-}
-
-.admin-card:hover {
-    border-color: var(--border-light);
 }
 
 /* ==================== AUTH SCREEN ==================== */
@@ -1591,7 +1313,6 @@ label {
     justify-content: center;
     z-index: 200;
 }
-
 .auth-panel {
     background: var(--glass-strong);
     backdrop-filter: blur(24px);
@@ -1605,7 +1326,6 @@ label {
     box-shadow: var(--shadow-lg);
     animation: modalSlideIn 0.4s ease;
 }
-
 .auth-title {
     font-size: 32px;
     font-weight: 800;
@@ -1615,12 +1335,7 @@ label {
     background-clip: text;
     margin-bottom: 6px;
 }
-
-.auth-subtitle {
-    font-size: 13px;
-    color: rgba(255,255,255,0.5);
-    margin-bottom: 28px;
-}
+.auth-subtitle { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 28px; }
 
 .tab-container {
     display: flex;
@@ -1631,7 +1346,6 @@ label {
     margin-bottom: 24px;
     border: 1px solid var(--border);
 }
-
 .tab {
     flex: 1;
     padding: 10px;
@@ -1645,11 +1359,7 @@ label {
     transition: var(--transition);
     font-family: inherit;
 }
-
-.tab.active {
-    background: linear-gradient(135deg, var(--primary), var(--purple));
-    color: white;
-}
+.tab.active { background: linear-gradient(135deg, var(--primary), var(--purple)); color: white; }
 
 /* ==================== TOAST ==================== */
 .toast {
@@ -1658,7 +1368,6 @@ label {
     right: 28px;
     background: var(--glass-strong);
     backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 14px 20px;
@@ -1671,7 +1380,6 @@ label {
     font-size: 13px;
     font-weight: 500;
 }
-
 .toast.success { border-left: 3px solid var(--success); }
 .toast.error { border-left: 3px solid var(--danger); }
 .toast.warning { border-left: 3px solid var(--warning); }
@@ -1695,9 +1403,7 @@ label {
     flex-direction: column;
     gap: 18px;
 }
-
 .loading-overlay.hidden { display: none; }
-
 .loading-spinner {
     width: 44px;
     height: 44px;
@@ -1706,39 +1412,58 @@ label {
     border-top-color: var(--primary);
     animation: spin 0.8s linear infinite;
 }
-
-.loading-text {
-    font-size: 13px;
-    color: rgba(255,255,255,0.6);
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
+.loading-text { font-size: 13px; color: rgba(255,255,255,0.6); }
+@keyframes spin { to { transform: rotate(360deg); } }
 
 /* ==================== EMPTY STATE ==================== */
-.empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: rgba(255, 255, 255, 0.3);
-}
+.empty-state { text-align: center; padding: 60px 20px; color: rgba(255, 255, 255, 0.3); }
+.empty-state-icon { font-size: 56px; margin-bottom: 16px; opacity: 0.4; }
+.empty-state h3 { font-size: 16px; margin-bottom: 8px; color: rgba(255,255,255,0.5); }
+.empty-state p { font-size: 12px; margin-bottom: 16px; }
 
-.empty-state-icon {
-    font-size: 56px;
-    margin-bottom: 16px;
-    opacity: 0.4;
+/* ==================== KEY SECTION ==================== */
+.key-section {
+    background: linear-gradient(135deg, rgba(108,92,231,0.06), rgba(0,206,201,0.04));
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    margin-bottom: 24px;
 }
-
-.empty-state h3 {
-    font-size: 16px;
+.key-section-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.key-input-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.key-result {
+    margin-top: 16px;
+    padding: 16px;
+    background: rgba(46,213,115,0.08);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(46,213,115,0.2);
+}
+.key-display {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 14px;
+    color: var(--success);
+    word-break: break-all;
     margin-bottom: 8px;
-    color: rgba(255,255,255,0.5);
 }
+.key-loadstring {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    padding: 10px 14px;
+    background: rgba(0,0,0,0.3);
+    border-radius: var(--radius-sm);
+    color: var(--secondary);
+    cursor: pointer;
+    word-break: break-all;
+    transition: var(--transition);
+}
+.key-loadstring:hover { background: rgba(0,206,201,0.1); }
 
-.empty-state p {
-    font-size: 12px;
-    margin-bottom: 16px;
-}
+/* ==================== PROGRESS BAR ==================== */
+.progress-container { margin-top: 20px; }
+.progress-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; color: rgba(255,255,255,0.6); }
+.progress-bar { height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 10px; transition: width 1s ease; }
+.progress-footer { display: flex; justify-content: space-between; font-size: 10px; margin-top: 6px; color: rgba(255,255,255,0.3); }
 
 /* ==================== UTILITIES ==================== */
 .hidden { display: none !important; }
@@ -1752,25 +1477,14 @@ label {
 .flex-wrap { flex-wrap: wrap; }
 .items-center { align-items: center; }
 .justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.w-full { width: 100%; }
 
 /* ==================== SCROLLBAR ==================== */
-::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(108, 92, 231, 0.25);
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(108, 92, 231, 0.4);
-}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(108, 92, 231, 0.25); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(108, 92, 231, 0.4); }
 
 /* ==================== MOBILE ==================== */
 .mobile-bottom-nav {
@@ -1788,7 +1502,6 @@ label {
     justify-content: space-around;
     padding-bottom: max(8px, env(safe-area-inset-bottom));
 }
-
 .mobile-nav-item {
     display: flex;
     flex-direction: column;
@@ -1806,116 +1519,35 @@ label {
     font-family: inherit;
     font-size: 10px;
 }
-
-.mobile-nav-item i {
-    font-size: 20px;
-}
-
-.mobile-nav-item.active {
-    color: var(--primary-light);
-}
-
-.mobile-nav-item.premium-mobile.active {
-    color: var(--premium);
-}
+.mobile-nav-item i { font-size: 20px; }
+.mobile-nav-item.active { color: var(--primary-light); }
+.mobile-nav-item.premium-mobile.active { color: var(--premium); }
 
 @media (max-width: 900px) {
-    .sidebar {
-        display: none;
-    }
-    
-    .mobile-bottom-nav {
-        display: flex;
-    }
-    
-    .main-content {
-        margin-left: 0;
-        padding: 16px;
-        padding-bottom: 90px;
-    }
-    
-    .header {
-        padding: 0 16px;
-    }
-    
-    .nav-tabs {
-        display: none;
-    }
-    
-    .user-name {
-        display: none;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-    }
-    
-    .premium-plans {
-        grid-template-columns: 1fr;
-    }
-    
-    .games-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-    }
-    
-    .public-scripts-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .modal-content {
-        padding: 20px;
-        width: 96%;
-    }
-    
-    .auth-panel {
-        padding: 28px 20px;
-    }
-    
-    .secret-code {
-        font-size: 11px;
-    }
-    
-    .verify-input {
-        flex-direction: column;
-    }
-    
-    .key-input-row {
-        flex-direction: column;
-    }
-    
-    .admin-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .script-header {
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    .script-actions {
-        width: 100%;
-        justify-content: flex-end;
-    }
+    .sidebar { display: none; }
+    .mobile-bottom-nav { display: flex; }
+    .main-content { margin-left: 0; padding: 16px; padding-bottom: 90px; }
+    .header { padding: 0 16px; }
+    .nav-tabs { display: none; }
+    .user-name { display: none; }
+    .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .premium-plans { grid-template-columns: 1fr; }
+    .games-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .public-scripts-grid { grid-template-columns: 1fr; }
+    .modal-content { padding: 20px; width: 96%; }
+    .auth-panel { padding: 28px 20px; }
+    .secret-code { font-size: 11px; }
+    .verification-input-group { flex-direction: column; }
+    .key-input-row { flex-direction: column; }
+    .admin-grid { grid-template-columns: 1fr; }
+    .script-header { flex-direction: column; gap: 8px; }
+    .script-actions { width: 100%; justify-content: flex-end; }
 }
 
 @media (max-width: 480px) {
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .games-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .premium-plans {
-        grid-template-columns: 1fr;
-    }
-    
-    .admin-stats-grid {
-        grid-template-columns: 1fr;
-    }
+    .stats-grid { grid-template-columns: 1fr; }
+    .games-grid { grid-template-columns: 1fr; }
+    .admin-stats-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -2001,50 +1633,34 @@ label {
         <div class="main-layout">
             <div class="sidebar" id="sidebar">
                 <div class="sidebar-nav">
-                    <div class="sidebar-section">
-                        <div class="sidebar-title">Navigation</div>
-                        <button class="sidebar-item active" onclick="switchPageSidebar('home')">
-                            <i class="fas fa-home"></i> Dashboard
-                        </button>
-                        <button class="sidebar-item" onclick="switchPageSidebar('games')">
-                            <i class="fas fa-gamepad"></i> Browse Games
-                        </button>
-                        <button class="sidebar-item" onclick="switchPageSidebar('myScripts')">
-                            <i class="fas fa-code"></i> My Scripts
-                        </button>
-                        <button class="sidebar-item" onclick="switchPageSidebar('publicScripts')">
-                            <i class="fas fa-globe"></i> Public Scripts
-                        </button>
-                        <button class="sidebar-item premium-item" onclick="switchPageSidebar('buyPremium')">
-                            <i class="fas fa-crown"></i> Premium Store
-                        </button>
-                        <button class="sidebar-item" id="adminSidebarItem" style="display: none;" onclick="switchPageSidebar('admin')">
-                            <i class="fas fa-shield-alt"></i> Admin Panel
-                        </button>
-                    </div>
+                    <div class="sidebar-title">Navigation</div>
+                    <button class="sidebar-item active" onclick="switchPageSidebar('home')">
+                        <i class="fas fa-home"></i> Dashboard
+                    </button>
+                    <button class="sidebar-item" onclick="switchPageSidebar('games')">
+                        <i class="fas fa-gamepad"></i> Browse Games
+                    </button>
+                    <button class="sidebar-item" onclick="switchPageSidebar('myScripts')">
+                        <i class="fas fa-code"></i> My Scripts
+                    </button>
+                    <button class="sidebar-item" onclick="switchPageSidebar('publicScripts')">
+                        <i class="fas fa-globe"></i> Public Scripts
+                    </button>
+                    <button class="sidebar-item premium-item" onclick="switchPageSidebar('buyPremium')">
+                        <i class="fas fa-crown"></i> Premium Store
+                    </button>
+                    <button class="sidebar-item" id="adminSidebarItem" style="display: none;" onclick="switchPageSidebar('admin')">
+                        <i class="fas fa-shield-alt"></i> Admin Panel
+                    </button>
                     
                     <div class="sidebar-divider"></div>
                     
-                    <div class="sidebar-section">
-                        <div class="sidebar-title">System Stats</div>
-                        <div class="sidebar-stats">
-                            <div class="sidebar-stat">
-                                <i class="fas fa-users"></i>
-                                <span id="sidebarUserCount">0</span> Users
-                            </div>
-                            <div class="sidebar-stat">
-                                <i class="fas fa-gamepad"></i>
-                                <span id="sidebarGameCount">0</span> Games
-                            </div>
-                            <div class="sidebar-stat">
-                                <i class="fas fa-file-code"></i>
-                                <span id="sidebarScriptCount">0</span> Scripts
-                            </div>
-                            <div class="sidebar-stat">
-                                <i class="fas fa-crown"></i>
-                                <span id="sidebarPremiumCount">0</span> Premium
-                            </div>
-                        </div>
+                    <div class="sidebar-title">System Stats</div>
+                    <div class="sidebar-stats">
+                        <div class="sidebar-stat"><i class="fas fa-users"></i> <span id="sidebarUserCount">0</span> Users</div>
+                        <div class="sidebar-stat"><i class="fas fa-gamepad"></i> <span id="sidebarGameCount">0</span> Games</div>
+                        <div class="sidebar-stat"><i class="fas fa-file-code"></i> <span id="sidebarScriptCount">0</span> Scripts</div>
+                        <div class="sidebar-stat"><i class="fas fa-crown"></i> <span id="sidebarPremiumCount">0</span> Premium</div>
                     </div>
                 </div>
             </div>
@@ -2054,7 +1670,7 @@ label {
                 <div id="homePage" class="page active">
                     <div class="page-wrapper">
                         <h1 class="page-title">Dashboard</h1>
-                        <p class="page-subtitle">Welcome back, <span id="welcomeName">User</span>! Here's your overview.</p>
+                        <p class="page-subtitle">Welcome back, <span id="welcomeName">User</span>!</p>
                         
                         <div class="stats-grid">
                             <div class="stat-card">
@@ -2079,7 +1695,6 @@ label {
                             </div>
                         </div>
                         
-                        <!-- Key Generation -->
                         <div class="key-section">
                             <div class="key-section-title">
                                 <i class="fas fa-key" style="color: var(--primary-light);"></i>
@@ -2140,9 +1755,7 @@ label {
                 <div id="gameScriptsView" class="page">
                     <div class="page-wrapper">
                         <div class="flex items-center gap-3 mb-6 flex-wrap">
-                            <button class="btn-secondary" onclick="switchPage('games')">
-                                <i class="fas fa-arrow-left"></i> Back
-                            </button>
+                            <button class="btn-secondary" onclick="switchPage('games')"><i class="fas fa-arrow-left"></i> Back</button>
                             <div class="flex items-center gap-3">
                                 <img id="viewGameImage" style="width:56px;height:56px;border-radius:12px;object-fit:cover;background:var(--card-bg);">
                                 <div>
@@ -2154,11 +1767,8 @@ label {
                         
                         <div class="flex justify-between items-center mb-6 flex-wrap gap-3">
                             <h3 style="font-size:16px;"><i class="fas fa-code"></i> Scripts for this Game</h3>
-                            <button class="btn-primary" onclick="openCreateScriptModal()">
-                                <i class="fas fa-plus"></i> Create Script
-                            </button>
+                            <button class="btn-primary" onclick="openCreateScriptModal()"><i class="fas fa-plus"></i> Create Script</button>
                         </div>
-                        
                         <div id="gameScriptsList"></div>
                     </div>
                 </div>
@@ -2171,16 +1781,12 @@ label {
                                 <h1 class="page-title">My Scripts</h1>
                                 <p class="page-subtitle">Manage your created scripts</p>
                             </div>
-                            <button class="btn-primary" onclick="switchPage('games')">
-                                <i class="fas fa-plus-circle"></i> Create New
-                            </button>
+                            <button class="btn-primary" onclick="switchPage('games')"><i class="fas fa-plus-circle"></i> Create New</button>
                         </div>
-                        
                         <div class="search-bar">
                             <i class="fas fa-search"></i>
                             <input type="text" id="myScriptsSearchInput" placeholder="Search your scripts..." onkeyup="filterMyScripts()">
                         </div>
-                        
                         <div class="filter-tabs">
                             <button class="filter-btn active" onclick="filterMyScriptsBy('all')">All</button>
                             <button class="filter-btn" onclick="filterMyScriptsBy('premium')">Premium</button>
@@ -2188,7 +1794,6 @@ label {
                             <button class="filter-btn" onclick="filterMyScriptsBy('public')">Public</button>
                             <button class="filter-btn" onclick="filterMyScriptsBy('private')">Private</button>
                         </div>
-                        
                         <div id="myScriptsList"></div>
                     </div>
                 </div>
@@ -2198,18 +1803,15 @@ label {
                     <div class="page-wrapper">
                         <h1 class="page-title">Public Scripts</h1>
                         <p class="page-subtitle">Discover scripts shared by the community</p>
-                        
                         <div class="search-bar">
                             <i class="fas fa-search"></i>
                             <input type="text" id="publicScriptsSearchInput" placeholder="Search public scripts..." onkeyup="filterPublicScripts()">
                         </div>
-                        
                         <div class="filter-tabs">
                             <button class="filter-btn active" onclick="filterPublicScriptsBy('all')">All</button>
                             <button class="filter-btn" onclick="filterPublicScriptsBy('premium')">Premium</button>
                             <button class="filter-btn" onclick="filterPublicScriptsBy('free')">Free</button>
                         </div>
-                        
                         <div id="publicScriptsList" class="public-scripts-grid"></div>
                     </div>
                 </div>
@@ -2225,15 +1827,15 @@ label {
                                     <h2 class="premium-store-title">Premium Membership</h2>
                                 </div>
                             </div>
-                            <p class="premium-store-subtitle">Unlock exclusive features, premium scripts, and get your unique secret code!</p>
+                            <p class="premium-store-subtitle">Purchase a Roblox GamePass to unlock premium features!</p>
                             
                             <div id="premiumPurchasePlans" class="premium-plans"></div>
                             
                             <div style="margin-top: 28px; padding: 20px; background: rgba(0,0,0,0.3); border-radius: var(--radius-lg); text-align: center; position: relative; z-index: 1;">
                                 <i class="fas fa-shield-alt" style="font-size: 28px; color: var(--premium); margin-bottom: 8px; display: block;"></i>
                                 <p style="font-size: 12px; color: rgba(255,255,255,0.6);">
-                                    After purchasing, you'll receive a <strong style="color: var(--premium);">unique secret code</strong> linked to your account.<br>
-                                    Use this code to verify your premium status in the Roblox script hub!
+                                    Purchase a GamePass on Roblox, then <strong style="color: var(--premium);">verify your purchase</strong> below.<br>
+                                    You'll receive a <strong style="color: var(--premium);">unique secret code</strong> after verification!
                                 </p>
                             </div>
                         </div>
@@ -2243,60 +1845,27 @@ label {
                 <!-- Admin Panel Page -->
                 <div id="adminPage" class="page">
                     <div class="page-wrapper">
-                        <div class="admin-panel">
-                            <h1 class="page-title">Admin Panel</h1>
-                            <p class="page-subtitle" style="color: var(--premium);">
-                                <i class="fas fa-lock"></i> Restricted Access - Administrator Only
-                            </p>
-                            
-                            <div class="admin-stats-grid">
-                                <div class="admin-stat-card">
-                                    <div class="stat-icon"><i class="fas fa-users"></i></div>
-                                    <div class="stat-value" id="adminTotalUsers">0</div>
-                                    <div class="stat-label">Total Users</div>
-                                </div>
-                                <div class="admin-stat-card">
-                                    <div class="stat-icon"><i class="fas fa-crown"></i></div>
-                                    <div class="stat-value" id="adminPremiumUsers">0</div>
-                                    <div class="stat-label">Premium Users</div>
-                                </div>
-                                <div class="admin-stat-card">
-                                    <div class="stat-icon"><i class="fas fa-ticket-alt"></i></div>
-                                    <div class="stat-value" id="adminCodesRedeemed">0</div>
-                                    <div class="stat-label">Codes Redeemed</div>
-                                </div>
+                        <h1 class="page-title">Admin Panel</h1>
+                        <p class="page-subtitle" style="color: var(--premium);"><i class="fas fa-lock"></i> Restricted Access</p>
+                        
+                        <div class="admin-stats-grid">
+                            <div class="admin-stat-card">
+                                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                                <div class="stat-value" id="adminTotalUsers">0</div>
+                                <div class="stat-label">Total Users</div>
                             </div>
-                            
-                            <div class="admin-section">
-                                <div class="admin-header">
-                                    <h3><i class="fas fa-crown"></i> Premium Code Management</h3>
-                                </div>
-                                <div id="adminCodesList" class="admin-grid"></div>
+                            <div class="admin-stat-card">
+                                <div class="stat-icon"><i class="fas fa-crown"></i></div>
+                                <div class="stat-value" id="adminPremiumUsers">0</div>
+                                <div class="stat-label">Premium Users</div>
                             </div>
-                            
-                            <div class="admin-section">
-                                <div class="admin-header">
-                                    <h3><i class="fas fa-gamepad"></i> Game Management</h3>
-                                    <button class="btn-success btn-sm" onclick="openCreateGameModal()">
-                                        <i class="fas fa-plus"></i> Create Game
-                                    </button>
-                                </div>
-                                <div id="adminGamesList" class="admin-grid"></div>
+                        </div>
+                        
+                        <div class="admin-section">
+                            <div class="admin-header"><h3><i class="fas fa-gamepad"></i> Game Management</h3>
+                                <button class="btn-success btn-sm" onclick="openCreateGameModal()"><i class="fas fa-plus"></i> Create Game</button>
                             </div>
-                            
-                            <div class="admin-section">
-                                <div class="admin-header">
-                                    <h3><i class="fas fa-code"></i> All Scripts Monitor</h3>
-                                </div>
-                                <div id="allScriptsMonitor"></div>
-                            </div>
-                            
-                            <div class="admin-section">
-                                <div class="admin-header">
-                                    <h3><i class="fas fa-users"></i> Premium Users</h3>
-                                </div>
-                                <div id="premiumUsersList"></div>
-                            </div>
+                            <div id="adminGamesList" class="admin-grid"></div>
                         </div>
                     </div>
                 </div>
@@ -2304,59 +1873,93 @@ label {
         </div>
     </div>
     
-    <!-- Mobile Bottom Navigation -->
     <div class="mobile-bottom-nav">
-        <button class="mobile-nav-item active" onclick="switchPageMobile('home')">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
-        </button>
-        <button class="mobile-nav-item" onclick="switchPageMobile('games')">
-            <i class="fas fa-gamepad"></i>
-            <span>Games</span>
-        </button>
-        <button class="mobile-nav-item" onclick="switchPageMobile('myScripts')">
-            <i class="fas fa-code"></i>
-            <span>Scripts</span>
-        </button>
-        <button class="mobile-nav-item premium-mobile" onclick="switchPageMobile('buyPremium')">
-            <i class="fas fa-crown"></i>
-            <span>Premium</span>
-        </button>
-        <button class="mobile-nav-item" id="adminMobileNav" style="display: none;" onclick="switchPageMobile('admin')">
-            <i class="fas fa-shield-alt"></i>
-            <span>Admin</span>
-        </button>
+        <button class="mobile-nav-item active" onclick="switchPageMobile('home')"><i class="fas fa-home"></i><span>Home</span></button>
+        <button class="mobile-nav-item" onclick="switchPageMobile('games')"><i class="fas fa-gamepad"></i><span>Games</span></button>
+        <button class="mobile-nav-item" onclick="switchPageMobile('myScripts')"><i class="fas fa-code"></i><span>Scripts</span></button>
+        <button class="mobile-nav-item premium-mobile" onclick="switchPageMobile('buyPremium')"><i class="fas fa-crown"></i><span>Premium</span></button>
+        <button class="mobile-nav-item" id="adminMobileNav" style="display: none;" onclick="switchPageMobile('admin')"><i class="fas fa-shield-alt"></i><span>Admin</span></button>
     </div>
 </div>
 
-<!-- Secret Code Modal -->
-<div id="secretCodeModal" class="modal-overlay hidden">
-    <div class="modal-content secret-code-modal">
+<!-- Purchase Verification Modal -->
+<div id="purchaseVerificationModal" class="modal-overlay hidden">
+    <div class="modal-content verification-modal">
         <div class="modal-header">
-            <h2 class="modal-title"><i class="fas fa-crown"></i> Premium Unlocked!</h2>
+            <h2 class="modal-title"><i class="fas fa-check-circle"></i> Verify Purchase</h2>
+            <button class="close-btn" onclick="closePurchaseVerification()"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="verification-steps">
+            <div class="verification-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Enter GamePass ID</h4>
+                    <p>Enter the GamePass ID you purchased</p>
+                    <div class="verification-input-group">
+                        <input type="text" id="verifyGamepassId" placeholder="GamePass ID (e.g., 12345678)">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="verification-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Enter Your Roblox User ID</h4>
+                    <p>We'll verify you own this GamePass</p>
+                    <div class="verification-input-group">
+                        <input type="text" id="verifyRobloxUserId" placeholder="Roblox User ID">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="verification-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Enter Your Roblox Username</h4>
+                    <p>Must match the owner of the GamePass</p>
+                    <div class="verification-input-group">
+                        <input type="text" id="verifyRobloxUsername" placeholder="Roblox Username">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="verificationStatus" class="verification-status hidden"></div>
+        
+        <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <button class="btn-premium btn-lg" onclick="verifyRobloxPurchase()" style="flex:1;justify-content:center;">
+                <i class="fab fa-roblox"></i> Verify Purchase
+            </button>
+            <button class="btn-secondary" onclick="closePurchaseVerification()">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+        </div>
+        
+        <p style="font-size: 10px; color: rgba(255,255,255,0.3); text-align: center; margin-top: 12px;">
+            We check Roblox's API to verify GamePass ownership. This may take a few seconds.
+        </p>
+    </div>
+</div>
+
+<!-- Secret Code Modal (shown after successful verification) -->
+<div id="secretCodeModal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-crown"></i> Premium Verified!</h2>
             <button class="close-btn" onclick="closeSecretCodeModal()"><i class="fas fa-times"></i></button>
         </div>
         
-        <div id="secretCodeDisplay" class="secret-code-container">
+        <div class="secret-code-container">
             <div class="secret-code-label">Your Unique Secret Code</div>
             <div class="secret-code" id="secretCode"></div>
-            <button class="btn-premium" onclick="copySecretCode()" style="margin-bottom: 12px;">
+            <button class="btn-premium" onclick="copySecretCode()" style="margin-bottom:12px;">
                 <i class="fas fa-copy"></i> Copy Code
             </button>
             <div id="qrCode" class="qr-container"></div>
-            <p style="font-size: 11px; margin-top: 10px; color: rgba(255,255,255,0.5);">
-                Use this code in the Roblox script to verify your premium status!
+            <p style="font-size:11px;margin-top:10px;color:rgba(255,255,255,0.5);">
+                Use this code in the Roblox script to verify premium status!
             </p>
-        </div>
-        
-        <div class="verification-section">
-            <p style="font-size:12px;color:rgba(255,255,255,0.7);">
-                <i class="fas fa-info-circle"></i> Keep this code safe! You'll need it to access premium features.
-            </p>
-            <div class="verify-input">
-                <input type="text" id="verifyCodeInput" placeholder="Enter code to verify...">
-                <button class="btn-success" onclick="verifyCode()"><i class="fas fa-check"></i> Verify</button>
-            </div>
         </div>
         
         <div class="flex gap-3 mt-6">
@@ -2374,23 +1977,18 @@ label {
             <h2 class="modal-title"><i class="fas fa-pen-fancy"></i> Create Script</h2>
             <button class="close-btn" onclick="closeCreateScriptModal()"><i class="fas fa-times"></i></button>
         </div>
-        
         <div id="scriptGameInfo" style="margin-bottom:18px;padding:12px;background:rgba(108,92,231,0.1);border-radius:var(--radius-md);">
             <i class="fas fa-gamepad"></i> Game: <strong id="selectedGameName"></strong>
         </div>
-        
         <label><i class="fas fa-tag"></i> Script Name</label>
         <input type="text" id="scriptNameInput" placeholder="My Awesome Script">
-        
         <label><i class="fas fa-align-left"></i> Description</label>
         <textarea id="scriptDescInput" placeholder="What does this script do?" rows="2"></textarea>
-        
         <label><i class="fas fa-eye"></i> Visibility</label>
         <div class="radio-group">
             <label><input type="radio" name="visibility" value="private" checked> <i class="fas fa-lock"></i> Private</label>
             <label><input type="radio" name="visibility" value="public"> <i class="fas fa-globe"></i> Public</label>
         </div>
-        
         <div id="premiumScriptOption" class="hidden" style="background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.2);border-radius:var(--radius-md);padding:16px;margin-bottom:14px;">
             <div class="checkbox-group">
                 <input type="checkbox" id="scriptPremiumCheck" onchange="togglePremiumOptions()">
@@ -2403,23 +2001,13 @@ label {
                 <input type="number" id="scriptPrice" placeholder="Price" min="0" value="0">
             </div>
         </div>
-        
         <label><i class="fas fa-code"></i> Script Type</label>
         <div class="flex gap-2 mb-4">
             <button class="filter-btn active" onclick="setScriptType('url')"><i class="fas fa-link"></i> URL</button>
             <button class="filter-btn" onclick="setScriptType('editor')"><i class="fas fa-edit"></i> Lua Editor</button>
         </div>
-        
-        <div id="urlInputSection">
-            <label><i class="fas fa-link"></i> Script URL</label>
-            <input type="text" id="scriptUrlInput" placeholder="https://raw.githubusercontent.com/...">
-        </div>
-        
-        <div id="editorSection" class="hidden">
-            <label><i class="fas fa-file-code"></i> Lua Script</label>
-            <div class="monaco-container" id="monacoEditor"></div>
-        </div>
-        
+        <div id="urlInputSection"><label><i class="fas fa-link"></i> Script URL</label><input type="text" id="scriptUrlInput" placeholder="https://raw.githubusercontent.com/..."></div>
+        <div id="editorSection" class="hidden"><label><i class="fas fa-file-code"></i> Lua Script</label><div class="monaco-container" id="monacoEditor"></div></div>
         <div class="flex gap-3 mt-6">
             <button class="btn-primary" onclick="saveScript()"><i class="fas fa-save"></i> Save Script</button>
             <button class="btn-secondary" onclick="closeCreateScriptModal()"><i class="fas fa-times"></i> Cancel</button>
@@ -2434,35 +2022,20 @@ label {
             <h2 class="modal-title"><i class="fas fa-edit"></i> Edit Script</h2>
             <button class="close-btn" onclick="closeEditScriptModal()"><i class="fas fa-times"></i></button>
         </div>
-        
-        <label><i class="fas fa-tag"></i> Script Name</label>
-        <input type="text" id="editScriptNameInput">
-        
-        <label><i class="fas fa-align-left"></i> Description</label>
-        <textarea id="editScriptDescInput" rows="2"></textarea>
-        
+        <label><i class="fas fa-tag"></i> Script Name</label><input type="text" id="editScriptNameInput">
+        <label><i class="fas fa-align-left"></i> Description</label><textarea id="editScriptDescInput" rows="2"></textarea>
         <label><i class="fas fa-eye"></i> Visibility</label>
         <div class="radio-group">
             <label><input type="radio" name="editVisibility" value="private"> <i class="fas fa-lock"></i> Private</label>
             <label><input type="radio" name="editVisibility" value="public"> <i class="fas fa-globe"></i> Public</label>
         </div>
-        
         <label><i class="fas fa-code"></i> Script Type</label>
         <div class="flex gap-2 mb-4">
             <button class="filter-btn" id="editUrlTab" onclick="setEditScriptType('url')"><i class="fas fa-link"></i> URL</button>
             <button class="filter-btn" id="editEditorTab" onclick="setEditScriptType('editor')"><i class="fas fa-edit"></i> Lua Editor</button>
         </div>
-        
-        <div id="editUrlInputSection">
-            <label><i class="fas fa-link"></i> Script URL</label>
-            <input type="text" id="editScriptUrlInput">
-        </div>
-        
-        <div id="editEditorSection" class="hidden">
-            <label><i class="fas fa-file-code"></i> Lua Script</label>
-            <div class="monaco-container" id="editMonacoEditor"></div>
-        </div>
-        
+        <div id="editUrlInputSection"><label><i class="fas fa-link"></i> Script URL</label><input type="text" id="editScriptUrlInput"></div>
+        <div id="editEditorSection" class="hidden"><label><i class="fas fa-file-code"></i> Lua Script</label><div class="monaco-container" id="editMonacoEditor"></div></div>
         <div class="flex gap-3 mt-6">
             <button class="btn-primary" onclick="updateScript()"><i class="fas fa-save"></i> Update Script</button>
             <button class="btn-secondary" onclick="closeEditScriptModal()"><i class="fas fa-times"></i> Cancel</button>
@@ -2477,32 +2050,17 @@ label {
             <h2 class="modal-title"><i class="fas fa-gamepad"></i> Create Game</h2>
             <button class="close-btn" onclick="closeCreateGameModal()"><i class="fas fa-times"></i></button>
         </div>
-        
         <div class="text-center mb-4">
             <div style="width:120px;height:120px;border:2px dashed var(--border);border-radius:var(--radius-lg);margin:0 auto;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;" onclick="document.getElementById('gameImageInput').click()">
                 <img id="gameImagePreview" style="width:100%;height:100%;object-fit:cover;display:none;">
-                <div id="imagePlaceholder" style="text-align:center;color:rgba(255,255,255,0.3);">
-                    <i class="fas fa-cloud-upload-alt" style="font-size:28px;"></i>
-                    <p style="font-size:10px;margin-top:6px;">Upload Image</p>
-                </div>
+                <div id="imagePlaceholder" style="text-align:center;color:rgba(255,255,255,0.3);"><i class="fas fa-cloud-upload-alt" style="font-size:28px;"></i><p style="font-size:10px;margin-top:6px;">Upload Image</p></div>
             </div>
             <input type="file" id="gameImageInput" accept="image/*" class="hidden">
         </div>
-        
-        <label><i class="fas fa-heading"></i> Game Name</label>
-        <input type="text" id="newGameName" placeholder="Game Name">
-        
-        <label><i class="fas fa-id-card"></i> Roblox Place ID</label>
-        <input type="text" id="newGameId" placeholder="Place ID">
-        
-        <div class="checkbox-group">
-            <input type="checkbox" id="newGamePremium">
-            <label><i class="fas fa-crown"></i> Premium Game</label>
-        </div>
-        
-        <button class="btn-success btn-lg" onclick="createGame()" style="width:100%;justify-content:center;">
-            <i class="fas fa-check"></i> Create Game
-        </button>
+        <label><i class="fas fa-heading"></i> Game Name</label><input type="text" id="newGameName" placeholder="Game Name">
+        <label><i class="fas fa-id-card"></i> Roblox Place ID</label><input type="text" id="newGameId" placeholder="Place ID">
+        <div class="checkbox-group"><input type="checkbox" id="newGamePremium"><label><i class="fas fa-crown"></i> Premium Game</label></div>
+        <button class="btn-success btn-lg" onclick="createGame()" style="width:100%;justify-content:center;"><i class="fas fa-check"></i> Create Game</button>
     </div>
 </div>
 
@@ -2558,29 +2116,26 @@ let currentScriptType = 'url';
 let currentEditScriptType = 'url';
 let selectedGameId = null;
 let selectedGameData = null;
-let editingScriptId = null;
 let currentEditingScript = null;
 let currentViewingScript = null;
 let roleUpdateInterval = null;
 let isAdmin = false;
 let canCreatePremium = false;
-let premiumUnlocked = false;
 let currentGameFilter = 'all';
 let currentScriptFilter = 'all';
 let currentPublicFilter = 'all';
 let currentGameSearchTerm = '';
 let currentMyScriptsSearchTerm = '';
 let currentPublicSearchTerm = '';
-let currentSecretCode = null;
 let currentQR = null;
+let currentPurchasePlan = null;
 
 const ADMIN_USERNAME = 'plstealme2';
-const PREMIUM_WAIT_TIME = 5 * 60 * 1000;
 
 const ROLES = {
-    UNVERIFIED: { name: 'UNVERIFIED', timeRequired: 0, icon: '🔴' },
-    VERIFIED: { name: 'VERIFIED', timeRequired: 5 * 60 * 1000, icon: '🟢' },
-    TRUSTED: { name: 'TRUSTED', timeRequired: 10 * 60 * 1000, icon: '⭐' }
+    UNVERIFIED: { name: 'UNVERIFIED', timeRequired: 0 },
+    VERIFIED: { name: 'VERIFIED', timeRequired: 5 * 60 * 1000 },
+    TRUSTED: { name: 'TRUSTED', timeRequired: 10 * 60 * 1000 }
 };
 
 const PREMIUM_PLANS = {
@@ -2588,48 +2143,25 @@ const PREMIUM_PLANS = {
         name: 'Basic Premium', 
         price: 199, 
         duration: '30 Days', 
-        gamepassId: '199', 
+        gamepassId: '199',
         icon: '🌟',
-        features: [
-            'Create Premium Scripts',
-            'Access Premium Games',
-            'Premium Badge',
-            'Unique Secret Code',
-            'Basic Support'
-        ]
+        features: ['Create Premium Scripts', 'Access Premium Games', 'Premium Badge', 'Unique Secret Code']
     },
     pro: { 
         name: 'Pro Premium', 
         price: 499, 
         duration: '90 Days', 
-        gamepassId: '499', 
+        gamepassId: '499',
         icon: '💎',
-        features: [
-            'Everything in Basic',
-            'Priority Support',
-            'Unlimited Scripts',
-            'Featured Scripts',
-            'Exclusive Secret Code',
-            'Early Access Features',
-            'Custom Badge Color'
-        ]
+        features: ['Everything in Basic', 'Priority Support', 'Unlimited Scripts', 'Featured Scripts', 'Exclusive Secret Code']
     },
     lifetime: { 
         name: 'Lifetime Premium', 
         price: 999, 
         duration: 'Lifetime', 
-        gamepassId: '999', 
+        gamepassId: '999',
         icon: '👑',
-        features: [
-            'Everything in Pro',
-            'Lifetime Access',
-            'Exclusive Role',
-            'Early Access Features',
-            'Lifetime Secret Code',
-            'VIP Discord Channel',
-            'Custom Profile',
-            'All Future Updates'
-        ]
+        features: ['Everything in Pro', 'Lifetime Access', 'Exclusive Role', 'Lifetime Secret Code', 'All Future Updates']
     }
 };
 
@@ -2638,10 +2170,7 @@ function showLoading(text = 'Loading...') {
     document.getElementById('loadingOverlay').classList.remove('hidden');
     document.getElementById('loadingText').textContent = text;
 }
-
-function hideLoading() {
-    document.getElementById('loadingOverlay').classList.add('hidden');
-}
+function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
 
 function showToast(message, type = 'info') {
     const toast = document.createElement('div');
@@ -2654,7 +2183,7 @@ function showToast(message, type = 'info') {
         toast.style.transform = 'translateX(100%)';
         toast.style.transition = 'all 0.3s ease';
         setTimeout(() => toast.remove(), 300);
-    }, 3000);
+    }, 3500);
 }
 
 function escapeHtml(str) {
@@ -2664,18 +2193,188 @@ function escapeHtml(str) {
     return div.innerHTML;
 }
 
-// ==================== SECRET CODE SYSTEM (ENHANCED) ====================
-function generateSecretCode(plan, userId, username) {
+// ==================== ROBLOX GAMEPASS VERIFICATION ====================
+async function verifyRobloxPurchase() {
+    const gamepassId = document.getElementById('verifyGamepassId').value.trim();
+    const robloxUserId = document.getElementById('verifyRobloxUserId').value.trim();
+    const robloxUsername = document.getElementById('verifyRobloxUsername').value.trim();
+    const statusEl = document.getElementById('verificationStatus');
+    
+    if (!gamepassId || !robloxUserId || !robloxUsername) {
+        statusEl.className = 'verification-status error';
+        statusEl.textContent = 'Please fill in all fields';
+        statusEl.classList.remove('hidden');
+        return;
+    }
+    
+    if (!/^\d+$/.test(gamepassId)) {
+        statusEl.className = 'verification-status error';
+        statusEl.textContent = 'GamePass ID must be numbers only';
+        statusEl.classList.remove('hidden');
+        return;
+    }
+    
+    if (!/^\d+$/.test(robloxUserId)) {
+        statusEl.className = 'verification-status error';
+        statusEl.textContent = 'Roblox User ID must be numbers only';
+        statusEl.classList.remove('hidden');
+        return;
+    }
+    
+    statusEl.className = 'verification-status pending';
+    statusEl.textContent = '⏳ Verifying GamePass ownership on Roblox...';
+    statusEl.classList.remove('hidden');
+    
+    showLoading('Verifying purchase with Roblox...');
+    
+    try {
+        const ownsGamepass = await checkRobloxGamepassOwnership(robloxUserId, gamepassId);
+        
+        if (ownsGamepass) {
+            statusEl.className = 'verification-status success';
+            statusEl.textContent = '✅ GamePass verified! Generating your secret code...';
+            
+            await grantPremiumFromVerification(gamepassId, robloxUserId, robloxUsername);
+            
+            setTimeout(() => {
+                hideLoading();
+                closePurchaseVerification();
+                showSecretCodeAfterVerification();
+            }, 1500);
+        } else {
+            statusEl.className = 'verification-status error';
+            statusEl.textContent = '❌ GamePass not found. Make sure you purchased it on Roblox and try again.';
+            hideLoading();
+        }
+    } catch (error) {
+        statusEl.className = 'verification-status error';
+        statusEl.textContent = '❌ Verification failed: ' + error.message;
+        hideLoading();
+    }
+}
+
+async function checkRobloxGamepassOwnership(userId, gamepassId) {
+    // Roblox API endpoint for checking gamepass ownership
+    // This uses the Roblox API to verify if a user owns a specific gamepass
+    const url = `https://inventory.roblox.com/v1/users/${userId}/items/GamePass/${gamepassId}`;
+    
+    try {
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            // If we get a 404 or error, try alternative method
+            return await checkRobloxGamepassAlternative(userId, gamepassId);
+        }
+        
+        const data = await response.json();
+        
+        // Check if the response indicates ownership
+        // The Roblox API returns data with ownership information
+        return data && (data.data && data.data.length > 0 || data.owned === true);
+    } catch (error) {
+        console.log('Primary check failed, trying alternative...');
+        return await checkRobloxGamepassAlternative(userId, gamepassId);
+    }
+}
+
+async function checkRobloxGamepassAlternative(userId, gamepassId) {
+    // Alternative: Check through the gamepass detail page
+    // This is a fallback method using a different Roblox endpoint
+    const url = `https://economy.roblox.com/v1/game-pass/${gamepassId}/game-pass-product-info`;
+    
+    try {
+        const response = await fetch(url);
+        if (!response.ok) return false;
+        
+        const data = await response.json();
+        
+        // Now verify ownership using the gamepass info
+        const ownershipUrl = `https://economy.roblox.com/v1/purchases/products/${gamepassId}?userId=${userId}&productType=GamePass`;
+        const ownershipResponse = await fetch(ownershipUrl);
+        
+        if (!ownershipResponse.ok) return false;
+        const ownershipData = await ownershipResponse.json();
+        
+        return ownershipData && (ownershipData.purchased === true || ownershipData.data?.length > 0);
+    } catch (error) {
+        console.error('Alternative check failed:', error);
+        
+        // Final fallback: Use a CORS proxy or direct API call
+        try {
+            const corsProxy = 'https://api.allorigins.win/raw?url=';
+            const finalUrl = corsProxy + encodeURIComponent(`https://inventory.roblox.com/v1/users/${userId}/items/GamePass/${gamepassId}`);
+            const finalResponse = await fetch(finalUrl);
+            if (!finalResponse.ok) return false;
+            const finalData = await finalResponse.json();
+            return finalData && finalData.data && finalData.data.length > 0;
+        } catch (finalError) {
+            console.error('All verification methods failed:', finalError);
+            return false;
+        }
+    }
+}
+
+async function grantPremiumFromVerification(gamepassId, robloxUserId, robloxUsername) {
+    try {
+        const docRef = db.collection('system').doc('config');
+        const doc = await docRef.get();
+        const data = doc.data() || {};
+        
+        if (!data.users[currentUser.username]) {
+            data.users[currentUser.username] = {};
+        }
+        
+        // Generate the secret code
+        const secretCode = generateSecretCode(gamepassId, robloxUserId, robloxUsername);
+        
+        data.users[currentUser.username].isPremium = true;
+        data.users[currentUser.username].premiumPlan = currentPurchasePlan || 'verified';
+        data.users[currentUser.username].premiumCode = secretCode;
+        data.users[currentUser.username].premiumSince = Date.now();
+        data.users[currentUser.username].verifiedGamepassId = gamepassId;
+        data.users[currentUser.username].verifiedRobloxUserId = robloxUserId;
+        data.users[currentUser.username].verifiedRobloxUsername = robloxUsername;
+        
+        // Store verification record
+        if (!data.premiumCodes) data.premiumCodes = [];
+        data.premiumCodes.push({
+            code: secretCode,
+            plan: currentPurchasePlan || 'verified',
+            userId: currentUser.username,
+            username: currentUser.username,
+            robloxUserId: robloxUserId,
+            robloxUsername: robloxUsername,
+            gamepassId: gamepassId,
+            createdAt: Date.now(),
+            redeemed: true,
+            redeemedAt: Date.now(),
+            redeemedBy: currentUser.username
+        });
+        
+        await docRef.set(data, { merge: true });
+        
+        currentUser.isPremium = true;
+        currentUser.premiumPlan = currentPurchasePlan || 'verified';
+        currentUser.premiumCode = secretCode;
+        currentUser.premiumSince = Date.now();
+        
+        updateRoleDisplay();
+        updateStats();
+        
+        return secretCode;
+    } catch (error) {
+        console.error('Error granting premium:', error);
+        throw error;
+    }
+}
+
+function generateSecretCode(gamepassId, robloxUserId, robloxUsername) {
     const timestamp = Date.now();
     const uid = timestamp.toString(36).toUpperCase();
     const randomPart = generateRandomString(10);
-    const checksum = generateChecksum(userId, timestamp);
+    const checksum = generateChecksum(robloxUserId, gamepassId, timestamp);
     
-    const secretCode = `RSQ_PREMIUM_${uid}_${randomPart}_${checksum}_${username.toUpperCase()}_RSQTHANKSFORPURCHASE`;
-    
-    saveSecretCodeToFirebase(secretCode, plan, userId, username, timestamp);
-    
-    return secretCode;
+    return `RSQ_PREMIUM_${uid}_${randomPart}_${checksum}_${robloxUsername.toUpperCase()}_RSQTHANKSFORPURCHASE`;
 }
 
 function generateRandomString(length) {
@@ -2687,9 +2386,9 @@ function generateRandomString(length) {
     return result;
 }
 
-function generateChecksum(userId, timestamp) {
+function generateChecksum(userId, gamepassId, timestamp) {
     let hash = 0;
-    const str = `${userId}_${timestamp}_RSQ_PREMIUM_SALT`;
+    const str = `${userId}_${gamepassId}_${timestamp}_RSQ_VERIFIED`;
     for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
@@ -2698,147 +2397,17 @@ function generateChecksum(userId, timestamp) {
     return Math.abs(hash).toString(16).toUpperCase().substring(0, 8);
 }
 
-async function saveSecretCodeToFirebase(code, plan, userId, username, timestamp) {
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data() || {};
-        
-        if (!data.premiumCodes) data.premiumCodes = [];
-        
-        data.premiumCodes.push({
-            code: code,
-            plan: plan,
-            userId: userId,
-            username: username,
-            createdAt: timestamp,
-            redeemed: false,
-            redeemedAt: null,
-            redeemedBy: null
-        });
-        
-        await docRef.set(data, { merge: true });
-        return true;
-    } catch (error) {
-        console.error('Error saving secret code:', error);
-        return false;
-    }
-}
-
-async function verifySecretCode(code) {
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data() || {};
-        
-        const codeIndex = data.premiumCodes?.findIndex(c => c.code === code);
-        
-        if (codeIndex === -1 || codeIndex === undefined) {
-            return { valid: false, message: 'Invalid code - not found in system' };
-        }
-        
-        const codeData = data.premiumCodes[codeIndex];
-        
-        if (codeData.redeemed && codeData.redeemedBy !== currentUser?.username) {
-            return { valid: false, message: 'Code already redeemed by another user' };
-        }
-        
-        if (!codeData.redeemed) {
-            data.premiumCodes[codeIndex].redeemed = true;
-            data.premiumCodes[codeIndex].redeemedAt = Date.now();
-            data.premiumCodes[codeIndex].redeemedBy = currentUser?.username || 'Unknown';
-        }
-        
-        if (currentUser && !data.users[currentUser.username]) {
-            data.users[currentUser.username] = {};
-        }
-        
-        if (currentUser) {
-            data.users[currentUser.username].isPremium = true;
-            data.users[currentUser.username].premiumPlan = codeData.plan;
-            data.users[currentUser.username].premiumCode = code;
-            data.users[currentUser.username].premiumSince = codeData.redeemedAt || Date.now();
-        }
-        
-        await docRef.set(data, { merge: true });
-        
-        if (currentUser) {
-            currentUser.isPremium = true;
-            currentUser.premiumPlan = codeData.plan;
-            currentUser.premiumCode = code;
-            updateRoleDisplay();
-        }
-        
-        return { valid: true, message: 'Premium activated successfully!', plan: codeData.plan };
-    } catch (error) {
-        return { valid: false, message: 'Verification error: ' + error.message };
-    }
-}
-
-async function verifyCode() {
-    const code = document.getElementById('verifyCodeInput').value.trim();
-    if (!code) {
-        showToast('Please enter a code to verify', 'error');
-        return;
-    }
-    
-    if (!code.includes('RSQ_PREMIUM_') || !code.includes('_RSQTHANKSFORPURCHASE')) {
-        showToast('Invalid code format', 'error');
-        return;
-    }
-    
-    showLoading('Verifying code...');
-    const result = await verifySecretCode(code);
-    hideLoading();
-    
-    if (result.valid) {
-        showToast(`✅ ${result.message}`, 'success');
-        document.getElementById('verifyCodeInput').value = '';
-        closeSecretCodeModal();
-        renderPremiumPurchasePlans();
-        updateStats();
-        if (isAdmin) {
-            renderAdminCodesList();
-            updateAdminStats();
-        }
-        showToast('🎉 Premium features unlocked!', 'success');
-    } else {
-        showToast(result.message, 'error');
-    }
-}
-
-function copySecretCode() {
-    const code = document.getElementById('secretCode').textContent.trim();
-    if (code && code !== 'Generating...') {
-        navigator.clipboard.writeText(code).then(() => {
-            showToast('✅ Code copied to clipboard!', 'success');
-        }).catch(() => {
-            showToast('Failed to copy. Please select and copy manually.', 'error');
-        });
-    }
-}
-
-function closeSecretCodeModal() {
-    document.getElementById('secretCodeModal').classList.add('hidden');
-    document.getElementById('verifyCodeInput').value = '';
-    if (currentQR) {
-        currentQR.clear();
-        currentQR = null;
-    }
-    document.getElementById('qrCode').innerHTML = '';
-}
-
-// ==================== PREMIUM PURCHASE SYSTEM ====================
+// ==================== PURCHASE FLOW ====================
 function renderPremiumPurchasePlans() {
     const container = document.getElementById('premiumPurchasePlans');
     if (!container) return;
     
     if (currentUser?.isPremium) {
-        const planName = PREMIUM_PLANS[currentUser.premiumPlan]?.name || 'Premium';
+        const planName = currentUser.premiumPlan || 'Premium';
         const planIcon = PREMIUM_PLANS[currentUser.premiumPlan]?.icon || '👑';
         
         container.innerHTML = `
-            <div class="premium-owned-section" style="grid-column: 1/-1;">
+            <div class="premium-owned-section">
                 <div class="premium-owned-icon">${planIcon}</div>
                 <h3 class="premium-owned-title">You are a Premium Member!</h3>
                 <p class="premium-owned-plan">Plan: <strong style="color: var(--premium);">${planName}</strong></p>
@@ -2868,108 +2437,38 @@ function renderPremiumPurchasePlans() {
             <ul class="plan-features">
                 ${plan.features.map(f => `<li><i class="fas fa-check-circle"></i> ${f}</li>`).join('')}
             </ul>
-            <button class="btn-premium btn-lg" onclick="initiatePurchase('${key}')" style="width:100%;justify-content:center;">
-                <i class="fab fa-roblox"></i> Purchase - ${plan.price} R$
+            <button class="btn-premium btn-lg" onclick="openPurchaseVerification('${key}')" style="width:100%;justify-content:center;">
+                <i class="fab fa-roblox"></i> Purchase & Verify
             </button>
         </div>
     `).join('');
 }
 
-async function initiatePurchase(plan) {
-    if (!currentUser) {
-        showToast('Please login first', 'error');
-        return;
-    }
-    
+function openPurchaseVerification(plan) {
+    currentPurchasePlan = plan;
     const planData = PREMIUM_PLANS[plan];
     
-    showLoading('Preparing purchase...');
+    document.getElementById('verifyGamepassId').value = planData.gamepassId || '';
+    document.getElementById('verifyRobloxUserId').value = '';
+    document.getElementById('verifyRobloxUsername').value = '';
+    document.getElementById('verificationStatus').classList.add('hidden');
     
-    await new Promise(resolve => setTimeout(resolve, 800));
-    hideLoading();
+    document.getElementById('purchaseVerificationModal').classList.remove('hidden');
     
-    const confirmed = confirm(
-        `💎 Purchase ${planData.name}\n\n` +
-        `💰 Price: ${planData.price} Robux\n` +
-        `⏱️ Duration: ${planData.duration}\n\n` +
-        `You will receive a unique secret code after purchase.\n\n` +
-        `Click OK to continue with purchase.`
-    );
-    
-    if (confirmed) {
-        showLoading('Processing purchase...');
-        
-        await new Promise(resolve => setTimeout(resolve, 1200));
-        
-        const secretCode = generateSecretCode(plan, currentUser.username, currentUser.username);
-        currentSecretCode = secretCode;
-        
-        document.getElementById('secretCode').textContent = secretCode;
-        document.getElementById('secretCodeModal').classList.remove('hidden');
-        
-        setTimeout(() => {
-            if (currentQR) currentQR.clear();
-            const qrDiv = document.getElementById('qrCode');
-            qrDiv.innerHTML = '';
-            try {
-                currentQR = new QRCode(qrDiv, {
-                    text: secretCode,
-                    width: 160,
-                    height: 160,
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.H
-                });
-            } catch (e) {
-                qrDiv.innerHTML = '<p style="color:#000;padding:20px;">QR Generation Error</p>';
-            }
-        }, 200);
-        
-        hideLoading();
-        
-        await grantPremiumAccess(plan, secretCode);
-        showToast(`🎉 ${planData.name} purchased! Your secret code is ready.`, 'success');
-    }
+    // Copy gamepass link to clipboard for easy access
+    const gamepassUrl = `https://www.roblox.com/game-pass/${planData.gamepassId}`;
+    showToast(`📋 GamePass ID: ${planData.gamepassId} | Buy it on Roblox first!`, 'info');
 }
 
-async function grantPremiumAccess(plan, secretCode) {
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data() || {};
-        
-        if (!data.users[currentUser.username]) {
-            data.users[currentUser.username] = {};
-        }
-        
-        data.users[currentUser.username].isPremium = true;
-        data.users[currentUser.username].premiumPlan = plan;
-        data.users[currentUser.username].premiumCode = secretCode;
-        data.users[currentUser.username].premiumSince = Date.now();
-        
-        await docRef.set(data, { merge: true });
-        
-        currentUser.isPremium = true;
-        currentUser.premiumPlan = plan;
-        currentUser.premiumCode = secretCode;
-        currentUser.premiumSince = Date.now();
-        
-        updateRoleDisplay();
-        renderPremiumPurchasePlans();
-        updateStats();
-        
-        if (isAdmin) {
-            renderAdminCodesList();
-            updateAdminStats();
-        }
-    } catch (error) {
-        console.error('Error granting premium:', error);
-    }
+function closePurchaseVerification() {
+    document.getElementById('purchaseVerificationModal').classList.add('hidden');
+    document.getElementById('verificationStatus').classList.add('hidden');
+    currentPurchasePlan = null;
 }
 
-function showPremiumCode() {
+function showSecretCodeAfterVerification() {
     if (!currentUser?.premiumCode) {
-        showToast('No premium code found. Please contact support.', 'error');
+        showToast('Error: No code generated', 'error');
         return;
     }
     
@@ -2990,7 +2489,38 @@ function showPremiumCode() {
                 correctLevel: QRCode.CorrectLevel.H
             });
         } catch (e) {
-            qrDiv.innerHTML = '<p style="color:#000;padding:20px;">QR Error</p>';
+            qrDiv.innerHTML = '<p style="color:#000;">QR Error</p>';
+        }
+    }, 200);
+    
+    renderPremiumPurchasePlans();
+    showToast('🎉 Premium activated! Your secret code is ready.', 'success');
+}
+
+function showPremiumCode() {
+    if (!currentUser?.premiumCode) {
+        showToast('No premium code found', 'error');
+        return;
+    }
+    
+    document.getElementById('secretCode').textContent = currentUser.premiumCode;
+    document.getElementById('secretCodeModal').classList.remove('hidden');
+    
+    setTimeout(() => {
+        if (currentQR) currentQR.clear();
+        const qrDiv = document.getElementById('qrCode');
+        qrDiv.innerHTML = '';
+        try {
+            currentQR = new QRCode(qrDiv, {
+                text: currentUser.premiumCode,
+                width: 160,
+                height: 160,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        } catch (e) {
+            qrDiv.innerHTML = '<p style="color:#000;">QR Error</p>';
         }
     }, 200);
 }
@@ -3003,6 +2533,21 @@ function copyPremiumCode() {
     } else {
         showToast('No premium code found', 'error');
     }
+}
+
+function copySecretCode() {
+    const code = document.getElementById('secretCode').textContent.trim();
+    if (code) {
+        navigator.clipboard.writeText(code).then(() => {
+            showToast('✅ Code copied to clipboard!', 'success');
+        });
+    }
+}
+
+function closeSecretCodeModal() {
+    document.getElementById('secretCodeModal').classList.add('hidden');
+    if (currentQR) { currentQR.clear(); currentQR = null; }
+    document.getElementById('qrCode').innerHTML = '';
 }
 
 // ==================== AUTHENTICATION ====================
@@ -3019,10 +2564,7 @@ async function handleLogin() {
     const password = document.getElementById('loginPassword').value.trim();
     const errorEl = document.getElementById('authError');
     
-    if (!username || !password) {
-        errorEl.textContent = 'Please fill in all fields';
-        return;
-    }
+    if (!username || !password) { errorEl.textContent = 'Please fill in all fields'; return; }
     
     showLoading('Signing in...');
     
@@ -3030,7 +2572,6 @@ async function handleLogin() {
         const docRef = db.collection('system').doc('config');
         const doc = await docRef.get();
         const data = doc.data() || {};
-        
         const user = data.users?.[username];
         
         if (!user || user.password !== password) {
@@ -3079,20 +2620,9 @@ async function handleSignup() {
     const password = document.getElementById('signupPassword').value.trim();
     const errorEl = document.getElementById('authError');
     
-    if (!username || !password) {
-        errorEl.textContent = 'Please fill in all fields';
-        return;
-    }
-    
-    if (username.length < 3) {
-        errorEl.textContent = 'Username must be at least 3 characters';
-        return;
-    }
-    
-    if (password.length < 4) {
-        errorEl.textContent = 'Password must be at least 4 characters';
-        return;
-    }
+    if (!username || !password) { errorEl.textContent = 'Please fill in all fields'; return; }
+    if (username.length < 3) { errorEl.textContent = 'Username must be at least 3 characters'; return; }
+    if (password.length < 4) { errorEl.textContent = 'Password must be at least 4 characters'; return; }
     
     showLoading('Creating account...');
     
@@ -3102,20 +2632,9 @@ async function handleSignup() {
         const data = doc.data() || {};
         
         if (!data.users) data.users = {};
+        if (data.users[username]) { errorEl.textContent = 'Username already exists'; hideLoading(); return; }
         
-        if (data.users[username]) {
-            errorEl.textContent = 'Username already exists';
-            hideLoading();
-            return;
-        }
-        
-        data.users[username] = {
-            password,
-            joinTime: Date.now(),
-            role: ROLES.UNVERIFIED,
-            isPremium: false
-        };
-        
+        data.users[username] = { password, joinTime: Date.now(), role: ROLES.UNVERIFIED, isPremium: false };
         await docRef.set(data, { merge: true });
         
         errorEl.style.color = 'var(--success)';
@@ -3154,23 +2673,15 @@ async function initializeApp() {
     updateStats();
     renderMyScripts();
     renderPublicScripts();
-    
-    if (isAdmin) {
-        updateAdminStats();
-        renderAdminGamesList();
-        renderAdminCodesList();
-        renderAllScriptsMonitor();
-        renderPremiumUsersList();
-    }
+    if (isAdmin) { updateAdminStats(); renderAdminGamesList(); }
 }
 
 async function loadData() {
     try {
         const doc = await db.collection('system').doc('config').get();
         dataCache = doc.data() || {};
-        
         if (!dataCache.games) dataCache.games = [];
-        if (!dataCache.settings) dataCache.settings = { premiumGamepassId: '', premiumPrice: 299 };
+        if (!dataCache.settings) dataCache.settings = {};
         if (!dataCache.premiumCodes) dataCache.premiumCodes = [];
         if (!dataCache.users) dataCache.users = {};
         if (!dataCache.keys) dataCache.keys = {};
@@ -3184,22 +2695,13 @@ function setupRealtimeListener() {
     db.collection('system').doc('config').onSnapshot((doc) => {
         if (doc.exists) {
             dataCache = doc.data();
-            
             if (document.getElementById('gamesPage').classList.contains('active')) renderGames();
             if (document.getElementById('myScriptsPage').classList.contains('active')) renderMyScripts();
             if (document.getElementById('publicScriptsPage').classList.contains('active')) renderPublicScripts();
             if (selectedGameId && document.getElementById('gameScriptsView').classList.contains('active')) renderGameScripts();
-            
             updateStats();
             renderPremiumPurchasePlans();
-            
-            if (isAdmin) {
-                updateAdminStats();
-                renderAdminGamesList();
-                renderAdminCodesList();
-                renderAllScriptsMonitor();
-                renderPremiumUsersList();
-            }
+            if (isAdmin) { updateAdminStats(); renderAdminGamesList(); }
         }
     });
 }
@@ -3207,8 +2709,8 @@ function setupRealtimeListener() {
 // ==================== ROLE SYSTEM ====================
 function getUserRole() {
     if (!currentUser) return ROLES.UNVERIFIED;
-    if (currentUser.username === ADMIN_USERNAME) return { name: 'ADMIN', icon: '👑' };
-    if (currentUser.isPremium) return { name: 'PREMIUM', icon: '👑' };
+    if (currentUser.username === ADMIN_USERNAME) return { name: 'ADMIN' };
+    if (currentUser.isPremium) return { name: 'PREMIUM' };
     const userData = dataCache?.users?.[currentUser.username];
     return userData?.role || ROLES.UNVERIFIED;
 }
@@ -3221,35 +2723,20 @@ function updateRoleDisplay() {
     
     if (badge) {
         badge.className = 'role-badge';
-        if (role.name === 'UNVERIFIED') {
-            badge.classList.add('unverified');
-            badge.innerHTML = '🔴 UNVERIFIED';
-        } else if (role.name === 'VERIFIED') {
-            badge.classList.add('verified');
-            badge.innerHTML = '🟢 VERIFIED';
-        } else if (role.name === 'TRUSTED') {
-            badge.classList.add('trusted');
-            badge.innerHTML = '⭐ TRUSTED';
-        } else if (role.name === 'PREMIUM') {
-            badge.classList.add('premium');
-            badge.innerHTML = '👑 PREMIUM';
-        } else if (role.name === 'ADMIN') {
-            badge.classList.add('admin');
-            badge.innerHTML = '👑 ADMIN';
-        }
+        if (role.name === 'UNVERIFIED') { badge.classList.add('unverified'); badge.innerHTML = '🔴 UNVERIFIED'; }
+        else if (role.name === 'VERIFIED') { badge.classList.add('verified'); badge.innerHTML = '🟢 VERIFIED'; }
+        else if (role.name === 'TRUSTED') { badge.classList.add('trusted'); badge.innerHTML = '⭐ TRUSTED'; }
+        else if (role.name === 'PREMIUM') { badge.classList.add('premium'); badge.innerHTML = '👑 PREMIUM'; }
+        else if (role.name === 'ADMIN') { badge.classList.add('admin'); badge.innerHTML = '👑 ADMIN'; }
     }
     
     if (statRole) statRole.textContent = role.name;
-    
     if (premiumBadge) {
-        if (currentUser?.isPremium) {
-            premiumBadge.classList.remove('hidden');
-        } else {
-            premiumBadge.classList.add('hidden');
-        }
+        if (currentUser?.isPremium) premiumBadge.classList.remove('hidden');
+        else premiumBadge.classList.add('hidden');
     }
     
-    canCreatePremium = isAdmin || currentUser?.isPremium || premiumUnlocked;
+    canCreatePremium = isAdmin || currentUser?.isPremium;
 }
 
 function startRoleProgress() {
@@ -3272,33 +2759,19 @@ async function updateRoleProgress() {
     
     if (!progressFill || !progressPercent) return;
     
-    if (timeElapsed >= PREMIUM_WAIT_TIME && !premiumUnlocked) {
-        premiumUnlocked = true;
-        canCreatePremium = true;
-        showToast('🎉 You can now create premium scripts!', 'success');
-    }
-    
     if (timeElapsed >= ROLES.TRUSTED.timeRequired) {
         progressFill.style.width = '100%';
         progressPercent.textContent = '100%';
-        if (timeRemaining) timeRemaining.textContent = 'Max rank reached!';
+        if (timeRemaining) timeRemaining.textContent = 'Max rank!';
         if (nextRole) nextRole.textContent = 'Current: Trusted';
-        
         const currentRole = getUserRole();
-        if (currentRole.name !== 'TRUSTED' && currentRole.name !== 'ADMIN' && !currentUser.isPremium) {
-            await updateUserRole('TRUSTED');
-        }
+        if (currentRole.name !== 'TRUSTED') await updateUserRole('TRUSTED');
         return;
     }
     
     let targetTime, targetRoleName;
-    if (timeElapsed < ROLES.VERIFIED.timeRequired) {
-        targetTime = ROLES.VERIFIED.timeRequired;
-        targetRoleName = 'Verified';
-    } else {
-        targetTime = ROLES.TRUSTED.timeRequired;
-        targetRoleName = 'Trusted';
-    }
+    if (timeElapsed < ROLES.VERIFIED.timeRequired) { targetTime = ROLES.VERIFIED.timeRequired; targetRoleName = 'Verified'; }
+    else { targetTime = ROLES.TRUSTED.timeRequired; targetRoleName = 'Trusted'; }
     
     const progress = Math.min(100, (timeElapsed / targetTime) * 100);
     progressFill.style.width = progress + '%';
@@ -3307,7 +2780,7 @@ async function updateRoleProgress() {
     const remaining = targetTime - timeElapsed;
     const minutes = Math.floor(remaining / 60000);
     const seconds = Math.floor((remaining % 60000) / 1000);
-    if (timeRemaining) timeRemaining.textContent = `${minutes}:${seconds.toString().padStart(2, '0')} remaining`;
+    if (timeRemaining) timeRemaining.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
     if (nextRole) nextRole.textContent = `Next: ${targetRoleName}`;
     
     const currentRole = getUserRole();
@@ -3321,28 +2794,19 @@ async function updateUserRole(roleName) {
         const docRef = db.collection('system').doc('config');
         const doc = await docRef.get();
         const data = doc.data() || {};
-        
         if (!data.users[currentUser.username]) return;
-        
         data.users[currentUser.username].role = ROLES[roleName];
         await docRef.set(data, { merge: true });
-        
         currentUser.role = ROLES[roleName];
         updateRoleDisplay();
         showToast(`🎉 Role upgraded to ${roleName}!`, 'success');
-    } catch (error) {
-        console.error('Error updating role:', error);
-    }
+    } catch (error) { console.error('Error:', error); }
 }
 
 // ==================== KEY GENERATION ====================
 async function generateKey() {
     const userId = document.getElementById('robloxUserId').value.trim();
-    
-    if (!userId || !/^\d+$/.test(userId)) {
-        showToast('Please enter a valid Roblox User ID (numbers only)', 'error');
-        return;
-    }
+    if (!userId || !/^\d+$/.test(userId)) { showToast('Please enter a valid Roblox User ID', 'error'); return; }
     
     showLoading('Generating key...');
     
@@ -3350,22 +2814,13 @@ async function generateKey() {
         const docRef = db.collection('system').doc('config');
         const doc = await docRef.get();
         const data = doc.data() || {};
-        
         if (!data.keys) data.keys = {};
         
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let newKey = 'RSQ-';
-        for (let i = 0; i < 16; i++) {
-            newKey += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
+        for (let i = 0; i < 16; i++) newKey += chars.charAt(Math.floor(Math.random() * chars.length));
         
-        data.keys[newKey] = {
-            userId: parseInt(userId),
-            created: Date.now(),
-            createdBy: currentUser.username,
-            expires: Date.now() + (365 * 24 * 60 * 60 * 1000)
-        };
-        
+        data.keys[newKey] = { userId: parseInt(userId), created: Date.now(), createdBy: currentUser.username, expires: Date.now() + (365*24*60*60*1000) };
         await docRef.set(data, { merge: true });
         
         document.getElementById('generatedKey').textContent = newKey;
@@ -3373,22 +2828,14 @@ async function generateKey() {
         
         const loadstring = `loadstring(game:HttpGet("https://raw.githubusercontent.com/defnot67kid-beep/KeySytem/refs/heads/main/key.lua"))()`;
         document.getElementById('loadstringDisplay').innerHTML = `<i class="fas fa-copy"></i> ${loadstring} <span style="font-size:10px;opacity:0.6;">(click to copy)</span>`;
-        
-        showToast('✅ Key generated successfully! Valid for 1 year.', 'success');
-    } catch (error) {
-        showToast('Error: ' + error.message, 'error');
-    } finally {
-        hideLoading();
-    }
+        showToast('✅ Key generated!', 'success');
+    } catch (error) { showToast('Error: ' + error.message, 'error'); }
+    finally { hideLoading(); }
 }
 
 function copyLoadstring() {
     const loadstring = `loadstring(game:HttpGet("https://raw.githubusercontent.com/defnot67kid-beep/KeySytem/refs/heads/main/key.lua"))()`;
-    navigator.clipboard.writeText(loadstring).then(() => {
-        showToast('📋 Loadstring copied to clipboard!', 'success');
-    }).catch(() => {
-        showToast('Failed to copy', 'error');
-    });
+    navigator.clipboard.writeText(loadstring).then(() => showToast('📋 Copied!', 'success'));
 }
 
 // ==================== STATS ====================
@@ -3396,20 +2843,13 @@ function updateStats() {
     const users = dataCache?.users || {};
     const games = dataCache?.games || [];
     let totalScripts = 0;
-    let publicScripts = 0;
+    games.forEach(g => { totalScripts += (g.scripts || []).length; });
     const premiumUsers = Object.values(users).filter(u => u.isPremium === true).length;
     
-    games.forEach(g => {
-        totalScripts += (g.scripts || []).length;
-        publicScripts += (g.scripts || []).filter(s => s.visibility === 'public').length;
-    });
-    
     const el = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
-    
     el('statUsers', Object.keys(users).length);
     el('statGames', games.filter(g => g.id && g.id !== 'UNIVERSAL').length);
     el('statScripts', totalScripts);
-    
     el('sidebarUserCount', Object.keys(users).length);
     el('sidebarGameCount', games.filter(g => g.id && g.id !== 'UNIVERSAL').length);
     el('sidebarScriptCount', totalScripts);
@@ -3418,1056 +2858,311 @@ function updateStats() {
 
 function updateAdminStats() {
     if (!isAdmin) return;
-    
     const users = dataCache?.users || {};
     const premiumUsers = Object.values(users).filter(u => u.isPremium === true).length;
-    const codesRedeemed = dataCache?.premiumCodes?.filter(c => c.redeemed === true).length || 0;
-    
     const el = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
-    
     el('adminTotalUsers', Object.keys(users).length);
     el('adminPremiumUsers', premiumUsers);
-    el('adminCodesRedeemed', codesRedeemed);
 }
 
 // ==================== GAMES ====================
-function filterGames() {
-    currentGameSearchTerm = document.getElementById('gameSearchInput').value.toLowerCase();
-    renderGames();
-}
-
-function filterGamesBy(filter) {
-    currentGameFilter = filter;
+function filterGames() { currentGameSearchTerm = document.getElementById('gameSearchInput').value.toLowerCase(); renderGames(); }
+function filterGamesBy(filter) { currentGameFilter = filter;
     document.querySelectorAll('#gamesPage .filter-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    renderGames();
-}
+    event.target.classList.add('active'); renderGames(); }
 
 function renderGames() {
     const games = dataCache?.games || [];
     const publicGames = games.filter(g => g.id && g.id !== 'UNIVERSAL');
-    
     let filtered = publicGames;
     if (currentGameFilter === 'free') filtered = publicGames.filter(g => !g.premium);
     if (currentGameFilter === 'premium') filtered = publicGames.filter(g => g.premium);
-    if (currentGameSearchTerm) {
-        filtered = filtered.filter(g => 
-            g.name.toLowerCase().includes(currentGameSearchTerm) ||
-            g.id.toLowerCase().includes(currentGameSearchTerm)
-        );
-    }
+    if (currentGameSearchTerm) filtered = filtered.filter(g => g.name.toLowerCase().includes(currentGameSearchTerm) || g.id.toLowerCase().includes(currentGameSearchTerm));
     
     const container = document.getElementById('gamesGrid');
-    
     if (filtered.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state" style="grid-column:1/-1;">
-                <div class="empty-state-icon"><i class="fas fa-search"></i></div>
-                <h3>No games found</h3>
-                <p>Try adjusting your search or filter</p>
-            </div>`;
+        container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon"><i class="fas fa-search"></i></div><h3>No games found</h3></div>';
         return;
     }
     
-    container.innerHTML = filtered.map(game => {
-        const userScriptCount = (game.scripts || []).filter(s => s.createdBy === currentUser?.username).length;
-        return `
-            <div class="game-card ${game.premium ? 'premium-game' : ''}" onclick="selectGame('${game.id}')" style="position:relative;">
-                ${game.premium ? '<div class="game-badge"><i class="fas fa-crown"></i> PREMIUM</div>' : ''}
-                ${game.image ? 
-                    `<img src="${game.image}" class="game-card-image" alt="${escapeHtml(game.name)}">` : 
-                    `<div class="game-card-image"><i class="fas fa-gamepad"></i></div>`}
-                <div class="game-card-body">
-                    <div class="game-card-name">${escapeHtml(game.name)}</div>
-                    <div class="game-card-id">ID: ${game.id}</div>
-                    <div class="game-card-meta">
-                        <span><i class="fas fa-code"></i> ${userScriptCount} script${userScriptCount !== 1 ? 's' : ''}</span>
-                    </div>
-                </div>
-            </div>`;
-    }).join('');
+    container.innerHTML = filtered.map(game => `
+        <div class="game-card ${game.premium ? 'premium-game' : ''}" onclick="selectGame('${game.id}')" style="position:relative;">
+            ${game.premium ? '<div class="game-badge"><i class="fas fa-crown"></i> PREMIUM</div>' : ''}
+            ${game.image ? `<img src="${game.image}" class="game-card-image" alt="${escapeHtml(game.name)}">` : `<div class="game-card-image"><i class="fas fa-gamepad"></i></div>`}
+            <div class="game-card-body">
+                <div class="game-card-name">${escapeHtml(game.name)}</div>
+                <div class="game-card-id">ID: ${game.id}</div>
+                <div class="game-card-meta"><span><i class="fas fa-code"></i> ${(game.scripts||[]).filter(s=>s.createdBy===currentUser?.username).length} scripts</span></div>
+            </div>
+        </div>`).join('');
 }
 
 function selectGame(gameId) {
     const game = dataCache?.games?.find(g => g.id === gameId);
     if (!game) return;
-    
-    if (game.premium && !premiumUnlocked && !isAdmin && !currentUser?.isPremium) {
-        showToast('🔒 This is a premium game. Purchase premium to access!', 'warning');
-        return;
-    }
-    
-    selectedGameId = gameId;
-    selectedGameData = game;
-    
+    if (game.premium && !isAdmin && !currentUser?.isPremium) { showToast('🔒 Premium game. Verify purchase first!', 'warning'); return; }
+    selectedGameId = gameId; selectedGameData = game;
     document.getElementById('viewGameName').textContent = game.name;
     document.getElementById('viewGameId').textContent = `Place ID: ${game.id}`;
     document.getElementById('selectedGameName').textContent = game.name;
-    
     const img = document.getElementById('viewGameImage');
-    if (game.image) {
-        img.src = game.image;
-        img.style.display = 'block';
-    } else {
-        img.style.display = 'none';
-    }
-    
+    if (game.image) { img.src = game.image; img.style.display = 'block'; } else img.style.display = 'none';
     renderGameScripts();
-    
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('gameScriptsView').classList.add('active');
-    
-    document.querySelectorAll('.sidebar-item, .mobile-nav-item').forEach(item => item.classList.remove('active'));
 }
 
 function renderGameScripts() {
     const game = selectedGameData;
     const userScripts = (game.scripts || []).filter(s => s.createdBy === currentUser?.username);
     const container = document.getElementById('gameScriptsList');
-    
     if (userScripts.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon"><i class="fas fa-code"></i></div>
-                <h3>No Scripts Yet</h3>
-                <p>Create your first script for ${escapeHtml(game.name)}!</p>
-                <button class="btn-primary mt-4" onclick="openCreateScriptModal()">
-                    <i class="fas fa-plus"></i> Create Script
-                </button>
-            </div>`;
+        container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-code"></i></div><h3>No Scripts Yet</h3><button class="btn-primary mt-4" onclick="openCreateScriptModal()"><i class="fas fa-plus"></i> Create Script</button></div>`;
         return;
     }
-    
     container.innerHTML = userScripts.map(script => `
         <div class="script-card ${script.premium ? 'premium-script' : ''}">
             <div class="script-header">
-                <div class="script-name">
-                    <i class="fas ${script.premium ? 'fa-crown' : 'fa-file-code'}"></i>
-                    ${escapeHtml(script.name)}
+                <div class="script-name"><i class="fas ${script.premium ? 'fa-crown' : 'fa-file-code'}"></i> ${escapeHtml(script.name)}
                     ${script.premium ? '<span class="premium-script-badge"><i class="fas fa-crown"></i> PREMIUM</span>' : ''}
-                    ${script.visibility === 'public' ? '<span class="visibility-badge public"><i class="fas fa-globe"></i> PUBLIC</span>' : '<span class="visibility-badge private"><i class="fas fa-lock"></i> PRIVATE</span>'}
-                    <span class="owner-badge"><i class="fas fa-user-check"></i> YOURS</span>
+                    ${script.visibility==='public'?'<span class="visibility-badge public"><i class="fas fa-globe"></i> PUBLIC</span>':'<span class="visibility-badge private"><i class="fas fa-lock"></i> PRIVATE</span>'}
                 </div>
                 <div class="script-actions">
-                    <button class="btn-icon" onclick="openEditScriptModal('${script.id}')" title="Edit"><i class="fas fa-edit"></i></button>
-                    <button class="btn-icon danger" onclick="deleteScript('${script.id}')" title="Delete"><i class="fas fa-trash"></i></button>
+                    <button class="btn-icon" onclick="openEditScriptModal('${script.id}')"><i class="fas fa-edit"></i></button>
+                    <button class="btn-icon danger" onclick="deleteScript('${script.id}')"><i class="fas fa-trash"></i></button>
                 </div>
             </div>
-            ${script.description ? `<div class="script-description"><i class="fas fa-align-left"></i> ${escapeHtml(script.description)}</div>` : ''}
-            <div class="script-meta">
-                <span><i class="fas fa-calendar"></i> ${new Date(script.createdAt).toLocaleDateString()}</span>
-                <span><i class="fas ${script.type === 'url' ? 'fa-link' : 'fa-edit'}"></i> ${script.type === 'url' ? 'URL' : 'Lua'}</span>
-                ${script.premium ? `<span><i class="fas fa-coins"></i> ${script.price || 0} R$</span>` : ''}
-            </div>
-        </div>
-    `).join('');
+            ${script.description?`<div class="script-description">${escapeHtml(script.description)}</div>`:''}
+            <div class="script-meta"><span><i class="fas fa-calendar"></i> ${new Date(script.createdAt).toLocaleDateString()}</span><span><i class="fas ${script.type==='url'?'fa-link':'fa-edit'}"></i> ${script.type==='url'?'URL':'Lua'}</span>${script.premium?`<span><i class="fas fa-coins"></i> ${script.price||0} R$</span>`:''}</div>
+        </div>`).join('');
 }
 
 // ==================== MY SCRIPTS ====================
-function filterMyScripts() {
-    currentMyScriptsSearchTerm = document.getElementById('myScriptsSearchInput')?.value.toLowerCase() || '';
-    renderMyScripts();
-}
-
-function filterMyScriptsBy(filter) {
-    currentScriptFilter = filter;
+function filterMyScripts() { currentMyScriptsSearchTerm = document.getElementById('myScriptsSearchInput')?.value.toLowerCase()||''; renderMyScripts(); }
+function filterMyScriptsBy(filter) { currentScriptFilter = filter;
     document.querySelectorAll('#myScriptsPage .filter-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    renderMyScripts();
-}
+    event.target.classList.add('active'); renderMyScripts(); }
 
 function renderMyScripts() {
     if (!currentUser) return;
-    
     const myScripts = [];
-    for (const game of dataCache?.games || []) {
-        for (const script of game.scripts || []) {
-            if (script.createdBy === currentUser?.username) {
-                myScripts.push({ ...script, gameName: game.name, gameId: game.id, gameImage: game.image });
-            }
-        }
-    }
-    
+    for (const game of dataCache?.games || []) for (const script of game.scripts || []) if (script.createdBy === currentUser?.username) myScripts.push({...script, gameName: game.name, gameId: game.id, gameImage: game.image});
     let filtered = myScripts;
-    if (currentScriptFilter === 'premium') filtered = myScripts.filter(s => s.premium);
-    if (currentScriptFilter === 'free') filtered = myScripts.filter(s => !s.premium);
-    if (currentScriptFilter === 'public') filtered = myScripts.filter(s => s.visibility === 'public');
-    if (currentScriptFilter === 'private') filtered = myScripts.filter(s => s.visibility !== 'public');
-    if (currentMyScriptsSearchTerm) {
-        filtered = filtered.filter(s => 
-            s.name.toLowerCase().includes(currentMyScriptsSearchTerm) ||
-            (s.description && s.description.toLowerCase().includes(currentMyScriptsSearchTerm)) ||
-            s.gameName.toLowerCase().includes(currentMyScriptsSearchTerm)
-        );
-    }
-    
+    if (currentScriptFilter==='premium') filtered = myScripts.filter(s=>s.premium);
+    if (currentScriptFilter==='free') filtered = myScripts.filter(s=>!s.premium);
+    if (currentScriptFilter==='public') filtered = myScripts.filter(s=>s.visibility==='public');
+    if (currentScriptFilter==='private') filtered = myScripts.filter(s=>s.visibility!=='public');
+    if (currentMyScriptsSearchTerm) filtered = filtered.filter(s=>s.name.toLowerCase().includes(currentMyScriptsSearchTerm)||(s.description&&s.description.toLowerCase().includes(currentMyScriptsSearchTerm))||s.gameName.toLowerCase().includes(currentMyScriptsSearchTerm));
     const container = document.getElementById('myScriptsList');
-    
-    if (filtered.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon"><i class="fas fa-code"></i></div>
-                <h3>${myScripts.length === 0 ? 'No Scripts Created' : 'No scripts match your filters'}</h3>
-                <p>${myScripts.length === 0 ? "You haven't created any scripts yet." : 'Try adjusting your filters.'}</p>
-                ${myScripts.length === 0 ? '<button class="btn-primary mt-4" onclick="switchPage(\'games\')"><i class="fas fa-gamepad"></i> Browse Games</button>' : ''}
-            </div>`;
-        return;
-    }
-    
+    if (filtered.length===0) { container.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-code"></i></div><h3>${myScripts.length===0?'No Scripts Created':'No matches'}</h3>${myScripts.length===0?`<button class="btn-primary mt-4" onclick="switchPage('games')"><i class="fas fa-gamepad"></i> Browse Games</button>`:''}</div>`; return; }
     const scriptsByGame = {};
-    filtered.forEach(script => {
-        if (!scriptsByGame[script.gameId]) {
-            scriptsByGame[script.gameId] = { gameName: script.gameName, gameImage: script.gameImage, scripts: [] };
-        }
-        scriptsByGame[script.gameId].scripts.push(script);
-    });
-    
-    container.innerHTML = Object.entries(scriptsByGame).map(([gameId, data]) => `
-        <div class="mb-6">
-            <div class="flex items-center gap-3 mb-4 pb-3" style="border-bottom:1px solid var(--border);">
-                ${data.gameImage ? `<img src="${data.gameImage}" style="width:36px;height:36px;border-radius:8px;object-fit:cover;">` : '<i class="fas fa-gamepad" style="font-size:28px;color:var(--secondary);"></i>'}
-                <h3 style="color:var(--secondary);font-size:13px;">${escapeHtml(data.gameName)}</h3>
-                <span style="font-size:10px;opacity:0.5;">(${data.scripts.length} script${data.scripts.length !== 1 ? 's' : ''})</span>
-            </div>
-            ${data.scripts.map(script => `
-                <div class="script-card ${script.premium ? 'premium-script' : ''}">
-                    <div class="script-header">
-                        <div class="script-name">
-                            <i class="fas ${script.premium ? 'fa-crown' : 'fa-file-code'}"></i>
-                            ${escapeHtml(script.name)}
-                            ${script.premium ? '<span class="premium-script-badge"><i class="fas fa-crown"></i> PREMIUM</span>' : ''}
-                            ${script.visibility === 'public' ? '<span class="visibility-badge public"><i class="fas fa-globe"></i> PUBLIC</span>' : '<span class="visibility-badge private"><i class="fas fa-lock"></i> PRIVATE</span>'}
-                        </div>
-                        <div class="script-actions">
-                            <button class="btn-icon" onclick="openEditScriptModal('${script.id}')" title="Edit"><i class="fas fa-edit"></i></button>
-                            <button class="btn-icon danger" onclick="deleteScript('${script.id}')" title="Delete"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                    ${script.description ? `<div class="script-description"><i class="fas fa-align-left"></i> ${escapeHtml(script.description)}</div>` : ''}
-                    <div class="script-meta">
-                        <span><i class="fas fa-calendar"></i> ${new Date(script.createdAt).toLocaleDateString()}</span>
-                        <span><i class="fas ${script.type === 'url' ? 'fa-link' : 'fa-edit'}"></i> ${script.type === 'url' ? 'URL' : 'Lua'}</span>
-                        ${script.premium ? `<span><i class="fas fa-coins"></i> ${script.price || 0} R$</span>` : ''}
-                    </div>
-                </div>
-            `).join('')}
-        </div>
-    `).join('');
+    filtered.forEach(s=>{if(!scriptsByGame[s.gameId]) scriptsByGame[s.gameId]={gameName:s.gameName,gameImage:s.gameImage,scripts:[]}; scriptsByGame[s.gameId].scripts.push(s);});
+    container.innerHTML = Object.entries(scriptsByGame).map(([gid,data])=>`
+        <div class="mb-6"><div class="flex items-center gap-3 mb-4 pb-3" style="border-bottom:1px solid var(--border);">${data.gameImage?`<img src="${data.gameImage}" style="width:36px;height:36px;border-radius:8px;">`:'<i class="fas fa-gamepad" style="font-size:28px;color:var(--secondary);"></i>'}<h3 style="color:var(--secondary);font-size:13px;">${escapeHtml(data.gameName)}</h3></div>
+        ${data.scripts.map(script=>`
+            <div class="script-card ${script.premium?'premium-script':''}">
+                <div class="script-header"><div class="script-name"><i class="fas ${script.premium?'fa-crown':'fa-file-code'}"></i> ${escapeHtml(script.name)}${script.premium?'<span class="premium-script-badge"><i class="fas fa-crown"></i> PREMIUM</span>':''}${script.visibility==='public'?'<span class="visibility-badge public"><i class="fas fa-globe"></i> PUBLIC</span>':'<span class="visibility-badge private"><i class="fas fa-lock"></i> PRIVATE</span>'}</div>
+                <div class="script-actions"><button class="btn-icon" onclick="openEditScriptModal('${script.id}')"><i class="fas fa-edit"></i></button><button class="btn-icon danger" onclick="deleteScript('${script.id}')"><i class="fas fa-trash"></i></button></div></div>
+                ${script.description?`<div class="script-description">${escapeHtml(script.description)}</div>`:''}
+                <div class="script-meta"><span><i class="fas fa-calendar"></i> ${new Date(script.createdAt).toLocaleDateString()}</span><span><i class="fas ${script.type==='url'?'fa-link':'fa-edit'}"></i> ${script.type==='url'?'URL':'Lua'}</span>${script.premium?`<span><i class="fas fa-coins"></i> ${script.price||0} R$</span>`:''}</div>
+            </div>`).join('')}</div>`).join('');
 }
 
 // ==================== PUBLIC SCRIPTS ====================
-function filterPublicScripts() {
-    currentPublicSearchTerm = document.getElementById('publicScriptsSearchInput')?.value.toLowerCase() || '';
-    renderPublicScripts();
-}
-
-function filterPublicScriptsBy(filter) {
-    currentPublicFilter = filter;
+function filterPublicScripts() { currentPublicSearchTerm = document.getElementById('publicScriptsSearchInput')?.value.toLowerCase()||''; renderPublicScripts(); }
+function filterPublicScriptsBy(filter) { currentPublicFilter = filter;
     document.querySelectorAll('#publicScriptsPage .filter-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    renderPublicScripts();
-}
+    event.target.classList.add('active'); renderPublicScripts(); }
 
 function renderPublicScripts() {
     const publicScripts = [];
-    for (const game of dataCache?.games || []) {
-        for (const script of game.scripts || []) {
-            if (script.visibility === 'public') {
-                publicScripts.push({ ...script, gameName: game.name, gameId: game.id });
-            }
-        }
-    }
-    
+    for (const game of dataCache?.games || []) for (const script of game.scripts || []) if (script.visibility==='public') publicScripts.push({...script, gameName: game.name, gameId: game.id});
     let filtered = publicScripts;
-    if (currentPublicFilter === 'premium') filtered = publicScripts.filter(s => s.premium);
-    if (currentPublicFilter === 'free') filtered = publicScripts.filter(s => !s.premium);
-    if (currentPublicSearchTerm) {
-        filtered = filtered.filter(s => 
-            s.name.toLowerCase().includes(currentPublicSearchTerm) ||
-            (s.description && s.description.toLowerCase().includes(currentPublicSearchTerm)) ||
-            s.gameName.toLowerCase().includes(currentPublicSearchTerm) ||
-            s.createdBy.toLowerCase().includes(currentPublicSearchTerm)
-        );
-    }
-    
+    if (currentPublicFilter==='premium') filtered = publicScripts.filter(s=>s.premium);
+    if (currentPublicFilter==='free') filtered = publicScripts.filter(s=>!s.premium);
+    if (currentPublicSearchTerm) filtered = filtered.filter(s=>s.name.toLowerCase().includes(currentPublicSearchTerm)||(s.description&&s.description.toLowerCase().includes(currentPublicSearchTerm))||s.gameName.toLowerCase().includes(currentPublicSearchTerm)||s.createdBy.toLowerCase().includes(currentPublicSearchTerm));
     const container = document.getElementById('publicScriptsList');
-    
-    if (filtered.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state" style="grid-column:1/-1;">
-                <div class="empty-state-icon"><i class="fas fa-globe"></i></div>
-                <h3>No Public Scripts</h3>
-                <p>Be the first to share your scripts!</p>
-                <button class="btn-primary mt-4" onclick="switchPage('games')"><i class="fas fa-plus"></i> Create a Script</button>
-            </div>`;
-        return;
-    }
-    
-    container.innerHTML = filtered.map(script => `
+    if (filtered.length===0) { container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon"><i class="fas fa-globe"></i></div><h3>No Public Scripts</h3><button class="btn-primary mt-4" onclick="switchPage(\'games\')"><i class="fas fa-plus"></i> Create a Script</button></div>'; return; }
+    container.innerHTML = filtered.map(script=>`
         <div class="public-script-card">
-            <div class="public-script-header">
-                <div class="script-name">
-                    <i class="fas ${script.premium ? 'fa-crown' : 'fa-file-code'}"></i>
-                    ${escapeHtml(script.name)}
-                    ${script.premium ? '<span class="premium-script-badge"><i class="fas fa-crown"></i> PREMIUM</span>' : ''}
-                </div>
-                <button class="btn-icon" onclick="viewPublicScript('${script.gameId}', '${script.id}')" title="View"><i class="fas fa-eye"></i></button>
-            </div>
-            ${script.description ? `<div class="script-description"><i class="fas fa-align-left"></i> ${escapeHtml(script.description)}</div>` : ''}
-            <div class="script-meta">
-                <span><i class="fas fa-gamepad"></i> ${escapeHtml(script.gameName)}</span>
-                <span><i class="fas fa-calendar"></i> ${new Date(script.createdAt).toLocaleDateString()}</span>
-                ${script.premium ? `<span><i class="fas fa-coins"></i> ${script.price || 0} R$</span>` : ''}
-            </div>
-            <div class="public-script-author">
-                <i class="fas fa-user"></i> Created by <strong>${escapeHtml(script.createdBy)}</strong>
-            </div>
-        </div>
-    `).join('');
+            <div class="public-script-header"><div class="script-name"><i class="fas ${script.premium?'fa-crown':'fa-file-code'}"></i> ${escapeHtml(script.name)}${script.premium?'<span class="premium-script-badge"><i class="fas fa-crown"></i> PREMIUM</span>':''}</div>
+            <button class="btn-icon" onclick="viewPublicScript('${script.gameId}','${script.id}')"><i class="fas fa-eye"></i></button></div>
+            ${script.description?`<div class="script-description">${escapeHtml(script.description)}</div>`:''}
+            <div class="script-meta"><span><i class="fas fa-gamepad"></i> ${escapeHtml(script.gameName)}</span><span><i class="fas fa-calendar"></i> ${new Date(script.createdAt).toLocaleDateString()}</span>${script.premium?`<span><i class="fas fa-coins"></i> ${script.price||0} R$</span>`:''}</div>
+            <div class="public-script-author"><i class="fas fa-user"></i> Created by <strong>${escapeHtml(script.createdBy)}</strong></div>
+        </div>`).join('');
 }
 
 async function viewPublicScript(gameId, scriptId) {
-    const game = dataCache?.games?.find(g => g.id === gameId);
-    if (!game) return;
-    
-    const script = game.scripts?.find(s => s.id === scriptId);
-    if (!script) return;
-    
+    const game = dataCache?.games?.find(g=>g.id===gameId); if(!game) return;
+    const script = game.scripts?.find(s=>s.id===scriptId); if(!script) return;
     currentViewingScript = script;
-    
     document.getElementById('viewScriptName').textContent = script.name;
     document.getElementById('viewScriptAuthor').textContent = script.createdBy;
     document.getElementById('viewScriptGame').textContent = game.name;
-    document.getElementById('viewScriptDescription').textContent = script.description || 'No description';
-    
+    document.getElementById('viewScriptDescription').textContent = script.description||'No description';
     document.getElementById('viewScriptModal').classList.remove('hidden');
-    
-    if (!viewMonacoEditor) {
-        require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
-        require(['vs/editor/editor.main'], function() {
-            viewMonacoEditor = monaco.editor.create(document.getElementById('viewMonacoEditor'), {
-                value: script.type === 'url' ? `-- URL Script\n-- ${script.content}` : script.content,
-                language: 'lua',
-                theme: 'vs-dark',
-                minimap: { enabled: false },
-                fontSize: 13,
-                readOnly: true,
-                automaticLayout: true
-            });
-        });
-    } else {
-        viewMonacoEditor.setValue(script.type === 'url' ? `-- URL Script\n-- ${script.content}` : script.content);
-    }
+    if(!viewMonacoEditor){require.config({paths:{vs:'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs'}});require(['vs/editor/editor.main'],function(){viewMonacoEditor=monaco.editor.create(document.getElementById('viewMonacoEditor'),{value:script.type==='url'?`-- URL Script\n-- ${script.content}`:script.content,language:'lua',theme:'vs-dark',minimap:{enabled:false},fontSize:13,readOnly:true,automaticLayout:true});});}
+    else viewMonacoEditor.setValue(script.type==='url'?`-- URL Script\n-- ${script.content}`:script.content);
 }
-
-function closeViewScriptModal() {
-    document.getElementById('viewScriptModal').classList.add('hidden');
-    currentViewingScript = null;
-}
-
-function copyScriptContent() {
-    if (currentViewingScript) {
-        const content = currentViewingScript.type === 'url' ? currentViewingScript.content : currentViewingScript.content;
-        navigator.clipboard.writeText(content).then(() => {
-            showToast('📋 Script copied to clipboard!', 'success');
-        });
-    }
-}
+function closeViewScriptModal(){document.getElementById('viewScriptModal').classList.add('hidden');currentViewingScript=null;}
+function copyScriptContent(){if(currentViewingScript){navigator.clipboard.writeText(currentViewingScript.content).then(()=>showToast('📋 Copied!','success'));}}
 
 // ==================== SCRIPT MANAGEMENT ====================
-function openCreateScriptModal() {
-    if (!selectedGameId) {
-        showToast('Please select a game first', 'error');
-        return;
-    }
-    
+function openCreateScriptModal(){
+    if(!selectedGameId){showToast('Select a game first','error');return;}
     const premiumOption = document.getElementById('premiumScriptOption');
-    if (premiumOption) {
-        if (canCreatePremium || isAdmin || currentUser?.isPremium) {
-            premiumOption.classList.remove('hidden');
-        } else {
-            premiumOption.classList.add('hidden');
-        }
-    }
-    
+    if(premiumOption){if(canCreatePremium||isAdmin)premiumOption.classList.remove('hidden');else premiumOption.classList.add('hidden');}
     document.getElementById('createScriptModal').classList.remove('hidden');
-    document.getElementById('scriptNameInput').value = '';
-    document.getElementById('scriptDescInput').value = '';
-    document.getElementById('scriptUrlInput').value = '';
-    document.getElementById('scriptPremiumCheck').checked = false;
-    document.getElementById('premiumOptions').classList.add('hidden');
-    document.querySelector('input[name="visibility"][value="private"]').checked = true;
-    
-    if (!monacoEditor) {
-        require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
-        require(['vs/editor/editor.main'], function() {
-            monacoEditor = monaco.editor.create(document.getElementById('monacoEditor'), {
-                value: '-- Write your Lua script here\n-- Set visibility to Public to share!\n\nprint("Hello from RSQ Elite!")',
-                language: 'lua',
-                theme: 'vs-dark',
-                minimap: { enabled: false },
-                fontSize: 13,
-                automaticLayout: true
-            });
-        });
-    }
+    document.getElementById('scriptNameInput').value='';document.getElementById('scriptDescInput').value='';document.getElementById('scriptUrlInput').value='';
+    document.getElementById('scriptPremiumCheck').checked=false;document.getElementById('premiumOptions').classList.add('hidden');
+    document.querySelector('input[name="visibility"][value="private"]').checked=true;
+    if(!monacoEditor){require.config({paths:{vs:'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs'}});require(['vs/editor/editor.main'],function(){monacoEditor=monaco.editor.create(document.getElementById('monacoEditor'),{value:'-- Write your Lua script here\n\nprint("Hello from RSQ Elite!")',language:'lua',theme:'vs-dark',minimap:{enabled:false},fontSize:13,automaticLayout:true});});}
 }
+function closeCreateScriptModal(){document.getElementById('createScriptModal').classList.add('hidden');}
+function setScriptType(type){currentScriptType=type;document.querySelectorAll('#createScriptModal .filter-btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');document.getElementById('urlInputSection').classList.toggle('hidden',type!=='url');document.getElementById('editorSection').classList.toggle('hidden',type!=='editor');}
+function togglePremiumOptions(){document.getElementById('premiumOptions').classList.toggle('hidden',!document.getElementById('scriptPremiumCheck').checked);}
 
-function closeCreateScriptModal() {
-    document.getElementById('createScriptModal').classList.add('hidden');
-}
-
-function setScriptType(type) {
-    currentScriptType = type;
-    const btns = document.querySelectorAll('#createScriptModal .filter-btn');
-    btns.forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById('urlInputSection').classList.toggle('hidden', type !== 'url');
-    document.getElementById('editorSection').classList.toggle('hidden', type !== 'editor');
-}
-
-function togglePremiumOptions() {
-    document.getElementById('premiumOptions').classList.toggle('hidden', !document.getElementById('scriptPremiumCheck').checked);
-}
-
-async function saveScript() {
-    const name = document.getElementById('scriptNameInput').value.trim();
-    const description = document.getElementById('scriptDescInput').value.trim();
-    const isPremium = document.getElementById('scriptPremiumCheck').checked;
-    const visibility = document.querySelector('input[name="visibility"]:checked').value;
-    
-    if (!name) { showToast('Please enter a script name', 'error'); return; }
-    if (!selectedGameId) { showToast('No game selected', 'error'); return; }
-    
+async function saveScript(){
+    const name=document.getElementById('scriptNameInput').value.trim();
+    const description=document.getElementById('scriptDescInput').value.trim();
+    const isPremium=document.getElementById('scriptPremiumCheck').checked;
+    const visibility=document.querySelector('input[name="visibility"]:checked').value;
+    if(!name){showToast('Enter a name','error');return;}
+    if(!selectedGameId){showToast('No game selected','error');return;}
     let content;
-    if (currentScriptType === 'url') {
-        content = document.getElementById('scriptUrlInput').value.trim();
-        if (!content) { showToast('Please enter a script URL', 'error'); return; }
-    } else {
-        if (!monacoEditor) { showToast('Editor not ready', 'error'); return; }
-        content = monacoEditor.getValue();
-        if (!content.trim()) { showToast('Please write your script', 'error'); return; }
-    }
-    
-    showLoading('Saving script...');
-    
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data() || {};
-        
-        const gameIndex = data.games.findIndex(g => g.id === selectedGameId);
-        if (gameIndex === -1) throw new Error('Game not found');
-        
-        if (!data.games[gameIndex].scripts) data.games[gameIndex].scripts = [];
-        
-        const scriptId = Date.now() + '-' + Math.random().toString(36).substring(2, 9);
-        
-        const scriptData = {
-            id: scriptId,
-            name,
-            description,
-            type: currentScriptType,
-            content,
-            createdBy: currentUser.username,
-            createdAt: Date.now(),
-            gameId: selectedGameId,
-            visibility
-        };
-        
-        if (isPremium && canCreatePremium) {
-            scriptData.premium = true;
-            scriptData.gamepassId = document.getElementById('scriptGamepassId').value.trim() || dataCache.settings?.premiumGamepassId || '';
-            scriptData.price = parseInt(document.getElementById('scriptPrice').value) || 0;
-        }
-        
-        data.games[gameIndex].scripts.push(scriptData);
-        await docRef.set(data, { merge: true });
-        
-        closeCreateScriptModal();
-        showToast(`✅ Script saved! ${visibility === 'public' ? 'It\'s now publicly visible.' : 'It\'s private.'}`, 'success');
-        renderGameScripts();
-        renderMyScripts();
-        renderPublicScripts();
-        updateStats();
-    } catch (error) {
-        showToast('Error: ' + error.message, 'error');
-    } finally {
-        hideLoading();
-    }
+    if(currentScriptType==='url'){content=document.getElementById('scriptUrlInput').value.trim();if(!content){showToast('Enter a URL','error');return;}}
+    else{if(!monacoEditor){showToast('Editor not ready','error');return;}content=monacoEditor.getValue();if(!content.trim()){showToast('Write your script','error');return;}}
+    showLoading('Saving...');
+    try{
+        const docRef=db.collection('system').doc('config');const doc=await docRef.get();const data=doc.data()||{};
+        const gi=data.games.findIndex(g=>g.id===selectedGameId);if(gi===-1)throw new Error('Game not found');
+        if(!data.games[gi].scripts)data.games[gi].scripts=[];
+        const sid=Date.now()+'-'+Math.random().toString(36).substring(2,9);
+        const scriptData={id:sid,name,description,type:currentScriptType,content,createdBy:currentUser.username,createdAt:Date.now(),gameId:selectedGameId,visibility};
+        if(isPremium&&canCreatePremium){scriptData.premium=true;scriptData.gamepassId=document.getElementById('scriptGamepassId').value.trim()||'';scriptData.price=parseInt(document.getElementById('scriptPrice').value)||0;}
+        data.games[gi].scripts.push(scriptData);await docRef.set(data,{merge:true});
+        closeCreateScriptModal();showToast('✅ Saved!','success');
+        renderGameScripts();renderMyScripts();renderPublicScripts();updateStats();
+    }catch(e){showToast('Error: '+e.message,'error');}finally{hideLoading();}
 }
 
-function openEditScriptModal(scriptId) {
-    const script = findScript(scriptId);
-    if (!script || (script.createdBy !== currentUser?.username && !isAdmin)) {
-        showToast('You can only edit your own scripts', 'error');
-        return;
-    }
-    
-    currentEditingScript = script;
-    
-    document.getElementById('editScriptNameInput').value = script.name || '';
-    document.getElementById('editScriptDescInput').value = script.description || '';
-    
-    const visibility = script.visibility || 'private';
-    const radio = document.querySelector(`input[name="editVisibility"][value="${visibility}"]`);
-    if (radio) radio.checked = true;
-    
-    if (script.type === 'url') {
-        document.getElementById('editScriptUrlInput').value = script.content || '';
-        setEditScriptType('url');
-    } else {
-        setEditScriptType('editor');
-        setTimeout(() => {
-            if (editMonacoEditor) editMonacoEditor.setValue(script.content || '');
-        }, 100);
-    }
-    
+function openEditScriptModal(scriptId){
+    const script=findScript(scriptId);if(!script||(script.createdBy!==currentUser?.username&&!isAdmin)){showToast('Not your script','error');return;}
+    currentEditingScript=script;
+    document.getElementById('editScriptNameInput').value=script.name||'';document.getElementById('editScriptDescInput').value=script.description||'';
+    const r=document.querySelector(`input[name="editVisibility"][value="${script.visibility||'private'}"]`);if(r)r.checked=true;
+    if(script.type==='url'){document.getElementById('editScriptUrlInput').value=script.content||'';setEditScriptType('url');}
+    else{setEditScriptType('editor');setTimeout(()=>{if(editMonacoEditor)editMonacoEditor.setValue(script.content||'');},100);}
     document.getElementById('editScriptModal').classList.remove('hidden');
-    
-    if (!editMonacoEditor) {
-        require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
-        require(['vs/editor/editor.main'], function() {
-            editMonacoEditor = monaco.editor.create(document.getElementById('editMonacoEditor'), {
-                value: script.content || '',
-                language: 'lua',
-                theme: 'vs-dark',
-                minimap: { enabled: false },
-                fontSize: 13,
-                automaticLayout: true
-            });
-        });
-    }
+    if(!editMonacoEditor){require.config({paths:{vs:'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs'}});require(['vs/editor/editor.main'],function(){editMonacoEditor=monaco.editor.create(document.getElementById('editMonacoEditor'),{value:script.content||'',language:'lua',theme:'vs-dark',minimap:{enabled:false},fontSize:13,automaticLayout:true});});}
 }
+function closeEditScriptModal(){document.getElementById('editScriptModal').classList.add('hidden');currentEditingScript=null;}
+function setEditScriptType(type){currentEditScriptType=type;document.querySelectorAll('#editScriptModal .filter-btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');document.getElementById('editUrlInputSection').classList.toggle('hidden',type!=='url');document.getElementById('editEditorSection').classList.toggle('hidden',type!=='editor');}
 
-function closeEditScriptModal() {
-    document.getElementById('editScriptModal').classList.add('hidden');
-    currentEditingScript = null;
-}
-
-function setEditScriptType(type) {
-    currentEditScriptType = type;
-    document.querySelectorAll('#editScriptModal .filter-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById('editUrlInputSection').classList.toggle('hidden', type !== 'url');
-    document.getElementById('editEditorSection').classList.toggle('hidden', type !== 'editor');
-}
-
-async function updateScript() {
-    if (!currentEditingScript) return;
-    
-    const name = document.getElementById('editScriptNameInput').value.trim();
-    const description = document.getElementById('editScriptDescInput').value.trim();
-    const visibility = document.querySelector('input[name="editVisibility"]:checked')?.value || 'private';
-    
-    if (!name) { showToast('Please enter a script name', 'error'); return; }
-    
+async function updateScript(){
+    if(!currentEditingScript)return;
+    const name=document.getElementById('editScriptNameInput').value.trim();
+    const description=document.getElementById('editScriptDescInput').value.trim();
+    const visibility=document.querySelector('input[name="editVisibility"]:checked')?.value||'private';
+    if(!name){showToast('Enter a name','error');return;}
     let content;
-    if (currentEditScriptType === 'url') {
-        content = document.getElementById('editScriptUrlInput').value.trim();
-        if (!content) { showToast('Please enter a script URL', 'error'); return; }
-    } else {
-        if (!editMonacoEditor) { showToast('Editor not ready', 'error'); return; }
-        content = editMonacoEditor.getValue();
-        if (!content.trim()) { showToast('Please write your script', 'error'); return; }
-    }
-    
-    showLoading('Updating script...');
-    
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data() || {};
-        
-        for (const game of data.games) {
-            const idx = game.scripts?.findIndex(s => s.id === currentEditingScript.id);
-            if (idx !== -1) {
-                game.scripts[idx].name = name;
-                game.scripts[idx].description = description;
-                game.scripts[idx].type = currentEditScriptType;
-                game.scripts[idx].content = content;
-                game.scripts[idx].visibility = visibility;
-                break;
-            }
-        }
-        
-        await docRef.set(data, { merge: true });
-        
-        closeEditScriptModal();
-        showToast('✅ Script updated!', 'success');
-        
-        if (document.getElementById('gameScriptsView').classList.contains('active')) renderGameScripts();
-        renderMyScripts();
-        renderPublicScripts();
-    } catch (error) {
-        showToast('Error: ' + error.message, 'error');
-    } finally {
-        hideLoading();
-    }
+    if(currentEditScriptType==='url'){content=document.getElementById('editScriptUrlInput').value.trim();if(!content){showToast('Enter a URL','error');return;}}
+    else{if(!editMonacoEditor){showToast('Editor not ready','error');return;}content=editMonacoEditor.getValue();if(!content.trim()){showToast('Write your script','error');return;}}
+    showLoading('Updating...');
+    try{
+        const docRef=db.collection('system').doc('config');const doc=await docRef.get();const data=doc.data()||{};
+        for(const g of data.games){const i=g.scripts?.findIndex(s=>s.id===currentEditingScript.id);if(i!==-1){g.scripts[i].name=name;g.scripts[i].description=description;g.scripts[i].type=currentEditScriptType;g.scripts[i].content=content;g.scripts[i].visibility=visibility;break;}}
+        await docRef.set(data,{merge:true});
+        closeEditScriptModal();showToast('✅ Updated!','success');
+        if(document.getElementById('gameScriptsView').classList.contains('active'))renderGameScripts();
+        renderMyScripts();renderPublicScripts();
+    }catch(e){showToast('Error: '+e.message,'error');}finally{hideLoading();}
 }
 
-async function deleteScript(scriptId) {
-    if (!confirm('Are you sure you want to delete this script? This cannot be undone.')) return;
-    
-    showLoading('Deleting script...');
-    
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data() || {};
-        
-        for (const game of data.games) {
-            if (game.scripts) {
-                const script = game.scripts.find(s => s.id === scriptId);
-                if (script && script.createdBy !== currentUser?.username && !isAdmin) {
-                    showToast('You can only delete your own scripts', 'error');
-                    hideLoading();
-                    return;
-                }
-                game.scripts = game.scripts.filter(s => s.id !== scriptId);
-            }
-        }
-        
-        await docRef.set(data, { merge: true });
-        
-        showToast('🗑️ Script deleted', 'success');
-        
-        if (document.getElementById('gameScriptsView').classList.contains('active')) renderGameScripts();
-        renderMyScripts();
-        renderPublicScripts();
-        updateStats();
-    } catch (error) {
-        showToast('Error: ' + error.message, 'error');
-    } finally {
-        hideLoading();
-    }
+async function deleteScript(scriptId){
+    if(!confirm('Delete this script?'))return;
+    showLoading('Deleting...');
+    try{
+        const docRef=db.collection('system').doc('config');const doc=await docRef.get();const data=doc.data()||{};
+        for(const g of data.games){if(g.scripts){const s=g.scripts.find(s=>s.id===scriptId);if(s&&s.createdBy!==currentUser?.username&&!isAdmin){showToast('Not your script','error');hideLoading();return;}g.scripts=g.scripts.filter(s=>s.id!==scriptId);}}
+        await docRef.set(data,{merge:true});
+        showToast('🗑️ Deleted','success');
+        if(document.getElementById('gameScriptsView').classList.contains('active'))renderGameScripts();
+        renderMyScripts();renderPublicScripts();updateStats();
+    }catch(e){showToast('Error: '+e.message,'error');}finally{hideLoading();}
 }
 
-function findScript(scriptId) {
-    for (const game of dataCache?.games || []) {
-        const script = game.scripts?.find(s => s.id === scriptId);
-        if (script) return script;
-    }
-    return null;
+function findScript(scriptId){for(const g of dataCache?.games||[])for(const s of g.scripts||[])if(s.id===scriptId)return s;return null;}
+
+// ==================== ADMIN ====================
+function renderAdminGamesList(){
+    if(!isAdmin)return;
+    const games=(dataCache?.games||[]).filter(g=>g.id&&g.id!=='UNIVERSAL');
+    const container=document.getElementById('adminGamesList');if(!container)return;
+    if(games.length===0){container.innerHTML='<div class="empty-state">No games</div>';return;}
+    container.innerHTML=games.map(game=>`
+        <div class="admin-card"><div class="flex items-center gap-3 mb-3">${game.image?`<img src="${game.image}" style="width:44px;height:44px;border-radius:8px;">`:'<i class="fas fa-gamepad" style="font-size:28px;"></i>'}<div><div style="font-weight:700;">${escapeHtml(game.name)}</div><div style="font-size:10px;opacity:0.5;">ID: ${game.id}</div></div></div>
+        <div class="flex gap-2 mb-3" style="font-size:10px;"><span style="background:${game.premium?'var(--premium)':'var(--success)'};color:${game.premium?'#000':'#fff'};padding:3px 10px;border-radius:20px;">${game.premium?'👑 PREMIUM':'🌐 FREE'}</span><span style="background:rgba(255,255,255,0.08);padding:3px 10px;border-radius:20px;">📝 ${(game.scripts||[]).length} scripts</span></div>
+        <button class="btn-icon danger" onclick="adminDeleteGame('${game.id}')" style="width:100%;"><i class="fas fa-trash"></i> Delete</button></div>`).join('');
 }
 
-// ==================== ADMIN FUNCTIONS ====================
-function renderAdminCodesList() {
-    if (!isAdmin) return;
-    
-    const codes = dataCache?.premiumCodes || [];
-    const container = document.getElementById('adminCodesList');
-    if (!container) return;
-    
-    if (codes.length === 0) {
-        container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>No codes generated</p></div>';
-        return;
-    }
-    
-    container.innerHTML = codes.slice().reverse().map(code => `
-        <div class="admin-card">
-            <div style="margin-bottom:10px;">
-                <div style="font-family:monospace;font-size:10px;word-break:break-all;color:var(--premium);">${escapeHtml(code.code)}</div>
-                <div style="font-size:10px;margin-top:4px;">Plan: <strong>${escapeHtml(code.plan)}</strong></div>
-            </div>
-            <div style="font-size:10px;opacity:0.7;">
-                User: ${escapeHtml(code.username)}<br>
-                Created: ${new Date(code.createdAt).toLocaleString()}<br>
-                Status: ${code.redeemed ? '<span style="color:var(--success);">✅ Redeemed</span>' : '<span style="color:var(--warning);">⏳ Pending</span>'}
-                ${code.redeemed ? `<br>By: ${escapeHtml(code.redeemedBy)}<br>At: ${new Date(code.redeemedAt).toLocaleString()}` : ''}
-            </div>
-        </div>
-    `).join('');
+async function adminDeleteGame(gameId){
+    if(!isAdmin)return;if(!confirm('Delete this game and ALL scripts?'))return;
+    const docRef=db.collection('system').doc('config');const doc=await docRef.get();const data=doc.data()||{};
+    data.games=data.games.filter(g=>g.id!==gameId);await docRef.set(data,{merge:true});
+    showToast('Game deleted','success');renderAdminGamesList();renderGames();renderMyScripts();renderPublicScripts();updateStats();
 }
 
-function renderAdminGamesList() {
-    if (!isAdmin) return;
-    
-    const games = (dataCache?.games || []).filter(g => g.id && g.id !== 'UNIVERSAL');
-    const container = document.getElementById('adminGamesList');
-    if (!container) return;
-    
-    if (games.length === 0) {
-        container.innerHTML = '<div class="empty-state">No games created</div>';
-        return;
-    }
-    
-    container.innerHTML = games.map(game => `
-        <div class="admin-card">
-            <div class="flex items-center gap-3 mb-3">
-                ${game.image ? `<img src="${game.image}" style="width:44px;height:44px;border-radius:8px;object-fit:cover;">` : '<i class="fas fa-gamepad" style="font-size:28px;"></i>'}
-                <div style="flex:1;">
-                    <div style="font-weight:700;">${escapeHtml(game.name)}</div>
-                    <div style="font-size:10px;opacity:0.5;">ID: ${game.id}</div>
-                </div>
-            </div>
-            <div class="flex gap-2 mb-3" style="font-size:10px;">
-                <span style="background:${game.premium ? 'var(--premium)' : 'var(--success)'};color:${game.premium ? '#000' : '#fff'};padding:3px 10px;border-radius:20px;">
-                    ${game.premium ? '👑 PREMIUM' : '🌐 FREE'}
-                </span>
-                <span style="background:rgba(255,255,255,0.08);padding:3px 10px;border-radius:20px;">
-                    📝 ${(game.scripts || []).length} scripts
-                </span>
-            </div>
-            <button class="btn-icon danger" onclick="adminDeleteGame('${game.id}')" style="width:100%;">
-                <i class="fas fa-trash"></i> Delete Game
-            </button>
-        </div>
-    `).join('');
-}
+function openCreateGameModal(){if(!isAdmin)return;document.getElementById('createGameModal').classList.remove('hidden');}
+function closeCreateGameModal(){document.getElementById('createGameModal').classList.add('hidden');
+    document.getElementById('newGameName').value='';document.getElementById('newGameId').value='';
+    document.getElementById('gameImagePreview').style.display='none';document.getElementById('imagePlaceholder').style.display='flex';
+    document.getElementById('gameImageInput').value='';}
 
-function renderAllScriptsMonitor() {
-    if (!isAdmin) return;
-    
-    const allScripts = [];
-    for (const game of dataCache?.games || []) {
-        for (const script of game.scripts || []) {
-            allScripts.push({ ...script, gameName: game.name, gameId: game.id });
-        }
-    }
-    
-    const container = document.getElementById('allScriptsMonitor');
-    if (!container) return;
-    
-    if (allScripts.length === 0) {
-        container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>No scripts found</p></div>';
-        return;
-    }
-    
-    container.innerHTML = allScripts.slice(0, 30).map(script => `
-        <div style="background:rgba(255,255,255,0.02);padding:12px;border-radius:8px;margin-bottom:8px;">
-            <div class="flex justify-between items-center flex-wrap gap-2">
-                <div>
-                    <strong><i class="fas fa-file-code"></i> ${escapeHtml(script.name)}</strong>
-                    <span style="font-size:10px;opacity:0.6;"> by ${escapeHtml(script.createdBy || 'Unknown')}</span>
-                    ${script.premium ? '<span class="premium-script-badge">👑 PREMIUM</span>' : ''}
-                    ${script.visibility === 'public' ? '<span class="visibility-badge public">PUBLIC</span>' : '<span class="visibility-badge private">PRIVATE</span>'}
-                </div>
-                <button class="btn-icon danger btn-sm" onclick="adminDeleteScript('${script.gameId}', '${script.id}')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-            <div style="font-size:10px;opacity:0.5;margin-top:4px;">
-                <i class="fas fa-gamepad"></i> ${escapeHtml(script.gameName)} | ${script.type === 'url' ? 'URL' : 'Lua'}
-            </div>
-        </div>
-    `).join('');
-    
-    if (allScripts.length > 30) {
-        container.innerHTML += `<div class="text-center" style="opacity:0.5;padding:10px;">+ ${allScripts.length - 30} more scripts</div>`;
-    }
-}
-
-function renderPremiumUsersList() {
-    if (!isAdmin) return;
-    
-    const users = dataCache?.users || {};
-    const premiumUsers = Object.entries(users).filter(([_, u]) => u.isPremium === true);
-    const container = document.getElementById('premiumUsersList');
-    if (!container) return;
-    
-    if (premiumUsers.length === 0) {
-        container.innerHTML = '<div class="empty-state">No premium users yet</div>';
-        return;
-    }
-    
-    container.innerHTML = `
-        <div class="admin-grid">
-            ${premiumUsers.map(([username, user]) => `
-                <div class="admin-card">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="user-avatar" style="width:40px;height:40px;">${username[0].toUpperCase()}</div>
-                        <div>
-                            <div style="font-weight:600;">${escapeHtml(username)}</div>
-                            <div style="font-size:10px;color:var(--premium);">👑 ${user.premiumPlan || 'Premium'}</div>
-                        </div>
-                    </div>
-                    <div style="font-size:10px;opacity:0.6;">
-                        Since: ${new Date(user.premiumSince || user.joinTime).toLocaleDateString()}
-                    </div>
-                    <button class="btn-icon danger" onclick="removePremium('${username}')" style="width:100%;margin-top:8px;">
-                        <i class="fas fa-times"></i> Remove Premium
-                    </button>
-                </div>
-            `).join('')}
-        </div>
-    `;
-}
-
-async function removePremium(username) {
-    if (!isAdmin) return;
-    if (!confirm(`Remove premium access from ${username}?`)) return;
-    
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data() || {};
-        
-        if (data.users[username]) {
-            data.users[username].isPremium = false;
-            data.users[username].premiumPlan = null;
-            data.users[username].premiumCode = null;
-            await docRef.set(data, { merge: true });
-            showToast(`Premium removed from ${username}`, 'success');
-            renderPremiumUsersList();
-            updateAdminStats();
-            updateStats();
-        }
-    } catch (error) {
-        showToast('Error: ' + error.message, 'error');
-    }
-}
-
-async function adminDeleteScript(gameId, scriptId) {
-    if (!isAdmin) return;
-    if (!confirm('Admin: Delete this script permanently?')) return;
-    
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data() || {};
-        
-        const game = data.games.find(g => g.id === gameId);
-        if (game) {
-            game.scripts = game.scripts.filter(s => s.id !== scriptId);
-        }
-        
-        await docRef.set(data, { merge: true });
-        showToast('Script deleted by admin', 'success');
-        renderAllScriptsMonitor();
-        renderMyScripts();
-        renderPublicScripts();
-        updateStats();
-    } catch (error) {
-        showToast('Error: ' + error.message, 'error');
-    }
-}
-
-async function adminDeleteGame(gameId) {
-    if (!isAdmin) return;
-    if (!confirm('Admin: Delete this game and ALL its scripts? This is irreversible.')) return;
-    
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data() || {};
-        
-        data.games = data.games.filter(g => g.id !== gameId);
-        await docRef.set(data, { merge: true });
-        
-        showToast('Game deleted', 'success');
-        renderAdminGamesList();
-        renderGames();
-        renderMyScripts();
-        renderPublicScripts();
-        updateStats();
-    } catch (error) {
-        showToast('Error: ' + error.message, 'error');
-    }
-}
-
-function openCreateGameModal() {
-    if (!isAdmin) return;
-    document.getElementById('createGameModal').classList.remove('hidden');
-}
-
-function closeCreateGameModal() {
-    document.getElementById('createGameModal').classList.add('hidden');
-    document.getElementById('newGameName').value = '';
-    document.getElementById('newGameId').value = '';
-    document.getElementById('gameImagePreview').style.display = 'none';
-    document.getElementById('imagePlaceholder').style.display = 'flex';
-    document.getElementById('gameImageInput').value = '';
-}
-
-async function createGame() {
-    if (!isAdmin) return;
-    
-    const name = document.getElementById('newGameName').value.trim();
-    const id = document.getElementById('newGameId').value.trim();
-    const isPremium = document.getElementById('newGamePremium').checked;
-    
-    if (!name || !id) {
-        showToast('Please enter game name and ID', 'error');
-        return;
-    }
-    
-    showLoading('Creating game...');
-    
-    try {
-        const docRef = db.collection('system').doc('config');
-        const doc = await docRef.get();
-        const data = doc.data() || {};
-        
-        if (!data.games) data.games = [];
-        
-        const imageInput = document.getElementById('gameImageInput');
-        let imageData = '';
-        
-        if (imageInput.files?.[0]) {
-            imageData = await new Promise(resolve => {
-                const reader = new FileReader();
-                reader.onload = e => resolve(e.target.result);
-                reader.readAsDataURL(imageInput.files[0]);
-            });
-        }
-        
-        data.games.push({
-            id, name,
-            image: imageData,
-            premium: isPremium,
-            public: true,
-            scripts: [],
-            created: Date.now(),
-            createdBy: currentUser.username
-        });
-        
-        await docRef.set(data, { merge: true });
-        
-        closeCreateGameModal();
-        showToast('✅ Game created!', 'success');
-        renderAdminGamesList();
-        renderGames();
-        updateStats();
-    } catch (error) {
-        showToast('Error: ' + error.message, 'error');
-    } finally {
-        hideLoading();
-    }
+async function createGame(){
+    if(!isAdmin)return;
+    const name=document.getElementById('newGameName').value.trim();const id=document.getElementById('newGameId').value.trim();
+    const isPremium=document.getElementById('newGamePremium').checked;
+    if(!name||!id){showToast('Fill all fields','error');return;}
+    showLoading('Creating...');
+    try{
+        const docRef=db.collection('system').doc('config');const doc=await docRef.get();const data=doc.data()||{};
+        if(!data.games)data.games=[];
+        let imageData='';const fi=document.getElementById('gameImageInput');
+        if(fi.files?.[0]){imageData=await new Promise(r=>{const reader=new FileReader();reader.onload=e=>r(e.target.result);reader.readAsDataURL(fi.files[0]);});}
+        data.games.push({id,name,image:imageData,premium:isPremium,public:true,scripts:[],created:Date.now(),createdBy:currentUser.username});
+        await docRef.set(data,{merge:true});
+        closeCreateGameModal();showToast('✅ Game created!','success');renderAdminGamesList();renderGames();updateStats();
+    }catch(e){showToast('Error: '+e.message,'error');}finally{hideLoading();}
 }
 
 // ==================== NAVIGATION ====================
-function switchPage(page) {
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.sidebar-item, .mobile-nav-item').forEach(item => item.classList.remove('active'));
-    
-    const pageMap = {
-        home: 0, games: 1, myScripts: 2, publicScripts: 3, buyPremium: 4
-    };
-    
-    const idx = pageMap[page];
-    if (idx !== undefined && document.querySelectorAll('.nav-tab')[idx]) {
-        document.querySelectorAll('.nav-tab')[idx].classList.add('active');
-    }
-    
-    if (page === 'admin') {
-        document.getElementById('adminPage').classList.add('active');
-        updateAdminStats();
-        renderAdminGamesList();
-        renderAdminCodesList();
-        renderAllScriptsMonitor();
-        renderPremiumUsersList();
-        return;
-    }
-    
-    document.getElementById(page + 'Page')?.classList.add('active');
-    
-    if (page === 'games') renderGames();
-    if (page === 'myScripts') renderMyScripts();
-    if (page === 'publicScripts') renderPublicScripts();
-    if (page === 'buyPremium') renderPremiumPurchasePlans();
+function switchPage(page){
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.sidebar-item,.mobile-nav-item').forEach(i=>i.classList.remove('active'));
+    const pm={home:0,games:1,myScripts:2,publicScripts:3,buyPremium:4};const idx=pm[page];
+    if(idx!==undefined&&document.querySelectorAll('.nav-tab')[idx])document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+    if(page==='admin'){document.getElementById('adminPage').classList.add('active');updateAdminStats();renderAdminGamesList();return;}
+    document.getElementById(page+'Page')?.classList.add('active');
+    if(page==='games')renderGames();if(page==='myScripts')renderMyScripts();
+    if(page==='publicScripts')renderPublicScripts();if(page==='buyPremium')renderPremiumPurchasePlans();
 }
-
-function switchPageSidebar(page) { switchPage(page); }
-function switchPageMobile(page) { switchPage(page); }
+function switchPageSidebar(page){switchPage(page);}
+function switchPageMobile(page){switchPage(page);}
 
 // ==================== PARTICLES ====================
-function initParticles() {
-    if (typeof particlesJS !== 'undefined') {
-        particlesJS('particles-js', {
-            particles: {
-                number: { value: 60, density: { enable: true, value_area: 800 } },
-                color: { value: ['#6c5ce7', '#00cec9', '#ffd700', '#a855f7'] },
-                shape: { type: 'circle' },
-                opacity: { value: 0.4, random: true },
-                size: { value: 2.5, random: true },
-                line_linked: { enable: true, distance: 150, color: '#6c5ce7', opacity: 0.15, width: 1 },
-                move: { enable: true, speed: 0.8, direction: 'none', random: true, out_mode: 'out' }
-            },
-            interactivity: {
-                detect_on: 'canvas',
-                events: {
-                    onhover: { enable: true, mode: 'grab' },
-                    onclick: { enable: true, mode: 'push' },
-                    resize: true
-                },
-                modes: {
-                    grab: { distance: 180, line_linked: { opacity: 0.4 } },
-                    push: { particles_nb: 4 }
-                }
-            },
-            retina_detect: true
-        });
-    }
-}
+function initParticles(){if(typeof particlesJS!=='undefined'){particlesJS('particles-js',{particles:{number:{value:60,density:{enable:true,value_area:800}},color:{value:['#6c5ce7','#00cec9','#ffd700','#a855f7']},shape:{type:'circle'},opacity:{value:0.4,random:true},size:{value:2.5,random:true},line_linked:{enable:true,distance:150,color:'#6c5ce7',opacity:0.15,width:1},move:{enable:true,speed:0.8,direction:'none',random:true,out_mode:'out'}},interactivity:{detect_on:'canvas',events:{onhover:{enable:true,mode:'grab'},onclick:{enable:true,mode:'push'},resize:true},modes:{grab:{distance:180,line_linked:{opacity:0.4}},push:{particles_nb:4}}},retina_detect:true});}}
 
 // ==================== IMAGE UPLOAD ====================
-document.getElementById('gameImageInput')?.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = e => {
-            document.getElementById('gameImagePreview').src = e.target.result;
-            document.getElementById('gameImagePreview').style.display = 'block';
-            document.getElementById('imagePlaceholder').style.display = 'none';
-        };
-        reader.readAsDataURL(file);
-    }
-});
+document.getElementById('gameImageInput')?.addEventListener('change',function(e){const file=e.target.files[0];if(file){const reader=new FileReader();reader.onload=e=>{document.getElementById('gameImagePreview').src=e.target.result;document.getElementById('gameImagePreview').style.display='block';document.getElementById('imagePlaceholder').style.display='none';};reader.readAsDataURL(file);}});
 
 // ==================== SESSION CHECK ====================
-function checkSession() {
-    const saved = localStorage.getItem('RSQ_CREATOR_USER');
-    if (saved) {
-        try {
-            currentUser = JSON.parse(saved);
-            isAdmin = (currentUser.username === ADMIN_USERNAME);
-            canCreatePremium = isAdmin || currentUser.isPremium;
-            
-            document.getElementById('authScreen').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('displayUsername').textContent = currentUser.username;
-            document.getElementById('welcomeName').textContent = currentUser.username;
-            document.getElementById('userInitial').textContent = currentUser.username[0].toUpperCase();
-            
-            if (isAdmin) {
-                document.getElementById('adminTabNav').style.display = 'flex';
-                document.getElementById('adminSidebarItem').style.display = 'flex';
-                document.getElementById('adminMobileNav').style.display = 'flex';
-            }
-            
-            initializeApp();
-        } catch (e) {
-            localStorage.removeItem('RSQ_CREATOR_USER');
-        }
-    }
-}
+function checkSession(){const saved=localStorage.getItem('RSQ_CREATOR_USER');if(saved){try{currentUser=JSON.parse(saved);isAdmin=(currentUser.username===ADMIN_USERNAME);canCreatePremium=isAdmin||currentUser.isPremium;document.getElementById('authScreen').classList.add('hidden');document.getElementById('mainApp').classList.remove('hidden');document.getElementById('displayUsername').textContent=currentUser.username;document.getElementById('welcomeName').textContent=currentUser.username;document.getElementById('userInitial').textContent=currentUser.username[0].toUpperCase();if(isAdmin){document.getElementById('adminTabNav').style.display='flex';document.getElementById('adminSidebarItem').style.display='flex';document.getElementById('adminMobileNav').style.display='flex';}initializeApp();}catch(e){localStorage.removeItem('RSQ_CREATOR_USER');}}}
 
-// ==================== KEYBOARD SHORTCUTS ====================
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeCreateScriptModal();
-        closeEditScriptModal();
-        closeViewScriptModal();
-        closeCreateGameModal();
-        closeSecretCodeModal();
-    }
-    
-    if (e.key === 'Enter' && !document.getElementById('authScreen').classList.contains('hidden')) {
-        if (!document.getElementById('loginForm').classList.contains('hidden')) {
-            handleLogin();
-        } else {
-            handleSignup();
-        }
-    }
-});
-
-// ==================== INIT ====================
-document.addEventListener('DOMContentLoaded', () => {
-    initParticles();
-    checkSession();
-});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeCreateScriptModal();closeEditScriptModal();closeViewScriptModal();closeCreateGameModal();closeSecretCodeModal();closePurchaseVerification();}if(e.key==='Enter'&&!document.getElementById('authScreen').classList.contains('hidden')){if(!document.getElementById('loginForm').classList.contains('hidden'))handleLogin();else handleSignup();}});
+document.addEventListener('DOMContentLoaded',()=>{initParticles();checkSession();});
 </script>
 </body>
 </html>
