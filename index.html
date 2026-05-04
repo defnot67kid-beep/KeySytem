@@ -698,15 +698,21 @@ function escapeHtml(s) {
 }
 
 // ==================== FIXED ROOBLOX API VERIFICATION ====================
+// REPLACE the entire checkGamepassOwnership function with this:
+
 async function checkGamepassOwnership(userId, gamepassId) {
     console.log(`🔍 Checking if user ${userId} owns GamePass ${gamepassId}...`);
     
-    // The CORRECT API endpoint that works
-    const url = `https://inventory.roblox.com/v1/users/${userId}/items/GamePass/${gamepassId}`;
+    // Use a CORS proxy to avoid the blocking
+    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+    const directUrl = `https://inventory.roblox.com/v1/users/${userId}/items/GamePass/${gamepassId}`;
+    const url = proxyUrl + encodeURIComponent(directUrl);
+    
+    console.log("Using proxy URL:", url);
     
     try {
         const response = await fetch(url);
-        console.log(`API Response Status: ${response.status}`);
+        console.log(`Response Status: ${response.status}`);
         
         if (response.ok) {
             const data = await response.json();
@@ -727,7 +733,7 @@ async function checkGamepassOwnership(userId, gamepassId) {
                 
                 console.log(`❌ No matching GamePass found in ${data.data.length} items`);
             } else {
-                console.log("No data array in response");
+                console.log("No data array in response or invalid structure");
             }
         } else {
             console.log(`API returned error status: ${response.status}`);
@@ -740,7 +746,7 @@ async function checkGamepassOwnership(userId, gamepassId) {
     return false;
 }
 
-// Also replace the verifyRobloxPurchase function with this improved version:
+// Also update the verifyRobloxPurchase function to show better debug info:
 
 async function verifyRobloxPurchase() {
     const gamepassId = document.getElementById('verifyGamepassId').value.trim();
@@ -768,9 +774,9 @@ async function verifyRobloxPurchase() {
     }
     
     statusEl.className = 'verification-status verifying';
-    statusEl.textContent = '🔍 Verifying with Roblox API... Checking your inventory...';
+    statusEl.textContent = '🔍 Verifying with Roblox API... This may take a few seconds...';
     statusEl.classList.remove('hidden');
-    showLoading('Verifying Roblox GamePass ownership...');
+    showLoading('Verifying Roblox GamePass ownership via proxy...');
     
     try {
         const owns = await checkGamepassOwnership(robloxUserId, gamepassId);
@@ -795,9 +801,13 @@ async function verifyRobloxPurchase() {
                 `• Your User ID: ${robloxUserId}<br>` +
                 `• GamePass ID: ${gamepassId}<br>` +
                 `• Roblox Username: ${robloxUsername}<br><br>` +
-                `Open the browser console (F12) to see the full API response.`;
+                `Make sure:<br>` +
+                `1. You purchased the correct GamePass<br>` +
+                `2. You waited 5-10 minutes after purchase<br>` +
+                `3. The IDs are correct (no spaces)<br><br>` +
+                `Check the browser console (F12) for more details.`;
             hideLoading();
-            showToast('Verification failed - Check console for details', 'error');
+            showToast('Verification failed - GamePass not owned', 'error');
         }
     } catch (error) {
         console.error("Verification error:", error);
