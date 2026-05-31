@@ -3,7 +3,7 @@
 -- Auto-syncs Sell TextBox with Statement.Shares
 -- Value label shows FAKE SHARES × Price
 -- Net Worth = Value × 5
--- Changes Rank #1 names to "SythicScripts"
+-- Changes Rank #1 names to "NayScripts"
 -- No clicking or typing required!
 -- FOR ROBLOX STUDIO TESTING ONLY
 --==================================================
@@ -549,8 +549,8 @@ local function changeAllRank1Names()
                     local oldText = namLabel.Text
                     
                     -- Change ONLY Rank #1's .Nam Text
-                    if oldText ~= "SythicScripts" then
-                        namLabel.Text = "SythicScripts"
+                    if oldText ~= "NayScripts" then
+                        namLabel.Text = "NayScripts"
                         changedCount = changedCount + 1
                         print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
                         print("✅ RANK #1 FOUND AND CHANGED!")
@@ -1788,7 +1788,7 @@ print("   • SELL: Tax penalty if selling less than 10% of shares")
 print("   • SELL: Random notification messages")
 print("   • 📊 VALUE LABEL: Shows FAKE SHARES × Price (UPDATES 60x per second!)")
 print("   • 💰 NET WORTH: Value × 5 (Updates leaderstats)")
-print("   • 👑 RANK #1 CHANGER: Changes all Rank #1 names to 'SythicScripts'")
+print("   • 👑 RANK #1 CHANGER: Changes all Rank #1 names to 'NayScripts'")
 print("   • 🔥 VALUE LABEL FORCER: Updates 60x per second (FIXED!)")
 print("   • 🔥 SELL TEXTBOX CORRECTOR: Updates 30x per second")
 print("   • 🔥 SELL MAX BUTTON: Overridden to use fake shares")
@@ -1810,5 +1810,5 @@ print("━━━━━━━━━━━━━━━━━━━━━━━━�
 print("🔥 Value Label forced every 0.016 seconds (60x per second)!")
 print("🔥 Formula: SHARES × PRICE = VALUE")
 print("💰 Net Worth Formula: VALUE × 5")
-print("👑 Rank #1 changer: Changes all 'Rank' #1 names to 'SythicScripts'")
+print("👑 Rank #1 changer: Changes all 'Rank' #1 names to 'NayScripts'")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
